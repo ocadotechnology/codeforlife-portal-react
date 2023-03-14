@@ -1,0 +1,71 @@
+{
+  "slice": {
+    "prefix": [
+      "slice",
+      "s"
+    ],
+    "scope": "typescript",
+    "isFileTemplate": true,
+    "body": [
+      "import { createSlice, PayloadAction } from '@reduxjs/toolkit';",
+      "import { type RootState } from 'app/store';",
+      "import ${1:name}Api from './${1}API';",
+      "",
+      "export interface ${1/(.)/${1:/capitalize}/}State {",
+      "\t",
+      "}",
+      "",
+      "const initialState: ${1/(.)/${1:/capitalize}/}State = {",
+      "\t",
+      "}",
+      "",
+      "export const ${1}Slice = createSlice({",
+      "\tname: '${1}',",
+      "\tinitialState,",
+      "\treducers: {",
+      "\t\t// Use \"slice.reducer\" snippet.",
+      "\t},",
+      "\textraReducers: (builder) => {",
+      "\t\t// Use \"slice.extraReducer\" snippets.",
+      "\t}",
+      "});",
+      "",
+      "export const { ${2:actions} } = ${1}Slice.actions;",
+      "",
+      "// Selects here. Use \"slice-select\" snippet.",
+      "",
+      "export default ${1}Slice.reducer;",
+      ""
+    ]
+  },
+  "slice.reducer": {
+    "prefix": [
+      "slice.reducer",
+      "s.r"
+    ],
+    "scope": "typescript",
+    "body": [
+      "${1:action}: (state, action: PayloadAction<{ ${2:payload} }>) => {",
+      "\t${3:reducer}",
+      "}"
+    ]
+  },
+  "slice.extraReducer.api": {
+    "prefix": [
+      "slice.extraReducer.api",
+      "s.er.api"
+    ],
+    "scope": "typescript",
+    "body": [
+      "\t.addMatcher(${1:api}Api.endpoints.${2:endpoint}.matchPending, (state) => {",
+      "\t\t${3:reducer.pending}",
+      "\t})",
+      "\t.addMatcher(${1}Api.endpoints.${2}.matchFulfilled, (state) => {",
+      "\t\t${4:reducer.fulfilled}",
+      "\t})",
+      "\t.addMatcher(${1}Api.endpoints.${2}.matchRejected, (state) => {",
+      "\t\t${5:reducer.rejected}",
+      "\t})"
+    ]
+  }
+}
