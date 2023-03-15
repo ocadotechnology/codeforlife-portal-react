@@ -10,12 +10,14 @@ import { setupListeners } from '@reduxjs/toolkit/query';
 import api from 'app/api';
 import counterReducer from 'features/counter/counterSlice';
 import jokeListReducer from 'features/jokeList/jokeListSlice';
+import appBarReducer from 'features/appBar/appBarSlice';
 
 const store = configureStore({
   reducer: {
     [api.reducerPath]: api.reducer,
     counter: counterReducer,
-    jokeList: jokeListReducer
+    jokeList: jokeListReducer,
+    appBar: appBarReducer
   },
   middleware: (getDefaultMiddleware) => [
     ...getDefaultMiddleware(),
