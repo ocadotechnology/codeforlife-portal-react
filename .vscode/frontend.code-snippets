@@ -67,5 +67,36 @@
       "\t\t${5:reducer.rejected}",
       "\t})"
     ]
+  },
+  "slice.selector": {
+    "prefix": [
+      "slice.selector",
+      "s.s"
+    ],
+    "scope": "typescript",
+    "body": "export const select${1/(.)/${1:/capitalize}/} = (state: RootState): ${2:type} => state.${3:key};"
+  },
+  "component": {
+    "prefix": [
+      "component",
+      "c"
+    ],
+    "scope": "typescriptreact",
+    "isFileTemplate": true,
+    "body": [
+      "import React, { useState } from 'react';",
+      "import { Unstable_Grid2 as Grid2 } from '@mui/material';",
+      "",
+      "import { useAppSelector, useAppDispatch } from 'app/hooks';",
+      "",
+      "export default function ${1/(.)/${1:/capitalize}/}(): JSX.Element {",
+      "\tconst dispatch = useAppDispatch();",
+      "\t",
+      "\treturn (",
+      "\t\t${3:tsx}",
+      "\t);",
+      "}",
+      ""
+    ]
   }
 }
