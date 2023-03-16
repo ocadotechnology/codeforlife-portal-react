@@ -133,7 +133,7 @@ const FooterSignUp: React.FC = () => (
         id='email'
         label='Email'
         type='email'
-        variant='outlined'
+        variant='filled'
         InputProps={{
           endAdornment: (
             <InputAdornment position='end'>
