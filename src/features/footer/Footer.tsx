@@ -10,7 +10,8 @@ import {
   InputAdornment,
   Checkbox,
   FormControlLabel,
-  FormGroup
+  useMediaQuery,
+  useTheme
 } from '@mui/material';
 import {
   EmailOutlined as EmailIcon
@@ -23,7 +24,7 @@ import { ReactComponent as TwitterIcon } from 'images/twitter_icon.svg';
 import { ReactComponent as FbIcon } from 'images/facebook_icon.svg';
 
 const FooterLinks: React.FC = () => (
-  <Grid container>
+  <Grid container spacing={0}>
     <Grid xs={12} sm={4}>
       <Stack>
         <Link>
@@ -63,31 +64,50 @@ const FooterLinks: React.FC = () => (
   </Grid>
 );
 
-const FooterLogos: React.FC = () => (
-  <Grid container padding={1}>
-    <Grid xs={12} display='flex' justifyContent='center'>
-      <Image
-        alt='Code for Life logo'
-        src={CflLogo}
-      />
+const FooterLogos: React.FC = () => {
+  const theme = useTheme();
+
+  let [iconSize, iconWidth] = [60, '100%'];
+  if (useMediaQuery(theme.breakpoints.only('sm'))) {
+    iconSize = 40; iconWidth = '66%';
+  }
+
+  return (
+    <Grid container>
+      <Grid xs={12} order={{ xs: 2, sm: 1 }}>
+        <Image
+          alt='Code for Life logo'
+          src={CflLogo}
+        />
+      </Grid>
+      <Grid
+        xs={3} xsOffset={3} smOffset={0}
+        order={{ xs: 1, sm: 2 }}
+        className='flex-center'
+      >
+        <IconButton sx={{ padding: 0 }}>
+          <FbIcon fontSize={iconSize} color='white' />
+        </IconButton>
+      </Grid>
+      <Grid
+        xs={3} order={{ xs: 1, sm: 2 }}
+        className='flex-center'
+      >
+        <IconButton sx={{ padding: 0 }}>
+          <TwitterIcon fontSize={iconSize} color='white' />
+        </IconButton>
+      </Grid>
+      <Grid
+        xs={12} sm={6} order={{ xs: 4 }}
+        className='flex-center'
+      >
+        <IconButton>
+          <OcadoGroupIcon color='white' width={iconWidth} />
+        </IconButton>
+      </Grid>
     </Grid>
-    <Grid xs={3}>
-      <IconButton sx={{ padding: 0 }}>
-        <FbIcon fontSize={60} color='white' />
-      </IconButton>
-    </Grid>
-    <Grid xs={3}>
-      <IconButton sx={{ padding: 0 }}>
-        <TwitterIcon fontSize={60} color='white' />
-      </IconButton>
-    </Grid>
-    <Grid xs={6}>
-      <IconButton>
-        <OcadoGroupIcon color='white' width='100%' />
-      </IconButton>
-    </Grid>
-  </Grid>
-);
+  );
+};
 
 const FooterSignUp: React.FC = () => (
   <Grid container>
@@ -112,14 +132,14 @@ const FooterSignUp: React.FC = () => (
         }}
       />
     </Grid>
-    <Grid xs={10}>
+    <Grid xs={12} sm={10}>
       <FormControlLabel
         control={<Checkbox required />}
         label='Please confirm that you are over 18.'
       />
     </Grid>
-    <Grid xs={2}>
-      <Button>
+    <Grid xs={12} sm={2}>
+      <Button type='submit' fullWidth>
         Sign up
       </Button>
     </Grid>
@@ -138,17 +158,18 @@ const Footer: React.FC = () => {
       container
       sx={{ bgcolor: 'pink' }}
       padding={3}
+      spacing={1}
     >
-      <Grid xs={12} sm={8} xl={6} xlOffset={1}>
+      <Grid xs={12} sm={8} xl={6} xlOffset={1} order={{ xs: 1 }}>
         <FooterLinks />
       </Grid>
-      <Grid xs={12} sm={4} xl={3}>
+      <Grid xs={12} sm={4} xl={3} order={{ xs: 3, sm: 2 }}>
         <FooterLogos />
       </Grid>
-      <Grid xs={12} sm={8} xl={6} xlOffset={1}>
+      <Grid xs={12} sm={8} xl={6} xlOffset={1} order={{ xs: 2, sm: 3 }}>
         <FooterSignUp />
       </Grid>
-      <Grid xs={12} display='flex' justifyContent='center'>
+      <Grid xs={12} order={{ xs: 4 }} display='flex' justifyContent='center'>
         <FooterCopyright />
       </Grid>
     </Grid>
