@@ -24,7 +24,7 @@ import { ReactComponent as FbIcon } from 'images/facebook_icon.svg';
 
 const FooterLinks: React.FC = () => (
   <Grid container>
-    <Grid xs={4}>
+    <Grid xs={12} sm={4}>
       <Stack>
         <Link>
           About us
@@ -34,7 +34,7 @@ const FooterLinks: React.FC = () => (
         </Link>
       </Stack>
     </Grid>
-    <Grid xs={4}>
+    <Grid xs={12} sm={4}>
       <Stack>
         <Link>
           Privacy Notice
@@ -47,7 +47,7 @@ const FooterLinks: React.FC = () => (
         </Link>
       </Stack>
     </Grid>
-    <Grid xs={4}>
+    <Grid xs={12} sm={4}>
       <Stack>
         <Link>
           Home learning
@@ -139,13 +139,13 @@ const Footer: React.FC = () => {
       sx={{ bgcolor: 'pink' }}
       padding={3}
     >
-      <Grid xs={8} xl={6} xlOffset={1}>
+      <Grid xs={12} sm={8} xl={6} xlOffset={1}>
         <FooterLinks />
       </Grid>
-      <Grid xs={4} xl={3}>
+      <Grid xs={12} sm={4} xl={3}>
         <FooterLogos />
       </Grid>
-      <Grid xs={8} xl={6} xlOffset={1}>
+      <Grid xs={12} sm={8} xl={6} xlOffset={1}>
         <FooterSignUp />
       </Grid>
       <Grid xs={12} display='flex' justifyContent='center'>
