@@ -11,12 +11,15 @@ import {
   Checkbox,
   FormControlLabel,
   useMediaQuery,
-  useTheme
+  useTheme,
+  createTheme,
+  ThemeProvider
 } from '@mui/material';
 import {
   EmailOutlined as EmailIcon
 } from '@mui/icons-material';
 
+import theme from 'app/theme';
 import { Image } from 'codeforlife/lib/esm/components';
 import CflLogo from 'images/cfl_logo_white_landscape.png';
 import { ReactComponent as OcadoGroupIcon } from 'images/ocado_group_white.svg';
@@ -24,44 +27,52 @@ import { ReactComponent as TwitterIcon } from 'images/twitter_icon.svg';
 import { ReactComponent as FbIcon } from 'images/facebook_icon.svg';
 
 const FooterLinks: React.FC = () => (
-  <Grid container spacing={0}>
-    <Grid xs={12} sm={4}>
-      <Stack>
-        <Link>
-          About us
-        </Link>
-        <Link>
-          Help and support
-        </Link>
-      </Stack>
+  <ThemeProvider theme={createTheme(theme, {
+    components: {
+      MuiLink: {
+        defaultProps: { color: '#FFFFFF' }
+      }
+    }
+  })}>
+    <Grid container spacing={0}>
+      <Grid xs={12} sm={4}>
+        <Stack>
+          <Link>
+            About us
+          </Link>
+          <Link>
+            Help and support
+          </Link>
+        </Stack>
+      </Grid>
+      <Grid xs={12} sm={4}>
+        <Stack>
+          <Link>
+            Privacy Notice
+          </Link>
+          <Link>
+            Terms of use
+          </Link>
+          <Link>
+            Cookie settings
+          </Link>
+        </Stack>
+      </Grid>
+      <Grid xs={12} sm={4}>
+        <Stack>
+          <Link>
+            Home learning
+          </Link>
+          <Link>
+            Get involved
+          </Link>
+          <Link>
+            Coding clubs
+          </Link>
+        </Stack>
+      </Grid>
     </Grid>
-    <Grid xs={12} sm={4}>
-      <Stack>
-        <Link>
-          Privacy Notice
-        </Link>
-        <Link>
-          Terms of use
-        </Link>
-        <Link>
-          Cookie settings
-        </Link>
-      </Stack>
-    </Grid>
-    <Grid xs={12} sm={4}>
-      <Stack>
-        <Link>
-          Home learning
-        </Link>
-        <Link>
-          Get involved
-        </Link>
-        <Link>
-          Coding clubs
-        </Link>
-      </Stack>
-    </Grid>
-  </Grid>
+  </ThemeProvider>
 );
 
 const FooterLogos: React.FC = () => {
@@ -148,15 +159,18 @@ const FooterSignUp: React.FC = () => (
 
 const FooterCopyright: React.FC = () => (
   <Typography>
-    © Ocado Group 2023
+    © Ocado Group {new Date().getFullYear()}
   </Typography>
 );
 
 const Footer: React.FC = () => {
+  const theme = useTheme();
+
   return (
     <Grid
       container
-      sx={{ bgcolor: 'pink' }}
+      color='white'
+      sx={{ bgcolor: theme.palette.primary.main }}
       padding={3}
       spacing={1}
     >
