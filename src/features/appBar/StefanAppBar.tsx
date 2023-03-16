@@ -21,7 +21,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { useAppSelector, useAppDispatch } from 'app/hooks';
 import { selectPages } from './appBarSlice';
-import Image from 'components/image/Image';
+import { Image } from 'codeforlife/lib/esm/components';
 
 import CflIcon from 'images/cfl_logo.png';
 import { ReactComponent as OcadoGroupIcon } from 'images/ocado_group.svg';

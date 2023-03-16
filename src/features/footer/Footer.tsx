@@ -4,8 +4,23 @@ import {
   Stack,
   Link,
   Typography,
-  Button
+  Button,
+  IconButton,
+  TextField,
+  InputAdornment,
+  Checkbox,
+  FormControlLabel,
+  FormGroup
 } from '@mui/material';
+import {
+  EmailOutlined as EmailIcon
+} from '@mui/icons-material';
+
+import { Image } from 'codeforlife/lib/esm/components';
+import CflLogo from 'images/cfl_logo_white_landscape.png';
+import { ReactComponent as OcadoGroupIcon } from 'images/ocado_group_white.svg';
+import { ReactComponent as TwitterIcon } from 'images/twitter_icon.svg';
+import { ReactComponent as FbIcon } from 'images/facebook_icon.svg';
 
 const FooterLinks: React.FC = () => (
   <Grid container>
@@ -48,20 +63,28 @@ const FooterLinks: React.FC = () => (
   </Grid>
 );
 
-
 const FooterLogos: React.FC = () => (
-  <Grid container>
+  <Grid container padding={1}>
     <Grid xs={12}>
-      cfl
+      <Image
+        alt='Code for Life logo'
+        src={CflLogo}
+      />
     </Grid>
     <Grid xs={3}>
-      fb
+      <IconButton>
+        <FbIcon fontSize={60} color='white' />
+      </IconButton>
     </Grid>
     <Grid xs={3}>
-      tw
+      <IconButton>
+        <TwitterIcon fontSize={60} color='white' />
+      </IconButton>
     </Grid>
     <Grid xs={6}>
-      ocado
+      <IconButton>
+        <OcadoGroupIcon fontSize={1000} color='white' />
+      </IconButton>
     </Grid>
   </Grid>
 );
@@ -74,17 +97,34 @@ const FooterSignUp: React.FC = () => (
       </Typography>
     </Grid>
     <Grid xs={12}>
-      email field
+      <TextField
+        required
+        id='email'
+        label='Email'
+        type='email'
+        variant='outlined'
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position='end'>
+              <EmailIcon />
+            </InputAdornment>
+          )
+        }}
+      />
     </Grid>
     <Grid xs={10}>
-      tickbox
+      <FormControlLabel
+        control={<Checkbox required />}
+        label='Please confirm that you are over 18.'
+      />
     </Grid>
     <Grid xs={2}>
-      button
+      <Button>
+        Sign up
+      </Button>
     </Grid>
   </Grid>
 );
-
 
 const FooterCopyright: React.FC = () => (
   <Typography>
@@ -92,9 +132,9 @@ const FooterCopyright: React.FC = () => (
   </Typography>
 );
 
-export default function Footer(): JSX.Element {
+const Footer: React.FC = () => {
   return (
-    <Grid container>
+    <Grid container sx={{ bgcolor: 'pink' }}>
       <Grid xs={8}>
         <FooterLinks />
       </Grid>
@@ -104,9 +144,11 @@ export default function Footer(): JSX.Element {
       <Grid xs={8}>
         <FooterSignUp />
       </Grid>
-      <Grid xs={12}>
+      <Grid xs={12} display='flex' justifyContent='center'>
         <FooterCopyright />
       </Grid>
     </Grid>
   );
-}
+};
+
+export default Footer;
