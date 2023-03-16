@@ -65,25 +65,25 @@ const FooterLinks: React.FC = () => (
 
 const FooterLogos: React.FC = () => (
   <Grid container padding={1}>
-    <Grid xs={12}>
+    <Grid xs={12} display='flex' justifyContent='center'>
       <Image
         alt='Code for Life logo'
         src={CflLogo}
       />
     </Grid>
     <Grid xs={3}>
-      <IconButton>
+      <IconButton sx={{ padding: 0 }}>
         <FbIcon fontSize={60} color='white' />
       </IconButton>
     </Grid>
     <Grid xs={3}>
-      <IconButton>
+      <IconButton sx={{ padding: 0 }}>
         <TwitterIcon fontSize={60} color='white' />
       </IconButton>
     </Grid>
     <Grid xs={6}>
       <IconButton>
-        <OcadoGroupIcon fontSize={1000} color='white' />
+        <OcadoGroupIcon color='white' width='100%' />
       </IconButton>
     </Grid>
   </Grid>
@@ -134,14 +134,18 @@ const FooterCopyright: React.FC = () => (
 
 const Footer: React.FC = () => {
   return (
-    <Grid container sx={{ bgcolor: 'pink' }}>
-      <Grid xs={8}>
+    <Grid
+      container
+      sx={{ bgcolor: 'pink' }}
+      padding={3}
+    >
+      <Grid xs={8} xl={6} xlOffset={1}>
         <FooterLinks />
       </Grid>
-      <Grid xs={4}>
+      <Grid xs={4} xl={3}>
         <FooterLogos />
       </Grid>
-      <Grid xs={8}>
+      <Grid xs={8} xl={6} xlOffset={1}>
         <FooterSignUp />
       </Grid>
       <Grid xs={12} display='flex' justifyContent='center'>
