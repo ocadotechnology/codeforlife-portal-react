@@ -5,14 +5,16 @@ import {
   Menu,
   MenuItem,
   IconButton,
-  Box,
-  Stack,
   Avatar,
   Tooltip,
-  SvgIcon
+  SvgIcon,
+  Button,
+  Select,
+  FormControl,
+  InputLabel,
+  Stack
 } from '@mui/material';
 import {
-  Adb as AdbIcon,
   Menu as MenuIcon
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
@@ -22,7 +24,7 @@ import { selectPages } from './appBarSlice';
 import Image from 'components/image/Image';
 
 import CflIcon from 'images/cfl_logo.png';
-import OcadoGroupIcon from 'images/ocado_group.svg';
+import { ReactComponent as OcadoGroupIcon } from 'images/ocado_group.svg';
 
 export default function StefanAppBar(): JSX.Element {
   const navigate = useNavigate();
@@ -34,7 +36,10 @@ export default function StefanAppBar(): JSX.Element {
       container
       padding={1}
       alignItems='center'
+      sx={{ maxHeight: '5%' }}
     >
+      <Image src={CflIcon} alt='Code for Life logo' />
+
       {/* <Box
         component={Grid2}
         xs={1}
@@ -60,28 +65,37 @@ export default function StefanAppBar(): JSX.Element {
         </Menu>
       </Box> */}
 
-      <Grid2
-        xs={2}
-        xsOffset={4}
+      {/* <Grid2
+        xs={4}
+        xsOffset={2}
         mdOffset={0}
         container
         spacing={1}
       >
-        <Grid2>
+        <Grid2 xs={6}>
           <Image src={CflIcon} alt='Code for Life logo' />
         </Grid2>
-        <Grid2>
-          <SvgIcon component={OcadoGroupIcon} />
+        <Grid2 xs={6}>
+          <OcadoGroupIcon />
         </Grid2>
       </Grid2>
 
-      <Grid2 xs={1} xsOffset='auto'>
-        <Tooltip title='Open settings'>
-          <IconButton>
-            <Avatar />
-          </IconButton>
-        </Tooltip>
+      <Grid2 xs={2}>
+        <Button>
+          Register
+        </Button>
       </Grid2>
+
+      <Grid2 xs={1.5}>
+        <FormControl fullWidth>
+          <InputLabel id='login-label'>Log in</InputLabel>
+          <Select id='login' label='Log in'>
+            <MenuItem value={10}>Student</MenuItem>
+            <MenuItem value={20}>Teacher</MenuItem>
+            <MenuItem value={30}>Independent</MenuItem>
+          </Select>
+        </FormControl>
+      </Grid2> */}
     </Grid2>
   );
 }
