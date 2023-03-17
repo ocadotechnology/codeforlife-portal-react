@@ -14,3 +14,8 @@ div#root {
   justify-content: center;
   align-items: center;
 }
+
+@font-face {
+  font-family: "SpaceGrotesk";
+  src: local("SpaceGrotesk"), url("./fonts/SpaceGrotesk-VariableFont_wght.ttf") format("truetype");
+}
