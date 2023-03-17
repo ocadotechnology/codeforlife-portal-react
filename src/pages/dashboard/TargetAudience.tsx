@@ -23,12 +23,12 @@ const TargetAudience: React.FC<{
         <Image alt={img.alt} src={img.src} boxProps={{ maxWidth: '450px' }} />
       </Grid>
       <Grid xs={12}>
-        <Typography variant='h3'>
+        <Typography variant='h2' style={{ color: 'white' }}>
           {text.header}
         </Typography>
       </Grid>
       <Grid xs={12} md={8}>
-        <Typography>
+        <Typography fontSize={21} style={{ color: 'white' }}>
           {text.body}
         </Typography>
       </Grid>
