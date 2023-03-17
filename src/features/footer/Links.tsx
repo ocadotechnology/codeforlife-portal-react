@@ -4,20 +4,22 @@ import {
   Stack,
   Link,
   createTheme,
-  ThemeProvider
+  ThemeProvider,
+  useTheme
 } from '@mui/material';
 
-import theme from 'app/theme';
-
 const Links: React.FC = () => (
-  <ThemeProvider theme={createTheme(theme, {
+  <ThemeProvider theme={createTheme(useTheme(), {
     components: {
       MuiLink: {
-        defaultProps: { color: '#FFFFFF' }
+        defaultProps: {
+          color: '#fff',
+          fontSize: 18
+        }
       }
     }
   })}>
-    <Grid container spacing={0}>
+    <Grid container spacing={{ xs: 0, sm: 1 }}>
       <Grid xs={12} sm={4}>
         <Stack>
           <Link>
