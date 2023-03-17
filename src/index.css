@@ -19,3 +19,8 @@ div#root {
   font-family: "SpaceGrotesk";
   src: local("SpaceGrotesk"), url("./fonts/SpaceGrotesk-VariableFont_wght.ttf") format("truetype");
 }
+
+@font-face {
+  font-family: "Inter";
+  src: local("Inter"), url("./fonts/Inter-VariableFont_slnt,wght.ttf") format("truetype");
+}

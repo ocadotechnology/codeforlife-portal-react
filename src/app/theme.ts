@@ -6,10 +6,6 @@ import { theme as baseTheme } from 'codeforlife';
 
 const theme = createTheme(baseTheme, {
   typography: {
-    fontFamily: [
-      '"SpaceGrotesk"',
-      'sans-serif'
-    ].join(','),
     h1: {
       fontFamily: '"SpaceGrotesk"'
     },
@@ -27,6 +23,12 @@ const theme = createTheme(baseTheme, {
     },
     h6: {
       fontFamily: '"SpaceGrotesk"'
+    },
+    body1: {
+      fontFamily: '"Inter"'
+    },
+    body2: {
+      fontFamily: '"Inter"'
     }
   },
   components: {
