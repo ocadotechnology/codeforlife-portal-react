@@ -29,7 +29,7 @@ const Footer: React.FC = () => {
       <Grid xs={12} sm={8} xl={6} xlOffset={1} order={{ xs: 2, sm: 3 }}>
         <SignUp />
       </Grid>
-      <Grid xs={12} order={{ xs: 4 }} display='flex' justifyContent='center'>
+      <Grid xs={12} order={{ xs: 4 }} className='flex-center'>
         <Typography>
           © Ocado Group {new Date().getFullYear()}
         </Typography>
