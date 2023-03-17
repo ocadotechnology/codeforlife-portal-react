@@ -3,7 +3,6 @@ import { createBrowserRouter } from 'react-router-dom';
 
 import Dashboard from 'pages/dashboard/Dashboard';
 import JokeListPage from 'pages/jokeList/JokeListPage';
-import CreateReactAppPage from 'pages/createReactApp/CreateReactAppPage';
 
 const router = createBrowserRouter([
   {
@@ -11,8 +10,8 @@ const router = createBrowserRouter([
     element: <Dashboard />
   },
   {
-    path: '/create-react-app',
-    element: <CreateReactAppPage />
+    path: '/joke-list-example',
+    element: <JokeListPage />
   }
 ]);
 
