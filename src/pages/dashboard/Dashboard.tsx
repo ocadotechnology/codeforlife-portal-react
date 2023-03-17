@@ -23,32 +23,24 @@ const Dashboard: React.FC = () => {
       <Grid xs={12}>
         <Header />
       </Grid>
-      <Grid xs={12} sm={6}>
+      <Grid xs={12} sm={6} bgcolor={theme.palette.primary.main}>
         <TargetAudience
-          bgColor={theme.palette.primary.main}
-          imgAlt='teacher with student'
-          imgSrc={EducateImage}
-          header='Educate'
-          msg='Helping teachers and families to inspire the next generation of computer scientists.'
-          btnText='Learn more'
-          btnLink=''
+          img={{ alt: 'teacher with student', src: EducateImage }}
+          text={{ header: 'Educate', body: 'Helping teachers and families to inspire the next generation of computer scientists.' }}
+          btn={{ text: 'Learn more', link: '' }}
         />
       </Grid>
-      <Grid xs={12} sm={6}>
+      <Grid xs={12} sm={6} bgcolor={theme.palette.secondary.main}>
         <TargetAudience
-          bgColor={theme.palette.secondary.main}
-          imgAlt='kids playing'
-          imgSrc={PlayImage}
-          header='Play'
-          msg="Anyone can learn how to code. We will help you learn how. It's fun, free and easy."
-          btnText='Get started'
-          btnLink=''
+          img={{ alt: 'kids playing', src: PlayImage }}
+          text={{ header: 'Play', body: "Anyone can learn how to code. We will help you learn how. It's fun, free and easy." }}
+          btn={{ text: 'Get started', link: '' }}
         />
       </Grid>
       <Grid xs={12}>
         <AboutUs />
       </Grid>
-      <Grid xs={12}>
+      <Grid xs={12} bgcolor={theme.palette.info.main}>
         <Quotes />
       </Grid>
       <Grid xs={12}>

@@ -7,38 +7,29 @@ import {
 
 import { Image } from 'codeforlife/lib/esm/components';
 
-export interface TargetAudienceInterface {
-  bgColor: string
-  imgAlt: string
-  imgSrc: string
-  header: string
-  msg: string
-  btnText: string
-  btnLink: string
-}
-
-const TargetAudience: React.FC<TargetAudienceInterface> = ({
-  bgColor, imgAlt, imgSrc, header, msg, btnText, btnLink
-}) => {
+const TargetAudience: React.FC<{
+  img: { alt: string, src: string }
+  text: { header: string, body: string }
+  btn: { text: string, link: string }
+}> = ({ img, text, btn }) => {
   return (
     <Grid
       container
-      color='white'
-      sx={{ bgcolor: bgColor, height: '100%', minWidth: '100%' }}
+      sx={{ height: '100%', minWidth: '100%' }}
       padding={4}
       spacing={1}
     >
       <Grid xs={12} className='flex-center'>
-        <Image alt={imgAlt} src={imgSrc} boxProps={{ maxWidth: '450px' }} />
+        <Image alt={img.alt} src={img.src} boxProps={{ maxWidth: '450px' }} />
       </Grid>
       <Grid xs={12}>
         <Typography variant='h3'>
-          {header}
+          {text.header}
         </Typography>
       </Grid>
       <Grid xs={12} md={8}>
         <Typography>
-          {msg}
+          {text.body}
         </Typography>
       </Grid>
       <Grid
@@ -46,7 +37,7 @@ const TargetAudience: React.FC<TargetAudienceInterface> = ({
         display='flex' justifyContent='end' alignItems='end'
       >
         <Button color='white'>
-          {btnText + ' >'}
+          {btn.text + ' >'}
         </Button>
       </Grid>
     </Grid >
