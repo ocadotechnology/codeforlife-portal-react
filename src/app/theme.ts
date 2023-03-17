@@ -7,28 +7,39 @@ import { theme as baseTheme } from 'codeforlife';
 const theme = createTheme(baseTheme, {
   typography: {
     h1: {
-      fontFamily: '"SpaceGrotesk"'
+      fontFamily: '"SpaceGrotesk"',
+      fontWeight: 500
     },
     h2: {
-      fontFamily: '"SpaceGrotesk"'
+      fontFamily: '"SpaceGrotesk"',
+      fontWeight: 500
     },
     h3: {
-      fontFamily: '"SpaceGrotesk"'
+      fontFamily: '"SpaceGrotesk"',
+      fontWeight: 500
     },
     h4: {
-      fontFamily: '"SpaceGrotesk"'
+      fontFamily: '"SpaceGrotesk"',
+      fontWeight: 500
     },
     h5: {
-      fontFamily: '"SpaceGrotesk"'
+      fontFamily: '"SpaceGrotesk"',
+      fontWeight: 500
     },
     h6: {
-      fontFamily: '"SpaceGrotesk"'
+      fontFamily: '"SpaceGrotesk"',
+      fontWeight: 500
     },
     body1: {
       fontFamily: '"Inter"'
     },
     body2: {
       fontFamily: '"Inter"'
+    },
+    button: {
+      fontFamily: '"Inter"',
+      fontSize: 14,
+      fontWeight: 550
     }
   },
   components: {
@@ -41,6 +52,23 @@ const theme = createTheme(baseTheme, {
     //     }
     //   `
     // }
+    MuiGrid2: {
+      defaultProps: {
+      }
+    },
+    MuiButton: {
+      defaultProps: {
+        variant: 'contained',
+        color: 'tertiary'
+      },
+      styleOverrides: {
+        root: {
+          textTransform: 'none',
+          color: 'black',
+          padding: '5px 20px'
+        }
+      }
+    }
   }
 });
 

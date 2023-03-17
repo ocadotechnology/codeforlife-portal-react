@@ -23,7 +23,7 @@ const Dashboard: React.FC = () => {
       <Grid xs={12}>
         <Header />
       </Grid>
-      <Grid xs={12} md={6}>
+      <Grid xs={12} sm={6}>
         <TargetAudience
           bgColor={theme.palette.primary.main}
           imgAlt='teacher with student'
@@ -34,14 +34,14 @@ const Dashboard: React.FC = () => {
           btnLink=''
         />
       </Grid>
-      <Grid xs={12} md={6}>
+      <Grid xs={12} sm={6}>
         <TargetAudience
           bgColor={theme.palette.secondary.main}
           imgAlt='kids playing'
           imgSrc={PlayImage}
           header='Play'
           msg="Anyone can learn how to code. We will help you learn how. It's fun, free and easy."
-          btnText='Learn more'
+          btnText='Get started'
           btnLink=''
         />
       </Grid>

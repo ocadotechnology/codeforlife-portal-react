@@ -21,22 +21,31 @@ const TargetAudience: React.FC<TargetAudienceInterface> = ({
   bgColor, imgAlt, imgSrc, header, msg, btnText, btnLink
 }) => {
   return (
-    <Grid container sx={{ bgcolor: bgColor }}>
+    <Grid
+      container
+      color='white'
+      sx={{ bgcolor: bgColor, height: '100%', minWidth: '100%' }}
+      padding={4}
+      spacing={1}
+    >
       <Grid xs={12} className='flex-center'>
         <Image alt={imgAlt} src={imgSrc} boxProps={{ maxWidth: '450px' }} />
       </Grid>
       <Grid xs={12}>
-        <Typography variant='h1'>
+        <Typography variant='h3'>
           {header}
         </Typography>
       </Grid>
-      <Grid xs={8}>
+      <Grid xs={12} md={8}>
         <Typography>
           {msg}
         </Typography>
       </Grid>
-      <Grid xs={4}>
-        <Button>
+      <Grid
+        xs={12} md={4}
+        display='flex' justifyContent='end' alignItems='end'
+      >
+        <Button color='white'>
           {btnText + ' >'}
         </Button>
       </Grid>
