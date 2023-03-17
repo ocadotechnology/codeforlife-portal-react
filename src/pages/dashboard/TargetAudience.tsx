@@ -37,7 +37,7 @@ const TargetAudience: React.FC<{
         display='flex' justifyContent='end' alignItems='end'
       >
         <Button color='white'>
-          {btn.text + ' >'}
+          {btn.text} &gt;
         </Button>
       </Grid>
     </Grid >
