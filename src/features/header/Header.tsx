@@ -20,7 +20,7 @@ const Header: React.FC = () => {
   const [menuIsOpen, setMenuIsOpen] = React.useState(false);
 
   const display = { xs: 'none', sm: 'inline' };
-  const mr = 4;
+  const mr = { sm: 1, md: 4 };
 
   return (
     <>
@@ -35,19 +35,19 @@ const Header: React.FC = () => {
           src={OgLogo}
           boxProps={{
             maxWidth: '100px',
-            mx: { xs: 'auto', sm: mr }
+            mx: { xs: 'auto', ...mr }
           }}
         />
         <Link sx={{ display, mr }} >
           Teachers
         </Link>
-        <Link sx={{ display, mr: 'auto' }} color='secondary'>
+        <Link sx={{ display, mr }} color='secondary'>
           Students
         </Link>
-        <Button sx={{ display, mr }}>
+        <Button sx={{ display, mr, ml: 'auto' }}>
           Register
         </Button>
-        <LoginSelect />
+        <LoginSelect sx={{ display, width: '200px' }} />
         <IconButton
           onClick={() => { setMenuIsOpen(true); }}
           sx={{ display: { sm: 'none' } }}

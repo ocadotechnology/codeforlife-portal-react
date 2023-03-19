@@ -1,12 +1,15 @@
 import React from 'react';
 import {
   Select,
+  SxProps,
   MenuItem,
   Divider,
   useTheme
 } from '@mui/material';
 
-const LoginSelect: React.FC = () => {
+const LoginSelect: React.FC<{
+  sx: SxProps
+}> = ({ sx }) => {
   const theme = useTheme();
 
   const paletteColor = 'tertiary';
@@ -21,7 +24,6 @@ const LoginSelect: React.FC = () => {
     <Select
       displayEmpty
       value=''
-      sx={{ width: '200px' }}
       color={paletteColor}
       className='Mui-focused'
       inputProps={{
@@ -34,6 +36,7 @@ const LoginSelect: React.FC = () => {
           }
         }
       }}
+      sx={sx}
     >
       <MenuItem value='' sx={{ display: 'none' }}>
         Log in
