@@ -1,12 +1,8 @@
 import { createTheme } from '@mui/material/styles';
 
-import { theme as cflTheme, PropsColorOverrides } from 'codeforlife';
+import { theme as cflTheme } from 'codeforlife';
 
 // import '../fonts/SpaceGrotesk-VariableFont_wght.ttf';
-
-declare module '@mui/material' {
-  interface AppBarPropsColorOverrides extends PropsColorOverrides { }
-}
 
 const theme = createTheme(cflTheme, {
   typography: {
