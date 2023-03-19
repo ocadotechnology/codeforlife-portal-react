@@ -1,64 +1,57 @@
 import React from 'react';
 import {
-  AppBar,
   IconButton,
-  useScrollTrigger,
-  Toolbar,
   Link,
   Button,
   Select,
-  MenuItem
+  MenuItem,
+  InputLabel,
+  FormControl
 } from '@mui/material';
 import {
   Menu as MenuIcon
 } from '@mui/icons-material';
 
-import { Image } from 'codeforlife/lib/esm/components';
+import { ElevatedAppBar, Image } from 'codeforlife/lib/esm/components';
 
 import CflLogo from 'images/cfl_logo.png';
 import OgLogo from 'images/ocado_group.svg';
 
-const ElevationScroll: React.FC<{
-  children: React.ReactElement
-}> = ({ children }) => {
-  const trigger = useScrollTrigger({
-    disableHysteresis: true,
-    threshold: 0
-  });
-
-  return React.cloneElement(children, {
-    elevation: trigger ? 4 : 0
-  });
-};
+import MenuDrawer from './MenuDrawer';
 
 const Header: React.FC = () => {
+  const [menuIsOpen, setMenuIsOpen] = React.useState(false);
+
+  const display = { xs: 'none', sm: 'inline' };
+
   return (
-    <ElevationScroll>
-      <AppBar color='white'>
-        <Toolbar>
-          <IconButton sx={{ display: { sm: 'none' } }}>
-            <MenuIcon />
-          </IconButton>
-          <Image
-            alt='Code for Life'
-            src={CflLogo}
-            boxProps={{ maxWidth: '60px' }}
-          />
-          <Image
-            alt='Code for Life'
-            src={OgLogo}
-            boxProps={{ maxWidth: '100px' }}
-          />
-          <Link>
-            Teachers
-          </Link>
-          <Link>
-            Students
-          </Link>
-          <Button>
-            Register
-          </Button>
-          <Select label='Log in'>
+    <>
+      <ElevatedAppBar props={{ color: 'white' }}>
+        <Image
+          alt='Code for Life'
+          src={CflLogo}
+          boxProps={{ maxWidth: '60px' }}
+        />
+        <Image
+          alt='Ocado Group'
+          src={OgLogo}
+          boxProps={{
+            maxWidth: '100px',
+            mx: { xs: 'auto', sm: 0 }
+          }}
+        />
+        <Link sx={{ display: display }}>
+          Teachers
+        </Link>
+        <Link sx={{ display: display }}>
+          Students
+        </Link>
+        <Button sx={{ display: display }}>
+          Register
+        </Button>
+        <FormControl sx={{ display: display, width: '200px' }}>
+          <InputLabel>Log in</InputLabel>
+          <Select>
             <MenuItem>
               Student
             </MenuItem>
@@ -69,9 +62,16 @@ const Header: React.FC = () => {
               Independent
             </MenuItem>
           </Select>
-        </Toolbar>
-      </AppBar>
-    </ElevationScroll>
+        </FormControl>
+        <IconButton
+          onClick={() => { setMenuIsOpen(true); }}
+          sx={{ display: { sm: 'none' } }}
+        >
+          <MenuIcon />
+        </IconButton>
+      </ElevatedAppBar>
+      <MenuDrawer isOpen={menuIsOpen} setIsOpen={setMenuIsOpen} />
+    </>
   );
 };
 
