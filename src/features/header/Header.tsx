@@ -2,11 +2,7 @@ import React from 'react';
 import {
   IconButton,
   Link,
-  Button,
-  Select,
-  MenuItem,
-  InputLabel,
-  FormControl
+  Button
 } from '@mui/material';
 import {
   Menu as MenuIcon
@@ -17,12 +13,14 @@ import { ElevatedAppBar, Image } from 'codeforlife/lib/esm/components';
 import CflLogo from 'images/cfl_logo.png';
 import OgLogo from 'images/ocado_group.svg';
 
+import LoginSelect from './LoginSelect';
 import MenuDrawer from './MenuDrawer';
 
 const Header: React.FC = () => {
   const [menuIsOpen, setMenuIsOpen] = React.useState(false);
 
   const display = { xs: 'none', sm: 'inline' };
+  const mr = 4;
 
   return (
     <>
@@ -37,32 +35,19 @@ const Header: React.FC = () => {
           src={OgLogo}
           boxProps={{
             maxWidth: '100px',
-            mx: { xs: 'auto', sm: 0 }
+            mx: { xs: 'auto', sm: mr }
           }}
         />
-        <Link sx={{ display: display }}>
+        <Link sx={{ display, mr }} >
           Teachers
         </Link>
-        <Link sx={{ display: display }}>
+        <Link sx={{ display, mr: 'auto' }} color='secondary'>
           Students
         </Link>
-        <Button sx={{ display: display }}>
+        <Button sx={{ display, mr }}>
           Register
         </Button>
-        <FormControl sx={{ display: display, width: '200px' }}>
-          <InputLabel>Log in</InputLabel>
-          <Select>
-            <MenuItem>
-              Student
-            </MenuItem>
-            <MenuItem>
-              Teacher
-            </MenuItem>
-            <MenuItem>
-              Independent
-            </MenuItem>
-          </Select>
-        </FormControl>
+        <LoginSelect />
         <IconButton
           onClick={() => { setMenuIsOpen(true); }}
           sx={{ display: { sm: 'none' } }}
