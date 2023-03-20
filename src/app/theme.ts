@@ -68,6 +68,18 @@ const theme = createTheme(cflTheme, {
           padding: '5px 20px'
         }
       }
+    },
+    MuiTab: {
+      styleOverrides: {
+        root: {
+          color: 'white',
+          border: '2px solid white',
+          '&.Mui-selected': {
+            color: cflTheme.palette.primary.light,
+            backgroundColor: 'white'
+          }
+        }
+      }
     }
   }
 });

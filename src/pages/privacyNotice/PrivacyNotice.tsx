@@ -4,12 +4,28 @@ import {
 } from '@mui/material';
 
 import BasePage from 'pages/BasePage';
+import TabBar from 'components/TabBar';
+
+import ForAdults from './ForAdults';
+import ForChildren from './ForChildren';
 
 const PrivacyNotice: React.FC = () => {
   return (
     <BasePage>
       <Grid xs={12}>
-        TODO
+        <TabBar
+          title='Privacy notice'
+          tabs={[
+            {
+              label: 'Privacy notice',
+              element: <ForAdults />
+            },
+            {
+              label: 'Child-friendly',
+              element: <ForChildren />
+            }
+          ]}
+        />
       </Grid>
     </BasePage>
   );
