@@ -8,12 +8,10 @@ import {
 import { setupListeners } from '@reduxjs/toolkit/query';
 
 import api from 'app/api';
-import jokeListReducer from 'features/jokeList/jokeListSlice';
 
 const store = configureStore({
   reducer: {
-    [api.reducerPath]: api.reducer,
-    jokeList: jokeListReducer
+    [api.reducerPath]: api.reducer
   },
   middleware: (getDefaultMiddleware) => [
     ...getDefaultMiddleware(),
