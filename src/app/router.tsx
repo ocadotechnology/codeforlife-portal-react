@@ -12,45 +12,58 @@ import HomeLearning from 'pages/homeLearning/HomeLearning';
 import PrivacyNotice from 'pages/privacyNotice/PrivacyNotice';
 import TermsOfUse from 'pages/termsOfUse/TermsOfUse';
 
+export const paths = {
+  dashboard: '/',
+  teachers: '/teachers',
+  students: '/students',
+  register: '/register',
+  aboutUs: '/about-us',
+  codingClubs: '/coding-clubs',
+  getInvolved: '/get-involved',
+  homeLearning: '/home-learning',
+  privacyNotice: '/privacy-notice',
+  termsOfUse: '/terms-of-use'
+};
+
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: paths.dashboard,
     element: <Dashboard />
   },
   {
-    path: '/teachers',
+    path: paths.teachers,
     element: <Teachers />
   },
   {
-    path: '/students',
+    path: paths.students,
     element: <Students />
   },
   {
-    path: '/register',
+    path: paths.register,
     element: <Register />
   },
   {
-    path: '/about-us',
+    path: paths.aboutUs,
     element: <AboutUs />
   },
   {
-    path: '/coding-clubs',
+    path: paths.codingClubs,
     element: <CodingClubs />
   },
   {
-    path: '/get-involved',
+    path: paths.getInvolved,
     element: <GetInvolved />
   },
   {
-    path: '/home-learning',
+    path: paths.homeLearning,
     element: <HomeLearning />
   },
   {
-    path: '/privacy-notice',
+    path: paths.privacyNotice,
     element: <PrivacyNotice />
   },
   {
-    path: '/terms-of-use',
+    path: paths.termsOfUse,
     element: <TermsOfUse />
   }
 ]);
