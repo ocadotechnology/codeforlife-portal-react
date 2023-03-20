@@ -11,10 +11,13 @@ type GridElement = React.ReactElement<typeof Grid>;
 
 const BasePage: React.FC<{
   children: GridElement | GridElement[],
-  props?: Grid2Props
-}> = ({ children, props }) => {
+  containerProps?: Grid2Props
+}> = ({ children, containerProps = {} }) => {
+  let { spacing, ...props } = containerProps;
+  spacing = spacing === undefined ? 1 : spacing;
+
   return (
-    <Grid {...props} container>
+    <Grid container spacing={spacing} {...props}>
       <Grid xs={12}>
         <Header />
       </Grid>
