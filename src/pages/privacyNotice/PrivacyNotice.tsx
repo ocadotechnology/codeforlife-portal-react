@@ -3,22 +3,15 @@ import {
   Unstable_Grid2 as Grid
 } from '@mui/material';
 
-import Header from 'features/header/Header';
-import Footer from 'features/footer/Footer';
+import BasePage from 'pages/BasePage';
 
 const PrivacyNotice: React.FC = () => {
   return (
-    <Grid container>
-      <Grid xs={12}>
-        <Header />
-      </Grid>
+    <BasePage>
       <Grid xs={12}>
         TODO
       </Grid>
-      <Grid xs={12}>
-        <Footer />
-      </Grid>
-    </Grid>
+    </BasePage>
   );
 };
 

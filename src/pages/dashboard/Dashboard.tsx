@@ -4,8 +4,7 @@ import {
   useTheme
 } from '@mui/material';
 
-import Header from 'features/header/Header';
-import Footer from 'features/footer/Footer';
+import BasePage from 'pages/BasePage';
 
 import TargetAudience from './TargetAudience';
 import AboutUs from './AboutUs';
@@ -19,10 +18,7 @@ const Dashboard: React.FC = () => {
   const theme = useTheme();
 
   return (
-    <Grid container>
-      <Grid xs={12}>
-        <Header />
-      </Grid>
+    <BasePage>
       <Grid xs={12} sm={6} bgcolor={theme.palette.primary.main}>
         <TargetAudience
           img={{ alt: 'teacher with student', src: EducateImage }}
@@ -46,10 +42,7 @@ const Dashboard: React.FC = () => {
       <Grid xs={12}>
         <CodingClubs />
       </Grid>
-      <Grid xs={12}>
-        <Footer />
-      </Grid>
-    </Grid>
+    </BasePage>
   );
 };
 
