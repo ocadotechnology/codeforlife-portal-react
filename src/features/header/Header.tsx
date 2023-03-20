@@ -31,6 +31,7 @@ const Header: React.FC = () => {
           alt='Code for Life'
           src={CflLogo}
           boxProps={{ maxWidth: '60px' }}
+          href={paths.dashboard}
         />
         <Image
           alt='Ocado Group'
@@ -39,6 +40,8 @@ const Header: React.FC = () => {
             maxWidth: '100px',
             mx: { xs: 'auto', ...mr }
           }}
+          href={process.env.REACT_APP_OCADO_GROUP_HREF}
+          hrefInNewTab
         />
         <Link sx={{ display, mr }} href={paths.teachers}>
           Teachers

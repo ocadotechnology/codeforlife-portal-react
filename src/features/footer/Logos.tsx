@@ -1,24 +1,20 @@
 import React from 'react';
 import {
-  Unstable_Grid2 as Grid,
-  useTheme,
-  useMediaQuery,
-  IconButton
+  Unstable_Grid2 as Grid
 } from '@mui/material';
 
 import { Image } from 'codeforlife/lib/esm/components';
+
 import CflLogo from 'images/cfl_logo_white_landscape.png';
-import { ReactComponent as OcadoGroupIcon } from 'images/ocado_group_white.svg';
-import { ReactComponent as TwitterIcon } from 'images/twitter_icon.svg';
-import { ReactComponent as FbIcon } from 'images/facebook_icon.svg';
+import OcadoGroupIcon from 'images/ocado_group_white.svg';
+import TwitterIcon from 'images/twitter_icon.svg';
+import FbIcon from 'images/facebook_icon.svg';
 
 const Logos: React.FC = () => {
-  const theme = useTheme();
-
-  let [iconSize, iconWidth] = [60, '100%'];
-  if (useMediaQuery(theme.breakpoints.only('sm'))) {
-    iconSize = 40; iconWidth = '66%';
-  }
+  const boxProps = {
+    maxWidth: { xs: '50%', sm: '80%' },
+    style: { filter: 'invert(1)' }
+  };
 
   return (
     <Grid container>
@@ -33,25 +29,37 @@ const Logos: React.FC = () => {
         order={{ xs: 1, sm: 2 }}
         className='flex-center'
       >
-        <IconButton sx={{ padding: 0 }}>
-          <FbIcon fontSize={iconSize} color='white' />
-        </IconButton>
+        <Image
+          alt='Facebook'
+          src={FbIcon}
+          boxProps={boxProps}
+          href={process.env.REACT_APP_FACEBOOK_HREF}
+          hrefInNewTab
+        />
       </Grid>
       <Grid
         xs={3} order={{ xs: 1, sm: 2 }}
         className='flex-center'
       >
-        <IconButton sx={{ padding: 0 }}>
-          <TwitterIcon fontSize={iconSize} color='white' />
-        </IconButton>
+        <Image
+          alt='Twitter'
+          src={TwitterIcon}
+          boxProps={boxProps}
+          href={process.env.REACT_APP_TWITTER_HREF}
+          hrefInNewTab
+        />
       </Grid>
       <Grid
         xs={12} sm={6} order={{ xs: 4 }}
         className='flex-center'
       >
-        <IconButton>
-          <OcadoGroupIcon color='white' width={iconWidth} />
-        </IconButton>
+        <Image
+          alt='Ocado Group'
+          src={OcadoGroupIcon}
+          boxProps={{ maxWidth: { xs: '50%', sm: '100%' } }}
+          href={process.env.REACT_APP_OCADO_GROUP_HREF}
+          hrefInNewTab
+        />
       </Grid>
     </Grid>
   );
