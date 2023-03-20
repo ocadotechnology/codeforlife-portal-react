@@ -1,7 +1,13 @@
 import React from 'react';
 import {
   SwipeableDrawer,
-  Button
+  Button,
+  Link,
+  Typography,
+  Divider,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails
 } from '@mui/material';
 
 const MenuDrawer: React.FC<{
@@ -17,6 +23,51 @@ const MenuDrawer: React.FC<{
     <Button>
       Register now
     </Button>
+    <Accordion>
+      <AccordionSummary>
+        <Typography>Log in &gt;</Typography>
+      </AccordionSummary>
+      <AccordionDetails>
+        <Link>
+          Student
+        </Link>
+        <Divider />
+        <Link>
+          Teacher
+        </Link>
+        <Divider />
+        <Link>
+          Independent
+        </Link>
+      </AccordionDetails>
+    </Accordion>
+    <Link>
+      Teacher
+    </Link>
+    <Link>
+      Student
+    </Link>
+    <Link>
+      About us
+    </Link>
+    <Link>
+      Help and support
+    </Link>
+    <Link>
+      Cookie settings
+    </Link>
+    <Link>
+      Privacy Notice
+    </Link>
+    <Link>
+      Terms of use
+    </Link>
+    <Link>
+      Home learning
+    </Link>
+    <Link>
+      Get involved
+    </Link>
   </SwipeableDrawer>
 );
 
