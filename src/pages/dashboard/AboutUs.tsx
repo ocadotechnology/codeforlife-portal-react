@@ -8,6 +8,8 @@ import {
 
 import { Image } from 'codeforlife/lib/esm/components';
 
+import { paths } from 'app/router';
+
 import PieChartIcon from 'images/icon_piechart.png';
 import ControllerIcon from 'images/icon_controller.png';
 import TicketIcon from 'images/icon_free.png';
@@ -52,7 +54,7 @@ const AboutUs: React.FC = () => {
         text="Code for Life has over 350,000 registered users across the world."
       />
       <Grid xs={12} display='flex' justifyContent='end'>
-        <Button style={{ marginRight: 20 }}>
+        <Button style={{ marginRight: 20 }} href={paths.aboutUs}>
           About us &gt;
         </Button>
       </Grid>

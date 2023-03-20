@@ -10,7 +10,7 @@ import { Image } from 'codeforlife/lib/esm/components';
 const TargetAudience: React.FC<{
   img: { alt: string, src: string }
   text: { header: string, body: string }
-  btn: { text: string, link: string }
+  btn: { text: string, href: string }
 }> = ({ img, text, btn }) => {
   return (
     <Grid
@@ -36,7 +36,7 @@ const TargetAudience: React.FC<{
         xs={12} md={4}
         display='flex' justifyContent='end' alignItems='end'
       >
-        <Button color='white'>
+        <Button color='white' href={btn.href}>
           {btn.text} &gt;
         </Button>
       </Grid>

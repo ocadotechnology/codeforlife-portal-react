@@ -8,6 +8,8 @@ import {
   useTheme
 } from '@mui/material';
 
+import { paths } from 'app/router';
+
 const Links: React.FC = () => (
   <ThemeProvider theme={createTheme(useTheme(), {
     components: {
@@ -22,7 +24,7 @@ const Links: React.FC = () => (
     <Grid container spacing={{ xs: 0, sm: 1 }}>
       <Grid xs={12} sm={4}>
         <Stack>
-          <Link>
+          <Link href={paths.aboutUs}>
             About us
           </Link>
           <Link>
@@ -32,10 +34,10 @@ const Links: React.FC = () => (
       </Grid>
       <Grid xs={12} sm={4}>
         <Stack>
-          <Link>
+          <Link href={paths.privacyNotice}>
             Privacy Notice
           </Link>
-          <Link>
+          <Link href={paths.termsOfUse}>
             Terms of use
           </Link>
           <Link>
@@ -45,13 +47,13 @@ const Links: React.FC = () => (
       </Grid>
       <Grid xs={12} sm={4}>
         <Stack>
-          <Link>
+          <Link href={paths.homeLearning}>
             Home learning
           </Link>
-          <Link>
+          <Link href={paths.getInvolved}>
             Get involved
           </Link>
-          <Link>
+          <Link href={paths.codingClubs}>
             Coding clubs
           </Link>
         </Stack>

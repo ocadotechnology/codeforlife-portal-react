@@ -8,6 +8,8 @@ import {
 
 import { Image } from 'codeforlife/lib/esm/components';
 
+import { paths } from 'app/router';
+
 import ReubenPhoto from 'images/reuben.png';
 import SianPhoto from 'images/sian.png';
 import RobPhoto from 'images/rob.png';
@@ -48,7 +50,7 @@ const Quotes: React.FC = () => {
       <Grid xs={12}>
         <Typography textAlign='center'>
           Don&apos;t just take our word for it, here are some lovely quotes from our fabulous teacher friends. Interested in getting involved?
-          <Link>
+          <Link href={paths.getInvolved}>
             {' '}Get in touch.
           </Link>
         </Typography>

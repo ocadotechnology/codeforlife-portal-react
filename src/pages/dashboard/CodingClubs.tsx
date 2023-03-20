@@ -5,6 +5,8 @@ import {
   Button
 } from '@mui/material';
 
+import { paths } from 'app/router';
+
 const CodingClubs: React.FC = () => {
   return (
     <Grid container spacing={2} padding={3}>
@@ -19,7 +21,7 @@ const CodingClubs: React.FC = () => {
         </Typography>
       </Grid>
       <Grid xs={12} display='flex' justifyContent='end'>
-        <Button style={{ marginRight: 20 }}>
+        <Button style={{ marginRight: 20 }} href={paths.codingClubs}>
           Find out more &gt;
         </Button>
       </Grid>

@@ -10,6 +10,8 @@ import {
 
 import { ElevatedAppBar, Image } from 'codeforlife/lib/esm/components';
 
+import { paths } from 'app/router';
+
 import CflLogo from 'images/cfl_logo.png';
 import OgLogo from 'images/ocado_group.svg';
 
@@ -38,13 +40,13 @@ const Header: React.FC = () => {
             mx: { xs: 'auto', ...mr }
           }}
         />
-        <Link sx={{ display, mr }} >
+        <Link sx={{ display, mr }} href={paths.teachers}>
           Teachers
         </Link>
-        <Link sx={{ display, mr }} color='secondary'>
+        <Link sx={{ display, mr }} href={paths.students} color='secondary'>
           Students
         </Link>
-        <Button sx={{ display, mr, ml: 'auto' }}>
+        <Button sx={{ display, mr, ml: 'auto' }} href={paths.register}>
           Register
         </Button>
         <LoginSelect sx={{ display, width: '200px' }} />

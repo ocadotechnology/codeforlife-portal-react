@@ -10,6 +10,8 @@ import {
   AccordionDetails
 } from '@mui/material';
 
+import { paths } from 'app/router';
+
 const MenuDrawer: React.FC<{
   isOpen: boolean,
   setIsOpen: (open: boolean) => void
@@ -41,13 +43,13 @@ const MenuDrawer: React.FC<{
         </Link>
       </AccordionDetails>
     </Accordion>
-    <Link>
-      Teacher
+    <Link href={paths.teachers}>
+      Teachers
     </Link>
-    <Link>
-      Student
+    <Link href={paths.students}>
+      Students
     </Link>
-    <Link>
+    <Link href={paths.aboutUs}>
       About us
     </Link>
     <Link>
@@ -56,16 +58,16 @@ const MenuDrawer: React.FC<{
     <Link>
       Cookie settings
     </Link>
-    <Link>
+    <Link href={paths.privacyNotice}>
       Privacy Notice
     </Link>
-    <Link>
+    <Link href={paths.termsOfUse}>
       Terms of use
     </Link>
-    <Link>
+    <Link href={paths.homeLearning}>
       Home learning
     </Link>
-    <Link>
+    <Link href={paths.getInvolved}>
       Get involved
     </Link>
   </SwipeableDrawer>

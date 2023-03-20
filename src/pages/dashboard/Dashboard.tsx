@@ -4,8 +4,9 @@ import {
   useTheme
 } from '@mui/material';
 
-import BasePage from 'pages/BasePage';
+import { paths } from 'app/router';
 
+import BasePage from 'pages/BasePage';
 import TargetAudience from './TargetAudience';
 import AboutUs from './AboutUs';
 import Quotes from './Quotes';
@@ -23,14 +24,14 @@ const Dashboard: React.FC = () => {
         <TargetAudience
           img={{ alt: 'teacher with student', src: EducateImage }}
           text={{ header: 'Educate', body: 'Helping teachers and families to inspire the next generation of computer scientists.' }}
-          btn={{ text: 'Learn more', link: '' }}
+          btn={{ text: 'Learn more', href: paths.teachers }}
         />
       </Grid>
       <Grid xs={12} sm={6} bgcolor={theme.palette.secondary.main}>
         <TargetAudience
           img={{ alt: 'kids playing', src: PlayImage }}
           text={{ header: 'Play', body: "Anyone can learn how to code. We will help you learn how. It's fun, free and easy." }}
-          btn={{ text: 'Get started', link: '' }}
+          btn={{ text: 'Get started', href: paths.students }}
         />
       </Grid>
       <Grid xs={12}>
