@@ -84,18 +84,22 @@
     "scope": "typescriptreact",
     "isFileTemplate": true,
     "body": [
-      "import React, { useState } from 'react';",
-      "import { Unstable_Grid2 as Grid2 } from '@mui/material';",
+      "import React from 'react';",
+      "import {",
+      "\tUnstable_Grid2 as Grid",
+      "} from '@mui/material';",
       "",
       "import { useAppSelector, useAppDispatch } from 'app/hooks';",
       "",
-      "export default function ${1/(.)/${1:/capitalize}/}(): JSX.Element {",
+      "const ${1:name}: React.FC = () => {",
       "\tconst dispatch = useAppDispatch();",
       "\t",
       "\treturn (",
       "\t\t${3:tsx}",
       "\t);",
-      "}",
+      "};",
+      "",
+      "export default ${1};",
       ""
     ]
   }
