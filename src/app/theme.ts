@@ -52,10 +52,6 @@ const theme = createTheme(cflTheme, {
     //     }
     //   `
     // }
-    MuiGrid2: {
-      defaultProps: {
-      }
-    },
     MuiButton: {
       defaultProps: {
         variant: 'contained',

@@ -9,12 +9,6 @@ div#root {
   max-width: 100%;
 }
 
-.flex-center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 @font-face {
   font-family: "SpaceGrotesk";
   src: local("SpaceGrotesk"), url("./fonts/SpaceGrotesk-VariableFont_wght.ttf") format("truetype");
