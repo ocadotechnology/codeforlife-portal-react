@@ -2,6 +2,9 @@ import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 
 import Dashboard from 'pages/dashboard/Dashboard';
+import Teachers from 'pages/teachers/Teachers';
+import Students from 'pages/students/Students';
+import Register from 'pages/register/Register';
 import AboutUs from 'pages/dashboard/AboutUs';
 import CodingClubs from 'pages/dashboard/CodingClubs';
 import GetInvolved from 'pages/getInvolved/GetInvolved';
@@ -13,6 +16,18 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: <Dashboard />
+  },
+  {
+    path: '/teachers',
+    element: <Teachers />
+  },
+  {
+    path: '/students',
+    element: <Students />
+  },
+  {
+    path: '/register',
+    element: <Register />
   },
   {
     path: '/about-us',
