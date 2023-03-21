@@ -22,6 +22,7 @@ const LoginSelect: React.FC<{
 
   return (
     <Select
+      SelectDisplayProps={{ style: { width: 'auto' } }}
       displayEmpty
       value=''
       color={paletteColor}
