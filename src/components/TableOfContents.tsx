@@ -15,20 +15,23 @@ const TableOfContents: React.FC<{
 
   function handleHeaderClick(index: number): void {
     const header = headerRefs[index].current;
-    if (header !== null) header.scrollIntoView();
+    if (header !== null) header.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
   function generateLinkStack(sliceStart: number, sliceEnd: number): React.ReactElement {
     return (
       <Stack>
-        {contents.slice(sliceStart, sliceEnd).map((content, index) => (
-          <Link
-            key={index}
-            onClick={() => { handleHeaderClick(index); }}
-          >
-            {content.header}
-          </Link>
-        ))}
+        {contents.slice(sliceStart, sliceEnd).map((content, index) => {
+          index += sliceStart;
+          return (
+            <Link
+              key={index}
+              onClick={() => { handleHeaderClick(index); }}
+            >
+              {content.header}
+            </Link>
+          );
+        })}
       </Stack>
     );
   }
