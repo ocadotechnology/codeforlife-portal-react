@@ -15,7 +15,7 @@ import CodingClubs from './CodingClubs';
 import EducateImage from 'images/dashboard_educate.png';
 import PlayImage from 'images/dashboard_play.png';
 
-const Dashboard: React.FC = () => {
+const HomePage: React.FC = () => {
   const theme = useTheme();
 
   return (
@@ -47,4 +47,4 @@ const Dashboard: React.FC = () => {
   );
 };
 
-export default Dashboard;
+export default HomePage;

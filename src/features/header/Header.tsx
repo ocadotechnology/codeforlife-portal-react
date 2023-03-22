@@ -31,7 +31,7 @@ const Header: React.FC = () => {
           alt='Code for Life'
           src={CflLogo}
           boxProps={{ maxWidth: '60px' }}
-          href={paths.dashboard}
+          href={paths.homePage}
         />
         <Image
           alt='Ocado Group'
