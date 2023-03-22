@@ -4,7 +4,8 @@ import {
   Stack,
   Typography,
   Unstable_Grid2 as Grid,
-  useTheme
+  useTheme,
+  Link
 } from '@mui/material';
 
 import BasePage from 'pages/BasePage';
@@ -23,6 +24,7 @@ import GLAImage from 'images/gla_logo.png';
 import PressureCookerImage from 'images/pressure_cooker_logo.png';
 import SharonHarrisonImage from 'images/sharon_harrison.jpg';
 import { ResponsiveStyleValue } from '@mui/system';
+import { paths } from 'app/router';
 
 const Record: React.FC<{
   number: string
@@ -80,7 +82,8 @@ const AboutUs: React.FC = () => {
     'Ocado Smart Platform (OSP) is the world\'s most advanced end-to-end e-Commerce, fulfilment and logistic platform.',
     'Skills for the Future is one of Ocado Group\'s core Corporate Responsibility pillars, which is part of the Ocado Unlimited strategy (alongside Natural Resources and Responsible Sourcing). For Ocado Group, Skills for the Future means championing digital literacy. We want to inspire the next generation of STEM leaders, so that everyone can fully participate in society.',
   ];
-  // TODO: hover & hyperlink
+  const portalGithubLink = 'https://github.com/ocadotechnology/codeforlife-portal';
+  const docsLink = 'https://docs.codeforlife.education/';
 
   return (
     <BasePage>
@@ -177,13 +180,13 @@ const AboutUs: React.FC = () => {
               Developers
             </Typography>
             <Typography style={normalTextStyle}>
-              To contribute, head over to GitHub, check out the issue tracker, and get started. There you can suggest new features or assign yourself an issue to develop. You can find more info about how to do all these on our docs on Gitbook.
+              To contribute, head over to <Link href={portalGithubLink} color="inherit" underline="always">GitHub</Link>, check out the issue tracker, and get started. There you can suggest new features or assign yourself an issue to develop. You can find more info about how to do all these on our <Link href={docsLink} color="inherit" underline="always">docs on Gitbook</Link>.
             </Typography>
             <Typography variant='h5' my={3}>
               Teachers, parents, and creatives
             </Typography>
             <Typography style={normalTextStyle}>
-              Please get in touch through our contact form and let us know how you would like to get involved.
+              Please get in touch through our <Link color="inherit" underline="always">contact</Link> form and let us know how you would like to get involved.
             </Typography>
             <Typography style={normalTextStyle}>
               We would like to thank our friends who have contributed to this initiative.
