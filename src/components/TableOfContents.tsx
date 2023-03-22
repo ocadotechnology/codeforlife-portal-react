@@ -28,7 +28,7 @@ const TableOfContents: React.FC<{
               key={index}
               onClick={() => { handleHeaderClick(index); }}
             >
-              {content.header}
+              {index + 1}. {content.header}
             </Link>
           );
         })}
@@ -47,7 +47,7 @@ const TableOfContents: React.FC<{
       {contents.map((content, index) => (
         <Grid key={index} xs={12}>
           <Divider />
-          <Typography ref={headerRefs[index]} variant='h6'>
+          <Typography ref={headerRefs[index]} variant='h6' fontWeight='bold'>
             {index + 1}. {content.header}
           </Typography>
           {content.element}
