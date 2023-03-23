@@ -4,7 +4,8 @@ import {
   Typography,
   Stack,
   Divider,
-  Link
+  Link,
+  Box
 } from '@mui/material';
 
 const TableOfContents: React.FC<{
@@ -24,12 +25,20 @@ const TableOfContents: React.FC<{
         {contents.slice(sliceStart, sliceEnd).map((content, index) => {
           index += sliceStart;
           return (
-            <Link
-              key={index}
-              onClick={() => { handleHeaderClick(index); }}
-            >
-              {index + 1}. {content.header}
-            </Link>
+            <Box key={index}>
+              <Typography display='inline'>
+                {index + 1}.{' '}
+              </Typography>
+              <Link
+                display='inline'
+                style={{ color: 'black', textDecorationColor: 'black' }}
+                sx={{ ':hover': { fontWeight: 'bold' } }}
+                onClick={() => { handleHeaderClick(index); }}
+                underline='always'
+              >
+                {content.header}
+              </Link>
+            </Box>
           );
         })}
       </Stack>
@@ -37,7 +46,7 @@ const TableOfContents: React.FC<{
   }
 
   return (
-    <Grid container>
+    <Grid container spacing={0}>
       <Grid xs={12} sm={6}>
         {generateLinkStack(0, halfLength)}
       </Grid>
@@ -46,8 +55,13 @@ const TableOfContents: React.FC<{
       </Grid>
       {contents.map((content, index) => (
         <Grid key={index} xs={12}>
-          <Divider />
-          <Typography ref={headerRefs[index]} variant='h6' fontWeight='bold'>
+          <Divider sx={{ my: 2 }} />
+          <Typography
+            ref={headerRefs[index]}
+            variant='h6'
+            fontWeight='bold'
+            mb={3}
+          >
             {index + 1}. {content.header}
           </Typography>
           {content.element}
