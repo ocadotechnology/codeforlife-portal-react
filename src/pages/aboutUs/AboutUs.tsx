@@ -24,7 +24,29 @@ import GLAImage from 'images/gla_logo.png';
 import PressureCookerImage from 'images/pressure_cooker_logo.png';
 import SharonHarrisonImage from 'images/sharon_harrison.jpg';
 import { ResponsiveStyleValue } from '@mui/system';
-import { paths } from 'app/router';
+
+export const PageBanner: React.FC<{
+  bgcolor: string
+  img: { alt: string, src: string }
+  title: string
+  description: string
+}> = ({ bgcolor, img, title, description }) => (
+  <Grid xs={12} p={0} bgcolor={bgcolor} display='flex' justifyContent='center'>
+    <Grid xs={2} px={6} />
+    <Grid xs={5} pt={7}>
+      <Typography variant='h2' style={{ color: 'white' }}>
+        {title}
+      </Typography>
+      <Typography variant='h4' style={{ color: 'white' }} mt={3} mb={5}>
+        {description}
+      </Typography>
+    </Grid>
+    <Grid xs={4} ml={8} p={0}>
+      <Image alt={img.alt} src={img.src} boxProps={{ maxWidth: '370px' }} />
+    </Grid>
+    <Grid xs={1} />
+  </Grid>
+);
 
 const Record: React.FC<{
   number: string
@@ -87,20 +109,8 @@ const AboutUs: React.FC = () => {
 
   return (
     <BasePage>
-      <Grid container xs={12} bgcolor={theme.palette.primary.main} className='flex-center'>
-        <Grid xs={2} />
-        <Grid xs={5} px={5} pb={5}>
-          <Typography variant='h2' style={{ color: 'white' }} mb={2}>
-            About Code for Life
-          </Typography>
-          <Typography variant='h5' style={{ color: 'white' }}>
-            Code For Life gives everyone the ability to shape technology's future
-          </Typography>
-        </Grid>
-        <Grid xs={3} p={0}>
-          <Image alt={'aboutUsHero'} src={AboutUsHero} boxProps={{ maxWidth: '370px' }} />
-        </Grid>
-        <Grid xs={2} />
+      <Grid xs>
+        <PageBanner bgcolor={theme.palette.primary.main} img={{ alt: 'aboutUsHero', src: AboutUsHero }} title='About Code for Life' description='Code For Life gives everyone the ability to shape technology&apos;s future' />
       </Grid>
 
       <Grid xs={12} container>
