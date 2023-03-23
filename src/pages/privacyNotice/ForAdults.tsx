@@ -54,7 +54,7 @@ const TypesOfInfo: React.FC = () => (
       When you use the Code for Life portal and our services we collect the following personal information:
     </Typography>
     <Typography>
-      If you are a Student, we collect:
+      If you are a <strong>Student</strong>, we collect:
     </Typography>
     <ItemizedList styleType='disc'>
       <ListItem>
@@ -99,32 +99,107 @@ const TypesOfInfo: React.FC = () => (
       </ListItem>
     </ItemizedList>
     <Typography>
-      If you are a Independent Student, we collect:
+      If you are a <strong>Independent Student</strong>, we collect:
     </Typography>
     <ItemizedList styleType='disc'>
       <ListItem>
         <Typography>
-          TODO
+          Your name, email address and password: we collect this information when you create an account.
+        </Typography>
+      </ListItem>
+      <ListItem>
+        <Typography>
+          Performance information about your performance and progress (for example, what levels you have completed and what levels you create), and
+        </Typography>
+      </ListItem>
+      <ListItem>
+        <Typography>
+          The coding you create (including any avatars you may create): we collect this information when you use the Code for Life portal.
+        </Typography>
+      </ListItem>
+      <ListItem>
+        <Typography>
+          Your messages and queries you may send us: when you use the “Contact Us” form or email.
+        </Typography>
+      </ListItem>
+      <ListItem>
+        <Typography>
+          When you created an account and when you last logged in to your account: this information is generated at the time you create your account or log in.
+        </Typography>
+      </ListItem>
+      <ListItem>
+        <Typography>
+          Technical information, such as the IP address and other information about the device you use to access the Code for Life portal, and technical information about how you use these (for example, which pages on our portal you visit, for how long you stay on each page, etc.): when you navigate the portal and allow the use of non-essential cookies.
+        </Typography>
+      </ListItem>
+      <ListItem>
+        <Typography>
+          Data from Code for Life surveys you may take part in.
+        </Typography>
+      </ListItem>
+      <ListItem>
+        <Typography>
+          Your marketing preferences, if you select to sign up to our newsletter.
+        </Typography>
+      </ListItem>
+      <ListItem>
+        <Typography>
+          If you are under 13 years old, we will collect the data of your parent or guardian as you will need to ask them to register on your behalf.
         </Typography>
       </ListItem>
     </ItemizedList>
     <Typography>
-      If you are a Teacher, we collect:
+      If you are a <strong>Teacher</strong>, we collect:
     </Typography>
     <ItemizedList styleType='disc'>
       <ListItem>
         <Typography>
-          TODO
+          Your first and last names, email address and password: we collect this information when you create an account.
+        </Typography>
+      </ListItem>
+      <ListItem>
+        <Typography>
+          Your school / club / teaching or educational institution, the classes you create, the students you register in each class, and the teachers you invite; also, any material you create: when you use the portal.
+        </Typography>
+      </ListItem>
+      <ListItem>
+        <Typography>
+          Your messages and queries you may send us: when you use the “Contact Us” form or email.
+        </Typography>
+      </ListItem>
+      <ListItem>
+        <Typography>
+          When you created an account and when you last logged in to your account: this information is generated at the time you create your account or log in.
+        </Typography>
+      </ListItem>
+      <ListItem>
+        <Typography>
+          Technical information, such as the IP address and other information about the device you use to access the Code for Life portal, and technical information about how you use these (for example, which pages on our portal you visit, for how long you stay on each page, etc.): when you navigate the portal and allow the use of non-essential cookies.
+        </Typography>
+      </ListItem>
+      <ListItem>
+        <Typography>
+          Data from Code for Life surveys you may take part in.
+        </Typography>
+      </ListItem>
+      <ListItem>
+        <Typography>
+          Your marketing preferences, if you select to sign up to our newsletter.
         </Typography>
       </ListItem>
     </ItemizedList>
     <Typography>
-      If you are a Website visitor, we collect:
+      If you are a <strong>Website visitor</strong>, we collect:
     </Typography>
     <ItemizedList styleType='disc'>
       <ListItem>
         <Typography>
-          TODO
+          Technical information, such as the IP address and other information about the device you use to access the Code for Life portal, and technical information about how you use these (for example, which pages on our portal you visit, for how long you stay on each page, etc.): when you navigate the portal and allow the use of non-essential cookies.
+        </Typography>
+      </ListItem>
+      <ListItem>
+        <Typography>
+          Your email address and marketing preferences, if you select to sign up to our newsletter.
         </Typography>
       </ListItem>
     </ItemizedList>
