@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  GridDirection,
   Stack,
   Typography,
   Unstable_Grid2 as Grid,
@@ -24,7 +23,6 @@ import HOPEImage from 'images/hope_logo.png';
 import GLAImage from 'images/gla_logo.png';
 import PressureCookerImage from 'images/pressure_cooker_logo.png';
 import SharonHarrisonImage from 'images/sharon_harrison.jpg';
-import { ResponsiveStyleValue } from '@mui/system';
 
 type GridElement = React.ReactElement<typeof Grid>;
 export const BaseSection: React.FC<{
@@ -64,6 +62,16 @@ export const PageBanner: React.FC<{
   </Grid>
 );
 
+export const TwoColumnSection: React.FC<{
+  leftChild: GridElement | GridElement[],
+  rightChild: GridElement | GridElement[]
+}> = ({ leftChild, rightChild }) => (
+  <Grid container xs={12} mt={2} mb={5} spacing={5}>
+    {leftChild}
+    {rightChild}
+  </Grid>
+);
+
 const Record: React.FC<{
   number: string
   description: string
@@ -80,52 +88,64 @@ const Record: React.FC<{
   </Grid>
 );
 
-const Intro: React.FC<{
-  img: { alt: string, src: string }
-  title: string
-  description: string[]
-  direction: ResponsiveStyleValue<GridDirection>
-}> = ({ img, title, description, direction }) => (
-  <Grid container xs={12} direction={direction} spacing={1} mt={2}>
-    <Grid xs={6} my={3} px={2}>
-      <Typography variant='h5'>
-        {title}
-      </Typography>
-      {description.map(d =>
-        <Typography fontSize={18} my={2}>
-          {d}
-        </Typography>
-      )}
-    </Grid>
-    <Grid xs={6} className='flex-center'>
-      <Image alt={img.alt} src={img.src} boxProps={{ maxWidth: '555px' }} />
-    </Grid>
-  </Grid>
-);
-
 const AboutUs: React.FC = () => {
   const theme = useTheme();
   const logoBoxProps = { maxWidth: '100px' };
   const quoteStyle = { color: '#e0004d', fontSize: 22, fontFamily: 'SpaceGrotesk', fontWeight: '500', lineHeight: '1.8rem' };
   const normalTextStyle = { fontSize: 18 };
-  const cflDescription = [
-    'Code for Life(CFL) is a free, easy - to - use resource that provides teaching and lesson plans, user guides and engagement through our two fun coding games: Rapid Router and Kurono.These games are specially designed for people learning computing for the first time.',
-    'The aim is to teach new coders the basic principles, to help them thrive in an increasingly digital world. CFL is primarily designed for and tested by primary school teachers. Our games are aligned with the UK\'s computing curriculum, so teachers can incorporate CFL into their lessons.',
-    'Anyone looking to get into coding can also do so using the games and resources. We opened CFL resources to parents and the general public during the 2020 Covid-19 pandemic so that people don\'t need to be part of a school to have access.',
-  ];
-  const ocadoDescription = [
-    'Ocado Group, the online grocery solutions provider, is powering the future of online retail. Ocado\'s tech and solutions are supplied to grocery businesses all around the world. It enables these forward-thinking retailers to do grocery online profitably, sustainably, and in a scalable manner.',
-    'Ocado Smart Platform (OSP) is the world\'s most advanced end-to-end e-Commerce, fulfilment and logistic platform.',
-    'Skills for the Future is one of Ocado Group\'s core Corporate Responsibility pillars, which is part of the Ocado Unlimited strategy (alongside Natural Resources and Responsible Sourcing). For Ocado Group, Skills for the Future means championing digital literacy. We want to inspire the next generation of STEM leaders, so that everyone can fully participate in society.',
-  ];
+
   const portalGithubLink = 'https://github.com/ocadotechnology/codeforlife-portal';
   const docsLink = 'https://docs.codeforlife.education/';
+  const skillForFutureLink = 'https://www.ocadogroup.com/our-responsible-business/corporate-responsibility/skills-for-the-future';
+
+  const cflIntroLeftChild = <>
+    <Grid xs={6} pr={1}>
+      <Typography variant='h5' mb={3}>
+        What is Code for Life?
+      </Typography>
+      <Typography fontSize={18} my={2}>
+        Code for Life(CFL) is a free, easy-to-use resource that provides teaching and lesson plans, user guides and engagement through our two fun coding games: Rapid Router and Kurono. These games are specially designed for people learning computing for the first time.
+      </Typography>
+      <Typography fontSize={18} my={2}>
+        The aim is to teach new coders the basic principles, to help them thrive in an increasingly digital world. CFL is primarily designed for and tested by primary school teachers. Our games are aligned with the UK's computing curriculum, so teachers can incorporate CFL into their lessons.
+      </Typography>
+      <Typography fontSize={18} my={2}>
+        Anyone looking to get into coding can also do so using the games and resources. We opened CFL resources to parents and the general public during the 2020 Covid-19 pandemic so that people don't need to be part of a school to have access.
+      </Typography>
+    </Grid>
+  </>;
+
+  const cflIntroRightChild = <>
+    <Grid xs={6} display='flex' alignItems='center'>
+      <Image alt={'aboutUsCFL'} src={AboutUsCFL} />
+    </Grid>
+  </>;
+
+  const ocadoIntroLeftChild = <>
+    <Grid xs={6} display='flex' alignItems='center'>
+      <Image alt={'aboutUsOcado'} src={AboutUsOcado} />
+    </Grid>
+  </>;
+
+  const ocadoIntroRightChild = <>
+    <Grid xs={6} pr={1}>
+      <Typography variant='h5' mb={3}>
+        Who is Ocado Group?
+      </Typography>
+      <Typography fontSize={18} my={2}>
+        Ocado Group, the online grocery solutions provider, is powering the future of online retail. Ocado's tech and solutions are supplied to grocery businesses all around the world. It enables these forward-thinking retailers to do grocery online profitably, sustainably, and in a scalable manner.
+      </Typography>
+      <Typography fontSize={18} my={2}>
+        Ocado Smart Platform (OSP) is the world's most advanced end-to-end e-Commerce, fulfilment and logistic platform.
+      </Typography>
+      <Typography fontSize={18} my={2}>
+        <Link href={skillForFutureLink} color="inherit" underline="always">Skills for the Future</Link> is one of Ocado Group's core Corporate Responsibility pillars, which is part of the Ocado Unlimited strategy (alongside Natural Resources and Responsible Sourcing). For Ocado Group, Skills for the Future means championing digital literacy. We want to inspire the next generation of STEM leaders, so that everyone can fully participate in society.
+      </Typography>
+    </Grid>
+  </>;
 
   return (
     <BasePage>
-      <Grid>
-      </Grid>
-
       <BaseSection containerProps={{ bgcolor: theme.palette.primary.main }}>
         <PageBanner img={{ alt: 'aboutUsHero', src: AboutUsHero }} title='About Code for Life' description='Code For Life gives everyone the ability to shape technology&apos;s future' />
       </BaseSection>
@@ -144,11 +164,11 @@ const AboutUs: React.FC = () => {
       </BaseSection>
 
       <BaseSection containerProps={{ bgcolor: theme.palette.info.main }}>
-        <Intro img={{ alt: 'aboutUsCFL', src: AboutUsCFL }} title='What is Code for Life?' description={cflDescription} direction='row' />
+        <TwoColumnSection leftChild={cflIntroLeftChild} rightChild={cflIntroRightChild} />
       </BaseSection>
 
       <BaseSection>
-        <Intro img={{ alt: 'aboutUsOcado', src: AboutUsOcado }} title='Who is Ocado Group?' description={ocadoDescription} direction='row-reverse' />
+        <TwoColumnSection leftChild={ocadoIntroLeftChild} rightChild={ocadoIntroRightChild} />
       </BaseSection>
 
       <BaseSection containerProps={{ bgcolor: theme.palette.info.main }}>
