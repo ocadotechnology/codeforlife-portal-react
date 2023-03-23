@@ -11,9 +11,9 @@ import {
 import BasePage from 'pages/BasePage';
 
 import { Image } from 'codeforlife/lib/esm/components';
-import AboutUsHero from 'images/about_us_hero_hexagon.png';
-import AboutUsCFL from 'images/about_us_cfl.jpg';
-import AboutUsOcado from 'images/about_us_ocado.jpg';
+import AboutUsHeroImage from 'images/about_us_hero_hexagon.png';
+import AboutUsCFLImage from 'images/about_us_cfl.jpg';
+import AboutUsOcadoImage from 'images/about_us_ocado.jpg';
 import Logo10xImage from 'images/10x_logo.png';
 import BcsImage from 'images/bcs_logo.png';
 import IclImage from 'images/icl_logo.png';
@@ -63,12 +63,12 @@ export const PageBanner: React.FC<{
 );
 
 export const TwoColumnSection: React.FC<{
-  leftChild: GridElement | GridElement[],
-  rightChild: GridElement | GridElement[]
-}> = ({ leftChild, rightChild }) => (
+  left: GridElement | GridElement[],
+  right: GridElement | GridElement[]
+}> = ({ left, right }) => (
   <Grid container xs={12} mt={2} mb={5} spacing={5}>
-    {leftChild}
-    {rightChild}
+    {left}
+    {right}
   </Grid>
 );
 
@@ -116,13 +116,13 @@ const AboutUs: React.FC = () => {
 
   const cflIntroRightChild = <>
     <Grid xs={6} display='flex' alignItems='center'>
-      <Image alt={'aboutUsCFL'} src={AboutUsCFL} />
+      <Image alt={'aboutUsCFL'} src={AboutUsCFLImage} />
     </Grid>
   </>;
 
   const ocadoIntroLeftChild = <>
     <Grid xs={6} display='flex' alignItems='center'>
-      <Image alt={'aboutUsOcado'} src={AboutUsOcado} />
+      <Image alt={'aboutUsOcado'} src={AboutUsOcadoImage} />
     </Grid>
   </>;
 
@@ -143,10 +143,73 @@ const AboutUs: React.FC = () => {
     </Grid>
   </>;
 
+  const cflAndOcadoLeftChild = <>
+    <Grid xs mx={4}>
+      <Typography style={quoteStyle}>
+        “We were delighted computing entered the UK curriculum in 2014. However, many teachers felt unprepared. And the lack of diversity in people studying STEM concerned us. So, we sought to make the subject appeal to a broader group of both students and teachers.”
+      </Typography>
+      <Typography style={normalTextStyle} mt={3}>
+        Anne Marie Neatham, Commercial Director and COO Kindred, Ocado Group.
+      </Typography>
+    </Grid>
+  </>;
+
+  const cflAndOcadoRightChild = <>
+    <Grid xs mx={4}>
+      <Typography style={normalTextStyle} mb={3}>
+        With that in mind, CFL was developed by volunteers and interns from Ocado Technology - the technology arm of Ocado Group - and teacher Sharon Harrison, who created the Rapid Router learning materials. Anne Marie continues:
+      </Typography>
+      <Typography style={quoteStyle}>
+        “I'm proud this initiative has been breaking down stereotypes. Children are seeing that you don't have to fit a certain gender, race or personality type to get coding.”
+      </Typography>
+      <Typography style={normalTextStyle} my={5}>
+        Today, CFL is operated by a small core team and volunteers.
+      </Typography>
+    </Grid>
+  </>;
+
+  const participantsLeftChild = <>
+    <Grid xs mx={4}>
+      <Typography variant='h5' mb={3}>
+        Our team and volunteers
+      </Typography>
+      <Typography style={normalTextStyle}>
+        Code for Life would not have been possible without the time and skills volunteered by our talented developers and creatives at Ocado Technology. Thank you to everyone who has helped us get to where we are now.
+      </Typography>
+      <Typography variant='h5' my={3}>
+        Want to get involved?
+      </Typography>
+      <Typography style={normalTextStyle}>
+        We are open source, so anyone can ask to contribute. You can play with game-running JavaScript, Python/Django, animation using SVG and Raphael, and a lot more. We'd like input from all sorts of backgrounds, whether you're: a programmer looking for a creative outlet; a teacher hoping to shape the resources; or even a pupil putting your skills to the test.
+      </Typography>
+    </Grid>
+  </>;
+
+
+  const participantsRightChild = <>
+    <Grid xs mx={4}>
+      <Typography variant='h5' mb={3}>
+        Developers
+      </Typography>
+      <Typography style={normalTextStyle}>
+        To contribute, head over to <Link href={portalGithubLink} color="inherit" underline="always">GitHub</Link>, check out the issue tracker, and get started. There you can suggest new features or assign yourself an issue to develop. You can find more info about how to do all these on our <Link href={docsLink} color="inherit" underline="always">docs on Gitbook</Link>.
+      </Typography>
+      <Typography variant='h5' my={3}>
+        Teachers, parents, and creatives
+      </Typography>
+      <Typography style={normalTextStyle}>
+        Please get in touch through our <Link color="inherit" underline="always">contact</Link> form and let us know how you would like to get involved.
+      </Typography>
+      <Typography style={normalTextStyle}>
+        We would like to thank our friends who have contributed to this initiative.
+      </Typography>
+    </Grid>
+  </>;
+
   return (
     <BasePage>
       <BaseSection containerProps={{ bgcolor: theme.palette.primary.main }}>
-        <PageBanner img={{ alt: 'aboutUsHero', src: AboutUsHero }} title='About Code for Life' description='Code For Life gives everyone the ability to shape technology&apos;s future' />
+        <PageBanner img={{ alt: 'aboutUsHero', src: AboutUsHeroImage }} title='About Code for Life' description='Code For Life gives everyone the ability to shape technology&apos;s future' />
       </BaseSection>
 
       <BaseSection>
@@ -163,79 +226,27 @@ const AboutUs: React.FC = () => {
       </BaseSection>
 
       <BaseSection containerProps={{ bgcolor: theme.palette.info.main }}>
-        <TwoColumnSection leftChild={cflIntroLeftChild} rightChild={cflIntroRightChild} />
+        <TwoColumnSection left={cflIntroLeftChild} right={cflIntroRightChild} />
       </BaseSection>
 
       <BaseSection>
-        <TwoColumnSection leftChild={ocadoIntroLeftChild} rightChild={ocadoIntroRightChild} />
+        <TwoColumnSection left={ocadoIntroLeftChild} right={ocadoIntroRightChild} />
       </BaseSection>
 
       <BaseSection containerProps={{ bgcolor: theme.palette.info.main }}>
-        <Typography variant='h4' textAlign='center' mt={5} mb={5}>
+        <Typography variant='h4' textAlign='center' mt={5}>
           Code for Life and Ocado Group
         </Typography>
-        <Grid container>
-          <Grid xs mx={4}>
-            <Typography style={quoteStyle}>
-              “We were delighted computing entered the UK curriculum in 2014. However, many teachers felt unprepared. And the lack of diversity in people studying STEM concerned us. So, we sought to make the subject appeal to a broader group of both students and teachers.”
-            </Typography>
-            <Typography style={normalTextStyle} mt={3}>
-              Anne Marie Neatham, Commercial Director and COO Kindred, Ocado Group.
-            </Typography>
-          </Grid>
-          <Grid xs mx={4}>
-            <Typography style={normalTextStyle} mb={3}>
-              With that in mind, CFL was developed by volunteers and interns from Ocado Technology - the technology arm of Ocado Group - and teacher Sharon Harrison, who created the Rapid Router learning materials. Anne Marie continues:
-            </Typography>
-            <Typography style={quoteStyle}>
-              “I'm proud this initiative has been breaking down stereotypes. Children are seeing that you don't have to fit a certain gender, race or personality type to get coding.”
-            </Typography>
-            <Typography style={normalTextStyle} my={5}>
-              Today, CFL is operated by a small core team and volunteers.
-            </Typography>
-          </Grid>
-        </Grid>
+        <TwoColumnSection left={cflAndOcadoLeftChild} right={cflAndOcadoRightChild}></TwoColumnSection>
       </BaseSection>
 
       <BaseSection>
-        <Typography variant='h4' textAlign='center' mt={5} mb={5}>
+        <Typography variant='h4' textAlign='center' mt={5}>
           We couldn't do it without you!
         </Typography>
-        <Grid container>
-          <Grid xs mx={4}>
-            <Typography variant='h5' mb={3}>
-              Our team and volunteers
-            </Typography>
-            <Typography style={normalTextStyle}>
-              Code for Life would not have been possible without the time and skills volunteered by our talented developers and creatives at Ocado Technology. Thank you to everyone who has helped us get to where we are now.
-            </Typography>
-            <Typography variant='h5' my={3}>
-              Want to get involved?
-            </Typography>
-            <Typography style={normalTextStyle}>
-              We are open source, so anyone can ask to contribute. You can play with game-running JavaScript, Python/Django, animation using SVG and Raphael, and a lot more. We'd like input from all sorts of backgrounds, whether you're: a programmer looking for a creative outlet; a teacher hoping to shape the resources; or even a pupil putting your skills to the test.
-            </Typography>
-          </Grid>
-          <Grid xs mx={4}>
-            <Typography variant='h5' mb={3}>
-              Developers
-            </Typography>
-            <Typography style={normalTextStyle}>
-              To contribute, head over to <Link href={portalGithubLink} color="inherit" underline="always">GitHub</Link>, check out the issue tracker, and get started. There you can suggest new features or assign yourself an issue to develop. You can find more info about how to do all these on our <Link href={docsLink} color="inherit" underline="always">docs on Gitbook</Link>.
-            </Typography>
-            <Typography variant='h5' my={3}>
-              Teachers, parents, and creatives
-            </Typography>
-            <Typography style={normalTextStyle}>
-              Please get in touch through our <Link color="inherit" underline="always">contact</Link> form and let us know how you would like to get involved.
-            </Typography>
-            <Typography style={normalTextStyle}>
-              We would like to thank our friends who have contributed to this initiative.
-            </Typography>
-          </Grid>
-        </Grid>
+        <TwoColumnSection left={participantsLeftChild} right={participantsRightChild}></TwoColumnSection>
 
-        <Grid xs={12} mt={6}>
+        <Grid xs={12} mt={8}>
           <Typography variant='h6' textAlign='center'>
             We would like to thank our friends who have contributed to this initiative
           </Typography>
