@@ -47,7 +47,11 @@ const TabBar: React.FC<{
           ))}
         </Tabs>
       </Grid>
-      <Grid xs={12}>
+      <Grid
+        xs={12}
+        md={10} mdOffset={1}
+        lg={8} lgOffset={2}
+      >
         {tabs[value].element}
       </Grid>
     </Grid >
