@@ -90,7 +90,6 @@ const Record: React.FC<{
 
 const AboutUs: React.FC = () => {
   const theme = useTheme();
-  const logoBoxProps = { maxWidth: '100px' };
   const quoteStyle = { color: '#e0004d', fontSize: 22, fontFamily: 'SpaceGrotesk', fontWeight: '500', lineHeight: '1.8rem' };
   const normalTextStyle = { fontSize: 18 };
 
@@ -241,15 +240,15 @@ const AboutUs: React.FC = () => {
             We would like to thank our friends who have contributed to this initiative
           </Typography>
         </Grid>
-        <Grid xs={12} my={2} display='flex' justifyContent='center' alignItems='baseline'>
-          <Image alt={'10x'} src={Logo10xImage} boxProps={logoBoxProps} />
-          <Image alt={'bcs'} src={BcsImage} boxProps={logoBoxProps} />
-          <Image alt={'icl'} src={IclImage} boxProps={logoBoxProps} />
-          <Image alt={'barefoot'} src={BarefootImage} boxProps={logoBoxProps} />
-          <Image alt={'mcSaatch'} src={MCSaatchiImage} boxProps={logoBoxProps} />
-          <Image alt={'hope'} src={HOPEImage} boxProps={logoBoxProps} />
-          <Image alt={'gla'} src={GLAImage} boxProps={logoBoxProps} />
-          <Image alt={'pressureCooker'} src={PressureCookerImage} boxProps={logoBoxProps} />
+        <Grid xs={12} my={1} display='flex' justifyContent='center' alignItems='baseline'>
+          <Image alt={'10x'} src={Logo10xImage} boxProps={{ maxWidth: '52px' }} />
+          <Image alt={'bcs'} src={BcsImage} boxProps={{ maxWidth: '118px' }} />
+          <Image alt={'icl'} src={IclImage} boxProps={{ maxWidth: '113px' }} />
+          <Image alt={'barefoot'} src={BarefootImage} boxProps={{ maxWidth: '88px' }} />
+          <Image alt={'mcSaatch'} src={MCSaatchiImage} boxProps={{ maxWidth: '51px' }} />
+          <Image alt={'hope'} src={HOPEImage} boxProps={{ maxWidth: '118px' }} />
+          <Image alt={'gla'} src={GLAImage} boxProps={{ maxWidth: '59px' }} />
+          <Image alt={'pressureCooker'} src={PressureCookerImage} boxProps={{ maxWidth: '58px' }} />
         </Grid>
         <Grid px={6} my={2}>
           <Typography fontSize={14} textAlign='center' mb={8} lineHeight='1.6rem'>
