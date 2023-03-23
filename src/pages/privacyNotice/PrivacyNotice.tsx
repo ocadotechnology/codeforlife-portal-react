@@ -6,8 +6,8 @@ import {
 import BasePage from 'pages/BasePage';
 import TabBar from 'components/TabBar';
 
-import ForAdults from './ForAdults';
-import ForChildren from './ForChildren';
+import ForAdults from './ForAdults/ForAdults';
+import ForChildren from './ForChildren/ForChildren';
 
 const PrivacyNotice: React.FC = () => {
   return (
