@@ -10,19 +10,17 @@ import BasePage from 'pages/BasePage';
 
 import { Image } from 'codeforlife/lib/esm/components';
 import CodeClubHeroImage from 'images/coding_club_hero_hexagon.jpg';
-import { PageBanner } from 'pages/aboutUs/AboutUs';
+import { BaseSection, PageBanner } from 'pages/aboutUs/AboutUs';
 
 const CodingClubs: React.FC = () => {
   const theme = useTheme();
 
   return (
     <BasePage>
-      <Grid xs={12}>
-        <PageBanner bgcolor={theme.palette.primary.main} img={{ alt: 'codeClubHero', src: CodeClubHeroImage }} title='Coding clubs' description='A FREE set of slides and guides to run your own coding clubs' />
-      </Grid>
-
-      <Grid container xs={12} display='flex'>
-        <Grid xs={2} />
+      <BaseSection containerProps={{ bgcolor: theme.palette.primary.main, }}>
+        <PageBanner img={{ alt: 'codeClubHero', src: CodeClubHeroImage }} title='Coding clubs' description='A FREE set of slides and guides to run your own coding clubs' />
+      </BaseSection>
+      <BaseSection>
         <Grid xs>
           <Stack>
             <Typography variant='h4' textAlign='center' my={5}>
@@ -36,8 +34,7 @@ const CodingClubs: React.FC = () => {
             </Typography>
           </Stack>
         </Grid>
-        <Grid xs={2} />
-      </Grid>
+      </BaseSection>
     </BasePage>
   );
 };

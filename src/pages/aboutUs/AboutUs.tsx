@@ -5,7 +5,8 @@ import {
   Typography,
   Unstable_Grid2 as Grid,
   useTheme,
-  Link
+  Link,
+  Grid2Props
 } from '@mui/material';
 
 import BasePage from 'pages/BasePage';
@@ -25,26 +26,41 @@ import PressureCookerImage from 'images/pressure_cooker_logo.png';
 import SharonHarrisonImage from 'images/sharon_harrison.jpg';
 import { ResponsiveStyleValue } from '@mui/system';
 
+type GridElement = React.ReactElement<typeof Grid>;
+export const BaseSection: React.FC<{
+  children: GridElement | GridElement[],
+  containerProps?: Grid2Props
+}> = ({ children, containerProps = {} }) => {
+  let { ...props } = containerProps;
+
+  return (
+    <Grid container xs={12} p={0} spacing={0} {...props}>
+      <Grid xs={2} />
+      <Grid xs>
+        {children}
+      </Grid>
+      <Grid xs={2} />
+    </Grid>
+  );
+};
+
 export const PageBanner: React.FC<{
-  bgcolor: string
   img: { alt: string, src: string }
   title: string
   description: string
-}> = ({ bgcolor, img, title, description }) => (
-  <Grid xs={12} p={0} bgcolor={bgcolor} display='flex' justifyContent='center'>
-    <Grid xs={2} px={6} />
-    <Grid xs={5} pt={7}>
-      <Typography variant='h2' style={{ color: 'white' }}>
+}> = ({ img, title, description }) => (
+  <Grid xs={12} display='flex'>
+    <Grid xs={8} pr={6} mr={6}>
+      <Typography variant='h2' style={{ color: 'white' }} pt={6}>
         {title}
       </Typography>
-      <Typography variant='h4' style={{ color: 'white' }} mt={3} mb={5}>
+      <Typography variant='h4' style={{ color: 'white' }} pt={3} pb={2}>
         {description}
       </Typography>
     </Grid>
-    <Grid xs={4} ml={8} p={0}>
+    <Grid xs={4} p={0}>
       <Image alt={img.alt} src={img.src} boxProps={{ maxWidth: '370px' }} />
     </Grid>
-    <Grid xs={1} />
   </Grid>
 );
 
@@ -70,9 +86,8 @@ const Intro: React.FC<{
   description: string[]
   direction: ResponsiveStyleValue<GridDirection>
 }> = ({ img, title, description, direction }) => (
-  <Grid container direction={direction} spacing={1}>
-    <Grid xs={2} />
-    <Grid xs={4} my={3} px={2}>
+  <Grid container xs={12} direction={direction} spacing={1} mt={2}>
+    <Grid xs={6} my={3} px={2}>
       <Typography variant='h5'>
         {title}
       </Typography>
@@ -82,10 +97,9 @@ const Intro: React.FC<{
         </Typography>
       )}
     </Grid>
-    <Grid xs={4} px={2} display='flex' alignItems='center'>
+    <Grid xs={6} className='flex-center'>
       <Image alt={img.alt} src={img.src} boxProps={{ maxWidth: '555px' }} />
     </Grid>
-    <Grid xs={2} />
   </Grid>
 );
 
@@ -109,39 +123,39 @@ const AboutUs: React.FC = () => {
 
   return (
     <BasePage>
-      <Grid xs>
-        <PageBanner bgcolor={theme.palette.primary.main} img={{ alt: 'aboutUsHero', src: AboutUsHero }} title='About Code for Life' description='Code For Life gives everyone the ability to shape technology&apos;s future' />
+      <Grid>
       </Grid>
 
-      <Grid xs={12} container>
-        <Grid xs={3} />
-        <Grid xs className='flex-center' textAlign='center' mt={5}>
+      <BaseSection containerProps={{ bgcolor: theme.palette.primary.main }}>
+        <PageBanner img={{ alt: 'aboutUsHero', src: AboutUsHero }} title='About Code for Life' description='Code For Life gives everyone the ability to shape technology&apos;s future' />
+      </BaseSection>
+
+      <BaseSection>
+        <Grid xs display='flex' textAlign='center' px={6} mt={5}>
           <Typography variant='h5'>
             Code For Life is a non profit initiative that delivers free, open-source games that help all students learn computing.
           </Typography>
         </Grid>
-        <Grid xs={3} />
-      </Grid>
-      <Grid container xs={12} display='flex' justifyContent='center' mb={3}>
-        <Record number='2014' description='The year that computing was added to the UK curriculum. We&apos;ve been supporting teachers and students ever since.' />
-        <Record number='>160' description='Countries are taking part, with the UK, the USA, Brazil, Australia and Canada as top locations for schools signed up to CFL. Nearly 10,000 schools are registered globally.' />
-        <Record number='>270,000' description='Active users so far, with numbers growing every day. In 2020 alone, close to 100,000 new people subscribed to our resources.' />
-      </Grid>
+        <Grid container xs={12} display='flex' justifyContent='center' mb={3}>
+          <Record number='2014' description='The year that computing was added to the UK curriculum. We&apos;ve been supporting teachers and students ever since.' />
+          <Record number='>160' description='Countries are taking part, with the UK, the USA, Brazil, Australia and Canada as top locations for schools signed up to CFL. Nearly 10,000 schools are registered globally.' />
+          <Record number='>270,000' description='Active users so far, with numbers growing every day. In 2020 alone, close to 100,000 new people subscribed to our resources.' />
+        </Grid>
+      </BaseSection>
 
-      <Grid bgcolor={theme.palette.info.main}>
+      <BaseSection containerProps={{ bgcolor: theme.palette.info.main }}>
         <Intro img={{ alt: 'aboutUsCFL', src: AboutUsCFL }} title='What is Code for Life?' description={cflDescription} direction='row' />
-      </Grid>
+      </BaseSection>
 
-      <Grid>
+      <BaseSection>
         <Intro img={{ alt: 'aboutUsOcado', src: AboutUsOcado }} title='Who is Ocado Group?' description={ocadoDescription} direction='row-reverse' />
-      </Grid>
+      </BaseSection>
 
-      <Grid bgcolor={theme.palette.info.main}>
-        <Typography variant='h4' textAlign='center' mt={5} mb={3}>
+      <BaseSection containerProps={{ bgcolor: theme.palette.info.main }}>
+        <Typography variant='h4' textAlign='center' mt={5} mb={5}>
           Code for Life and Ocado Group
         </Typography>
         <Grid container>
-          <Grid xs={2} />
           <Grid xs mx={4}>
             <Typography style={quoteStyle}>
               “We were delighted computing entered the UK curriculum in 2014. However, many teachers felt unprepared. And the lack of diversity in people studying STEM concerned us. So, we sought to make the subject appeal to a broader group of both students and teachers.”
@@ -161,18 +175,16 @@ const AboutUs: React.FC = () => {
               Today, CFL is operated by a small core team and volunteers.
             </Typography>
           </Grid>
-          <Grid xs={2} />
         </Grid>
-      </Grid>
+      </BaseSection>
 
-      <Grid >
-        <Typography variant='h4' textAlign='center' mt={5} mb={3}>
+      <BaseSection>
+        <Typography variant='h4' textAlign='center' mt={5} mb={5}>
           We couldn't do it without you!
         </Typography>
         <Grid container>
-          <Grid xs={2} />
           <Grid xs mx={4}>
-            <Typography variant='h5' my={3}>
+            <Typography variant='h5' mb={3}>
               Our team and volunteers
             </Typography>
             <Typography style={normalTextStyle}>
@@ -186,7 +198,7 @@ const AboutUs: React.FC = () => {
             </Typography>
           </Grid>
           <Grid xs mx={4}>
-            <Typography variant='h5' my={3}>
+            <Typography variant='h5' mb={3}>
               Developers
             </Typography>
             <Typography style={normalTextStyle}>
@@ -202,35 +214,34 @@ const AboutUs: React.FC = () => {
               We would like to thank our friends who have contributed to this initiative.
             </Typography>
           </Grid>
-          <Grid xs={2} />
         </Grid>
-      </Grid>
 
-      <Grid xs={12} mt={6}>
-        <Typography variant='h6' textAlign='center'>
-          We would like to thank our friends who have contributed to this initiative
-        </Typography>
-      </Grid>
-      <Grid xs={12} m={1} display='flex' justifyContent='center' alignItems='baseline'>
-        <Image alt={'10x'} src={Logo10xImage} boxProps={logoBoxProps} />
-        <Image alt={'bcs'} src={BcsImage} boxProps={logoBoxProps} />
-        <Image alt={'icl'} src={IclImage} boxProps={logoBoxProps} />
-        <Image alt={'barefoot'} src={BarefootImage} boxProps={logoBoxProps} />
-        <Image alt={'mcSaatch'} src={MCSaatchiImage} boxProps={logoBoxProps} />
-        <Image alt={'hope'} src={HOPEImage} boxProps={logoBoxProps} />
-        <Image alt={'gla'} src={GLAImage} boxProps={logoBoxProps} />
-        <Image alt={'pressureCooker'} src={PressureCookerImage} boxProps={logoBoxProps} />
-      </Grid>
-      <Grid>
-        <Typography fontSize={14} textAlign='center' mx={50} mb={8} lineHeight='1.6rem'>
-          10X, BCS Academy of Computing, Barefoot Computing, Computing at School, The National Museum of
-          Computing, Imperial College London, M&C Saatchi, Alvaro Ramirez, Jason Fingland, Ramneet Loyall, Sharon
-          Harrison, Keith Avery, Dale Coan, Rob Whitehouse, Mandy Nash, Tanya Nothard, Matt Trevor, Moy El-Bushra,
-          Richard Siwiak, Peter Tondrow, Liz Pratt, Pressure Cooker Studios, GAL Education, Hope Education.
-        </Typography>
-      </Grid>
+        <Grid xs={12} mt={6}>
+          <Typography variant='h6' textAlign='center'>
+            We would like to thank our friends who have contributed to this initiative
+          </Typography>
+        </Grid>
+        <Grid xs={12} my={2} display='flex' justifyContent='center' alignItems='baseline'>
+          <Image alt={'10x'} src={Logo10xImage} boxProps={logoBoxProps} />
+          <Image alt={'bcs'} src={BcsImage} boxProps={logoBoxProps} />
+          <Image alt={'icl'} src={IclImage} boxProps={logoBoxProps} />
+          <Image alt={'barefoot'} src={BarefootImage} boxProps={logoBoxProps} />
+          <Image alt={'mcSaatch'} src={MCSaatchiImage} boxProps={logoBoxProps} />
+          <Image alt={'hope'} src={HOPEImage} boxProps={logoBoxProps} />
+          <Image alt={'gla'} src={GLAImage} boxProps={logoBoxProps} />
+          <Image alt={'pressureCooker'} src={PressureCookerImage} boxProps={logoBoxProps} />
+        </Grid>
+        <Grid px={6} my={2}>
+          <Typography fontSize={14} textAlign='center' mb={8} lineHeight='1.6rem'>
+            10X, BCS Academy of Computing, Barefoot Computing, Computing at School, The National Museum of
+            Computing, Imperial College London, M&C Saatchi, Alvaro Ramirez, Jason Fingland, Ramneet Loyall, Sharon
+            Harrison, Keith Avery, Dale Coan, Rob Whitehouse, Mandy Nash, Tanya Nothard, Matt Trevor, Moy El-Bushra,
+            Richard Siwiak, Peter Tondrow, Liz Pratt, Pressure Cooker Studios, GAL Education, Hope Education.
+          </Typography>
+        </Grid>
+      </BaseSection>
 
-      <Grid xs bgcolor={theme.palette.info.main}>
+      <BaseSection containerProps={{ bgcolor: theme.palette.info.main }}>
         <Grid container className='flex-center' direction='column' >
           <Typography variant='h4' textAlign='center' mt={5}>
             Dedicated to Sharon Harrison
@@ -240,7 +251,7 @@ const AboutUs: React.FC = () => {
             1956 — 2015
           </Typography>
         </Grid>
-        <Grid container mx={45} >
+        <Grid container px={5}>
           <Typography fontSize={18} fontWeight='bold' my={3}>
             Sharon was instrumental in helping to create Code for Life. At the beginning of 2014 she was recruited to act as our Educational Consultant. The project drew on her previous skills as a pioneering computing teacher and education consultant.
           </Typography>
@@ -248,7 +259,7 @@ const AboutUs: React.FC = () => {
             Sharon has left a lasting legacy by creating something which will help teach STEM skills to the next generation of computer scientists across the world.
           </Typography>
         </Grid>
-      </Grid>
+      </BaseSection>
     </BasePage >
   );
 };
