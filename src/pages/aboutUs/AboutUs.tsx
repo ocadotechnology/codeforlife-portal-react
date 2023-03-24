@@ -90,7 +90,7 @@ const AboutUs: React.FC = () => {
   const theme = useTheme();
   const quoteStyle = { color: '#e0004d', fontSize: 22, fontFamily: 'SpaceGrotesk', fontWeight: '500', lineHeight: '1.8rem' };
   const normalTextStyle = { fontSize: 18 };
-
+  const logoBoxProps = { sx: { mx: 0.5 } };
   const cflIntroLeftChild = <>
     <Grid xs={6} pr={1}>
       <Typography variant='h5' mb={3}>
@@ -245,14 +245,14 @@ const AboutUs: React.FC = () => {
           </Typography>
         </Grid>
         <Grid xs={12} my={1} display='flex' justifyContent='center' alignItems='baseline'>
-          <Image alt={'10x'} src={Logo10xImage} boxProps={{ maxWidth: '52px' }} />
-          <Image alt={'bcs'} src={BcsImage} boxProps={{ maxWidth: '118px' }} />
-          <Image alt={'icl'} src={IclImage} boxProps={{ maxWidth: '113px' }} />
-          <Image alt={'barefoot'} src={BarefootImage} boxProps={{ maxWidth: '88px' }} />
-          <Image alt={'mcSaatch'} src={MCSaatchiImage} boxProps={{ maxWidth: '51px' }} />
-          <Image alt={'hope'} src={HOPEImage} boxProps={{ maxWidth: '118px' }} />
-          <Image alt={'gla'} src={GLAImage} boxProps={{ maxWidth: '59px' }} />
-          <Image alt={'pressureCooker'} src={PressureCookerImage} boxProps={{ maxWidth: '58px' }} />
+          <Image alt={'10x'} src={Logo10xImage} boxProps={{ ...logoBoxProps, maxWidth: '52px' }} />
+          <Image alt={'bcs'} src={BcsImage} boxProps={{ ...logoBoxProps, maxWidth: '118px' }} />
+          <Image alt={'icl'} src={IclImage} boxProps={{ ...logoBoxProps, maxWidth: '113px' }} />
+          <Image alt={'barefoot'} src={BarefootImage} boxProps={{ ...logoBoxProps, maxWidth: '88px' }} />
+          <Image alt={'mcSaatch'} src={MCSaatchiImage} boxProps={{ ...logoBoxProps, maxWidth: '51px' }} />
+          <Image alt={'hope'} src={HOPEImage} boxProps={{ ...logoBoxProps, maxWidth: '118px' }} />
+          <Image alt={'gla'} src={GLAImage} boxProps={{ ...logoBoxProps, maxWidth: '59px' }} />
+          <Image alt={'pressureCooker'} src={PressureCookerImage} boxProps={{ ...logoBoxProps, maxWidth: '58px' }} />
         </Grid>
         <Grid px={6} my={2}>
           <Typography fontSize={14} textAlign='center' mb={8} lineHeight='1.6rem'>
