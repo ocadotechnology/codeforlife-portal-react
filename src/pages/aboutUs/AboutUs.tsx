@@ -91,10 +91,6 @@ const AboutUs: React.FC = () => {
   const quoteStyle = { color: '#e0004d', fontSize: 22, fontFamily: 'SpaceGrotesk', fontWeight: '500', lineHeight: '1.8rem' };
   const normalTextStyle = { fontSize: 18 };
 
-  const portalGithubLink = 'https://github.com/ocadotechnology/codeforlife-portal';
-  const docsLink = 'https://docs.codeforlife.education/';
-  const skillForFutureLink = 'https://www.ocadogroup.com/our-responsible-business/corporate-responsibility/skills-for-the-future';
-
   const cflIntroLeftChild = <>
     <Grid xs={6} pr={1}>
       <Typography variant='h5' mb={3}>
@@ -136,7 +132,7 @@ const AboutUs: React.FC = () => {
         Ocado Smart Platform (OSP) is the world&apos;s most advanced end-to-end e-Commerce, fulfilment and logistic platform.
       </Typography>
       <Typography fontSize={18} my={2}>
-        <Link href={skillForFutureLink} color="inherit" underline="always">Skills for the Future</Link> is one of Ocado Group&apos;s core Corporate Responsibility pillars, which is part of the Ocado Unlimited strategy (alongside Natural Resources and Responsible Sourcing). For Ocado Group, Skills for the Future means championing digital literacy. We want to inspire the next generation of STEM leaders, so that everyone can fully participate in society.
+        <Link href={process.env.REACT_APP_OCADO_GROUP_HREF} color="inherit" underline="always" target="_blank">Skills for the Future</Link> is one of Ocado Group&apos;s core Corporate Responsibility pillars, which is part of the Ocado Unlimited strategy (alongside Natural Resources and Responsible Sourcing). For Ocado Group, Skills for the Future means championing digital literacy. We want to inspire the next generation of STEM leaders, so that everyone can fully participate in society.
       </Typography>
     </Grid>
   </>;
@@ -189,7 +185,7 @@ const AboutUs: React.FC = () => {
         Developers
       </Typography>
       <Typography style={normalTextStyle}>
-        To contribute, head over to <Link href={portalGithubLink} color="inherit" underline="always">GitHub</Link>, check out the issue tracker, and get started. There you can suggest new features or assign yourself an issue to develop. You can find more info about how to do all these on our <Link href={docsLink} color="inherit" underline="always">docs on Gitbook</Link>.
+        To contribute, head over to <Link href={process.env.REACT_APP_PORTAL_GITHUB_HREF} color="inherit" underline="always" target="_blank">GitHub</Link>, check out the issue tracker, and get started. There you can suggest new features or assign yourself an issue to develop. You can find more info about how to do all these on our <Link href={process.env.REACT_APP_CFL_DOCS_HREF} color="inherit" underline="always" target="_blank">docs on Gitbook</Link>.
       </Typography>
       <Typography variant='h5' my={3}>
         Teachers, parents, and creatives
