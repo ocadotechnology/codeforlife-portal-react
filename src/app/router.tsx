@@ -1,7 +1,7 @@
 import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 
-import HomePage from 'pages/homePage/HomePage';
+import Home from 'pages/home/Home';
 import Teachers from 'pages/teachers/Teachers';
 import Students from 'pages/students/Students';
 import Register from 'pages/register/Register';
@@ -13,7 +13,7 @@ import PrivacyNotice from 'pages/privacyNotice/PrivacyNotice';
 import TermsOfUse from 'pages/termsOfUse/TermsOfUse';
 
 export const paths = {
-  homePage: '/',
+  home: '/',
   teachers: '/teachers',
   students: '/students',
   register: '/register',
@@ -27,8 +27,8 @@ export const paths = {
 
 const router = createBrowserRouter([
   {
-    path: paths.homePage,
-    element: <HomePage />
+    path: paths.home,
+    element: <Home />
   },
   {
     path: paths.teachers,
