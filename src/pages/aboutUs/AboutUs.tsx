@@ -29,10 +29,8 @@ export const BaseSection: React.FC<{
   children: GridElement | GridElement[],
   containerProps?: Grid2Props
 }> = ({ children, containerProps = {} }) => {
-  let { ...props } = containerProps;
-
   return (
-    <Grid container xs={12} p={0} spacing={0} {...props}>
+    <Grid container xs={12} p={0} spacing={0} {...containerProps}>
       <Grid xs={2} />
       <Grid xs>
         {children}
@@ -106,10 +104,10 @@ const AboutUs: React.FC = () => {
         Code for Life(CFL) is a free, easy-to-use resource that provides teaching and lesson plans, user guides and engagement through our two fun coding games: Rapid Router and Kurono. These games are specially designed for people learning computing for the first time.
       </Typography>
       <Typography fontSize={18} my={2}>
-        The aim is to teach new coders the basic principles, to help them thrive in an increasingly digital world. CFL is primarily designed for and tested by primary school teachers. Our games are aligned with the UK's computing curriculum, so teachers can incorporate CFL into their lessons.
+        The aim is to teach new coders the basic principles, to help them thrive in an increasingly digital world. CFL is primarily designed for and tested by primary school teachers. Our games are aligned with the UK&apos;s computing curriculum, so teachers can incorporate CFL into their lessons.
       </Typography>
       <Typography fontSize={18} my={2}>
-        Anyone looking to get into coding can also do so using the games and resources. We opened CFL resources to parents and the general public during the 2020 Covid-19 pandemic so that people don't need to be part of a school to have access.
+        Anyone looking to get into coding can also do so using the games and resources. We opened CFL resources to parents and the general public during the 2020 Covid-19 pandemic so that people don&apos;t need to be part of a school to have access.
       </Typography>
     </Grid>
   </>;
@@ -132,13 +130,13 @@ const AboutUs: React.FC = () => {
         Who is Ocado Group?
       </Typography>
       <Typography fontSize={18} my={2}>
-        Ocado Group, the online grocery solutions provider, is powering the future of online retail. Ocado's tech and solutions are supplied to grocery businesses all around the world. It enables these forward-thinking retailers to do grocery online profitably, sustainably, and in a scalable manner.
+        Ocado Group, the online grocery solutions provider, is powering the future of online retail. Ocado&apos;s tech and solutions are supplied to grocery businesses all around the world. It enables these forward-thinking retailers to do grocery online profitably, sustainably, and in a scalable manner.
       </Typography>
       <Typography fontSize={18} my={2}>
-        Ocado Smart Platform (OSP) is the world's most advanced end-to-end e-Commerce, fulfilment and logistic platform.
+        Ocado Smart Platform (OSP) is the world&apos;s most advanced end-to-end e-Commerce, fulfilment and logistic platform.
       </Typography>
       <Typography fontSize={18} my={2}>
-        <Link href={skillForFutureLink} color="inherit" underline="always">Skills for the Future</Link> is one of Ocado Group's core Corporate Responsibility pillars, which is part of the Ocado Unlimited strategy (alongside Natural Resources and Responsible Sourcing). For Ocado Group, Skills for the Future means championing digital literacy. We want to inspire the next generation of STEM leaders, so that everyone can fully participate in society.
+        <Link href={skillForFutureLink} color="inherit" underline="always">Skills for the Future</Link> is one of Ocado Group&apos;s core Corporate Responsibility pillars, which is part of the Ocado Unlimited strategy (alongside Natural Resources and Responsible Sourcing). For Ocado Group, Skills for the Future means championing digital literacy. We want to inspire the next generation of STEM leaders, so that everyone can fully participate in society.
       </Typography>
     </Grid>
   </>;
@@ -160,7 +158,7 @@ const AboutUs: React.FC = () => {
         With that in mind, CFL was developed by volunteers and interns from Ocado Technology - the technology arm of Ocado Group - and teacher Sharon Harrison, who created the Rapid Router learning materials. Anne Marie continues:
       </Typography>
       <Typography style={quoteStyle}>
-        “I'm proud this initiative has been breaking down stereotypes. Children are seeing that you don't have to fit a certain gender, race or personality type to get coding.”
+        “I&apos;m proud this initiative has been breaking down stereotypes. Children are seeing that you don&apos;t have to fit a certain gender, race or personality type to get coding.”
       </Typography>
       <Typography style={normalTextStyle} my={5}>
         Today, CFL is operated by a small core team and volunteers.
@@ -180,11 +178,10 @@ const AboutUs: React.FC = () => {
         Want to get involved?
       </Typography>
       <Typography style={normalTextStyle}>
-        We are open source, so anyone can ask to contribute. You can play with game-running JavaScript, Python/Django, animation using SVG and Raphael, and a lot more. We'd like input from all sorts of backgrounds, whether you're: a programmer looking for a creative outlet; a teacher hoping to shape the resources; or even a pupil putting your skills to the test.
+        We are open source, so anyone can ask to contribute. You can play with game-running JavaScript, Python/Django, animation using SVG and Raphael, and a lot more. We&apos;d like input from all sorts of backgrounds, whether you&apos;re: a programmer looking for a creative outlet; a teacher hoping to shape the resources; or even a pupil putting your skills to the test.
       </Typography>
     </Grid>
   </>;
-
 
   const participantsRightChild = <>
     <Grid xs mx={4}>
@@ -242,7 +239,7 @@ const AboutUs: React.FC = () => {
 
       <BaseSection>
         <Typography variant='h4' textAlign='center' mt={5}>
-          We couldn't do it without you!
+          We couldn&apos;t do it without you!
         </Typography>
         <TwoColumnSection left={participantsLeftChild} right={participantsRightChild}></TwoColumnSection>
 
