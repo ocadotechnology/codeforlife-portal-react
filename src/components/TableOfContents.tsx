@@ -8,9 +8,11 @@ import {
   Box
 } from '@mui/material';
 
-const TableOfContents: React.FC<{
+export interface TableOfContentsProps {
   contents: Array<{ header: string, element: React.ReactElement }>
-}> = ({ contents }) => {
+}
+
+const TableOfContents: React.FC<TableOfContentsProps> = ({ contents }) => {
   const headerRefs = contents.map(() => React.useRef<HTMLSpanElement>(null));
   const halfLength = Math.ceil(contents.length / 2);
 
