@@ -76,6 +76,20 @@ const theme = createTheme(cflTheme, {
           }
         }
       }
+    },
+    MuiTypography: {
+      styleOverrides: {
+        root: ({ ownerState }: { ownerState: any }) => ({
+          ...(ownerState.className === 'normalText' && {
+            fontSize: '18px',
+            marginTop: '16px',
+            marginBottom: '16px'
+          }),
+          ...(ownerState.className === 'headerText' && {
+            marginBottom: '24px'
+          })
+        })
+      }
     }
   }
 });
