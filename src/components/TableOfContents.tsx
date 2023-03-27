@@ -12,6 +12,11 @@ export interface TableOfContentsProps {
   contents: Array<{ header: string, element: React.ReactElement }>
 }
 
+export const ids = {
+  leftLinkStack: 'left-link-stack',
+  rightLinkStack: 'right-link-stack'
+};
+
 const TableOfContents: React.FC<TableOfContentsProps> = ({ contents }) => {
   const headerRefs = contents.map(() => React.useRef<HTMLSpanElement>(null));
   const halfLength = Math.ceil(contents.length / 2);
@@ -21,9 +26,13 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ contents }) => {
     if (header !== null) header.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
-  function generateLinkStack(sliceStart: number, sliceEnd: number): React.ReactElement {
+  function generateLinkStack(
+    stackId: string,
+    sliceStart: number,
+    sliceEnd: number
+  ): React.ReactElement {
     return (
-      <Stack>
+      <Stack id={stackId}>
         {contents.slice(sliceStart, sliceEnd).map((content, index) => {
           index += sliceStart;
           return (
@@ -49,11 +58,11 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ contents }) => {
 
   return (
     <Grid container spacing={0}>
-      <Grid xs={12} sm={6}>
-        {generateLinkStack(0, halfLength)}
+      <Grid id={ids.leftLinkStack} xs={12} sm={6}>
+        {generateLinkStack(ids.leftLinkStack, 0, halfLength)}
       </Grid>
-      <Grid xs={12} sm={6}>
-        {generateLinkStack(halfLength, contents.length)}
+      <Grid id={ids.rightLinkStack} xs={12} sm={6}>
+        {generateLinkStack(ids.rightLinkStack, halfLength, contents.length)}
       </Grid>
       {contents.map((content, index) => (
         <Grid key={index} xs={12}>
