@@ -22,7 +22,7 @@ import HOPEImage from 'images/hope_logo.png';
 import GLAImage from 'images/gla_logo.png';
 import PressureCookerImage from 'images/pressure_cooker_logo.png';
 import SharonHarrisonImage from 'images/sharon_harrison.jpg';
-import { BaseSection } from './BaseSection';
+import { BaseSection } from 'components/BaseSection';
 import { PageBanner } from 'components/PageBanner';
 
 const Record: React.FC<{
@@ -62,8 +62,8 @@ const AboutUs: React.FC = () => {
 
       <BaseSection>
         <Grid container xs={12}>
-          <Grid xs={12} textAlign='center' mt={4}>
-            <Typography variant='h5' px={3}>
+          <Grid xs={12} textAlign='center'>
+            <Typography variant='h5' mt={2}>
               Code For Life is a non profit initiative that delivers free, open-source games that help all students learn computing.
             </Typography>
           </Grid>
@@ -77,9 +77,9 @@ const AboutUs: React.FC = () => {
 
       <BaseSection containerProps={{ bgcolor: theme.palette.info.main }}>
         <Grid container xs={12} spacing={1}>
-          <Grid xs={8} md={6} p={3}>
+          <Grid xs={8} md={6} p={2}>
             <Stack>
-              <Typography variant='h5' className='headerText' mt={4}>
+              <Typography variant='h5' className='headerText' mt={4} >
                 What is Code for Life?
               </Typography>
               <Typography className='normalText'>
@@ -93,42 +93,44 @@ const AboutUs: React.FC = () => {
               </Typography>
             </Stack>
           </Grid>
-          <Grid xs display='flex' alignItems='center' maxWidth='550px' p={3} >
-            <Image alt={'aboutUsCFL'} src={AboutUsCFLImage} />
+          <Grid xs={4} md={6} className='flex-center'>
+            <Image alt={'aboutUsCFL'} src={AboutUsCFLImage} boxProps={{ sx: { maxWidth: '550px' } }} />
           </Grid>
         </Grid>
       </BaseSection>
 
       <BaseSection>
         <Grid container xs={12} spacing={1}>
-          <Grid xs display='flex' alignItems='center' maxWidth='550px' p={3} >
-            <Image alt={'aboutUsOcado'} src={AboutUsOcadoImage} />
+          <Grid xs={4} md={6} className='flex-center'>
+            <Image alt={'aboutUsOcado'} src={AboutUsOcadoImage} boxProps={{ sx: { maxWidth: '550px' } }} />
           </Grid>
-          <Grid xs={8} md={6} p={3}>
-            <Typography variant='h5' className='headerText' mt={4}>
-              Who is Ocado Group?
-            </Typography>
-            <Typography className='normalText'>
-              Ocado Group, the online grocery solutions provider, is powering the future of online retail. Ocado&apos;s tech and solutions are supplied to grocery businesses all around the world. It enables these forward-thinking retailers to do grocery online profitably, sustainably, and in a scalable manner.
-            </Typography>
-            <Typography className='normalText'>
-              Ocado Smart Platform (OSP) is the world&apos;s most advanced end-to-end e-Commerce, fulfilment and logistic platform.
-            </Typography>
-            <Typography className='normalText'>
-              <Link href={process.env.REACT_APP_OCADO_GROUP_HREF} color="inherit" underline="always" target="_blank">Skills for the Future</Link> is one of Ocado Group&apos;s core Corporate Responsibility pillars, which is part of the Ocado Unlimited strategy (alongside Natural Resources and Responsible Sourcing). For Ocado Group, Skills for the Future means championing digital literacy. We want to inspire the next generation of STEM leaders, so that everyone can fully participate in society.
-            </Typography>
+          <Grid xs={8} md={6} p={2}>
+            <Stack>
+              <Typography variant='h5' className='headerText' mt={4}>
+                Who is Ocado Group?
+              </Typography>
+              <Typography className='normalText'>
+                Ocado Group, the online grocery solutions provider, is powering the future of online retail. Ocado&apos;s tech and solutions are supplied to grocery businesses all around the world. It enables these forward-thinking retailers to do grocery online profitably, sustainably, and in a scalable manner.
+              </Typography>
+              <Typography className='normalText'>
+                Ocado Smart Platform (OSP) is the world&apos;s most advanced end-to-end e-Commerce, fulfilment and logistic platform.
+              </Typography>
+              <Typography className='normalText'>
+                <Link href={process.env.REACT_APP_OCADO_GROUP_HREF} color="inherit" underline="always" target="_blank">Skills for the Future</Link> is one of Ocado Group&apos;s core Corporate Responsibility pillars, which is part of the Ocado Unlimited strategy (alongside Natural Resources and Responsible Sourcing). For Ocado Group, Skills for the Future means championing digital literacy. We want to inspire the next generation of STEM leaders, so that everyone can fully participate in society.
+              </Typography>
+            </Stack>
           </Grid>
         </Grid>
       </BaseSection>
 
       <BaseSection containerProps={{ bgcolor: theme.palette.info.main }}>
         <Grid container xs={12} spacing={1}>
-          <Grid xs={12} mt={5}>
+          <Grid xs={12} my={4}>
             <Typography variant='h4' textAlign='center'>
               Code for Life and Ocado Group
             </Typography>
           </Grid>
-          <Grid container xs={12} p={5} spacing={4}>
+          <Grid container xs={12} p={3} spacing={4}>
             <Grid xs={12} md={6}>
               <Typography style={quoteStyle}>
                 “We were delighted computing entered the UK curriculum in 2014. However, many teachers felt unprepared. And the lack of diversity in people studying STEM concerned us. So, we sought to make the subject appeal to a broader group of both students and teachers.”
@@ -137,7 +139,7 @@ const AboutUs: React.FC = () => {
                 Anne Marie Neatham, Commercial Director and COO Kindred, Ocado Group.
               </Typography>
             </Grid>
-            <Grid xs={12} md={6} mb={3}>
+            <Grid xs={12} md={6} mb={2}>
               <Typography fontSize={18} mb={2}>
                 With that in mind, CFL was developed by volunteers and interns from Ocado Technology - the technology arm of Ocado Group - and teacher Sharon Harrison, who created the Rapid Router learning materials. Anne Marie continues:
               </Typography>
@@ -154,12 +156,12 @@ const AboutUs: React.FC = () => {
 
       <BaseSection>
         <Grid container spacing={1}>
-          <Grid xs={12} mb={4}>
-            <Typography variant='h4' textAlign='center' mt={5}>
+          <Grid xs={12} my={4}>
+            <Typography variant='h4' textAlign='center'>
               We couldn&apos;t do it without you!
             </Typography>
           </Grid>
-          <Grid container xs={12} p={5} spacing={4}>
+          <Grid container xs={12} p={3} spacing={4}>
             <Grid xs={12} md={6}>
               <Typography variant='h5' className='headerText'>
                 Our team and volunteers
@@ -193,7 +195,7 @@ const AboutUs: React.FC = () => {
             </Grid>
           </Grid>
 
-          <Grid xs={12} mt={8} px={5}>
+          <Grid xs={12} mt={5} px={5}>
             <Typography variant='h6' textAlign='center'>
               We would like to thank our friends who have contributed to this initiative
             </Typography>
@@ -209,7 +211,7 @@ const AboutUs: React.FC = () => {
             <ImageGrid alt={'pressureCooker'} src={PressureCookerImage} maxWidth={'58px'} />
           </Grid>
           <Grid px={6} my={2}>
-            <Typography fontSize={14} textAlign='center' mb={8} lineHeight='1.6rem'>
+            <Typography fontSize={14} textAlign='center' mb={4} lineHeight='1.6rem'>
               10X, BCS Academy of Computing, Barefoot Computing, Computing at School, The National Museum of
               Computing, Imperial College London, M&C Saatchi, Alvaro Ramirez, Jason Fingland, Ramneet Loyall, Sharon
               Harrison, Keith Avery, Dale Coan, Rob Whitehouse, Mandy Nash, Tanya Nothard, Matt Trevor, Moy El-Bushra,
@@ -221,7 +223,7 @@ const AboutUs: React.FC = () => {
 
       <BaseSection containerProps={{ bgcolor: theme.palette.info.main }}>
         <Grid container className='flex-center' direction='column' >
-          <Typography variant='h4' textAlign='center' mt={5}>
+          <Typography variant='h4' textAlign='center' mt={3}>
             Dedicated to Sharon Harrison
           </Typography>
           <Image alt={'SharonHarrison'} src={SharonHarrisonImage} boxProps={{ maxWidth: '150px', margin: 3 }} />
@@ -229,11 +231,11 @@ const AboutUs: React.FC = () => {
             1956 — 2015
           </Typography>
         </Grid>
-        <Grid container px={5}>
+        <Grid xs={12} px={5} mt={3}>
           <Typography className='normalText' fontWeight='bold'>
             Sharon was instrumental in helping to create Code for Life. At the beginning of 2014 she was recruited to act as our Educational Consultant. The project drew on her previous skills as a pioneering computing teacher and education consultant.
           </Typography>
-          <Typography fontSize={18} mb={5}>
+          <Typography fontSize={18} mb={3}>
             Sharon has left a lasting legacy by creating something which will help teach STEM skills to the next generation of computer scientists across the world.
           </Typography>
         </Grid>

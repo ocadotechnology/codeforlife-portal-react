@@ -14,7 +14,7 @@ import { Image } from 'codeforlife/lib/esm/components';
 // import CodeClubHeroImage from 'images/coding_club_hero_hexagon.jpg';
 import AboutUsCFLImage from 'images/about_us_cfl.jpg';
 import PythonClubImage from 'images/coding_club_python_pack.png';
-import { BaseSection } from 'pages/aboutUs/BaseSection';
+import { BaseSection } from 'components/BaseSection';
 // import { PageBanner } from 'pages/aboutUs/PageBanner';
 
 const CodingClubs: React.FC = () => {
