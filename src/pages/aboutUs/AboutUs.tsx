@@ -32,10 +32,10 @@ const Record: React.FC<{
 }> = ({ number, description }) => (
   <Grid xs={12} md={4}>
     <Stack>
-      <Typography variant='h3' style={{ color: '#00a3e0' }} textAlign='center' my={3}>
+      <Typography variant='h3' style={{ color: '#00a3e0' }} textAlign='center'>
         {number}
       </Typography>
-      <Typography fontSize={18} textAlign='center'>
+      <Typography className='normalText' textAlign='center'>
         {description}
       </Typography>
     </Stack>
@@ -59,7 +59,7 @@ const AboutUs: React.FC = () => {
 
   const cflContent = <>
     <Stack>
-      <Typography variant='h5' className='headerText' mt={4} >
+      <Typography variant='h5' className='headerText'>
         What is Code for Life?
       </Typography>
       <Typography className='normalText'>
@@ -76,7 +76,7 @@ const AboutUs: React.FC = () => {
 
   const ocadoGroupContent = <>
     <Stack>
-      <Typography variant='h5' className='headerText' mt={4}>
+      <Typography variant='h5' className='headerText'>
         Who is Ocado Group?
       </Typography>
       <Typography className='normalText'>
@@ -102,7 +102,7 @@ const AboutUs: React.FC = () => {
               Code For Life is a non profit initiative that delivers free, open-source games that help all students learn computing.
             </Typography>
           </Grid>
-          <Grid container display='flex' justifyContent='center' mt={1} mb={3} spacing={1}>
+          <Grid container display='flex' justifyContent='center' spacing={1} mt={3}>
             <Record number='2014' description='The year that computing was added to the UK curriculum. We&apos;ve been supporting teachers and students ever since.' />
             <Record number='>160' description='Countries are taking part, with the UK, the USA, Brazil, Australia and Canada as top locations for schools signed up to CFL. Nearly 10,000 schools are registered globally.' />
             <Record number='>270,000' description='Active users so far, with numbers growing every day. In 2020 alone, close to 100,000 new people subscribed to our resources.' />
@@ -114,7 +114,6 @@ const AboutUs: React.FC = () => {
         <ContentImageColumn
           img={{ alt: 'aboutUsCFL', src: AboutUsCFLImage, maxWidth: '550px' }}
           content={cflContent}
-          direction='row-reverse'
         />
       </BaseSection>
 
@@ -122,6 +121,7 @@ const AboutUs: React.FC = () => {
         <ContentImageColumn
           img={{ alt: 'aboutUsOcado', src: AboutUsOcadoImage, maxWidth: '550px' }}
           content={ocadoGroupContent}
+          direction='row-reverse'
         />
       </BaseSection>
 
@@ -141,8 +141,8 @@ const AboutUs: React.FC = () => {
                 Anne Marie Neatham, Commercial Director and COO Kindred, Ocado Group.
               </Typography>
             </Grid>
-            <Grid xs={12} md={6} mb={2}>
-              <Typography fontSize={18} mb={2}>
+            <Grid xs={12} md={6} >
+              <Typography className='normalText' mt={0}>
                 With that in mind, CFL was developed by volunteers and interns from Ocado Technology - the technology arm of Ocado Group - and teacher Sharon Harrison, who created the Rapid Router learning materials. Anne Marie continues:
               </Typography>
               <Typography style={quoteStyle}>
@@ -158,7 +158,7 @@ const AboutUs: React.FC = () => {
 
       <BaseSection>
         <Grid container spacing={1}>
-          <Grid xs={12} my={4}>
+          <Grid xs={12} mt={4}>
             <Typography variant='h4' textAlign='center'>
               We couldn&apos;t do it without you!
             </Typography>
@@ -171,7 +171,7 @@ const AboutUs: React.FC = () => {
               <Typography className='normalText'>
                 Code for Life would not have been possible without the time and skills volunteered by our talented developers and creatives at Ocado Technology. Thank you to everyone who has helped us get to where we are now.
               </Typography>
-              <Typography variant='h5' my={3}>
+              <Typography variant='h5' className='headerText' >
                 Want to get involved?
               </Typography>
               <Typography className='normalText'>
@@ -185,7 +185,7 @@ const AboutUs: React.FC = () => {
               <Typography className='normalText'>
                 To contribute, head over to <Link href={process.env.REACT_APP_PORTAL_GITHUB_HREF} color="inherit" underline="always" target="_blank">GitHub</Link>, check out the issue tracker, and get started. There you can suggest new features or assign yourself an issue to develop. You can find more info about how to do all these on our <Link href={process.env.REACT_APP_CFL_DOCS_HREF} color="inherit" underline="always" target="_blank">docs on Gitbook</Link>.
               </Typography>
-              <Typography variant='h5' className='headerText'>
+              <Typography variant='h5' className='headerText' >
                 Teachers, parents, and creatives
               </Typography>
               <Typography className='normalText'>
@@ -237,7 +237,7 @@ const AboutUs: React.FC = () => {
           <Typography className='normalText' fontWeight='bold'>
             Sharon was instrumental in helping to create Code for Life. At the beginning of 2014 she was recruited to act as our Educational Consultant. The project drew on her previous skills as a pioneering computing teacher and education consultant.
           </Typography>
-          <Typography fontSize={18} mb={3}>
+          <Typography className='normalText'>
             Sharon has left a lasting legacy by creating something which will help teach STEM skills to the next generation of computer scientists across the world.
           </Typography>
         </Grid>

@@ -86,6 +86,7 @@ const theme = createTheme(cflTheme, {
             marginBottom: '16px'
           }),
           ...(ownerState.className === 'headerText' && {
+            marginTop: '32px',
             marginBottom: '24px'
           })
         })
