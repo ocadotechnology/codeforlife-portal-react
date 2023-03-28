@@ -10,6 +10,7 @@ import {
 import BasePage from 'pages/BasePage';
 
 import { Image } from 'codeforlife/lib/esm/components';
+import AboutUsHeroImage from 'images/about_us_hero_hexagon.png';
 import AboutUsCFLImage from 'images/about_us_cfl.jpg';
 import AboutUsOcadoImage from 'images/about_us_ocado.jpg';
 import Logo10xImage from 'images/10x_logo.png';
@@ -22,7 +23,7 @@ import GLAImage from 'images/gla_logo.png';
 import PressureCookerImage from 'images/pressure_cooker_logo.png';
 import SharonHarrisonImage from 'images/sharon_harrison.jpg';
 import { BaseSection } from './BaseSection';
-import { PageBanner } from './PageBanner';
+import { PageBanner } from 'components/PageBanner';
 
 const Record: React.FC<{
   number: string
@@ -51,17 +52,13 @@ const ImageGrid: React.FC<{
 const AboutUs: React.FC = () => {
   const theme = useTheme();
   const quoteStyle = { color: '#e0004d', fontSize: 22, fontFamily: 'SpaceGrotesk', fontWeight: '500', lineHeight: '1.8rem' };
+  const pageBannerContent = <>
+    Code For Life gives everyone the ability to shape technology&apos;s future
+  </>;
 
   return (
     <BasePage>
-      <Grid
-        xs={12}
-        bgcolor={theme.palette.primary.main}
-        p={0}
-        style={{ display: 'flex', justifyContent: 'center' }}
-      >
-        <PageBanner />
-      </Grid>
+      <PageBanner img={{ alt: 'aboutUsHero', src: AboutUsHeroImage }} text={{ title: 'About Code for Life', content: pageBannerContent }} />
 
       <BaseSection>
         <Grid container xs={12}>
@@ -124,7 +121,6 @@ const AboutUs: React.FC = () => {
         </Grid>
       </BaseSection>
 
-      {/* TODO: adjust breakpoints */}
       <BaseSection containerProps={{ bgcolor: theme.palette.info.main }}>
         <Grid container xs={12} spacing={1}>
           <Grid xs={12} mt={5}>
