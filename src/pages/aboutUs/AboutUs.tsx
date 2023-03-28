@@ -4,8 +4,7 @@ import {
   Typography,
   Unstable_Grid2 as Grid,
   useTheme,
-  Link,
-  Grid2Props
+  Link
 } from '@mui/material';
 
 import BasePage from 'pages/BasePage';
@@ -23,53 +22,8 @@ import HOPEImage from 'images/hope_logo.png';
 import GLAImage from 'images/gla_logo.png';
 import PressureCookerImage from 'images/pressure_cooker_logo.png';
 import SharonHarrisonImage from 'images/sharon_harrison.jpg';
-
-type GridElement = React.ReactElement<typeof Grid>;
-
-export const BaseSection: React.FC<{
-  children: GridElement | GridElement[],
-  containerProps?: Grid2Props
-}> = ({ children, containerProps = {} }) => {
-  return (
-    <Grid container xs={12} p={0} spacing={0} {...containerProps}>
-      <Grid xs={0} md={1} lg={2} />
-      <Grid xs>
-        {children}
-      </Grid>
-      <Grid xs={0} md={1} lg={2} />
-    </Grid>
-  );
-};
-
-export const PageBanner: React.FC<{
-  img: { alt: string, src: string }
-  title: string
-  description: string
-}> = ({ img, title, description }) => (
-  <Grid xs={12} display='flex'>
-    <Grid xs={8} pr={6} mr={6}>
-      <Typography variant='h2' style={{ color: 'white' }} pt={6}>
-        {title}
-      </Typography>
-      <Typography variant='h4' style={{ color: 'white' }} pt={3} pb={2}>
-        {description}
-      </Typography>
-    </Grid>
-    <Grid xs={4} p={0}>
-      <Image alt={img.alt} src={img.src} boxProps={{ maxWidth: '370px' }} />
-    </Grid>
-  </Grid>
-);
-
-export const TwoColumnSection: React.FC<{
-  left: GridElement | GridElement[],
-  right: GridElement | GridElement[]
-}> = ({ left, right }) => (
-  <Grid container xs={12} mt={2} mb={5} spacing={5}>
-    {left}
-    {right}
-  </Grid>
-);
+import { BaseSection } from './BaseSection';
+import { PageBanner } from './PageBanner';
 
 const Record: React.FC<{
   number: string
@@ -101,9 +55,9 @@ const AboutUs: React.FC = () => {
 
   return (
     <BasePage>
-      <BaseSection containerProps={{ bgcolor: theme.palette.primary.main }}>
+      <Grid container xs={12} p={0} spacing={0} bgcolor={theme.palette.primary.main} >
         <PageBanner img={{ alt: 'aboutUsHero', src: AboutUsHeroImage }} title='About Code for Life' description='Code For Life gives everyone the ability to shape technology&apos;s future' />
-      </BaseSection>
+      </Grid>
 
       <BaseSection>
         <Grid container xs={12}>
@@ -174,7 +128,7 @@ const AboutUs: React.FC = () => {
               Code for Life and Ocado Group
             </Typography>
           </Grid>
-          <Grid container xs={12} p={5}>
+          <Grid container xs={12} p={5} spacing={4}>
             <Grid xs={12} md={6}>
               <Typography style={quoteStyle}>
                 “We were delighted computing entered the UK curriculum in 2014. However, many teachers felt unprepared. And the lack of diversity in people studying STEM concerned us. So, we sought to make the subject appeal to a broader group of both students and teachers.”
@@ -205,7 +159,7 @@ const AboutUs: React.FC = () => {
               We couldn&apos;t do it without you!
             </Typography>
           </Grid>
-          <Grid container xs={12} p={5}>
+          <Grid container xs={12} p={5} spacing={4}>
             <Grid xs={12} md={6}>
               <Typography variant='h5' className='headerText'>
                 Our team and volunteers
