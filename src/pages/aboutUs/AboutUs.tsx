@@ -24,6 +24,7 @@ import PressureCookerImage from 'images/pressure_cooker_logo.png';
 import SharonHarrisonImage from 'images/sharon_harrison.jpg';
 import { BaseSection } from 'components/BaseSection';
 import { PageBanner } from 'components/PageBanner';
+import { ContentImageColumn } from 'components/ContentImageColumn';
 
 const Record: React.FC<{
   number: string
@@ -56,6 +57,40 @@ const AboutUs: React.FC = () => {
     Code For Life gives everyone the ability to shape technology&apos;s future
   </>;
 
+  const cflContent = <>
+    <Stack>
+      <Typography variant='h5' className='headerText' mt={4} >
+        What is Code for Life?
+      </Typography>
+      <Typography className='normalText'>
+        Code for Life(CFL) is a free, easy-to-use resource that provides teaching and lesson plans, user guides and engagement through our two fun coding games: Rapid Router and Kurono. These games are specially designed for people learning computing for the first time.
+      </Typography>
+      <Typography className='normalText'>
+        The aim is to teach new coders the basic principles, to help them thrive in an increasingly digital world. CFL is primarily designed for and tested by primary school teachers. Our games are aligned with the UK&apos;s computing curriculum, so teachers can incorporate CFL into their lessons.
+      </Typography>
+      <Typography className='normalText'>
+        Anyone looking to get into coding can also do so using the games and resources. We opened CFL resources to parents and the general public during the 2020 Covid-19 pandemic so that people don&apos;t need to be part of a school to have access.
+      </Typography>
+    </Stack>
+  </>;
+
+  const ocadoGroupContent = <>
+    <Stack>
+      <Typography variant='h5' className='headerText' mt={4}>
+        Who is Ocado Group?
+      </Typography>
+      <Typography className='normalText'>
+        Ocado Group, the online grocery solutions provider, is powering the future of online retail. Ocado&apos;s tech and solutions are supplied to grocery businesses all around the world. It enables these forward-thinking retailers to do grocery online profitably, sustainably, and in a scalable manner.
+      </Typography>
+      <Typography className='normalText'>
+        Ocado Smart Platform (OSP) is the world&apos;s most advanced end-to-end e-Commerce, fulfilment and logistic platform.
+      </Typography>
+      <Typography className='normalText'>
+        <Link href={process.env.REACT_APP_OCADO_GROUP_HREF} color="inherit" underline="always" target="_blank">Skills for the Future</Link> is one of Ocado Group&apos;s core Corporate Responsibility pillars, which is part of the Ocado Unlimited strategy (alongside Natural Resources and Responsible Sourcing). For Ocado Group, Skills for the Future means championing digital literacy. We want to inspire the next generation of STEM leaders, so that everyone can fully participate in society.
+      </Typography>
+    </Stack>
+  </>;
+
   return (
     <BasePage>
       <PageBanner img={{ alt: 'aboutUsHero', src: AboutUsHeroImage }} text={{ title: 'About Code for Life', content: pageBannerContent }} />
@@ -76,51 +111,18 @@ const AboutUs: React.FC = () => {
       </BaseSection>
 
       <BaseSection containerProps={{ bgcolor: theme.palette.info.main }}>
-        <Grid container xs={12} spacing={1}>
-          <Grid xs={8} md={6} p={2}>
-            <Stack>
-              <Typography variant='h5' className='headerText' mt={4} >
-                What is Code for Life?
-              </Typography>
-              <Typography className='normalText'>
-                Code for Life(CFL) is a free, easy-to-use resource that provides teaching and lesson plans, user guides and engagement through our two fun coding games: Rapid Router and Kurono. These games are specially designed for people learning computing for the first time.
-              </Typography>
-              <Typography className='normalText'>
-                The aim is to teach new coders the basic principles, to help them thrive in an increasingly digital world. CFL is primarily designed for and tested by primary school teachers. Our games are aligned with the UK&apos;s computing curriculum, so teachers can incorporate CFL into their lessons.
-              </Typography>
-              <Typography className='normalText'>
-                Anyone looking to get into coding can also do so using the games and resources. We opened CFL resources to parents and the general public during the 2020 Covid-19 pandemic so that people don&apos;t need to be part of a school to have access.
-              </Typography>
-            </Stack>
-          </Grid>
-          <Grid xs={4} md={6} className='flex-center'>
-            <Image alt={'aboutUsCFL'} src={AboutUsCFLImage} boxProps={{ sx: { maxWidth: '550px' } }} />
-          </Grid>
-        </Grid>
+        <ContentImageColumn
+          img={{ alt: 'aboutUsCFL', src: AboutUsCFLImage, maxWidth: '550px' }}
+          content={cflContent}
+          direction='row-reverse'
+        />
       </BaseSection>
 
       <BaseSection>
-        <Grid container xs={12} spacing={1}>
-          <Grid xs={4} md={6} className='flex-center'>
-            <Image alt={'aboutUsOcado'} src={AboutUsOcadoImage} boxProps={{ sx: { maxWidth: '550px' } }} />
-          </Grid>
-          <Grid xs={8} md={6} p={2}>
-            <Stack>
-              <Typography variant='h5' className='headerText' mt={4}>
-                Who is Ocado Group?
-              </Typography>
-              <Typography className='normalText'>
-                Ocado Group, the online grocery solutions provider, is powering the future of online retail. Ocado&apos;s tech and solutions are supplied to grocery businesses all around the world. It enables these forward-thinking retailers to do grocery online profitably, sustainably, and in a scalable manner.
-              </Typography>
-              <Typography className='normalText'>
-                Ocado Smart Platform (OSP) is the world&apos;s most advanced end-to-end e-Commerce, fulfilment and logistic platform.
-              </Typography>
-              <Typography className='normalText'>
-                <Link href={process.env.REACT_APP_OCADO_GROUP_HREF} color="inherit" underline="always" target="_blank">Skills for the Future</Link> is one of Ocado Group&apos;s core Corporate Responsibility pillars, which is part of the Ocado Unlimited strategy (alongside Natural Resources and Responsible Sourcing). For Ocado Group, Skills for the Future means championing digital literacy. We want to inspire the next generation of STEM leaders, so that everyone can fully participate in society.
-              </Typography>
-            </Stack>
-          </Grid>
-        </Grid>
+        <ContentImageColumn
+          img={{ alt: 'aboutUsOcado', src: AboutUsOcadoImage, maxWidth: '550px' }}
+          content={ocadoGroupContent}
+        />
       </BaseSection>
 
       <BaseSection containerProps={{ bgcolor: theme.palette.info.main }}>
