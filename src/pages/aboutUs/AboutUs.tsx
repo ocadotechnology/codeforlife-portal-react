@@ -10,7 +10,6 @@ import {
 import BasePage from 'pages/BasePage';
 
 import { Image } from 'codeforlife/lib/esm/components';
-import AboutUsHeroImage from 'images/about_us_hero_hexagon.png';
 import AboutUsCFLImage from 'images/about_us_cfl.jpg';
 import AboutUsOcadoImage from 'images/about_us_ocado.jpg';
 import Logo10xImage from 'images/10x_logo.png';
@@ -55,8 +54,13 @@ const AboutUs: React.FC = () => {
 
   return (
     <BasePage>
-      <Grid container xs={12} p={0} spacing={0} bgcolor={theme.palette.primary.main} >
-        <PageBanner img={{ alt: 'aboutUsHero', src: AboutUsHeroImage }} title='About Code for Life' description='Code For Life gives everyone the ability to shape technology&apos;s future' />
+      <Grid
+        xs={12}
+        bgcolor={theme.palette.primary.main}
+        p={0}
+        style={{ display: 'flex', justifyContent: 'center' }}
+      >
+        <PageBanner />
       </Grid>
 
       <BaseSection>

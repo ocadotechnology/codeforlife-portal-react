@@ -11,11 +11,11 @@ import {
 import BasePage from 'pages/BasePage';
 
 import { Image } from 'codeforlife/lib/esm/components';
-import CodeClubHeroImage from 'images/coding_club_hero_hexagon.jpg';
+// import CodeClubHeroImage from 'images/coding_club_hero_hexagon.jpg';
 import AboutUsCFLImage from 'images/about_us_cfl.jpg';
 import PythonClubImage from 'images/coding_club_python_pack.png';
 import { BaseSection } from 'pages/aboutUs/BaseSection';
-import { PageBanner } from 'pages/aboutUs/PageBanner';
+// import { PageBanner } from 'pages/aboutUs/PageBanner';
 
 const CodingClubs: React.FC = () => {
   const theme = useTheme();
@@ -25,7 +25,7 @@ const CodingClubs: React.FC = () => {
   return (
     <BasePage>
       <BaseSection containerProps={{ bgcolor: theme.palette.primary.main }}>
-        <PageBanner img={{ alt: 'codeClubHero', src: CodeClubHeroImage }} title='Coding clubs' description='A FREE set of slides and guides to run your own coding clubs' />
+        {/* <PageBanner img={{ alt: 'codeClubHero', src: CodeClubHeroImage }} title='Coding clubs' description='A FREE set of slides and guides to run your own coding clubs' /> */}
       </BaseSection>
 
       <BaseSection>
