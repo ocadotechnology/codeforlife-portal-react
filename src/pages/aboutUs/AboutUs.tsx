@@ -87,10 +87,17 @@ const Record: React.FC<{
   </Grid>
 );
 
+const ImageGrid: React.FC<{
+  alt: string, src: string, maxWidth: string
+}> = ({ alt, src, maxWidth }) => (
+  <Grid xs={12} md={1} display='flex' justifyContent='center'>
+    <Image alt={alt} src={src} boxProps={{ sx: { mx: 0.5 }, maxWidth: { maxWidth } }} />
+  </Grid>
+);
+
 const AboutUs: React.FC = () => {
   const theme = useTheme();
   const quoteStyle = { color: '#e0004d', fontSize: 22, fontFamily: 'SpaceGrotesk', fontWeight: '500', lineHeight: '1.8rem' };
-  const logoBoxProps = { sx: { mx: 0.5 } };
 
   return (
     <BasePage>
@@ -162,12 +169,12 @@ const AboutUs: React.FC = () => {
       {/* TODO: adjust breakpoints */}
       <BaseSection containerProps={{ bgcolor: theme.palette.info.main }}>
         <Grid container xs={12} spacing={1}>
-          <Grid xs={12} mt={5} mb={4}>
+          <Grid xs={12} mt={5}>
             <Typography variant='h4' textAlign='center'>
               Code for Life and Ocado Group
             </Typography>
           </Grid>
-          <Grid container xs={12}>
+          <Grid container xs={12} p={5}>
             <Grid xs={12} md={6}>
               <Typography style={quoteStyle}>
                 “We were delighted computing entered the UK curriculum in 2014. However, many teachers felt unprepared. And the lack of diversity in people studying STEM concerned us. So, we sought to make the subject appeal to a broader group of both students and teachers.”
@@ -198,7 +205,7 @@ const AboutUs: React.FC = () => {
               We couldn&apos;t do it without you!
             </Typography>
           </Grid>
-          <Grid container xs={12} padding={5}>
+          <Grid container xs={12} p={5}>
             <Grid xs={12} md={6}>
               <Typography variant='h5' className='headerText'>
                 Our team and volunteers
@@ -232,20 +239,20 @@ const AboutUs: React.FC = () => {
             </Grid>
           </Grid>
 
-          <Grid xs={12} mt={8}>
+          <Grid xs={12} mt={8} px={5}>
             <Typography variant='h6' textAlign='center'>
               We would like to thank our friends who have contributed to this initiative
             </Typography>
           </Grid>
-          <Grid xs={12} my={1} display='flex' justifyContent='center' alignItems='baseline'>
-            <Image alt={'10x'} src={Logo10xImage} boxProps={{ ...logoBoxProps, maxWidth: '52px' }} />
-            <Image alt={'bcs'} src={BcsImage} boxProps={{ ...logoBoxProps, maxWidth: '118px' }} />
-            <Image alt={'icl'} src={IclImage} boxProps={{ ...logoBoxProps, maxWidth: '113px' }} />
-            <Image alt={'barefoot'} src={BarefootImage} boxProps={{ ...logoBoxProps, maxWidth: '88px' }} />
-            <Image alt={'mcSaatch'} src={MCSaatchiImage} boxProps={{ ...logoBoxProps, maxWidth: '51px' }} />
-            <Image alt={'hope'} src={HOPEImage} boxProps={{ ...logoBoxProps, maxWidth: '118px' }} />
-            <Image alt={'gla'} src={GLAImage} boxProps={{ ...logoBoxProps, maxWidth: '59px' }} />
-            <Image alt={'pressureCooker'} src={PressureCookerImage} boxProps={{ ...logoBoxProps, maxWidth: '58px' }} />
+          <Grid container xs={12} my={1} spacing={1} display='flex' justifyContent='center' alignItems='baseline' >
+            <ImageGrid alt={'10x'} src={Logo10xImage} maxWidth={'52px'} />
+            <ImageGrid alt={'bcs'} src={BcsImage} maxWidth={'118px'} />
+            <ImageGrid alt={'icl'} src={IclImage} maxWidth={'113px'} />
+            <ImageGrid alt={'barefoot'} src={BarefootImage} maxWidth={'88px'} />
+            <ImageGrid alt={'mcSaatch'} src={MCSaatchiImage} maxWidth={'51px'} />
+            <ImageGrid alt={'hope'} src={HOPEImage} maxWidth={'118px'} />
+            <ImageGrid alt={'gla'} src={GLAImage} maxWidth={'59px'} />
+            <ImageGrid alt={'pressureCooker'} src={PressureCookerImage} maxWidth={'58px'} />
           </Grid>
           <Grid px={6} my={2}>
             <Typography fontSize={14} textAlign='center' mb={8} lineHeight='1.6rem'>
