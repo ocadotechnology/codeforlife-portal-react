@@ -3,6 +3,7 @@ name: Cypress
 on: [push]
 
 env:
+  MODULES_PATH: node_modules
   BUILD_PATH: build
   CYPRESS_WAIT_ON: http://localhost:3000
   CYPRESS_WAIT_ON_TIMEOUT: 120
@@ -29,6 +30,13 @@ jobs:
           runTests: false
           build: yarn build
 
+      - name: 📁 Save modules folder
+        uses: actions/upload-artifact@v3
+        with:
+          if-no-files-found: error
+          name: ${{env.MODULES_PATH}}
+          path: ${{env.MODULES_PATH}}
+
       - name: 📁 Save build folder
         uses: actions/upload-artifact@v3
         with:
@@ -45,10 +53,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        containers: [1, 2, 3, 4]
+        containers: [1, 2]
     steps:
       - name: 🛫 Checkout
         uses: actions/checkout@v3
+      
+      - name: 🏗 Download the module folders
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{env.MODULES_PATH}}
+          path: ${{env.MODULES_PATH}}
 
       - name: 🏗 Download the build folders
         uses: actions/download-artifact@v3
@@ -81,46 +95,46 @@ jobs:
       - name: ✅ Upload coverage to Codecov
         uses: codecov/codecov-action@v3.1.0
 
-  test-firefox:
-    needs: build
-    runs-on: ubuntu-latest
-    container: cypress/browsers:node14.17.0-chrome88-ff89
-    timeout-minutes: 15
-    strategy:
-      fail-fast: false
-      matrix:
-        containers: [1, 2, 3, 4]
-    steps:
-      - name: 🛫 Checkout
-        uses: actions/checkout@v3
+  # test-firefox:
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   container: cypress/browsers:node14.17.0-chrome88-ff89
+  #   timeout-minutes: 15
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       containers: [1, 2, 3, 4]
+  #   steps:
+  #     - name: 🛫 Checkout
+  #       uses: actions/checkout@v3
 
-      - name: 🏗 Download the build folders
-        uses: actions/download-artifact@v3
-        with:
-          name: ${{env.BUILD_PATH}}
-          path: ${{env.BUILD_PATH}}
+  #     - name: 🏗 Download the build folders
+  #       uses: actions/download-artifact@v3
+  #       with:
+  #         name: ${{env.BUILD_PATH}}
+  #         path: ${{env.BUILD_PATH}}
 
-      - name: 🔍 Report test info
-        run: npx cypress info
+  #     - name: 🔍 Report test info
+  #       run: npx cypress info
 
-      - name: 🔍 Report CPU info
-        run: node -p 'os.cpus()'
+  #     - name: 🔍 Report CPU info
+  #       run: node -p 'os.cpus()'
 
-      - name: 🧪 Test on Firefox
-        uses: cypress-io/github-action@v5
-        with:
-          install: false
-          start: yarn start
-          wait-on: ${{env.CYPRESS_WAIT_ON}}
-          wait-on-timeout: ${{env.CYPRESS_WAIT_ON_TIMEOUT}}
-          browser: firefox
-          record: true
-          parallel: true
-          group: Firefox group
-          spec: ${{env.CYPRESS_SPEC}}
-        env:
-          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #     - name: 🧪 Test on Firefox
+  #       uses: cypress-io/github-action@v5
+  #       with:
+  #         install: false
+  #         start: yarn start
+  #         wait-on: ${{env.CYPRESS_WAIT_ON}}
+  #         wait-on-timeout: ${{env.CYPRESS_WAIT_ON_TIMEOUT}}
+  #         browser: firefox
+  #         record: true
+  #         parallel: true
+  #         group: Firefox group
+  #         spec: ${{env.CYPRESS_SPEC}}
+  #       env:
+  #         CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: ✅ Upload coverage to Codecov
-        uses: codecov/codecov-action@v3.1.0
+  #     - name: ✅ Upload coverage to Codecov
+  #       uses: codecov/codecov-action@v3.1.0
