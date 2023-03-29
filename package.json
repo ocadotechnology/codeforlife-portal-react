@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "DISABLE_ESLINT_PLUGIN=true react-scripts -r @cypress/instrument-cra start",
-    "build": "react-scripts build",
+    "build": "DISABLE_ESLINT_PLUGIN=true react-scripts build",
     "test": "cypress open",
     "coverage": "open coverage/lcov-report/index.html",
     "lint": "eslint src"
