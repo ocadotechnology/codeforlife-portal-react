@@ -24,3 +24,5 @@ yarn-error.log*
 
 # Custom
 /.nyc_output
+/cypress/videos
+/cypress/screenshots
