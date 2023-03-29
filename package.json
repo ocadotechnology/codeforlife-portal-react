@@ -11,7 +11,7 @@
     "coverage": "open coverage/lcov-report/index.html",
     "lint": "eslint src",
     "local:instrument": "react-scripts -r @cypress/instrument-cra start",
-    "ci:instrument": "CHOKIDAR_USEPOLLING=1 react-scripts -r @cypress/instrument-cra start"
+    "ci:instrument": "DISABLE_ESLINT_PLUGIN=true react-scripts -r @cypress/instrument-cra start"
   },
   "browserslist": {
     "production": [
