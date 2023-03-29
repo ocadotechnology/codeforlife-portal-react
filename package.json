@@ -7,7 +7,7 @@
     "build": "DISABLE_ESLINT_PLUGIN=true react-scripts build",
     "test": "DISABLE_ESLINT_PLUGIN=true react-scripts test",
     "eject": "react-scripts eject",
-    "cypress:open": "cypress open",
+    "cypress": "cypress open",
     "coverage": "open coverage/lcov-report/index.html",
     "lint": "eslint src",
     "local:instrument": "react-scripts -r @cypress/instrument-cra start",
