@@ -5,9 +5,6 @@ jobs:
     runs-on: ubuntu-latest
     container: cypress/browsers:node14.17.0-chrome88-ff89
     steps:
-      - name: 🛑 Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.9.1
-
       - name: 🛫 Checkout
         uses: actions/checkout@v3
 
@@ -30,9 +27,6 @@ jobs:
     timeout-minutes: 5
     runs-on: ubuntu-latest
     steps:
-      - name: 🛑 Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.9.1
-
       - name: 🛫 Checkout
         uses: actions/checkout@v3
 
@@ -42,27 +36,13 @@ jobs:
       - name: 🧹 Run linting
         run: yarn lint
 
-      # - name: 🃏 Run Jest
-      #   run: yarn test --ci --coverage
-
-      # - name: ✅ Upload coverage to Codecov
-      #   uses: codecov/codecov-action@v3.1.0
-
   # https://github.com/cypress-io/cypress-docker-images/tree/master/browsers
   ui-chrome-tests-main:
     timeout-minutes: 15
     runs-on: ubuntu-latest
     container: cypress/browsers:node14.17.0-chrome88-ff89
     needs: install
-    strategy:
-      fail-fast: false
-      matrix:
-        # runs copies of the current job in parallel
-        containers: [1, 2, 3, 4]
     steps:
-      - name: 🛑 Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.9.1
-
       - name: 🛫 Checkout
         uses: actions/checkout@v3
 
@@ -75,7 +55,7 @@ jobs:
       - name: 💻 'UI Tests - Chrome'
         uses: cypress-io/github-action@v4
         with:
-          start: yarn run develop:ci
+          start: yarn run ci:instrument
           wait-on: http://localhost:3000
           wait-on-timeout: 120
           browser: chrome
@@ -85,7 +65,7 @@ jobs:
           spec: "cypress/e2e/main/*"
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # CYPRESS_PROJECT_ID: ${{ secrets.CYPRESS_PROJECT_ID }}
 
       - name: ✅ Upload coverage to Codecov
