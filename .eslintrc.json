@@ -7,7 +7,16 @@
     "plugin:react/recommended",
     "standard-with-typescript"
   ],
-  "overrides": [],
+  "overrides": [
+    {
+      "files": [
+        "cypress/e2e/*.spec.js"
+      ],
+      "rules": {
+        "require-jsdoc": "off"
+      }
+    }
+  ],
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module",

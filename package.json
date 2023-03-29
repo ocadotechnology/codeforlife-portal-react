@@ -18,11 +18,12 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "DISABLE_ESLINT_PLUGIN=true react-scripts start",
+    "start": "DISABLE_ESLINT_PLUGIN=true react-scripts -r @cypress/instrument-cra start",
     "build": "DISABLE_ESLINT_PLUGIN=true react-scripts build",
     "test": "DISABLE_ESLINT_PLUGIN=true react-scripts test",
     "eject": "react-scripts eject",
-    "cypress": "cypress open"
+    "cypress": "cypress open",
+    "coverage": "open coverage/lcov-report/index.html"
   },
   "browserslist": {
     "production": [
@@ -37,6 +38,8 @@
     ]
   },
   "devDependencies": {
+    "@cypress/code-coverage": "^3.10.0",
+    "@cypress/instrument-cra": "^1.4.0",
     "@types/node": "^17.0.45",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
