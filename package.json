@@ -4,14 +4,10 @@
   "private": true,
   "scripts": {
     "start": "DISABLE_ESLINT_PLUGIN=true react-scripts -r @cypress/instrument-cra start",
-    "build": "DISABLE_ESLINT_PLUGIN=true react-scripts build",
-    "test": "DISABLE_ESLINT_PLUGIN=true react-scripts test",
-    "eject": "react-scripts eject",
-    "cypress": "cypress open",
+    "build": "react-scripts build",
+    "test": "cypress open",
     "coverage": "open coverage/lcov-report/index.html",
-    "lint": "eslint src",
-    "local:instrument": "react-scripts -r @cypress/instrument-cra start",
-    "ci:instrument": "DISABLE_ESLINT_PLUGIN=true react-scripts -r @cypress/instrument-cra start"
+    "lint": "eslint src"
   },
   "browserslist": {
     "production": [
