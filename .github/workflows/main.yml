@@ -66,7 +66,7 @@ jobs:
         uses: cypress-io/github-action@v5
         with:
           install: false
-          start: yarn start
+          start: DISABLE_ESLINT_PLUGIN=true node_modules/react-scripts/bin/react-scripts.js -r @cypress/instrument-cra start
           wait-on: ${{env.CYPRESS_WAIT_ON}}
           wait-on-timeout: ${{env.CYPRESS_WAIT_ON_TIMEOUT}}
           browser: chrome
