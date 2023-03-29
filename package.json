@@ -7,7 +7,8 @@
     "build": "DISABLE_ESLINT_PLUGIN=true react-scripts build",
     "test": "cypress open",
     "coverage": "open coverage/lcov-report/index.html",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "serve": "serve -s build"
   },
   "browserslist": {
     "production": [
@@ -50,6 +51,7 @@
     "eslint-plugin-n": "^15.6.1",
     "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-react": "^7.32.2",
+    "serve": "^14.2.0",
     "typescript": "^4.9.5"
   },
   "nyc": {
