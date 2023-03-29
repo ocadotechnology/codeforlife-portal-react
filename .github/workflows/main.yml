@@ -1,28 +1,6 @@
 name: Cypress
 on: [push]
 jobs:
-  install:
-    runs-on: ubuntu-latest
-    container: cypress/browsers:node14.17.0-chrome88-ff89
-    steps:
-      - name: 🛫 Checkout
-        uses: actions/checkout@v3
-
-      - name: 🎓 Install dependencies
-        run: yarn install
-
-      # report machine parameters
-      - run: npx cypress info
-      - run: node -p 'os.cpus()'
-      - run: yarn build
-
-      - name: 📁 Save build folder
-        uses: actions/upload-artifact@v2
-        with:
-          name: build
-          if-no-files-found: error
-          path: build
-
   lint:
     timeout-minutes: 5
     runs-on: ubuntu-latest
@@ -36,12 +14,45 @@ jobs:
       - name: 🧹 Run linting
         run: yarn lint
 
-  # https://github.com/cypress-io/cypress-docker-images/tree/master/browsers
-  ui-chrome-tests-main:
-    timeout-minutes: 15
+  cypress-install:
     runs-on: ubuntu-latest
     container: cypress/browsers:node14.17.0-chrome88-ff89
-    needs: install
+    steps:
+      - name: 🛫 Checkout
+        uses: actions/checkout@v3
+
+      - name: 🎓 Install dependencies
+        run: yarn install
+
+      - name: 🔍 Report test info
+        run: npx cypress info
+
+      - name: 🔍 Report CPU info
+        run: node -p 'os.cpus()'
+
+      - name: 🌲 Cypress install
+        uses: cypress-io/github-action@v5
+        with:
+          runTests: false
+          build: yarn build
+
+      - name: 📁 Save build folder
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          if-no-files-found: error
+          path: build
+
+  # https://github.com/cypress-io/cypress-docker-images/tree/master/browsers
+  cypress-worker-chrome:
+    runs-on: ubuntu-latest
+    container: cypress/browsers:node14.17.0-chrome88-ff89
+    needs: cypress-install
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        containers: [1, 2, 3, 4, 5]
     steps:
       - name: 🛫 Checkout
         uses: actions/checkout@v3
@@ -52,21 +63,21 @@ jobs:
           name: build
           path: build
 
-      - name: 💻 'UI Tests - Chrome'
-        uses: cypress-io/github-action@v4
+      - name: 🧪 Test on Chrome
+        uses: cypress-io/github-action@v5
         with:
-          start: yarn run ci:instrument
+          install: false
+          start: yarn start
           wait-on: http://localhost:3000
           wait-on-timeout: 120
           browser: chrome
           record: true
           parallel: true
-          group: "UI - Chrome - Main"
-          spec: "cypress/e2e/main/*"
+          group: Chrome group
+          spec: cypress/e2e/*
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # CYPRESS_PROJECT_ID: ${{ secrets.CYPRESS_PROJECT_ID }}
 
       - name: ✅ Upload coverage to Codecov
         uses: codecov/codecov-action@v3.1.0
