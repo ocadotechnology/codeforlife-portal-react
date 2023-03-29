@@ -19,7 +19,7 @@ jobs:
       - name: 🎓 Install dependencies
         run: yarn install
 
-      # TODO: enforce linting and remove DISABLE_ESLINT_PLUGIN=true from start and build scripts in package.json
+      # TODO: enforce linting and remove DISABLE_ESLINT_PLUGIN=true from start and build scripts in package.json.
       # - name: 🧹 Run linting
       #   run: yarn lint
 
