@@ -16,8 +16,14 @@ jobs:
       - name: 🛫 Checkout
         uses: actions/checkout@v3
 
-      # - name: 🎓 Install dependencies
-      #   run: yarn install
+      - name: 🔧 Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: "yarn"
+
+      - name: 🎓 Install dependencies
+        run: yarn install --frozen-lockfile
 
       # TODO: enforce linting and remove DISABLE_ESLINT_PLUGIN=true from start and build scripts in package.json.
       # - name: 🧹 Run linting
@@ -26,6 +32,7 @@ jobs:
       - name: 🌲 Cypress install
         uses: cypress-io/github-action@v5.6.1
         with:
+          install: false
           runTests: false
           build: yarn build
 
