@@ -19,7 +19,7 @@ jobs:
       - name: 🔧 Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: "16"
           cache: "yarn"
 
       - name: 🎓 Install dependencies
@@ -73,7 +73,7 @@ jobs:
         uses: cypress-io/github-action@v5.6.1
         with:
           install: false
-          start: DISABLE_ESLINT_PLUGIN=true node_modules/react-scripts/bin/react-scripts.js -r @cypress/instrument-cra start
+          start: yarn start
           wait-on: ${{env.CYPRESS_WAIT_ON}}
           wait-on-timeout: ${{env.CYPRESS_WAIT_ON_TIMEOUT}}
           browser: chrome
