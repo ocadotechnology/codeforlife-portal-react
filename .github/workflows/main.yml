@@ -15,7 +15,7 @@ jobs:
         run: yarn install
 
       # report machine parameters
-      - run: yarn cypress info
+      - run: npx cypress info
       - run: node -p 'os.cpus()'
       - run: yarn build
 
@@ -37,10 +37,10 @@ jobs:
         uses: actions/checkout@v3
 
       - name: 🎓 Install dependencies
-        run: npm install
+        run: yarn install
 
       - name: 🧹 Run linting
-        run: npm run lint
+        run: yarn lint
 
       # - name: 🃏 Run Jest
       #   run: yarn test --ci --coverage
