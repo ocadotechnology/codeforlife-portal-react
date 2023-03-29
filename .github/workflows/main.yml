@@ -4,7 +4,6 @@ on: [push]
 
 env:
   BUILD_PATH: build
-  CYPRESS_TIMEOUT_MINUTES: 15
   CYPRESS_WAIT_ON: http://localhost:3000
   CYPRESS_WAIT_ON_TIMEOUT: 120
   CYPRESS_SPEC: cypress/e2e/**/*.cy.ts
@@ -42,7 +41,6 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     container: cypress/browsers:node14.17.0-chrome88-ff89
-    timeout-minutes: ${{env.CYPRESS_TIMEOUT_MINUTES}}
     steps:
       - name: 🛫 Checkout
         uses: actions/checkout@v3
@@ -82,7 +80,6 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     container: cypress/browsers:node14.17.0-chrome88-ff89
-    timeout-minutes: ${{env.CYPRESS_TIMEOUT_MINUTES}}
     steps:
       - name: 🛫 Checkout
         uses: actions/checkout@v3
