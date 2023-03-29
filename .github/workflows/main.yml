@@ -11,10 +11,9 @@ jobs:
       - name: 🛫 Checkout
         uses: actions/checkout@v3
 
-      - name: 🌲 Cypress install
-        uses: cypress-io/github-action@v4
-        with:
-          runTests: false
+      - name: 🎓 Install dependencies
+        run: npm install
+
       # report machine parameters
       # - run: yarn cypress info
       - run: npx cypress info
