@@ -53,6 +53,7 @@ jobs:
       - name: 🧪 Test on Chrome
         uses: cypress-io/github-action@v5.6.1
         with:
+          build: yarn build
           start: yarn start
           wait-on: ${{env.CYPRESS_WAIT_ON}}
           wait-on-timeout: ${{env.CYPRESS_WAIT_ON_TIMEOUT}}
@@ -91,6 +92,7 @@ jobs:
       - name: 🧪 Test on Firefox
         uses: cypress-io/github-action@v5.6.1
         with:
+          build: yarn build
           start: yarn start
           wait-on: ${{env.CYPRESS_WAIT_ON}}
           wait-on-timeout: ${{env.CYPRESS_WAIT_ON_TIMEOUT}}
