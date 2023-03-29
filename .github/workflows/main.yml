@@ -11,18 +11,13 @@ jobs:
       - name: 🛫 Checkout
         uses: actions/checkout@v3
 
-      - name: Downgrade NPM
-        run: npm install -g npm@6 
-
       - name: 🎓 Install dependencies
-        run: npm install
+        run: yarn install
 
       # report machine parameters
-      # - run: yarn cypress info
-      - run: npx cypress info
+      - run: yarn cypress info
       - run: node -p 'os.cpus()'
-      - run: npm run build
-      # - run: yarn build
+      - run: yarn build
 
       - name: 📁 Save build folder
         uses: actions/upload-artifact@v2
