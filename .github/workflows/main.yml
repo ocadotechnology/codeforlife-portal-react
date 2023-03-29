@@ -11,6 +11,9 @@ jobs:
       - name: 🛫 Checkout
         uses: actions/checkout@v3
 
+      - name: Downgrade NPM
+        run: npm install -g npm@6 
+
       - name: 🎓 Install dependencies
         run: npm install
 
