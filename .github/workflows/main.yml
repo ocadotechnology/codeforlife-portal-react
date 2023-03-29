@@ -3,7 +3,6 @@ name: Cypress
 on: [push]
 
 env:
-  MODULES_PATH: node_modules
   BUILD_PATH: build
   CYPRESS_WAIT_ON: http://localhost:3000
   CYPRESS_WAIT_ON_TIMEOUT: 120
@@ -30,13 +29,6 @@ jobs:
           runTests: false
           build: yarn build
 
-      - name: 📁 Save modules folder
-        uses: actions/upload-artifact@v3
-        with:
-          if-no-files-found: error
-          name: ${{env.MODULES_PATH}}
-          path: ${{env.MODULES_PATH}}
-
       - name: 📁 Save build folder
         uses: actions/upload-artifact@v3
         with:
@@ -57,12 +49,6 @@ jobs:
     steps:
       - name: 🛫 Checkout
         uses: actions/checkout@v3
-      
-      - name: 🏗 Download the module folders
-        uses: actions/download-artifact@v3
-        with:
-          name: ${{env.MODULES_PATH}}
-          path: ${{env.MODULES_PATH}}
 
       - name: 🏗 Download the build folders
         uses: actions/download-artifact@v3
