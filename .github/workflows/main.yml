@@ -38,7 +38,7 @@ jobs:
 
   # https://github.com/cypress-io/cypress-docker-images/tree/master/browsers
   test-chrome:
-    needs: install
+    needs: build
     runs-on: ubuntu-latest
     container: cypress/browsers:node14.17.0-chrome88-ff89
     timeout-minutes: 15
@@ -82,7 +82,7 @@ jobs:
         uses: codecov/codecov-action@v3.1.0
 
   test-firefox:
-    needs: install
+    needs: build
     runs-on: ubuntu-latest
     container: cypress/browsers:node14.17.0-chrome88-ff89
     timeout-minutes: 15
