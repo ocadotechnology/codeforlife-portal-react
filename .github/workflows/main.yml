@@ -33,7 +33,7 @@ jobs:
   test-chrome:
     # needs: install
     runs-on: ubuntu-latest
-    container: cypress/browsers:node14.17.0-chrome88-ff89
+    container: cypress/browsers:node18.6.0-chrome105-ff104
     steps:
       - name: 🛫 Checkout
         uses: actions/checkout@v3
@@ -72,7 +72,7 @@ jobs:
   test-firefox:
     # needs: install
     runs-on: ubuntu-latest
-    container: cypress/browsers:node14.17.0-chrome88-ff89
+    container: cypress/browsers:node18.6.0-chrome105-ff104
     steps:
       - name: 🛫 Checkout
         uses: actions/checkout@v3
