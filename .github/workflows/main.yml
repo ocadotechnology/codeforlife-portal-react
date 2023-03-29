@@ -24,7 +24,7 @@ jobs:
       #   run: yarn lint
 
       - name: 🌲 Cypress install
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v5.6.1
         with:
           runTests: false
           build: yarn build
@@ -63,7 +63,7 @@ jobs:
         run: node -p 'os.cpus()'
 
       - name: 🧪 Test on Chrome
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v5.6.1
         with:
           install: false
           start: DISABLE_ESLINT_PLUGIN=true node_modules/react-scripts/bin/react-scripts.js -r @cypress/instrument-cra start
@@ -107,7 +107,7 @@ jobs:
   #       run: node -p 'os.cpus()'
 
   #     - name: 🧪 Test on Firefox
-  #       uses: cypress-io/github-action@v5
+  #       uses: cypress-io/github-action@v5.6.1
   #       with:
   #         install: false
   #         start: yarn start
