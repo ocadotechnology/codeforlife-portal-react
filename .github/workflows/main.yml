@@ -113,14 +113,10 @@ on: [push]
 jobs:
   install:
     runs-on: ubuntu-latest
-    container: cypress/browsers:node12.18.3-chrome87-ff82
+    container: cypress/browsers:node14.17.0-chrome88-ff89
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
 
       - name: Cypress install
         uses: cypress-io/github-action@v5.6.1
@@ -138,7 +134,7 @@ jobs:
 
   ui-chrome-tests:
     runs-on: ubuntu-latest
-    container: cypress/browsers:node12.18.3-chrome87-ff82
+    container: cypress/browsers:node14.17.0-chrome88-ff89
     needs: install
     strategy:
       fail-fast: false
