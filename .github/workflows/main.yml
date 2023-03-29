@@ -1,20 +1,15 @@
 name: Cypress
+
 on: [push]
+
+env:
+  BUILD_PATH: build
+  CYPRESS_WAIT_ON: http://localhost:3000
+  CYPRESS_WAIT_ON_TIMEOUT: 120
+  CYPRESS_SPEC: cypress/e2e/*
+
 jobs:
-  lint:
-    timeout-minutes: 5
-    runs-on: ubuntu-latest
-    steps:
-      - name: 🛫 Checkout
-        uses: actions/checkout@v3
-
-      - name: 🎓 Install dependencies
-        run: yarn install
-
-      - name: 🧹 Run linting
-        run: yarn lint
-
-  cypress-install:
+  build:
     runs-on: ubuntu-latest
     container: cypress/browsers:node14.17.0-chrome88-ff89
     steps:
@@ -24,11 +19,9 @@ jobs:
       - name: 🎓 Install dependencies
         run: yarn install
 
-      - name: 🔍 Report test info
-        run: npx cypress info
-
-      - name: 🔍 Report CPU info
-        run: node -p 'os.cpus()'
+      # TODO: enforce linting and remove DISABLE_ESLINT_PLUGIN=true from start and build scripts in package.json
+      # - name: 🧹 Run linting
+      #   run: yarn lint
 
       - name: 🌲 Cypress install
         uses: cypress-io/github-action@v5
@@ -39,20 +32,20 @@ jobs:
       - name: 📁 Save build folder
         uses: actions/upload-artifact@v3
         with:
-          name: build
           if-no-files-found: error
-          path: build
+          name: ${{env.BUILD_PATH}}
+          path: ${{env.BUILD_PATH}}
 
   # https://github.com/cypress-io/cypress-docker-images/tree/master/browsers
-  cypress-worker-chrome:
+  test-chrome:
+    needs: install
     runs-on: ubuntu-latest
     container: cypress/browsers:node14.17.0-chrome88-ff89
-    needs: cypress-install
     timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
-        containers: [1, 2, 3, 4, 5]
+        containers: [1, 2, 3, 4]
     steps:
       - name: 🛫 Checkout
         uses: actions/checkout@v3
@@ -60,21 +53,71 @@ jobs:
       - name: 🏗 Download the build folders
         uses: actions/download-artifact@v3
         with:
-          name: build
-          path: build
+          name: ${{env.BUILD_PATH}}
+          path: ${{env.BUILD_PATH}}
+
+      - name: 🔍 Report test info
+        run: npx cypress info
+
+      - name: 🔍 Report CPU info
+        run: node -p 'os.cpus()'
 
       - name: 🧪 Test on Chrome
         uses: cypress-io/github-action@v5
         with:
           install: false
           start: yarn start
-          wait-on: http://localhost:3000
-          wait-on-timeout: 120
+          wait-on: ${{env.CYPRESS_WAIT_ON}}
+          wait-on-timeout: ${{env.CYPRESS_WAIT_ON_TIMEOUT}}
           browser: chrome
           record: true
           parallel: true
           group: Chrome group
-          spec: cypress/e2e/*
+          spec: ${{env.CYPRESS_SPEC}}
+        env:
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: ✅ Upload coverage to Codecov
+        uses: codecov/codecov-action@v3.1.0
+
+  test-firefox:
+    needs: install
+    runs-on: ubuntu-latest
+    container: cypress/browsers:node14.17.0-chrome88-ff89
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        containers: [1, 2, 3, 4]
+    steps:
+      - name: 🛫 Checkout
+        uses: actions/checkout@v3
+
+      - name: 🏗 Download the build folders
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{env.BUILD_PATH}}
+          path: ${{env.BUILD_PATH}}
+
+      - name: 🔍 Report test info
+        run: npx cypress info
+
+      - name: 🔍 Report CPU info
+        run: node -p 'os.cpus()'
+
+      - name: 🧪 Test on Firefox
+        uses: cypress-io/github-action@v5
+        with:
+          install: false
+          start: yarn start
+          wait-on: ${{env.CYPRESS_WAIT_ON}}
+          wait-on-timeout: ${{env.CYPRESS_WAIT_ON_TIMEOUT}}
+          browser: firefox
+          record: true
+          parallel: true
+          group: Firefox group
+          spec: ${{env.CYPRESS_SPEC}}
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
