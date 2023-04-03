@@ -24,10 +24,11 @@ const CodingClubs: React.FC = () => {
 
   return (
     <BasePage>
-      <BaseSection containerProps={{ bgcolor: theme.palette.primary.main }}>
+      TODO: fix
+      {/* <BaseSection containerProps={{ bgcolor: theme.palette.primary.main }}> */}
         {/* <PageBanner img={{ alt: 'codeClubHero', src: CodeClubHeroImage }} title='Coding clubs' description='A FREE set of slides and guides to run your own coding clubs' /> */}
-      </BaseSection>
-
+      {/* </BaseSection> */}
+      {/* 
       <BaseSection>
         <Grid xs>
           <Stack>
@@ -92,7 +93,7 @@ const CodingClubs: React.FC = () => {
             </Button>
           </Grid>
         </Grid>
-      </BaseSection>
+      </BaseSection> */}
 
     </BasePage>
   );

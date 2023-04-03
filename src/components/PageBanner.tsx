@@ -9,14 +9,14 @@ import {
 
 import { Image } from 'codeforlife/lib/esm/components';
 
-type GridElement = React.ReactElement<typeof Grid>;
-
 export interface PageBannerProps {
-  text: { title: string, content: GridElement | GridElement[] },
+  text: { title: string, content: string },
   img: { alt: string, src: string },
 };
 
-export const PageBanner: React.FC<PageBannerProps> = ({ text, img }) => {
+const PageBanner: React.FC<PageBannerProps> = ({
+  text, img
+}) => {
   const theme = useTheme();
   return (
     <Grid
@@ -30,7 +30,7 @@ export const PageBanner: React.FC<PageBannerProps> = ({ text, img }) => {
           <Typography variant='h2' style={{ color: 'white' }}>
             {text.title}
           </Typography>
-          <Typography variant='h5' style={{ color: 'white' }}>
+          <Typography variant='h5' style={{ color: 'white' }} mb={0}>
             {text.content}
           </Typography>
         </Stack>
@@ -46,3 +46,5 @@ export const PageBanner: React.FC<PageBannerProps> = ({ text, img }) => {
     </Grid>
   );
 };
+
+export default PageBanner;
