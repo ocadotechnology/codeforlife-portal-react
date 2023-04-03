@@ -86,6 +86,20 @@ const theme = createTheme(cflTheme, {
           }
         }
       }
+    },
+    MuiFormControlLabel: {
+      defaultProps: {
+        sx: {
+          '.MuiTypography-root': { m: 0 }
+        }
+      }
+    },
+    MuiInputBase: {
+      styleOverrides: {
+        root: {
+          margin: 0
+        }
+      }
     }
   }
 });
