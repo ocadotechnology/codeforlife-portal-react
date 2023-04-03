@@ -9,101 +9,35 @@ env:
   CYPRESS_SPEC: cypress/e2e/**/*.cy.ts
 
 jobs:
-    # install:
-    #   runs-on: ubuntu-latest
-    #   container: cypress/browsers:node14.17.0-chrome88-ff89
-    #   steps:
-    #     - name: 🛫 Checkout
-    #       uses: actions/checkout@v3
-
-    #     - name: 🌲 Cypress install
-    #       uses: cypress-io/github-action@v5.6.1
-    #       with:
-    #         runTests: false
-    #         build: yarn build
-
-    #     - name: 📁 Save build folder
-    #       uses: actions/upload-artifact@v3
-    #       with:
-    #         if-no-files-found: error
-    #         name: ${{env.BUILD_PATH}}
-    #         path: ${{env.BUILD_PATH}}
-
+  # The below code was adapted from this documentation.
+  # https://docs.cypress.io/guides/continuous-integration/github-actions#Parallelization
   # https://github.com/cypress-io/cypress-docker-images/tree/master/browsers
   test-chrome:
-    # needs: install
     runs-on: ubuntu-latest
     container: cypress/browsers:node18.6.0-chrome105-ff104
     steps:
       - name: 🛫 Checkout
         uses: actions/checkout@v3
-
-      # - name: 🏗 Download the build folders
-      #   uses: actions/download-artifact@v3
-      #   with:
-      #     name: ${{env.BUILD_PATH}}
-      #     path: ${{env.BUILD_PATH}}
-
-      - name: 🔍 Report test info
-        run: npx cypress info
-
-      - name: 🔍 Report CPU info
-        run: node -p 'os.cpus()'
 
       - name: 🧪 Test on Chrome
         uses: cypress-io/github-action@v5.6.1
         with:
           build: yarn build
           start: yarn serve
-          wait-on: ${{env.CYPRESS_WAIT_ON}}
-          wait-on-timeout: ${{env.CYPRESS_WAIT_ON_TIMEOUT}}
+          wait-on: ${{ env.CYPRESS_WAIT_ON }}
+          wait-on-timeout: ${{ env.CYPRESS_WAIT_ON_TIMEOUT }}
           browser: chrome
           record: true
-          parallel: true
-          group: Chrome group
-          spec: ${{env.CYPRESS_SPEC}}
+          spec: ${{ env.CYPRESS_SPEC }}
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: ✅ Upload coverage to Codecov
-        uses: codecov/codecov-action@v3.1.0
-
-  test-firefox:
-    # needs: install
-    runs-on: ubuntu-latest
-    container: cypress/browsers:node18.6.0-chrome105-ff104
-    steps:
-      - name: 🛫 Checkout
-        uses: actions/checkout@v3
-
-      # - name: 🏗 Download the build folders
-      #   uses: actions/download-artifact@v3
-      #   with:
-      #     name: ${{env.BUILD_PATH}}
-      #     path: ${{env.BUILD_PATH}}
 
       - name: 🔍 Report test info
         run: npx cypress info
 
       - name: 🔍 Report CPU info
         run: node -p 'os.cpus()'
-
-      - name: 🧪 Test on Firefox
-        uses: cypress-io/github-action@v5.6.1
-        with:
-          build: yarn build
-          start: yarn serve
-          wait-on: ${{env.CYPRESS_WAIT_ON}}
-          wait-on-timeout: ${{env.CYPRESS_WAIT_ON_TIMEOUT}}
-          browser: firefox
-          record: true
-          parallel: true
-          group: Firefox group
-          spec: ${{env.CYPRESS_SPEC}}
-        env:
-          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: ✅ Upload coverage to Codecov
         uses: codecov/codecov-action@v3.1.0
