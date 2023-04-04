@@ -1,14 +1,13 @@
 import React from "react";
 import {
-  Container,
   Unstable_Grid2 as Grid,
-  Paper,
   Typography,
   Button,
+  Container,
 } from "@mui/material";
 
 import BasePage from "pages/BasePage";
-import { PageBanner } from "pages/aboutUs/AboutUs";
+import PageBanner from "components/PageBanner";
 import Github from "images/github.png";
 import Clubs from "images/clubs.png";
 import Universities from "images/universities.png";
@@ -17,7 +16,6 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import { ChevronRightRounded } from "@mui/icons-material";
 import GetInvolvedHero from "images/get_involved_hero.png";
-import { BaseSection } from "pages/aboutUs/AboutUs";
 import theme from "app/theme";
 
 const CardStyle = {
@@ -104,8 +102,11 @@ const ThirdCard: React.FC = () => {
 const GetInvolvedBanner: React.FC = () => {
   return (
     <PageBanner
-      title="Get involved"
-      description="How you can get involved with the creation of Code for Life products and resources"
+      text={{
+        title: "Get involved",
+        content:
+          "How you can get involved with the creation of Code for Life products and resources",
+      }}
       img={{ alt: "Get involved", src: GetInvolvedHero }}
     />
   );
@@ -114,10 +115,8 @@ const GetInvolvedBanner: React.FC = () => {
 const GetInvolved: React.FC = () => {
   return (
     <BasePage>
-      <BaseSection containerProps={{ bgcolor: theme.palette.primary.main }}>
-        <GetInvolvedBanner />
-      </BaseSection>
-      <BaseSection>
+      <GetInvolvedBanner />
+      <Container>
         <Grid spacing={4} container direction="row" p={4} xs={12}>
           <Grid xs={12} md={6} lg={4}>
             <FirstCard />
@@ -129,7 +128,7 @@ const GetInvolved: React.FC = () => {
             <ThirdCard />
           </Grid>
         </Grid>
-      </BaseSection>
+      </Container>
     </BasePage>
   );
 };

@@ -1,32 +1,33 @@
-import React from 'react';
+import React from "react";
 import {
   Button,
   Link,
   Stack,
   Typography,
   Unstable_Grid2 as Grid,
-  useTheme
-} from '@mui/material';
+  useTheme,
+} from "@mui/material";
 
-import BasePage from 'pages/BasePage';
+import BasePage from "pages/BasePage";
 
-import { Image } from 'codeforlife/lib/esm/components';
+import { Image } from "codeforlife/lib/esm/components";
 // import CodeClubHeroImage from 'images/coding_club_hero_hexagon.jpg';
-import AboutUsCFLImage from 'images/about_us_cfl.jpg';
-import PythonClubImage from 'images/coding_club_python_pack.png';
-import { BaseSection } from 'components/BaseSection';
+import AboutUsCFLImage from "images/about_us_cfl.jpg";
+import PythonClubImage from "images/coding_club_python_pack.png";
 // import { PageBanner } from 'pages/aboutUs/PageBanner';
 
 const CodingClubs: React.FC = () => {
   const theme = useTheme();
-  const primaryResourceLink = 'https://code-for-life.gitbook.io/code-club-resources/';
-  const pythonResourceLink = 'https://code-for-life.gitbook.io/code-club-resources-intermediate/';
+  const primaryResourceLink =
+    "https://code-for-life.gitbook.io/code-club-resources/";
+  const pythonResourceLink =
+    "https://code-for-life.gitbook.io/code-club-resources-intermediate/";
 
   return (
     <BasePage>
-      TODO: fix
+      {/*TODO: fix*/}
       {/* <BaseSection containerProps={{ bgcolor: theme.palette.primary.main }}> */}
-        {/* <PageBanner img={{ alt: 'codeClubHero', src: CodeClubHeroImage }} title='Coding clubs' description='A FREE set of slides and guides to run your own coding clubs' /> */}
+      {/* <PageBanner img={{ alt: 'codeClubHero', src: CodeClubHeroImage }} title='Coding clubs' description='A FREE set of slides and guides to run your own coding clubs' /> */}
       {/* </BaseSection> */}
       {/* 
       <BaseSection>
@@ -94,7 +95,6 @@ const CodingClubs: React.FC = () => {
           </Grid>
         </Grid>
       </BaseSection> */}
-
     </BasePage>
   );
 };
