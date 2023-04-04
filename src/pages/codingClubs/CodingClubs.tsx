@@ -3,7 +3,6 @@ import {
   Button,
   Link,
   Typography,
-  Unstable_Grid2 as Grid,
   useTheme
 } from '@mui/material';
 
@@ -13,6 +12,7 @@ import CodeClubHeroImage from 'images/coding_club_hero_hexagon.jpg';
 import AboutUsCFLImage from 'images/about_us_cfl.jpg';
 import PythonClubImage from 'images/coding_club_python_pack.png';
 import PageBanner from 'components/PageBanner';
+import PageSection from 'components/PageSection';
 import Introduction from 'components/Introduction';
 import ClubAim from './ClubAim';
 
@@ -30,11 +30,11 @@ const CodingClubs: React.FC = () => {
         }}
       />
 
-      <Grid xs={12}>
+      <PageSection>
         <ClubAim />
-      </Grid>
+      </PageSection>
 
-      <Grid xs={12} bgcolor={theme.palette.info.main}>
+      <PageSection containerProps={{ bgcolor: theme.palette.info.main }}>
         <Introduction
           header='Primary coding club'
           img={{ alt: 'aboutUsCFL', src: AboutUsCFLImage }}
@@ -50,9 +50,9 @@ const CodingClubs: React.FC = () => {
             &nbsp;{downloadSvg}
           </Button>
         </Introduction>
-      </Grid>
+      </PageSection>
 
-      <Grid xs={12}>
+      <PageSection>
         <Introduction
           header='Python coding club'
           img={{ alt: 'pythonCodingClub', src: PythonClubImage }}
@@ -69,7 +69,7 @@ const CodingClubs: React.FC = () => {
             &nbsp;{downloadSvg}
           </Button>
         </Introduction>
-      </Grid>
+      </PageSection>
     </BasePage >
   );
 };

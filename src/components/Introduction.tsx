@@ -18,14 +18,14 @@ const Introduction: React.FC<{
   return <>
     <Grid
       container
-      spacing={1}
-      padding={3}
+      spacing={{ xs: 2, lg: 3 }}
+      padding={{ xs: 1, md: 2, lg: 3 }}
       display='flex'
       direction={direction}
     >
       <Grid xs={12} md={6}>
         <Stack sx={{ height: '100%' }}>
-          <Typography variant='h5'>
+          <Typography variant='h5' py={1}>
             {header}
           </Typography>
           {children}

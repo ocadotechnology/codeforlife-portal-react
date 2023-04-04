@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Unstable_Grid2 as Grid,
   Typography,
   useTheme,
   Link
@@ -8,6 +7,7 @@ import {
 
 import BasePage from 'pages/BasePage';
 import PageBanner from 'components/PageBanner';
+import PageSection from 'components/PageSection';
 import Introduction from 'components/Introduction';
 import AboutUsHeroImage from 'images/about_us_hero_hexagon.png';
 import AboutUsCFLImage from 'images/about_us_cfl.jpg';
@@ -30,10 +30,12 @@ const AboutUs: React.FC = () => {
           content: 'Code For Life gives everyone the ability to shape technology\'s future'
         }}
       />
-      <Grid xs={12}>
+
+      <PageSection>
         <Statistics />
-      </Grid>
-      <Grid xs={12} bgcolor={theme.palette.info.main}>
+      </PageSection>
+
+      <PageSection containerProps={{ bgcolor: theme.palette.info.main }}>
         <Introduction
           header='What is Code for Life?'
           img={{ alt: 'aboutUsCFL', src: AboutUsCFLImage }}
@@ -48,8 +50,9 @@ const AboutUs: React.FC = () => {
             Anyone looking to get into coding can also do so using the games and resources. We opened CFL resources to parents and the general public during the 2020 Covid-19 pandemic so that people don&apos;t need to be part of a school to have access.
           </Typography>
         </Introduction>
-      </Grid>
-      <Grid xs={12}>
+      </PageSection>
+
+      <PageSection>
         <Introduction
           header='Who is Ocado Group?'
           img={{ alt: 'aboutUsOcado', src: AboutUsOcadoImage }}
@@ -65,16 +68,19 @@ const AboutUs: React.FC = () => {
             <Link href={process.env.REACT_APP_OCADO_GROUP_HREF} color="inherit" underline="always" target="_blank">Skills for the Future</Link> is one of Ocado Group&apos;s core Corporate Responsibility pillars, which is part of the Ocado Unlimited strategy (alongside Natural Resources and Responsible Sourcing). For Ocado Group, Skills for the Future means championing digital literacy. We want to inspire the next generation of STEM leaders, so that everyone can fully participate in society.
           </Typography>
         </Introduction>
-      </Grid>
-      <Grid xs={12} bgcolor={theme.palette.info.main}>
+      </PageSection>
+
+      <PageSection containerProps={{ bgcolor: theme.palette.info.main }}>
         <Quotes />
-      </Grid>
-      <Grid xs={12}>
+      </PageSection>
+
+      <PageSection>
         <Supporters />
-      </Grid>
-      <Grid xs={12} bgcolor={theme.palette.info.main}>
+      </PageSection>
+
+      <PageSection containerProps={{ bgcolor: theme.palette.info.main }}>
         <Dedication />
-      </Grid>
+      </PageSection>
     </BasePage>
   );
 };
