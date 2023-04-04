@@ -18,7 +18,3 @@ div#root {
   font-family: "Inter";
   src: local("Inter"), url("./fonts/Inter-VariableFont_slnt,wght.ttf") format("truetype");
 }
-
-.MuiGrid2-root {
-  padding: 0;
-}
