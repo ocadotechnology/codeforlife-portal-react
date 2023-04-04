@@ -8,33 +8,43 @@ const theme = createTheme(cflTheme, {
   typography: {
     h1: {
       fontFamily: '"SpaceGrotesk"',
-      fontWeight: 500
+      fontWeight: 500,
+      marginBottom: 24
     },
     h2: {
       fontFamily: '"SpaceGrotesk"',
-      fontWeight: 500
+      fontWeight: 500,
+      marginBottom: 22
     },
     h3: {
       fontFamily: '"SpaceGrotesk"',
-      fontWeight: 500
+      fontWeight: 500,
+      marginBottom: 20
     },
     h4: {
       fontFamily: '"SpaceGrotesk"',
-      fontWeight: 500
+      fontWeight: 500,
+      marginBottom: 18
     },
     h5: {
       fontFamily: '"SpaceGrotesk"',
-      fontWeight: 500
+      fontWeight: 500,
+      marginBottom: 16
     },
     h6: {
       fontFamily: '"SpaceGrotesk"',
-      fontWeight: 500
+      fontWeight: 500,
+      marginBottom: 14
     },
     body1: {
-      fontFamily: '"Inter"'
+      fontFamily: '"Inter"',
+      fontSize: 18,
+      marginBottom: 16
     },
     body2: {
-      fontFamily: '"Inter"'
+      fontFamily: '"Inter"',
+      fontSize: 16,
+      marginBottom: 14
     },
     button: {
       fontFamily: '"Inter"',
@@ -74,6 +84,20 @@ const theme = createTheme(cflTheme, {
             color: cflTheme.palette.primary.light,
             backgroundColor: 'white'
           }
+        }
+      }
+    },
+    MuiFormControlLabel: {
+      defaultProps: {
+        sx: {
+          '.MuiTypography-root': { m: 0 }
+        }
+      }
+    },
+    MuiInputBase: {
+      styleOverrides: {
+        root: {
+          margin: 0
         }
       }
     }
