@@ -17,6 +17,7 @@ import CardMedia from "@mui/material/CardMedia";
 import { ChevronRightRounded } from "@mui/icons-material";
 import GetInvolvedHero from "images/get_involved_hero.png";
 import theme from "app/theme";
+import { ImageTextProps } from "components/interfaces/interfaces";
 
 const CardStyle = {
   // this creates cards that will have matching heights
@@ -26,69 +27,15 @@ const CardStyle = {
   justifyContent: "flex-start",
 } as React.CSSProperties;
 
-const FirstCard: React.FC = () => {
+const GetInvolvedCard: React.FC<ImageTextProps> = ({ text, img }) => {
   return (
     <Card sx={CardStyle}>
-      <CardMedia sx={{ height: 242 }} image={Clubs} title="Clubs" />
+      <CardMedia sx={{ height: 242 }} image={img.src} title={img.alt} />
       <CardContent sx={{ flexGrow: 1 }}>
         <Typography gutterBottom variant="h5">
-          Starting a coding club of your own
+          {text.title}
         </Typography>
-        <Typography variant="body1">
-          Become a Code for Life ambassador by starting up a coding club. Find
-          out more about how you can get involved with this by visiting our
-          coding club page.
-        </Typography>
-      </CardContent>
-      <CardContent>
-        <Button variant="contained" endIcon={<ChevronRightRounded />}>
-          Read more
-        </Button>
-      </CardContent>
-    </Card>
-  );
-};
-
-const SecondCard: React.FC = () => {
-  return (
-    <Card sx={CardStyle}>
-      <CardMedia sx={{ height: 242 }} image={Github} title="Github" />
-      <CardContent sx={{ flexGrow: 1 }}>
-        <Typography gutterBottom variant="h5">
-          Contribute through code
-        </Typography>
-        <Typography variant="body1">
-          We welcome volunteers from all backgrounds to help us with our coding
-          adventure. Take a look at our contribution guide to find out how to
-          get involved in our open source projects.
-        </Typography>
-      </CardContent>
-      <CardContent>
-        <Button variant="contained" endIcon={<ChevronRightRounded />}>
-          Read more
-        </Button>
-      </CardContent>
-    </Card>
-  );
-};
-
-const ThirdCard: React.FC = () => {
-  return (
-    <Card sx={CardStyle}>
-      <CardMedia
-        sx={{ height: 242 }}
-        image={Universities}
-        title="Universities"
-      />
-      <CardContent sx={{ flexGrow: 1 }}>
-        <Typography gutterBottom variant="h5">
-          University partnerships
-        </Typography>
-        <Typography sx={{ flexGrow: 1 }} variant="body1">
-          Please get in touch at codeforlife@ocado.com if you are interested in
-          working on Code for Life projects with your students including:
-          coding, user experience, data analytics and new feature design.
-        </Typography>
+        <Typography variant="body1">{text.content}</Typography>
       </CardContent>
       <CardContent>
         <Button variant="contained" endIcon={<ChevronRightRounded />}>
@@ -119,13 +66,43 @@ const GetInvolved: React.FC = () => {
       <Container>
         <Grid spacing={4} container direction="row" p={4} xs={12}>
           <Grid xs={12} md={6} lg={4}>
-            <FirstCard />
+            <GetInvolvedCard
+              text={{
+                title: "Starting a coding club of your own",
+                content:
+                  "Become a Code for Life ambassador by starting up a coding club. Find out more about how you can get involved with this by visiting our coding club page.",
+              }}
+              img={{
+                alt: "Clubs",
+                src: Clubs,
+              }}
+            />
           </Grid>
           <Grid xs={12} md={6} lg={4}>
-            <SecondCard />
+            <GetInvolvedCard
+              text={{
+                title: "Contribute through code",
+                content:
+                  "We welcome volunteers from all backgrounds to help us with our coding adventure. Take a look at our contribution guide to find out how to get involved in our open source projects.",
+              }}
+              img={{
+                alt: "Github",
+                src: Github,
+              }}
+            />
           </Grid>
           <Grid xs={12} md={6} lg={4}>
-            <ThirdCard />
+            <GetInvolvedCard
+              text={{
+                title: "University partnerships",
+                content:
+                  "Please get in touch at codeforlife@ocado.com if you are interested in working on Code for Life projects with your students including coding, user experience, data analytics and new feature design.",
+              }}
+              img={{
+                alt: "Universities",
+                src: Universities,
+              }}
+            />
           </Grid>
         </Grid>
       </Container>
