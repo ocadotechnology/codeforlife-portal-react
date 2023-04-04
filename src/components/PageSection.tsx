@@ -9,7 +9,7 @@ const PageSection: React.FC<{
   containerProps?: Grid2Props
 }> = ({ children, containerProps = {} }) => {
   return <>
-    <Grid container xs={12} px={{ xs: 5, md: 15, lg: 30 }} py={3} spacing={1} {...containerProps}>
+    <Grid container xs={12} px={{ xs: 5, md: 15, lg: 40 }} py={2} spacing={1} {...containerProps}>
       {children}
     </Grid>
   </>;
