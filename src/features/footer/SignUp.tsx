@@ -15,7 +15,7 @@ import {
 const SignUp: React.FC = () => (
   <Grid container>
     <Grid xs={12}>
-      <Typography>
+      <Typography m={0}>
         Sign up to receive updates about Code for Life games and teaching resources.
       </Typography>
     </Grid>

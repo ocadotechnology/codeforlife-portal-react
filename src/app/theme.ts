@@ -1,40 +1,50 @@
-import { createTheme } from '@mui/material/styles';
+import { createTheme, ThemeOptions } from '@mui/material/styles';
 
 import { theme as cflTheme } from 'codeforlife';
 
 // import '../fonts/SpaceGrotesk-VariableFont_wght.ttf';
 
-const theme = createTheme(cflTheme, {
+const options: ThemeOptions = {
   typography: {
     h1: {
       fontFamily: '"SpaceGrotesk"',
-      fontWeight: 500
+      fontWeight: 500,
+      marginBottom: 24
     },
     h2: {
       fontFamily: '"SpaceGrotesk"',
-      fontWeight: 500
+      fontWeight: 500,
+      marginBottom: 22
     },
     h3: {
       fontFamily: '"SpaceGrotesk"',
-      fontWeight: 500
+      fontWeight: 500,
+      marginBottom: 20
     },
     h4: {
       fontFamily: '"SpaceGrotesk"',
-      fontWeight: 500
+      fontWeight: 500,
+      marginBottom: 18
     },
     h5: {
       fontFamily: '"SpaceGrotesk"',
-      fontWeight: 500
+      fontWeight: 500,
+      marginBottom: 16
     },
     h6: {
       fontFamily: '"SpaceGrotesk"',
-      fontWeight: 500
+      fontWeight: 500,
+      marginBottom: 14
     },
     body1: {
-      fontFamily: '"Inter"'
+      fontFamily: '"Inter"',
+      fontSize: 18,
+      marginBottom: 16
     },
     body2: {
-      fontFamily: '"Inter"'
+      fontFamily: '"Inter"',
+      fontSize: 16,
+      marginBottom: 14
     },
     button: {
       fontFamily: '"Inter"',
@@ -61,7 +71,8 @@ const theme = createTheme(cflTheme, {
         root: {
           textTransform: 'none',
           color: 'black',
-          padding: '5px 20px'
+          padding: '5px 20px',
+          width: 'fit-content'
         }
       }
     },
@@ -76,8 +87,42 @@ const theme = createTheme(cflTheme, {
           }
         }
       }
+    },
+    MuiFormControlLabel: {
+      defaultProps: {
+        sx: {
+          '.MuiTypography-root': { m: 0 }
+        }
+      }
+    },
+    MuiInputBase: {
+      styleOverrides: {
+        root: {
+          margin: 0
+        }
+      }
     }
+    // MuiContainer: {
+    //   styleOverrides: {
+    //     root: {
+    //       '&.MuiContainer-root': {
+    //         padding: 0
+    //       }
+    //     }
+    //   }
+    // },
+    // MuiToolbar: {
+    //   styleOverrides: {
+    //     root: {
+    //       '&.MuiToolbar-root': {
+    //         padding: 0
+    //       }
+    //     }
+    //   }
+    // }
   }
-});
+};
+
+const theme = createTheme(cflTheme, options);
 
 export default theme;
