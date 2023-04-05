@@ -1,10 +1,10 @@
-import { createTheme } from '@mui/material/styles';
+import { createTheme, ThemeOptions } from '@mui/material/styles';
 
 import { theme as cflTheme } from 'codeforlife';
 
 // import '../fonts/SpaceGrotesk-VariableFont_wght.ttf';
 
-const theme = createTheme(cflTheme, {
+const options: ThemeOptions = {
   typography: {
     h1: {
       fontFamily: '"SpaceGrotesk"',
@@ -71,7 +71,8 @@ const theme = createTheme(cflTheme, {
         root: {
           textTransform: 'none',
           color: 'black',
-          padding: '5px 20px'
+          padding: '5px 20px',
+          width: 'fit-content'
         }
       }
     },
@@ -101,7 +102,27 @@ const theme = createTheme(cflTheme, {
         }
       }
     }
+    // MuiContainer: {
+    //   styleOverrides: {
+    //     root: {
+    //       '&.MuiContainer-root': {
+    //         padding: 0
+    //       }
+    //     }
+    //   }
+    // },
+    // MuiToolbar: {
+    //   styleOverrides: {
+    //     root: {
+    //       '&.MuiToolbar-root': {
+    //         padding: 0
+    //       }
+    //     }
+    //   }
+    // }
   }
-});
+};
+
+const theme = createTheme(cflTheme, options);
 
 export default theme;

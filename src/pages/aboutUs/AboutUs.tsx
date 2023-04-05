@@ -35,7 +35,7 @@ const AboutUs: React.FC = () => {
         <Statistics />
       </PageSection>
 
-      <PageSection containerProps={{ bgcolor: theme.palette.info.main }}>
+      <PageSection bgcolor={theme.palette.info.main}>
         <Introduction
           header='What is Code for Life?'
           img={{ alt: 'aboutUsCFL', src: AboutUsCFLImage }}
@@ -70,7 +70,7 @@ const AboutUs: React.FC = () => {
         </Introduction>
       </PageSection>
 
-      <PageSection containerProps={{ bgcolor: theme.palette.info.main }}>
+      <PageSection bgcolor={theme.palette.info.main}>
         <Quotes />
       </PageSection>
 
@@ -78,7 +78,7 @@ const AboutUs: React.FC = () => {
         <Supporters />
       </PageSection>
 
-      <PageSection containerProps={{ bgcolor: theme.palette.info.main }}>
+      <PageSection bgcolor={theme.palette.info.main}>
         <Dedication />
       </PageSection>
     </BasePage>

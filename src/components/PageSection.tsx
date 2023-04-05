@@ -1,16 +1,30 @@
 import React from 'react';
 import {
+  Unstable_Grid2 as Grid,
   Grid2Props,
-  Unstable_Grid2 as Grid
+  Container
 } from '@mui/material';
 
-const PageSection: React.FC<{
-  children: React.ReactNode,
-  containerProps?: Grid2Props
-}> = ({ children, containerProps = {} }) => {
+export interface PageSectionProps extends Pick<Grid2Props, (
+  'bgcolor'
+)> {
+  children: React.ReactNode
+  py?: 0 | 1
+}
+
+const PageSection: React.FC<PageSectionProps> = ({
+  bgcolor, children, py = 1
+}) => {
   return <>
-    <Grid container xs={12} px={{ xs: 5, md: 15, lg: 40 }} py={2} spacing={1} {...containerProps}>
-      {children}
+    <Grid
+      xs={12}
+      bgcolor={bgcolor}
+      py={py}
+      px={0} // TODO: fix with theme
+    >
+      <Container maxWidth='lg'>
+        {children}
+      </Container>
     </Grid>
   </>;
 };

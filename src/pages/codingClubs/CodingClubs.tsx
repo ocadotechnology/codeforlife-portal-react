@@ -5,20 +5,33 @@ import {
   Typography,
   useTheme
 } from '@mui/material';
+import {
+  Download as DownloadIcon
+} from '@mui/icons-material';
 
 import BasePage from 'pages/BasePage';
-
 import CodeClubHeroImage from 'images/coding_club_hero_hexagon.jpg';
 import AboutUsCFLImage from 'images/about_us_cfl.jpg';
 import PythonClubImage from 'images/coding_club_python_pack.png';
 import PageBanner from 'components/PageBanner';
 import PageSection from 'components/PageSection';
 import Introduction from 'components/Introduction';
+
 import ClubAim from './ClubAim';
+
+const DownloadButton: React.FC<{
+  children: string
+}> = ({ children }) => (
+  <Button
+    style={{ marginTop: 'auto' }}
+    endIcon={<DownloadIcon />}
+  >
+    {children}
+  </Button>
+);
 
 const CodingClubs: React.FC = () => {
   const theme = useTheme();
-  const downloadSvg = <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M2 12h2v5h16v-5h2v5c0 1.11-.89 2-2 2H4a2 2 0 0 1-2-2v-5m10 3l5.55-5.46l-1.42-1.41L13 11.25V2h-2v9.25L7.88 8.13L6.46 9.55L12 15Z" /></svg>;
 
   return (
     <BasePage>
@@ -34,7 +47,7 @@ const CodingClubs: React.FC = () => {
         <ClubAim />
       </PageSection>
 
-      <PageSection containerProps={{ bgcolor: theme.palette.info.main }}>
+      <PageSection bgcolor={theme.palette.info.main}>
         <Introduction
           header='Primary coding club'
           img={{ alt: 'aboutUsCFL', src: AboutUsCFLImage }}
@@ -45,10 +58,9 @@ const CodingClubs: React.FC = () => {
           <Typography>
             View the resources <Link href={process.env.REACT_APP_PRIMARY_RESOURCE_HREF} color="inherit" underline="always" target="_blank">online here</Link>.
           </Typography>
-          <Button sx={{ width: 'fit-content', marginTop: 'auto' }} >
+          <DownloadButton>
             Download the Primary coding club pack
-            &nbsp;{downloadSvg}
-          </Button>
+          </DownloadButton>
         </Introduction>
       </PageSection>
 
@@ -64,10 +76,9 @@ const CodingClubs: React.FC = () => {
           <Typography>
             View the resources <Link href={process.env.REACT_APP_PYTHON_RESOURCE_HREF} color="inherit" underline="always" target="_blank">online here</Link>.
           </Typography>
-          <Button sx={{ width: 'fit-content', marginTop: 'auto' }} >
+          <DownloadButton>
             Download the Python coding club pack
-            &nbsp;{downloadSvg}
-          </Button>
+          </DownloadButton>
         </Introduction>
       </PageSection>
     </BasePage >
