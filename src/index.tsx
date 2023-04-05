@@ -1,15 +1,10 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';
-import { Provider } from 'react-redux';
-import CssBaseline from '@mui/material/CssBaseline';
-import { ThemeProvider } from '@mui/material/styles';
 
-import store from './app/store';
+import App from './app/App';
 import router from './app/router';
-import theme from './app/theme';
 import reportWebVitals from './reportWebVitals';
-import './index.css';
 
 const container = document.getElementById('root');
 
@@ -19,12 +14,9 @@ const root = createRoot(container);
 
 root.render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Provider store={store}>
-        <RouterProvider router={router} />
-      </Provider>
-    </ThemeProvider>
+    <App>
+      <RouterProvider router={router} />
+    </App>
   </React.StrictMode>
 );
 
