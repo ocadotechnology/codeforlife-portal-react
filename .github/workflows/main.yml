@@ -3,7 +3,6 @@ name: Main
 on: [push]
 
 env:
-  BUILD_PATH: build
   CYPRESS_WAIT_ON: http://localhost:3000
   CYPRESS_WAIT_ON_TIMEOUT: 120
   CYPRESS_SPEC: cypress/e2e/**/*.cy.ts
