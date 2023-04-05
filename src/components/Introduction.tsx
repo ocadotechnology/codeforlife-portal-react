@@ -5,9 +5,9 @@ import {
   Stack,
   Typography
 } from '@mui/material';
+import { ResponsiveStyleValue } from '@mui/system';
 
 import { Image } from 'codeforlife/lib/esm/components';
-import { ResponsiveStyleValue } from '@mui/system';
 
 const Introduction: React.FC<{
   header: string,
@@ -24,7 +24,7 @@ const Introduction: React.FC<{
     >
       <Grid xs={12} md={6}>
         <Stack sx={{ height: '100%' }}>
-          <Typography variant='h5' pb={1}>
+          <Typography variant='h5'>
             {header}
           </Typography>
           {children}
