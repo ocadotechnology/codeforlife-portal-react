@@ -12,6 +12,7 @@ const Dedication: React.FC = () => {
   return <>
     <Grid
       container
+      xs={12}
       className='flex-center'
       direction='column'
       padding={3}

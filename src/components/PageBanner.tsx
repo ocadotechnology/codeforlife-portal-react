@@ -3,11 +3,12 @@ import {
   Typography,
   Stack,
   Toolbar,
-  Unstable_Grid2 as Grid,
   useTheme
 } from '@mui/material';
 
 import { Image } from 'codeforlife/lib/esm/components';
+
+import PageSection from './PageSection';
 
 export interface PageBannerProps {
   text: { title: string, content: string },
@@ -19,11 +20,9 @@ const PageBanner: React.FC<PageBannerProps> = ({
 }) => {
   const theme = useTheme();
   return (
-    <Grid
-      xs={12}
+    <PageSection
       bgcolor={theme.palette.primary.main}
-      p={0}
-      style={{ display: 'flex', justifyContent: 'center' }}
+      py={false}
     >
       <Toolbar>
         <Stack sx={{ py: 8, mr: 2 }}>
@@ -43,7 +42,7 @@ const PageBanner: React.FC<PageBannerProps> = ({
           }}
         />
       </Toolbar>
-    </Grid>
+    </PageSection>
   );
 };
 
