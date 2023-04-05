@@ -13,7 +13,6 @@ jobs:
   # https://github.com/cypress-io/cypress-docker-images/tree/master/browsers
   test-chrome:
     runs-on: ubuntu-latest
-    container: cypress/browsers:node18.6.0-chrome105-ff104
     steps:
       - name: 🛫 Checkout
         uses: actions/checkout@v3
