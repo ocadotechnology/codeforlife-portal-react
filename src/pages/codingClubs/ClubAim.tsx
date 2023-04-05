@@ -6,7 +6,7 @@ import {
 
 const ClubAim: React.FC = () => {
   return <>
-    <Stack padding={3}>
+    <Stack>
       <Typography
         variant='h4'
         textAlign='center'

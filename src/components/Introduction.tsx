@@ -19,7 +19,6 @@ const Introduction: React.FC<{
     <Grid
       container
       spacing={{ xs: 2, lg: 3 }}
-      padding={{ xs: 1, md: 2, lg: 3 }}
       display='flex'
       direction={direction}
     >

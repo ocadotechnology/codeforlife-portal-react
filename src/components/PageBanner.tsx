@@ -22,7 +22,7 @@ const PageBanner: React.FC<PageBannerProps> = ({
   return (
     <PageSection
       bgcolor={theme.palette.primary.main}
-      py={0}
+      py={false}
     >
       <Toolbar>
         <Stack sx={{ py: 8, mr: 2 }}>
