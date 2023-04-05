@@ -28,6 +28,7 @@ jobs:
           browser: chrome
           record: true
           spec: ${{ env.CYPRESS_SPEC }}
+          cache-key: os-${{ runner.os }}-dependencies-${{ hashFiles('yarn.lock') }}
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
