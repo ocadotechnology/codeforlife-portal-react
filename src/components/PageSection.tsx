@@ -9,18 +9,20 @@ export interface PageSectionProps extends Pick<Grid2Props, (
   'bgcolor'
 )> {
   children: React.ReactNode
+  px?: boolean
   py?: boolean
+  background?: string
 }
 
 const PageSection: React.FC<PageSectionProps> = ({
-  bgcolor, children, py = true
+  bgcolor, children, px = true, py = true, background
 }) => {
   return <>
     <Grid
       xs={12}
-      bgcolor={bgcolor}
       py={py ? { xs: 1, sm: 2, md: 3 } : 0}
-      px={0} // TODO: fix with theme
+      px={px ? { xs: 3, sm: 2, md: 1 } : 0}
+      sx={{ background, bgcolor }}
     >
       <Container maxWidth='lg'>
         {children}

@@ -26,7 +26,7 @@ const Header: React.FC = () => {
 
   return (
     <>
-      <ElevatedAppBar props={{ color: 'white' }}>
+      <ElevatedAppBar color='white'>
         <Image
           alt='Code for Life'
           src={CflLogo}
