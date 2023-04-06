@@ -25,7 +25,10 @@ const PageBanner: React.FC<PageBannerProps> = ({
       py={false}
     >
       <Toolbar>
-        <Stack sx={{ py: 8, mr: 2 }}>
+        <Stack
+          py={{ xs: 8, md: 0 }}
+          mr={{ xs: 0, md: 2 }}
+        >
           <Typography variant='h2' style={{ color: 'white' }}>
             {text.title}
           </Typography>

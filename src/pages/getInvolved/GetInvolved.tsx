@@ -21,7 +21,7 @@ import PageSection from 'components/PageSection';
 import GithubImg from 'images/github.png';
 import ClubsImg from 'images/clubs.png';
 import UniversitiesImg from 'images/universities.png';
-import GetInvolvedHero from 'images/get_involved_hero.png';
+import GetInvolvedHero from 'images/get_involved_hero_cut.png';
 
 const ReadMoreCard: React.FC<{
   text: { title: string, content: string },
