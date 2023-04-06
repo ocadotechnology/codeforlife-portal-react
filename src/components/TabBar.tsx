@@ -7,6 +7,8 @@ import {
   useTheme
 } from '@mui/material';
 
+import PageSection from './PageSection';
+
 const TabBar: React.FC<{
   title: string
   tabs: Array<{ label: string, element: React.ReactElement }>
@@ -47,14 +49,10 @@ const TabBar: React.FC<{
           ))}
         </Tabs>
       </Grid>
-      <Grid
-        xs={12}
-        md={10} mdOffset={1}
-        lg={8} lgOffset={2}
-      >
+      <PageSection>
         {tabs[value].element}
-      </Grid>
-    </Grid >
+      </PageSection>
+    </Grid>
   );
 };
 

@@ -1,30 +1,35 @@
-import React from "react";
+import React from 'react';
 import {
   Typography,
   Stack,
   Toolbar,
-  Unstable_Grid2 as Grid,
-  useTheme,
-} from "@mui/material";
+  useTheme
+} from '@mui/material';
 
-import { Image } from "codeforlife/lib/esm/components";
-import { ImageTextProps } from "./interfaces/interfaces";
+import { Image, ImageProps } from 'codeforlife/lib/esm/components';
 
-const PageBanner: React.FC<ImageTextProps> = ({ text, img }) => {
+import PageSection from './PageSection';
+
+export interface PageBannerProps {
+  text: { title: string, content: string },
+  img: ImageProps
+};
+
+const PageBanner: React.FC<PageBannerProps> = ({
+  text, img
+}) => {
   const theme = useTheme();
   return (
-    <Grid
-      xs={12}
+    <PageSection
       bgcolor={theme.palette.primary.main}
-      p={0}
-      style={{ display: "flex", justifyContent: "center" }}
+      py={false}
     >
       <Toolbar>
         <Stack sx={{ py: 8, mr: 2 }}>
-          <Typography variant="h2" style={{ color: "white" }}>
+          <Typography variant='h2' style={{ color: 'white' }}>
             {text.title}
           </Typography>
-          <Typography variant="h5" style={{ color: "white" }} mb={0}>
+          <Typography variant='h5' style={{ color: 'white' }} mb={0}>
             {text.content}
           </Typography>
         </Stack>
@@ -32,12 +37,12 @@ const PageBanner: React.FC<ImageTextProps> = ({ text, img }) => {
           alt={img.alt}
           src={img.src}
           boxProps={{
-            display: { xs: "none", md: "block" },
-            maxWidth: "320px",
+            display: { xs: 'none', md: 'block' },
+            maxWidth: '320px'
           }}
         />
       </Toolbar>
-    </Grid>
+    </PageSection>
   );
 };
 
