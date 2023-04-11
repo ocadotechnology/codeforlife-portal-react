@@ -2,7 +2,8 @@ import React from 'react';
 import {
   IconButton,
   Link,
-  Button
+  Button,
+  Breakpoint
 } from '@mui/material';
 import {
   Menu as MenuIcon
@@ -26,7 +27,10 @@ const Header: React.FC = () => {
 
   return (
     <>
-      <ElevatedAppBar color='white'>
+      <ElevatedAppBar
+        color='white'
+        containerProps={{ maxWidth: process.env.REACT_APP_CONTAINER_MAX_WIDTH as Breakpoint }}
+      >
         <Image
           alt='Code for Life'
           src={CflLogo}

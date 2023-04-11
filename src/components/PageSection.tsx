@@ -2,7 +2,8 @@ import React from 'react';
 import {
   Unstable_Grid2 as Grid,
   Grid2Props,
-  Container
+  Container,
+  Breakpoint
 } from '@mui/material';
 
 export interface PageSectionProps extends Pick<Grid2Props, (
@@ -24,7 +25,7 @@ const PageSection: React.FC<PageSectionProps> = ({
       px={px ? { xs: 3, sm: 2, md: 1 } : 0}
       sx={{ background, bgcolor }}
     >
-      <Container maxWidth='lg'>
+      <Container maxWidth={process.env.REACT_APP_CONTAINER_MAX_WIDTH as Breakpoint}>
         {children}
       </Container>
     </Grid>
