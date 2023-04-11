@@ -6,13 +6,13 @@ import {
   useTheme
 } from '@mui/material';
 
-import { Image } from 'codeforlife/lib/esm/components';
+import { Image, ImageProps } from 'codeforlife/lib/esm/components';
 
 import PageSection from './PageSection';
 
 export interface PageBannerProps {
   text: { title: string, content: string },
-  img: { alt: string, src: string },
+  img: ImageProps
 };
 
 const PageBanner: React.FC<PageBannerProps> = ({
@@ -25,7 +25,10 @@ const PageBanner: React.FC<PageBannerProps> = ({
       py={false}
     >
       <Toolbar>
-        <Stack sx={{ py: 8, mr: 2 }}>
+        <Stack
+          py={{ xs: 8, md: 0 }}
+          mr={{ xs: 0, md: 2 }}
+        >
           <Typography variant='h2' style={{ color: 'white' }}>
             {text.title}
           </Typography>
