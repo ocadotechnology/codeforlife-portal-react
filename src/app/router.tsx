@@ -22,7 +22,8 @@ export const paths = {
   getInvolved: '/get-involved',
   homeLearning: '/home-learning',
   privacyNotice: '/privacy-notice',
-  termsOfUse: '/terms-of-use'
+  termsOfUse: '/terms-of-use',
+  rapidRouter: '/rapid-router'
 };
 
 const router = createBrowserRouter([

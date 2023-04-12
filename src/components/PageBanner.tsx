@@ -3,7 +3,9 @@ import {
   Typography,
   Stack,
   Toolbar,
-  useTheme
+  useTheme,
+  Button,
+  ButtonProps
 } from '@mui/material';
 
 import { Image, ImageProps } from 'codeforlife/lib/esm/components';
@@ -13,12 +15,16 @@ import PageSection from './PageSection';
 export interface PageBannerProps {
   text: { title: string, content: string },
   img: ImageProps
+  btn?: ButtonProps
 };
 
 const PageBanner: React.FC<PageBannerProps> = ({
-  text, img
+  text, img, btn
 }) => {
   const theme = useTheme();
+
+  const btnExists = btn !== undefined;
+
   return (
     <PageSection
       bgcolor={theme.palette.primary.main}
@@ -29,16 +35,25 @@ const PageBanner: React.FC<PageBannerProps> = ({
           py={{ xs: 8, md: 0 }}
           mr={{ xs: 0, md: 2 }}
         >
-          <Typography variant='h2' style={{ color: 'white' }}>
+          <Typography
+            variant='h2'
+            style={{ color: 'white' }}
+          >
             {text.title}
           </Typography>
-          <Typography variant='h5' style={{ color: 'white' }} mb={0}>
+          <Typography
+            variant='h5'
+            style={{ color: 'white' }}
+            mb={btnExists ? undefined : 0}
+          >
             {text.content}
           </Typography>
+          {btnExists &&
+            <Button {...btn} />
+          }
         </Stack>
         <Image
-          alt={img.alt}
-          src={img.src}
+          {...img}
           boxProps={{
             display: { xs: 'none', md: 'block' },
             maxWidth: '320px'
