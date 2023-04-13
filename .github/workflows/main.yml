@@ -21,7 +21,7 @@ jobs:
         uses: cypress-io/github-action@v5.6.1
         with:
           working-directory: frontend
-          start: bash ./run
+          start: bash ../run
           wait-on: ${{ env.CYPRESS_WAIT_ON }}
           wait-on-timeout: ${{ env.CYPRESS_WAIT_ON_TIMEOUT }}
           browser: chrome
