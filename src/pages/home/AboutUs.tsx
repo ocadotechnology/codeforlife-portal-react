@@ -21,7 +21,11 @@ const Column: React.FC<{
 }> = ({ img, text }) => (
   <Grid xs={12} sm={6} md={3}>
     <Stack alignItems='center'>
-      <Image alt={img.alt} src={img.src} boxProps={{ maxWidth: '200px' }} />
+      <Image
+        alt={img.alt}
+        src={img.src}
+        maxWidth='200px'
+      />
       <Typography textAlign='center'>
         {text}
       </Typography>

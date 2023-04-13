@@ -20,7 +20,11 @@ const TargetAudience: React.FC<{
       spacing={1}
     >
       <Grid xs={12} className='flex-center'>
-        <Image alt={img.alt} src={img.src} boxProps={{ maxWidth: '450px' }} />
+        <Image
+          alt={img.alt}
+          src={img.src}
+          maxWidth='450px'
+        />
       </Grid>
       <Grid xs={12}>
         <Typography variant='h2' style={{ color: 'white' }}>

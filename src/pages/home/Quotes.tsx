@@ -22,7 +22,11 @@ const Column: React.FC<{
   <Grid xs={12} sm={4} className='flex-center'>
     <Stack maxWidth='400px'>
       <Stack alignItems='center'>
-        <Image alt={img.alt} src={img.src} boxProps={{ maxWidth: '350px' }} />
+        <Image
+          alt={img.alt}
+          src={img.src}
+          maxWidth='350px'
+        />
         <Typography fontFamily='SpaceGrotesk' fontSize={22}>
           &ldquo;{quote}&rdquo;
         </Typography>

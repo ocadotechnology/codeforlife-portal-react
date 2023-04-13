@@ -54,10 +54,8 @@ const PageBanner: React.FC<PageBannerProps> = ({
         </Stack>
         <Image
           {...img}
-          boxProps={{
-            display: { xs: 'none', md: 'block' },
-            maxWidth: '320px'
-          }}
+          display={{ xs: 'none', md: 'block' }}
+          maxWidth='320px'
         />
       </Toolbar>
     </PageSection>

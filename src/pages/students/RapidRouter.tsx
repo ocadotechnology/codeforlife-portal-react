@@ -40,9 +40,7 @@ const RapidRouter: React.FC = () => {
         <Image
           alt='Rapid Router Logo'
           src={RapidRouterIcon}
-          boxProps={{
-            style: { width: '50%' }
-          }}
+          style={{ width: '50%' }}
         />
       </Grid>
       <Grid xs={12} sm={6}>
