@@ -10,6 +10,8 @@ node djangoBundler.js &
 
 cd ../backend
 
+pip install pipenv
+
 pipenv install --dev
 pipenv run python ./manage.py migrate --noinput
 pipenv run python ./manage.py collectstatic --noinput --clear

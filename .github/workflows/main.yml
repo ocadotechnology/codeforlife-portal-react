@@ -17,6 +17,12 @@ jobs:
       - name: 🛫 Checkout
         uses: actions/checkout@v3
 
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+          architecture: "x64"
+
       - name: 🧪 Test on Chrome
         uses: cypress-io/github-action@v5.6.1
         with:
