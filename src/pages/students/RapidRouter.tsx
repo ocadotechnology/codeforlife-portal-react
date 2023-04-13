@@ -65,14 +65,14 @@ const RapidRouter: React.FC = () => {
         </Stack>
       </Grid>
       <Grid xs={12} sm={6}>
-        <iframe
+        {/* <iframe
           width='560'
           height='315'
           src='https://www.youtube-nocookie.com/embed/w0Pw_XikQSs'
           title='YouTube video player'
           allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen'
           style={{ border: '0px' }}
-        />
+        /> */}
       </Grid>
     </Grid>
   );
