@@ -4,8 +4,8 @@ cd "${BASH_SOURCE%/*}"
 
 cd frontend
 
-npm install
-npm run build
+yarn install
+yarn run build
 node djangoBundler.js &
 
 cd ../backend

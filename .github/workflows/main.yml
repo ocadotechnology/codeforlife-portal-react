@@ -3,9 +3,9 @@ name: Main
 on: [push]
 
 env:
-  CYPRESS_WAIT_ON: http://localhost:3000
+  CYPRESS_WAIT_ON: http://localhost:8000
   CYPRESS_WAIT_ON_TIMEOUT: 120
-  CYPRESS_SPEC: cypress/e2e/**/*.cy.ts
+  CYPRESS_SPEC: frontend/cypress/e2e/**/*.cy.ts
 
 jobs:
   # The below code was adapted from this documentation.
@@ -20,23 +20,26 @@ jobs:
       - name: 🧪 Test on Chrome
         uses: cypress-io/github-action@v5.6.1
         with:
-          build: yarn build
-          start: yarn serve
+          start: bash ./run
           wait-on: ${{ env.CYPRESS_WAIT_ON }}
           wait-on-timeout: ${{ env.CYPRESS_WAIT_ON_TIMEOUT }}
           browser: chrome
           record: true
           spec: ${{ env.CYPRESS_SPEC }}
-          cache-key: os-${{ runner.os }}-dependencies-${{ hashFiles('yarn.lock') }}
+          cache-key: os-${{ runner.os }}-dependencies-${{ hashFiles('frontend/yarn.lock') }}
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 🔍 Report test info
-        run: npx cypress info
+        run: |
+          cd frontend 
+          npx cypress info
 
       - name: 🔍 Report CPU info
-        run: node -p 'os.cpus()'
+        run: |
+          cd frontend
+          node -p 'os.cpus()'
 
       - name: ✅ Upload coverage to Codecov
         uses: codecov/codecov-action@v3.1.0
