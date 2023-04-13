@@ -34,7 +34,7 @@ const Students: React.FC = () => {
       <PageBanner
         text={{
           title: 'Play',
-          content: 'Anyone can learn how to code. We will help you learn how. It’s fun, free and easy.'
+          content: 'Anyone can learn how to code. We will help you learn how. It\'s fun, free and easy.'
         }}
         img={{
           alt: 'Child on tablet',
