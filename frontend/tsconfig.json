@@ -25,6 +25,8 @@
     "src"
   ],
   "exclude": [
-    "**/*.cy.*"
+    "**/*.cy.*",
+    //TODO: Figure out how to make ES6 happy with the bundler as handlebars doesn't currently support ES6 and parcel-bundler needs to be updated: https://github.com/handlebars-lang/handlebars.js/issues/1723
+    "djangoBundler.js"
   ]
 }
