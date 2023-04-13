@@ -4,7 +4,7 @@ on: [push]
 
 env:
   CYPRESS_WAIT_ON: http://localhost:8000
-  CYPRESS_WAIT_ON_TIMEOUT: 120
+  CYPRESS_WAIT_ON_TIMEOUT: 300
   CYPRESS_SPEC: frontend/cypress/e2e/**/*.cy.ts
 
 jobs:
