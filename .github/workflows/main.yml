@@ -18,6 +18,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: 🧪 Test on Chrome
+        working-directory: frontend
         uses: cypress-io/github-action@v5.6.1
         with:
           start: bash ./run
@@ -32,14 +33,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 🔍 Report test info
-        run: |
-          cd frontend 
-          npx cypress info
+        working-directory: frontend
+        run: npx cypress info
 
       - name: 🔍 Report CPU info
-        run: |
-          cd frontend
-          node -p 'os.cpus()'
+        working-directory: frontend
+        run: node -p 'os.cpus()'
 
       - name: ✅ Upload coverage to Codecov
         uses: codecov/codecov-action@v3.1.0
