@@ -4,19 +4,24 @@ import {
   Typography,
   Button,
   Stack,
-  Link
+  Link,
+  useTheme
 } from '@mui/material';
 import {
   Launch as LaunchIcon,
   ChevronRight as ChevronRightIcon
 } from '@mui/icons-material';
 
-import { Image } from 'codeforlife/lib/esm/components';
+import { Image, YouTubeVideo } from 'codeforlife/lib/esm/components';
+
+import { paths } from 'app/router';
 
 import RapidRouterImage from 'images/rapid_router_landing_hero.png';
 import RapidRouterIcon from 'images/RR_logo.svg';
 
 const RapidRouter: React.FC = () => {
+  const theme = useTheme();
+
   return (
     <Grid container>
       <Grid xs={12}>
@@ -40,11 +45,11 @@ const RapidRouter: React.FC = () => {
         <Image
           alt='Rapid Router Logo'
           src={RapidRouterIcon}
-          style={{ width: '50%' }}
+          style={{ width: '40%' }}
         />
       </Grid>
-      <Grid xs={12} sm={6}>
-        <Stack>
+      <Grid xs={12} md={6}>
+        <Stack height='100%'>
           <Typography variant='h5'>
             Starting with Blockly
           </Typography>
@@ -52,27 +57,31 @@ const RapidRouter: React.FC = () => {
             Starting with Blockly, you can learn to become a coding superhero, amaze your friends with your high scores. Create levels for your friends and compete for the most coins.
           </Typography>
           <Typography>
-            If you are not part of a school, you can <Link className='body'>register here</Link>.
+            If you are not part of a school, you can&nbsp;
+            <Link className='body' href={paths.register}>register here</Link>.
           </Typography>
-          <Button endIcon={<LaunchIcon />}>
+          <Button
+            endIcon={<LaunchIcon />}
+            style={{
+              marginTop: 'auto',
+              marginBottom: theme.typography.body1.marginBottom
+            }}
+            href={process.env.REACT_APP_BLOCKLY_GUIDE_SRC}
+          >
             Learn more about Blockly
           </Button>
-          <Button endIcon={<ChevronRightIcon />}>
+          <Button
+            endIcon={<ChevronRightIcon />}
+            href={paths.rapidRouter}
+          >
             Play Rapid Router
           </Button>
         </Stack>
       </Grid>
-      <Grid xs={12} sm={6}>
-        {/* <iframe
-          width='560'
-          height='315'
-          src='https://www.youtube-nocookie.com/embed/w0Pw_XikQSs'
-          title='YouTube video player'
-          allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen'
-          style={{ border: '0px' }}
-        /> */}
+      <Grid xs={12} md={6} className='flex-center'>
+        <YouTubeVideo src={process.env.REACT_APP_RAPID_ROUTER_YOUTUBE_VIDEO_SRC as string} />
       </Grid>
-    </Grid>
+    </Grid >
   );
 };
 
