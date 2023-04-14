@@ -34,16 +34,14 @@ const Header: React.FC = () => {
         <Image
           alt='Code for Life'
           src={CflLogo}
-          boxProps={{ maxWidth: '60px' }}
+          maxWidth='60px'
           href={paths.home}
         />
         <Image
           alt='Ocado Group'
           src={OgLogo}
-          boxProps={{
-            maxWidth: '100px',
-            mx: { xs: 'auto', ...mr }
-          }}
+          maxWidth='100px'
+          mx={{ xs: 'auto', ...mr }}
           href={process.env.REACT_APP_OCADO_GROUP_HREF}
           hrefInNewTab
         />

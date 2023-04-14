@@ -25,7 +25,7 @@ const Column: React.FC<{
         <Image
           alt={img.alt}
           src={img.src}
-          boxProps={{ maxWidth: '350px' }}
+          maxWidth='350px'
         />
         <Typography fontFamily='SpaceGrotesk' fontSize={22}>
           &ldquo;{quote}&rdquo;

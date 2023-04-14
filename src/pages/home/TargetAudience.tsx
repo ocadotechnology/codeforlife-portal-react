@@ -27,7 +27,7 @@ const Content: React.FC<{
         <Image
           alt={img.alt}
           src={img.src}
-          boxProps={{ maxWidth: '450px' }}
+          maxWidth='450px'
         />
       )
     },

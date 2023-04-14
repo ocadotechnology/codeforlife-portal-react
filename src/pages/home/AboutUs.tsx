@@ -27,7 +27,7 @@ const Column: React.FC<{
       <Image
         alt={img.alt}
         src={img.src}
-        boxProps={{ maxWidth: '200px' }}
+        maxWidth='200px'
       />
       <Typography textAlign='center'>
         {text}
