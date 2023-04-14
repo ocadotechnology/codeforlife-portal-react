@@ -116,16 +116,16 @@ const options: ThemeOptions = {
           })
         })
       }
+    },
+    MuiContainer: {
+      styleOverrides: {
+        root: {
+          '&.MuiContainer-root': {
+            padding: 0
+          }
+        }
+      }
     }
-    // MuiContainer: {
-    //   styleOverrides: {
-    //     root: {
-    //       '&.MuiContainer-root': {
-    //         padding: 0
-    //       }
-    //     }
-    //   }
-    // },
     // MuiToolbar: {
     //   styleOverrides: {
     //     root: {

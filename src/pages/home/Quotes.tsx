@@ -6,7 +6,7 @@ import {
   Link
 } from '@mui/material';
 
-import { Image } from 'codeforlife/lib/esm/components';
+import { Image, ImageProps } from 'codeforlife/lib/esm/components';
 
 import { paths } from 'app/router';
 
@@ -15,12 +15,12 @@ import SianPhoto from 'images/sian.png';
 import RobPhoto from 'images/rob.png';
 
 const Column: React.FC<{
-  img: { alt: string, src: string }
+  img: ImageProps
   quote: string
   person: { name: string, title: string }
 }> = ({ img, quote, person }) => (
-  <Grid xs={12} sm={4} className='flex-center'>
-    <Stack maxWidth='400px'>
+  <Grid xs={12} sm={4}>
+    <Stack height='100%'>
       <Stack alignItems='center'>
         <Image
           alt={img.alt}
@@ -31,7 +31,7 @@ const Column: React.FC<{
           &ldquo;{quote}&rdquo;
         </Typography>
       </Stack>
-      <Stack textAlign='end' marginTop={2}>
+      <Stack textAlign='end' marginTop='auto'>
         <Typography fontWeight='bold'>
           — {person.name}
         </Typography>
@@ -45,7 +45,7 @@ const Column: React.FC<{
 
 const Quotes: React.FC = () => {
   return (
-    <Grid container rowSpacing={1} columnSpacing={4} padding={3}>
+    <Grid container columnSpacing={4}>
       <Grid xs={12}>
         <Typography variant='h2' textAlign='center'>
           Why you&apos;ll love Code for Life
@@ -53,10 +53,9 @@ const Quotes: React.FC = () => {
       </Grid>
       <Grid xs={12}>
         <Typography textAlign='center'>
-          Don&apos;t just take our word for it, here are some lovely quotes from our fabulous teacher friends. Interested in getting involved?
-          <Link href={paths.getInvolved}>
-            {' '}Get in touch.
-          </Link>
+          Don&apos;t just take our word for it, here are some lovely quotes from our fabulous teacher friends.
+          <br />
+          Interested in getting involved? <Link href={paths.getInvolved}>Get in touch.</Link>
         </Typography>
       </Grid>
       <Column
