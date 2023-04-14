@@ -8,7 +8,7 @@ import {
   useTheme
 } from '@mui/material';
 
-import { paths } from 'app/router';
+import { paths } from '../../app/router';
 
 const Links: React.FC = () => (
   <ThemeProvider theme={createTheme(useTheme(), {

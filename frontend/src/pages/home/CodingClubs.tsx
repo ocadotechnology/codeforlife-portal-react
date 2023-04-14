@@ -5,7 +5,7 @@ import {
   Button
 } from '@mui/material';
 
-import { paths } from 'app/router';
+import { paths } from '../../app/router';
 
 const CodingClubs: React.FC = () => {
   return (

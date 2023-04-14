@@ -10,10 +10,10 @@ import {
 
 import { ElevatedAppBar, Image } from 'codeforlife/lib/esm/components';
 
-import { paths } from 'app/router';
+import { paths } from '../../app/router';
 
-import CflLogo from 'images/cfl_logo.png';
-import OgLogo from 'images/ocado_group.svg';
+import CflLogo from '../../images/cfl_logo.png';
+import OgLogo from '../../images/ocado_group.svg';
 
 import LoginSelect from './LoginSelect';
 import MenuDrawer from './MenuDrawer';

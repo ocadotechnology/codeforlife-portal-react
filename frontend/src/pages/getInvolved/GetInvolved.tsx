@@ -12,14 +12,14 @@ import { ChevronRightRounded as ChevronRightRoundedIcon } from '@mui/icons-mater
 
 import { ImageProps } from 'codeforlife/lib/esm/components';
 
-import BasePage from 'pages/BasePage';
-import PageBanner from 'components/PageBanner';
-import PageSection from 'components/PageSection';
+import BasePage from '../../pages/BasePage';
+import PageBanner from '../../components/PageBanner';
+import PageSection from '../../components/PageSection';
 
-import GithubImg from 'images/github.png';
-import ClubsImg from 'images/clubs.png';
-import UniversitiesImg from 'images/universities.png';
-import GetInvolvedHero from 'images/get_involved_hero_cut.png';
+import GithubImg from '../../images/github.png';
+import ClubsImg from '../../images/clubs.png';
+import UniversitiesImg from '../../images/universities.png';
+import GetInvolvedHero from '../../images/get_involved_hero_cut.png';
 
 const ReadMoreCard: React.FC<{
   text: { title: string; content: string };

@@ -7,7 +7,7 @@ import {
   useTheme
 } from '@mui/material';
 
-import PageSection from 'components/PageSection';
+import PageSection from '../../components/PageSection';
 
 import Links from './Links';
 import Logos from './Logos';

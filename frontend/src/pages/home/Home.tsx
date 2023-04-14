@@ -4,16 +4,16 @@ import {
   useTheme
 } from '@mui/material';
 
-import { paths } from 'app/router';
+import { paths } from '../../app/router';
 
-import BasePage from 'pages/BasePage';
+import BasePage from '../../pages/BasePage';
 import TargetAudience from './TargetAudience';
 import AboutUs from './AboutUs';
 import Quotes from './Quotes';
 import CodingClubs from './CodingClubs';
 
-import EducateImage from 'images/dashboard_educate.png';
-import PlayImage from 'images/dashboard_play.png';
+import EducateImage from '../../images/dashboard_educate.png';
+import PlayImage from '../../images/dashboard_play.png';
 
 const Home: React.FC = () => {
   const theme = useTheme();

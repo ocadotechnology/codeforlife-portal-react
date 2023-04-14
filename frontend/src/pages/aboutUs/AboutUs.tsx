@@ -5,13 +5,13 @@ import {
   Link
 } from '@mui/material';
 
-import BasePage from 'pages/BasePage';
-import PageBanner from 'components/PageBanner';
-import PageSection from 'components/PageSection';
-import Introduction from 'components/Introduction';
-import AboutUsHeroImage from 'images/about_us_hero_hexagon.png';
-import AboutUsCFLImage from 'images/about_us_cfl.jpg';
-import AboutUsOcadoImage from 'images/about_us_ocado.jpg';
+import BasePage from '../../pages/BasePage';
+import PageBanner from '../../components/PageBanner';
+import PageSection from '../../components/PageSection';
+import Introduction from '../../components/Introduction';
+import AboutUsHeroImage from '../../images/about_us_hero_hexagon.png';
+import AboutUsCFLImage from '../../images/about_us_cfl.jpg';
+import AboutUsOcadoImage from '../../images/about_us_ocado.jpg';
 
 import Statistics from './Statistics';
 import Quotes from './Quotes';

@@ -9,13 +9,13 @@ import {
   Download as DownloadIcon
 } from '@mui/icons-material';
 
-import BasePage from 'pages/BasePage';
-import CodeClubHeroImage from 'images/coding_club_hero_hexagon.jpg';
-import AboutUsCFLImage from 'images/about_us_cfl.jpg';
-import PythonClubImage from 'images/coding_club_python_pack.png';
-import PageBanner from 'components/PageBanner';
-import PageSection from 'components/PageSection';
-import Introduction from 'components/Introduction';
+import BasePage from '../../pages/BasePage';
+import CodeClubHeroImage from '../../images/coding_club_hero_hexagon.jpg';
+import AboutUsCFLImage from '../../images/about_us_cfl.jpg';
+import PythonClubImage from '../../images/coding_club_python_pack.png';
+import PageBanner from '../../components/PageBanner';
+import PageSection from '../../components/PageSection';
+import Introduction from '../../components/Introduction';
 
 import ClubAim from './ClubAim';
 

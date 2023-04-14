@@ -9,14 +9,14 @@ import {
 
 import { Image } from 'codeforlife/lib/esm/components';
 
-import Logo10xImage from 'images/10x_logo.png';
-import BcsImage from 'images/bcs_logo.png';
-import IclImage from 'images/icl_logo.png';
-import BarefootImage from 'images/barefoot_logo.png';
-import MCSaatchiImage from 'images/mc_saatchi_logo.png';
-import HOPEImage from 'images/hope_logo.png';
-import GLAImage from 'images/gla_logo.png';
-import PressureCookerImage from 'images/pressure_cooker_logo.png';
+import Logo10xImage from '../../images/10x_logo.png';
+import BcsImage from '../../images/bcs_logo.png';
+import IclImage from '../../images/icl_logo.png';
+import BarefootImage from '../../images/barefoot_logo.png';
+import MCSaatchiImage from '../../images/mc_saatchi_logo.png';
+import HOPEImage from '../../images/hope_logo.png';
+import GLAImage from '../../images/gla_logo.png';
+import PressureCookerImage from '../../images/pressure_cooker_logo.png';
 
 const ImageGrid: React.FC<{
   alt: string,

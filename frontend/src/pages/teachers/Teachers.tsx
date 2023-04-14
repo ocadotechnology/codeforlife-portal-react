@@ -3,7 +3,7 @@ import {
   Unstable_Grid2 as Grid
 } from '@mui/material';
 
-import BasePage from 'pages/BasePage';
+import BasePage from '../../pages/BasePage';
 
 const Teachers: React.FC = () => {
   return (

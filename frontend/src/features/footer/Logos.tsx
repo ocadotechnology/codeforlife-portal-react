@@ -5,10 +5,10 @@ import {
 
 import { Image } from 'codeforlife/lib/esm/components';
 
-import CflLogo from 'images/cfl_logo_white_landscape.png';
-import OcadoGroupIcon from 'images/ocado_group_white.svg';
-import TwitterIcon from 'images/twitter_icon.svg';
-import FbIcon from 'images/facebook_icon.svg';
+import CflLogo from '../../images/cfl_logo_white_landscape.png';
+import OcadoGroupIcon from '../../images/ocado_group_white.svg';
+import TwitterIcon from '../../images/twitter_icon.svg';
+import FbIcon from '../../images/facebook_icon.svg';
 
 const Logos: React.FC = () => {
   const boxProps = {

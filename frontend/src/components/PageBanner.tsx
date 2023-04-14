@@ -13,7 +13,7 @@ import PageSection from './PageSection';
 export interface PageBannerProps {
   text: { title: string, content: string },
   img: ImageProps
-};
+}
 
 const PageBanner: React.FC<PageBannerProps> = ({
   text, img

@@ -8,11 +8,11 @@ import {
 
 import { Image } from 'codeforlife/lib/esm/components';
 
-import { paths } from 'app/router';
+import { paths } from '../../app/router';
 
-import ReubenPhoto from 'images/reuben.png';
-import SianPhoto from 'images/sian.png';
-import RobPhoto from 'images/rob.png';
+import ReubenPhoto from '../../images/reuben.png';
+import SianPhoto from '../../images/sian.png';
+import RobPhoto from '../../images/rob.png';
 
 const Column: React.FC<{
   img: { alt: string, src: string }

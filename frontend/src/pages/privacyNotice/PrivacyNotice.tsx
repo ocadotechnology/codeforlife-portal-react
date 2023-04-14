@@ -3,8 +3,8 @@ import {
   Unstable_Grid2 as Grid
 } from '@mui/material';
 
-import BasePage from 'pages/BasePage';
-import TabBar from 'components/TabBar';
+import BasePage from '../../pages/BasePage';
+import TabBar from '../../components/TabBar';
 
 import ForAdults from './ForAdults/ForAdults';
 import ForChildren from './ForChildren/ForChildren';

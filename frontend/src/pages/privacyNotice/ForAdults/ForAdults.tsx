@@ -4,7 +4,7 @@ import {
   Typography
 } from '@mui/material';
 
-import TableOfContents from 'components/TableOfContents';
+import TableOfContents from '../../../components/TableOfContents';
 
 import OurCommitment from './OurCommitment';
 import WhoWeAre from './WhoWeAre';

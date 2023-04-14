@@ -3,7 +3,7 @@ import {
   Typography
 } from '@mui/material';
 
-import theme from 'app/theme';
+import theme from '../app/theme';
 import TableOfContents, { TableOfContentsProps, ids } from './TableOfContents';
 
 describe('<TableOfContents />', () => {

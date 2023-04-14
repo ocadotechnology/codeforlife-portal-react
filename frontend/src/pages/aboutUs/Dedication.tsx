@@ -6,7 +6,7 @@ import {
 
 import { Image } from 'codeforlife/lib/esm/components';
 
-import SharonHarrisonImage from 'images/sharon_harrison.jpg';
+import SharonHarrisonImage from '../../images/sharon_harrison.jpg';
 
 const Dedication: React.FC = () => {
   return <>

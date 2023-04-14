@@ -4,8 +4,8 @@ import {
   Grid2Props
 } from '@mui/material';
 
-import Header from 'features/header/Header';
-import Footer from 'features/footer/Footer';
+import Header from '../features/header/Header';
+import Footer from '../features/footer/Footer';
 
 type GridElement = React.ReactElement<typeof Grid>;
 

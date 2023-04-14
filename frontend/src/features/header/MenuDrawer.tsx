@@ -10,7 +10,7 @@ import {
   AccordionDetails
 } from '@mui/material';
 
-import { paths } from 'app/router';
+import { paths } from '../../app/router';
 
 const MenuDrawer: React.FC<{
   isOpen: boolean,
