@@ -5,6 +5,9 @@ import {
   Typography,
   Button
 } from '@mui/material';
+import {
+  ChevronRight as ChevronRightIcon
+} from '@mui/icons-material';
 
 import { Image } from 'codeforlife/lib/esm/components';
 
@@ -21,7 +24,11 @@ const Column: React.FC<{
 }> = ({ img, text }) => (
   <Grid xs={12} sm={6} md={3}>
     <Stack alignItems='center'>
-      <Image alt={img.alt} src={img.src} boxProps={{ maxWidth: '200px' }} />
+      <Image
+        alt={img.alt}
+        src={img.src}
+        boxProps={{ maxWidth: '200px' }}
+      />
       <Typography textAlign='center'>
         {text}
       </Typography>
@@ -31,8 +38,8 @@ const Column: React.FC<{
 
 const AboutUs: React.FC = () => {
   return (
-    <Grid container spacing={1} padding={3}>
-      <Grid xs={12} className='flex-center'>
+    <Grid container columnSpacing={2}>
+      <Grid xs={12}>
         <Typography variant='h4' textAlign='center'>
           Giving everyone the ability to shape technology&apos;s future
         </Typography>
@@ -54,8 +61,11 @@ const AboutUs: React.FC = () => {
         text="Code for Life has over 350,000 registered users across the world."
       />
       <Grid xs={12} display='flex' justifyContent='end'>
-        <Button style={{ marginRight: 20 }} href={paths.aboutUs}>
-          About us &gt;
+        <Button
+          href={paths.aboutUs}
+          endIcon={<ChevronRightIcon />}
+        >
+          About us
         </Button>
       </Grid>
     </Grid>

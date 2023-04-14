@@ -101,16 +101,16 @@ const options: ThemeOptions = {
           margin: 0
         }
       }
+    },
+    MuiContainer: {
+      styleOverrides: {
+        root: {
+          '&.MuiContainer-root': {
+            padding: 0
+          }
+        }
+      }
     }
-    // MuiContainer: {
-    //   styleOverrides: {
-    //     root: {
-    //       '&.MuiContainer-root': {
-    //         padding: 0
-    //       }
-    //     }
-    //   }
-    // },
     // MuiToolbar: {
     //   styleOverrides: {
     //     root: {
