@@ -35,9 +35,9 @@ const LevelInfo: React.FC<{
   direction?: ResponsiveStyleValue<GridDirection>
 }> = ({ level, card, children, direction }) => {
   return <>
-    <Grid xs={12} bgcolor={level.bgcolor} sx={{ maxHeight: '60px' }}>
+    <Grid xs={12} display='flex' bgcolor={level.bgcolor}>
       <Container maxWidth='lg'>
-        <Typography variant='h4' color={level.textcolor}>
+        <Typography variant='h4' color={level.textcolor} margin={0} paddingY={2}>
           &lt; {level.difficulty} &gt;
         </Typography>
       </Container>
@@ -48,7 +48,7 @@ const LevelInfo: React.FC<{
         spacing={{ xs: 2, lg: 4 }}
         display='flex'
         direction={direction}
-        paddingY={5}
+        paddingY={6}
       >
         <Grid xs={12} md={4}>
           <CflCard

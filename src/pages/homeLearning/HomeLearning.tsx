@@ -1,5 +1,8 @@
 import React from 'react';
 
+import { Button, Grid } from '@mui/material';
+import SendIcon from '@mui/icons-material/Send';
+
 import BasePage from 'pages/BasePage';
 import PageBanner from 'components/PageBanner';
 import PageSection from 'components/PageSection';
@@ -10,7 +13,7 @@ import HomeLearningHeroImage from 'images/home_learning_hero_hexagon.png';
 
 const HomeLearning: React.FC = () => {
   return (
-    <BasePage>
+    <BasePage containerProps={{ spacing: 0 }}>
       <PageBanner
         img={{ alt: 'homeLearningHero', src: HomeLearningHeroImage }}
         text={{
@@ -24,6 +27,21 @@ const HomeLearning: React.FC = () => {
       </PageSection>
 
       <LevelInfos />
+
+      <PageSection>
+        <Grid xs={12} display='flex' justifyContent='flex-end'>
+          <Button>
+            Register now
+          </Button>
+        </Grid>
+      </PageSection>
+
+      <Grid container xs={12} display='flex' justifyContent='center' bgcolor='#00a3e0' paddingY={2}>
+        <Button endIcon={<SendIcon />}>
+          Let us know your feedback
+        </Button>
+      </Grid>
+
     </BasePage>
   );
 };
