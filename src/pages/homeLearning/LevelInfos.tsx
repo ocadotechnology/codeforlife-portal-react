@@ -1,46 +1,16 @@
 import React from 'react';
 import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardMedia,
   Container,
   Unstable_Grid2 as Grid,
   GridDirection,
   Typography
 } from '@mui/material';
-
 import { ResponsiveStyleValue } from '@mui/system';
-import { ImageProps } from 'codeforlife/lib/esm/components';
-import RRBeginnerImage from 'images/rr_beginner.png';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 
-const ReadMoreCard: React.FC<{
-  text: { title: string; content: string };
-  img: ImageProps;
-}> = ({ text, img }) => {
-  return (
-    <>
-      <Card
-        style={{ display: 'flex', flexDirection: 'column', height: '100%' }}
-      >
-        <CardMedia
-          component="img"
-          height={242}
-          image={img.src}
-          title={img.alt}
-        />
-        <CardContent sx={{ flexGrow: 1 }}>
-          <Typography variant="h5">{text.title}</Typography>
-          <Typography>{text.content}</Typography>
-        </CardContent>
-        <CardActions>
-          <Button>Read more</Button>
-        </CardActions>
-      </Card>
-    </>
-  );
-};
+import CflCard from 'components/CflCard';
+
+import RRBeginnerImage from 'images/rr_beginner.png';
 
 const Sessions: React.FC<{
   title: string,
@@ -79,9 +49,10 @@ const LevelInfo: React.FC<{
         paddingY={5}
       >
         <Grid xs={12} md={4}>
-          <ReadMoreCard
+          <CflCard
             img={{ alt: card.img.alt, src: card.img.src }}
             text={{ title: card.text.title, content: card.text.content }}
+            btn={{ btnText: 'Go to lessons', endIcon: <OpenInNewIcon /> }}
           />
         </Grid>
         <Grid xs={12} md={8}>
