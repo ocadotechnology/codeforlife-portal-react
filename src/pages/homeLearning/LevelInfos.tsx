@@ -32,8 +32,9 @@ const LevelInfo: React.FC<{
   level: { difficulty: string, textcolor: string, bgcolor: string },
   card: { img: { alt: string, src: string }, text: { title: string, content: string } }
   children: React.ReactNode,
-  direction?: ResponsiveStyleValue<GridDirection>
-}> = ({ level, card, children, direction }) => {
+  direction?: ResponsiveStyleValue<GridDirection>,
+  btnHref?: string,
+}> = ({ level, card, children, direction, btnHref }) => {
   return <>
     <Grid xs={12} display='flex' bgcolor={level.bgcolor}>
       <Container maxWidth='lg'>
@@ -54,7 +55,7 @@ const LevelInfo: React.FC<{
           <CflCard
             img={{ alt: card.img.alt, src: card.img.src }}
             text={{ title: card.text.title, content: card.text.content }}
-            btn={{ btnText: 'Go to lessons', endIcon: <OpenInNewIcon /> }}
+            btn={{ btnText: 'Go to lessons', endIcon: <OpenInNewIcon />, href: btnHref, target: '_blank' }}
           />
         </Grid>
         <Grid xs={12} md={8}>
@@ -84,6 +85,7 @@ const LevelInfos: React.FC = () => {
         img: { alt: 'RR beginner image', src: RRBeginnerImage },
         text: { title: 'Beginner', content: BeginnerContent }
       }}
+      btnHref={process.env.REACT_APP_INDEPENDENT_BEGINNER_HREF}
     >
       <Typography variant='h5'>
         Levels 1-16
@@ -113,6 +115,7 @@ const LevelInfos: React.FC = () => {
         text: { title: 'Intermediate', content: IntermediateContent }
       }}
       direction='row-reverse'
+      btnHref={process.env.REACT_APP_INDEPENDENT_INTERMEDIATE_HREF}
     >
       <Typography variant='h5'>
         Level 17-28
@@ -141,6 +144,7 @@ const LevelInfos: React.FC = () => {
         img: { alt: 'RR advanced image', src: RRAdvancedImage },
         text: { title: 'Advanced', content: AdvancedContent }
       }}
+      btnHref={process.env.REACT_APP_INDEPENDENT_ADVANCED_HREF}
     >
       <Typography variant='h5'>
         Levels 29-109

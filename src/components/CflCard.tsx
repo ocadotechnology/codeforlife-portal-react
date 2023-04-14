@@ -13,8 +13,10 @@ import { ImageProps } from 'codeforlife/lib/esm/components';
 const CflCard: React.FC<{
   text: { title: string; content: string },
   img: ImageProps,
-  btn: { btnText: string, endIcon: JSX.Element },
+  btn: { btnText: string, endIcon: JSX.Element, href?: string, target?: string },
 }> = ({ text, img, btn }) => {
+  const btnHref = btn.href ? btn.href : '';
+
   return (
     <>
       <Card
@@ -31,7 +33,7 @@ const CflCard: React.FC<{
           <Typography>{text.content}</Typography>
         </CardContent>
         <CardActions>
-          <Button endIcon={btn.endIcon}>{btn.btnText}</Button>
+          <Button endIcon={btn.endIcon} href={btnHref} target={btn.target}>{btn.btnText}</Button>
         </CardActions>
       </Card>
     </>

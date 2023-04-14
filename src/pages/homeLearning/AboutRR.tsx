@@ -4,6 +4,7 @@ import {
   Unstable_Grid2 as Grid,
   Typography
 } from '@mui/material';
+import { paths } from 'app/router';
 
 const AboutRR: React.FC = () => (
   <Grid container spacing={1} padding={3}>
@@ -34,7 +35,7 @@ const AboutRR: React.FC = () => (
       </Grid>
     </Grid>
     <Grid xs={12} display='flex' justifyContent='flex-end'>
-      <Button>
+      <Button href={paths.register}>
         Register now
       </Button>
     </Grid>
