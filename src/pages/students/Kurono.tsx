@@ -52,13 +52,13 @@ const Kurono: React.FC = () => {
           </Typography>
           <Button
             endIcon={<ChevronRightIcon />}
-            style={{ marginTop: 'auto' }}
+            sx={{ mt: 'auto', mb: { xs: 1, md: 0 } }}
           >
             Login to get started
           </Button>
         </Stack>
       </Grid>
-      <Grid xs={12} md={6}>
+      <Grid xs={12} md={6} className='flex-center'>
         <YouTubeVideo src={process.env.REACT_APP_KURONO_YOUTUBE_VIDEO_SRC as string} />
       </Grid>
     </Grid>

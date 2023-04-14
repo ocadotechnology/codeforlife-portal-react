@@ -73,6 +73,7 @@ const RapidRouter: React.FC = () => {
           <Button
             endIcon={<ChevronRightIcon />}
             href={paths.rapidRouter}
+            sx={{ mb: { xs: 1, md: 0 } }}
           >
             Play Rapid Router
           </Button>
