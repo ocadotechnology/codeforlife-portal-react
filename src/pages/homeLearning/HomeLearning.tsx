@@ -32,7 +32,7 @@ const HomeLearning: React.FC = () => {
       <LevelInfos />
 
       <PageSection>
-        <Grid xs={12} display='flex' justifyContent='flex-end'>
+        <Grid xs={12} display='flex' justifyContent='flex-end' paddingBottom={2}>
           <Button href={paths.register}>
             Register now
           </Button>
