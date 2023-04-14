@@ -12,7 +12,7 @@ import BasePage from 'pages/BasePage';
 import PageSection from 'components/PageSection';
 import PageBanner from 'components/PageBanner';
 
-import PlayImage from 'images/home_play_hero.jpg';
+import PlayImage from 'images/home_play_hero.png';
 import WesImage from 'images/wes.png';
 import KirstyImage from 'images/kirsty.png';
 import DeeImage from 'images/dee.png';
