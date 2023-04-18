@@ -12,6 +12,8 @@ import HomeLearning from 'pages/homeLearning/HomeLearning';
 import PrivacyNotice from 'pages/privacyNotice/PrivacyNotice';
 import TermsOfUse from 'pages/termsOfUse/TermsOfUse';
 import Error404 from 'pages/errorPage/404';
+import Error403 from 'pages/errorPage/403';
+import Error500 from 'pages/errorPage/500';
 
 export const paths = {
   home: '/',
@@ -23,13 +25,17 @@ export const paths = {
   getInvolved: '/get-involved',
   homeLearning: '/home-learning',
   privacyNotice: '/privacy-notice',
-  termsOfUse: '/terms-of-use'
+  termsOfUse: '/terms-of-use',
+  error403: '/403',
+  error404: '/404',
+  error500: '/500'
 };
 
 const router = createBrowserRouter([
   {
     path: paths.home,
-    element: <Home />
+    element: <Home />,
+    errorElement: <Error404 />
   },
   {
     path: paths.teachers,
@@ -68,8 +74,16 @@ const router = createBrowserRouter([
     element: <TermsOfUse />
   },
   {
-    path: '*',
+    path: paths.error403,
+    element: <Error403 />
+  },
+  {
+    path: paths.error404,
     element: <Error404 />
+  },
+  {
+    path: paths.error500,
+    element: <Error500 />
   }
 ]);
 
