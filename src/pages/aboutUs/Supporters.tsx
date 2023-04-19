@@ -1,9 +1,7 @@
 import React from 'react';
 import {
-  Stack,
   Typography,
   Unstable_Grid2 as Grid,
-  useTheme,
   Link
 } from '@mui/material';
 

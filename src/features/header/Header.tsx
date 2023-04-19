@@ -61,7 +61,7 @@ const Header: React.FC = () => {
         >
           <MenuIcon />
         </IconButton>
-      </ElevatedAppBar>
+      </ElevatedAppBar >
       <MenuDrawer isOpen={menuIsOpen} setIsOpen={setMenuIsOpen} />
     </>
   );

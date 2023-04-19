@@ -102,6 +102,21 @@ const options: ThemeOptions = {
         }
       }
     },
+    MuiLink: {
+      styleOverrides: {
+        root: ({ ownerState }) => ({
+          ...(ownerState.className === 'body' && {
+            ...(cflTheme.components?.MuiLink?.styleOverrides?.root as Record<string, unknown>),
+            color: 'black',
+            textDecorationColor: 'black',
+            textDecoration: 'underline',
+            ':hover': {
+              fontWeight: 'bold'
+            }
+          })
+        })
+      }
+    },
     MuiContainer: {
       styleOverrides: {
         root: {
