@@ -25,7 +25,7 @@ const ImageGrid: React.FC<{
     <Image
       alt={alt}
       src={src}
-      sx={{ mx: 0.5 }}
+      mx={0.5}
       maxWidth={maxWidth}
     />
   </Grid>
