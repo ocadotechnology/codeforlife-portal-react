@@ -28,7 +28,7 @@ export const paths = {
   termsOfUse: '/terms-of-use',
   forbidden: '/error/forbidden',
   pageNotFound: '/error/page-not-found',
-  internalServerError: '/error/internal-server-error'
+  internalServerError: '/error/internal-server-error',
   rapidRouter: '/rapid-router'
 };
 

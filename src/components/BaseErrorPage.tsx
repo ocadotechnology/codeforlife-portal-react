@@ -29,7 +29,7 @@ const BaseErrorPage: React.FC<ErrorTemplateProps> = ({
           <Grid
             xs={12} sm={8}
             order={{ xs: 2, sm: 1 }}
-            className='flex-center'
+            className='flex-center-y'
           >
             <Stack>
               <Typography variant='h2'>
@@ -41,7 +41,10 @@ const BaseErrorPage: React.FC<ErrorTemplateProps> = ({
               <Typography>
                 {body}
               </Typography>
-              <Button href={paths.home}>
+              <Button
+                sx={{ mb: { xs: 1, sm: 0 } }}
+                href={paths.home}
+              >
                 Back to homepage
               </Button>
             </Stack>
@@ -53,9 +56,7 @@ const BaseErrorPage: React.FC<ErrorTemplateProps> = ({
           >
             <Image
               {...img}
-              boxProps={{
-                maxWidth: '200px'
-              }}
+              maxWidth='200px'
             />
           </Grid>
         </Grid>
