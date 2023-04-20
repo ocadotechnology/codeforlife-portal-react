@@ -29,6 +29,7 @@ export const paths = {
   forbidden: '/error/forbidden',
   pageNotFound: '/error/page-not-found',
   internalServerError: '/error/internal-server-error'
+  rapidRouter: '/rapid-router'
 };
 
 const router = createBrowserRouter([
