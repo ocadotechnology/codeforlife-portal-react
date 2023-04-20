@@ -11,9 +11,9 @@ import GetInvolved from 'pages/getInvolved/GetInvolved';
 import HomeLearning from 'pages/homeLearning/HomeLearning';
 import PrivacyNotice from 'pages/privacyNotice/PrivacyNotice';
 import TermsOfUse from 'pages/termsOfUse/TermsOfUse';
-import Error404 from 'pages/errorPage/404';
-import Error403 from 'pages/errorPage/403';
-import Error500 from 'pages/errorPage/500';
+import Forbidden from 'pages/forbidden/Forbidden';
+import PageNotFound from 'pages/pageNotFound/PageNotFound';
+import InternalServerError from 'pages/internalServerError/InternalServerError';
 
 export const paths = {
   home: '/',
@@ -26,16 +26,15 @@ export const paths = {
   homeLearning: '/home-learning',
   privacyNotice: '/privacy-notice',
   termsOfUse: '/terms-of-use',
-  error403: '/403',
-  error404: '/404',
-  error500: '/500'
+  forbidden: '/error/forbidden',
+  pageNotFound: '/error/page-not-found',
+  internalServerError: '/error/internal-server-error'
 };
 
 const router = createBrowserRouter([
   {
     path: paths.home,
-    element: <Home />,
-    errorElement: <Error404 />
+    element: <Home />
   },
   {
     path: paths.teachers,
@@ -74,16 +73,16 @@ const router = createBrowserRouter([
     element: <TermsOfUse />
   },
   {
-    path: paths.error403,
-    element: <Error403 />
+    path: paths.forbidden,
+    element: <Forbidden />
   },
   {
-    path: paths.error404,
-    element: <Error404 />
+    path: paths.pageNotFound,
+    element: <PageNotFound />
   },
   {
-    path: paths.error500,
-    element: <Error500 />
+    path: paths.internalServerError,
+    element: <InternalServerError />
   }
 ]);
 

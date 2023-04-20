@@ -1,4 +1,7 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import {
+  createApi,
+  fetchBaseQuery
+} from '@reduxjs/toolkit/query/react';
 import type {
   BaseQueryFn,
   FetchArgs,
@@ -6,11 +9,14 @@ import type {
 } from '@reduxjs/toolkit/query';
 import { useNavigate } from 'react-router-dom';
 
+import { paths } from './router';
+
 const baseQuery = fetchBaseQuery({
-  baseUrl: 'https://official-joke-api.appspot.com/'
+  baseUrl: process.env.REACT_APP_API_BASE_URL
 });
 
-const baseQueryWrapper: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError
+const baseQueryWrapper: BaseQueryFn<
+  string | FetchArgs, unknown, FetchBaseQueryError // eslint-disable-line @typescript-eslint/indent
 > = async (args, api, extraOptions) => {
   const result = await baseQuery(args, api, extraOptions);
   const navigate = useNavigate();
@@ -18,17 +24,19 @@ const baseQueryWrapper: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryE
   if (result.error) {
     switch (result.error.status) {
       case 403:
-        navigate('/403');
+        navigate(paths.forbidden);
         break;
 
       case 404:
-        navigate('/404');
+        navigate(paths.pageNotFound);
         break;
 
       default:
-        navigate('/500');
+        navigate(paths.internalServerError);
+        break;
     }
   }
+
   return result;
 };
 
