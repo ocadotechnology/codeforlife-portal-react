@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Unstable_Grid2 as Grid,
   Typography,
   Button,
   ButtonProps
