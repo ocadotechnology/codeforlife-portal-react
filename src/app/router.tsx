@@ -11,6 +11,7 @@ import GetInvolved from 'pages/getInvolved/GetInvolved';
 import HomeLearning from 'pages/homeLearning/HomeLearning';
 import PrivacyNotice from 'pages/privacyNotice/PrivacyNotice';
 import TermsOfUse from 'pages/termsOfUse/TermsOfUse';
+import EmailVerificationSent from 'pages/register/EmailVerificationSent';
 
 export const paths = {
   home: '/',
@@ -22,7 +23,8 @@ export const paths = {
   getInvolved: '/get-involved',
   homeLearning: '/home-learning',
   privacyNotice: '/privacy-notice',
-  termsOfUse: '/terms-of-use'
+  termsOfUse: '/terms-of-use',
+  emailVerificationSent: '/email-verification-sent'
 };
 
 const router = createBrowserRouter([
@@ -65,6 +67,10 @@ const router = createBrowserRouter([
   {
     path: paths.termsOfUse,
     element: <TermsOfUse />
+  },
+  {
+    path: paths.emailVerificationSent,
+    element: <EmailVerificationSent />
   }
 ]);
 

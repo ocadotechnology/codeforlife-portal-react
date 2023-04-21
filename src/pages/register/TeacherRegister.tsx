@@ -16,8 +16,14 @@ import { ChevronRightRounded as ChevronRightRoundedIcon } from '@mui/icons-mater
 
 import { paths } from 'app/router';
 import Password from './Password';
+import { useNavigate } from 'react-router-dom';
 
 const TeacherForm: React.FC = () => {
+  const navigate = useNavigate();
+  const onRegisterClick = (): void => {
+    navigate(paths.emailVerificationSent, { state: { isTeacher: true } });
+  };
+
   return (
     <>
       <TextField id='first-name'
@@ -68,7 +74,7 @@ const TeacherForm: React.FC = () => {
       <Password isTeacher={true} />
 
       <Grid xs={12} display='flex' justifyContent='end' marginY={3}>
-        <Button endIcon={<ChevronRightRoundedIcon />}>Register</Button>
+        <Button endIcon={<ChevronRightRoundedIcon />} onClick={onRegisterClick}>Register</Button>
       </Grid>
     </>
   );

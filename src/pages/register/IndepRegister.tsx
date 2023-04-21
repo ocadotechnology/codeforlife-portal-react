@@ -20,10 +20,16 @@ import { ChevronRightRounded as ChevronRightRoundedIcon } from '@mui/icons-mater
 
 import { paths } from 'app/router';
 import Password from './Password';
+import { useNavigate } from 'react-router-dom';
 
 const IndepForm: React.FC<{
   age: number
 }> = ({ age }) => {
+  const navigate = useNavigate();
+  const onRegisterClick = (): void => {
+    navigate(paths.emailVerificationSent, { state: { isTeacher: false } });
+  };
+
   if (age < 0) {
     return null;
   }
@@ -81,8 +87,8 @@ const IndepForm: React.FC<{
       <Password isTeacher={false} />
 
       <Grid xs={12} display='flex' justifyContent='end' marginY={3}>
-        <Button endIcon={<ChevronRightRoundedIcon />} color='white'>Register</Button>
-      </Grid>
+        <Button endIcon={<ChevronRightRoundedIcon />} color='white' onClick={onRegisterClick}>Register</Button>
+      </Grid >
     </>
   );
 };
