@@ -78,7 +78,7 @@ const IndepForm: React.FC<{
         </>
       }
 
-      <Password />
+      <Password isTeacher={false} />
 
       <Grid xs={12} display='flex' justifyContent='end' marginY={3}>
         <Button endIcon={<ChevronRightRoundedIcon />} color='white'>Register</Button>

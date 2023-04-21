@@ -64,6 +64,12 @@ const TeacherForm: React.FC = () => {
         label='Sign up to receive updates about Code for Life games and teaching resources.'
       />
       <br />
+
+      <Password isTeacher={true} />
+
+      <Grid xs={12} display='flex' justifyContent='end' marginY={3}>
+        <Button endIcon={<ChevronRightRoundedIcon />}>Register</Button>
+      </Grid>
     </>
   );
 };
@@ -97,12 +103,6 @@ const TeacherRegister: React.FC = () => {
         </Typography>
 
         <TeacherForm />
-
-        <Password />
-
-        <Grid xs={12} display='flex' justifyContent='end' marginY={3}>
-          <Button endIcon={<ChevronRightRoundedIcon />}>Register</Button>
-        </Grid>
       </Stack>
     </ThemeProvider>
   );
