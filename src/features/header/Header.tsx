@@ -2,7 +2,8 @@ import React from 'react';
 import {
   IconButton,
   Link,
-  Button
+  Button,
+  Breakpoint
 } from '@mui/material';
 import {
   Menu as MenuIcon
@@ -26,20 +27,21 @@ const Header: React.FC = () => {
 
   return (
     <>
-      <ElevatedAppBar props={{ color: 'white' }}>
+      <ElevatedAppBar
+        color='white'
+        containerProps={{ maxWidth: process.env.REACT_APP_CONTAINER_MAX_WIDTH as Breakpoint }}
+      >
         <Image
           alt='Code for Life'
           src={CflLogo}
-          boxProps={{ maxWidth: '60px' }}
+          maxWidth='60px'
           href={paths.home}
         />
         <Image
           alt='Ocado Group'
           src={OgLogo}
-          boxProps={{
-            maxWidth: '100px',
-            mx: { xs: 'auto', ...mr }
-          }}
+          maxWidth='100px'
+          mx={{ xs: 'auto', ...mr }}
           href={process.env.REACT_APP_OCADO_GROUP_HREF}
           hrefInNewTab
         />
@@ -59,7 +61,7 @@ const Header: React.FC = () => {
         >
           <MenuIcon />
         </IconButton>
-      </ElevatedAppBar>
+      </ElevatedAppBar >
       <MenuDrawer isOpen={menuIsOpen} setIsOpen={setMenuIsOpen} />
     </>
   );

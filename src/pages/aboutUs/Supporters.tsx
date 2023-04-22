@@ -1,9 +1,7 @@
 import React from 'react';
 import {
-  Stack,
   Typography,
   Unstable_Grid2 as Grid,
-  useTheme,
   Link
 } from '@mui/material';
 
@@ -24,7 +22,12 @@ const ImageGrid: React.FC<{
   maxWidth: string
 }> = ({ alt, src, maxWidth }) => (
   <Grid xs={12} md={1} display='flex' justifyContent='center'>
-    <Image alt={alt} src={src} boxProps={{ sx: { mx: 0.5 }, maxWidth: { maxWidth } }} />
+    <Image
+      alt={alt}
+      src={src}
+      mx={0.5}
+      maxWidth={maxWidth}
+    />
   </Grid>
 );
 

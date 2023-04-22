@@ -20,7 +20,12 @@ const Dedication: React.FC = () => {
       <Typography variant='h4' textAlign='center'>
         Dedicated to Sharon Harrison
       </Typography>
-      <Image alt={'SharonHarrison'} src={SharonHarrisonImage} boxProps={{ maxWidth: '150px', margin: 3 }} />
+      <Image
+        alt={'SharonHarrison'}
+        src={SharonHarrisonImage}
+        maxWidth='150px'
+        margin={3}
+      />
       <Typography variant='h5' textAlign='center'>
         1956 — 2015
       </Typography>

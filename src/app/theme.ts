@@ -101,16 +101,31 @@ const options: ThemeOptions = {
           margin: 0
         }
       }
+    },
+    MuiLink: {
+      styleOverrides: {
+        root: ({ ownerState }) => ({
+          ...(ownerState.className === 'body' && {
+            ...(cflTheme.components?.MuiLink?.styleOverrides?.root as Record<string, unknown>),
+            color: 'black',
+            textDecorationColor: 'black',
+            textDecoration: 'underline',
+            ':hover': {
+              fontWeight: 'bold'
+            }
+          })
+        })
+      }
+    },
+    MuiContainer: {
+      styleOverrides: {
+        root: {
+          '&.MuiContainer-root': {
+            padding: 0
+          }
+        }
+      }
     }
-    // MuiContainer: {
-    //   styleOverrides: {
-    //     root: {
-    //       '&.MuiContainer-root': {
-    //         padding: 0
-    //       }
-    //     }
-    //   }
-    // },
     // MuiToolbar: {
     //   styleOverrides: {
     //     root: {
