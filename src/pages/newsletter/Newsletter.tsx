@@ -3,7 +3,6 @@ import {
   Button,
   Checkbox,
   FormControlLabel,
-  Unstable_Grid2 as Grid,
   Stack,
   TextField,
   Typography,
@@ -44,7 +43,7 @@ const Newsletter: React.FC = () => {
             control={<Checkbox required />}
             label='I confirm that I am happy to continue receiving email communication from Code for Life.'
           />
-          <Button type='submit'>
+          <Button type='submit' sx={{ my: 2 }}>
             Confirm
           </Button>
         </Stack>
