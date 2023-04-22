@@ -32,12 +32,15 @@ const HomeLearning: React.FC = () => {
         <AboutRR />
       </PageSection>
       <Levels />
-      <PageSection>
+      <PageSection className='flex-end-x'>
         <Button href={paths.register}>
           Register now
         </Button>
       </PageSection>
-      <PageSection bgcolor={theme.palette.secondary.main}>
+      <PageSection
+        bgcolor={theme.palette.secondary.main}
+        className='flex-center-x'
+      >
         <Button
           endIcon={<SendIcon />}
           href={process.env.REACT_APP_IDEAS_BOX_HREF as string}
