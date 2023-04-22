@@ -2,41 +2,49 @@ import React from 'react';
 import {
   Typography,
   Button,
+  ButtonProps,
   Card,
   CardContent,
   CardMedia,
+  CardMediaProps,
   CardActions
 } from '@mui/material';
 
-import { ImageProps } from 'codeforlife/lib/esm/components';
-
-const CflCard: React.FC<{
+export interface CflCardProps {
   text: { title: string; content: string },
-  img: ImageProps,
-  btn: { btnText: string, endIcon: JSX.Element, href?: string, target?: string },
-}> = ({ text, img, btn }) => {
-  const btnHref = btn.href ? btn.href : '';
+  mediaProps: {
+    image: NonNullable<CardMediaProps['image']>,
+    title: NonNullable<CardMediaProps['title']>
+  },
+  buttonProps: ButtonProps & React.AnchorHTMLAttributes<HTMLAnchorElement>
+}
 
+const CflCard: React.FC<CflCardProps> = ({
+  text, mediaProps, buttonProps
+}) => {
   return (
-    <>
-      <Card
-        style={{ display: 'flex', flexDirection: 'column', height: '100%' }}
-      >
-        <CardMedia
-          component="img"
-          height={242}
-          image={img.src}
-          title={img.alt}
-        />
-        <CardContent sx={{ flexGrow: 1 }}>
-          <Typography variant="h5">{text.title}</Typography>
-          <Typography>{text.content}</Typography>
-        </CardContent>
-        <CardActions>
-          <Button endIcon={btn.endIcon} href={btnHref} target={btn.target}>{btn.btnText}</Button>
-        </CardActions>
-      </Card>
-    </>
+    <Card style={{
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100%'
+    }}>
+      <CardMedia
+        component='img'
+        height={242}
+        {...mediaProps}
+      />
+      <CardContent sx={{ flexGrow: 1 }}>
+        <Typography variant='h5'>
+          {text.title}
+        </Typography>
+        <Typography>
+          {text.content}
+        </Typography>
+      </CardContent>
+      <CardActions>
+        <Button {...buttonProps} />
+      </CardActions>
+    </Card>
   );
 };
 
