@@ -41,11 +41,8 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ contents }) => {
                 {index + 1}.{' '}
               </Typography>
               <Link
-                display='inline'
-                style={{ color: 'black', textDecorationColor: 'black' }}
-                sx={{ ':hover': { fontWeight: 'bold' } }}
+                className='body'
                 onClick={() => { handleHeaderClick(index); }}
-                underline='always'
               >
                 {content.header}
               </Link>

@@ -12,6 +12,9 @@ import HomeLearning from 'pages/homeLearning/HomeLearning';
 import PrivacyNotice from 'pages/privacyNotice/PrivacyNotice';
 import TermsOfUse from 'pages/termsOfUse/TermsOfUse';
 import Newsletter from 'pages/newsletter/Newsletter';
+import Forbidden from 'pages/forbidden/Forbidden';
+import PageNotFound from 'pages/pageNotFound/PageNotFound';
+import InternalServerError from 'pages/internalServerError/InternalServerError';
 
 export const paths = {
   home: '/',
@@ -24,7 +27,11 @@ export const paths = {
   homeLearning: '/home-learning',
   privacyNotice: '/privacy-notice',
   termsOfUse: '/terms-of-use',
-  newsletter: '/newsletter'
+  newsletter: '/newsletter',
+  forbidden: '/error/forbidden',
+  pageNotFound: '/error/page-not-found',
+  internalServerError: '/error/internal-server-error',
+  rapidRouter: '/rapid-router'
 };
 
 const router = createBrowserRouter([
@@ -71,6 +78,18 @@ const router = createBrowserRouter([
   {
     path: paths.newsletter,
     element: <Newsletter />
+  },
+  {
+    path: paths.forbidden,
+    element: <Forbidden />
+  },
+  {
+    path: paths.pageNotFound,
+    element: <PageNotFound />
+  },
+  {
+    path: paths.internalServerError,
+    element: <InternalServerError />
   }
 ]);
 

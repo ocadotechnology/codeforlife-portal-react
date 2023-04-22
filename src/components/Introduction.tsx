@@ -34,7 +34,7 @@ const Introduction: React.FC<{
         <Image
           alt={img.alt}
           src={img.src}
-          boxProps={{ sx: { maxWidth: '550px' } }}
+          maxWidth='550px'
         />
       </Grid>
     </Grid >

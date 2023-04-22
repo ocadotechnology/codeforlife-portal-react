@@ -1,46 +1,90 @@
 import React from 'react';
 import {
-  Unstable_Grid2 as Grid,
   Typography,
-  Button
+  Button,
+  ButtonProps
 } from '@mui/material';
+import {
+  ChevronRight as ChevronRightIcon
+} from '@mui/icons-material';
 
-import { Image } from 'codeforlife/lib/esm/components';
+import { Image, ImageProps, OrderedGrid } from 'codeforlife/lib/esm/components';
 
-const TargetAudience: React.FC<{
-  img: { alt: string, src: string }
-  text: { header: string, body: string }
-  btn: { text: string, href: string }
-}> = ({ img, text, btn }) => {
+import { paths } from 'app/router';
+import EducateImage from 'images/dashboard_educate.png';
+import PlayImage from 'images/dashboard_play.png';
+
+const TargetAudience: React.FC = () => {
+  const images: ImageProps[] = [
+    { alt: 'teacher with student', src: EducateImage },
+    { alt: 'kids playing', src: PlayImage }
+  ];
+  const headers: string[] = [
+    'Educate',
+    'Play'
+  ];
+  const bodies: string[] = [
+    'Helping teachers and families to inspire the next generation of computer scientists.',
+    'Anyone can learn how to code. We will help you learn how. It\'s fun, free and easy.'
+  ];
+  const buttons: ButtonProps[] = [
+    { children: 'Learn more', href: paths.teachers },
+    { children: 'Get started', href: paths.students }
+  ];
+
   return (
-    <Grid
-      container
-      sx={{ height: '100%', minWidth: '100%' }}
-      padding={4}
-      spacing={1}
-    >
-      <Grid xs={12} className='flex-center'>
-        <Image alt={img.alt} src={img.src} boxProps={{ maxWidth: '450px' }} />
-      </Grid>
-      <Grid xs={12}>
-        <Typography variant='h2' style={{ color: 'white' }}>
-          {text.header}
-        </Typography>
-      </Grid>
-      <Grid xs={12} md={8}>
-        <Typography fontSize={21} style={{ color: 'white' }}>
-          {text.body}
-        </Typography>
-      </Grid>
-      <Grid
-        xs={12} md={4}
-        display='flex' justifyContent='end' alignItems='end'
-      >
-        <Button color='white' href={btn.href}>
-          {btn.text} &gt;
-        </Button>
-      </Grid>
-    </Grid >
+    <OrderedGrid
+      containerProps={{ columnSpacing: 4 }}
+      rows={[
+        images.map((image) => ({
+          element: (
+            <Image
+              {...image}
+              maxWidth='450px'
+            />
+          ),
+          itemProps: { className: 'flex-center' }
+        })),
+        headers.map((header) => ({
+          element: (
+            <Typography
+              variant='h2'
+              style={{ color: 'white' }}
+            >
+              {header}
+            </Typography>
+          )
+        })),
+        bodies.map((body) => ({
+          element: (
+            <Typography
+              fontSize={21}
+              style={{ color: 'white' }}
+            >
+              {body}
+            </Typography>
+          )
+        })),
+        buttons.map((button) => ({
+          element: (
+            <Button
+              color='white'
+              endIcon={<ChevronRightIcon />}
+              sx={{ mb: { xs: 2, sm: 0 } }}
+              {...button}
+            />
+          ),
+          itemProps: { className: 'flex-end' }
+        }))
+      ]}
+      globalItemProps={{
+        xs: 12,
+        sm: 6,
+        md: 6,
+        lg: 6,
+        xl: 6
+      }}
+    />
   );
 };
 
