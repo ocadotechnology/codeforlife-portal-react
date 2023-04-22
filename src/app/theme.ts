@@ -119,11 +119,11 @@ const options: ThemeOptions = {
     },
     MuiContainer: {
       styleOverrides: {
-        root: {
-          '&.MuiContainer-root': {
-            padding: 0
-          }
-        }
+        root: ({ ownerState }) => ({
+          // @ts-expect-error root is defined in the CFL package.
+          ...cflTheme.components?.MuiContainer?.styleOverrides?.root({ ownerState }),
+          padding: 0
+        })
       }
     }
     // MuiToolbar: {

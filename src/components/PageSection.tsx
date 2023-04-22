@@ -13,10 +13,11 @@ export interface PageSectionProps extends Pick<Grid2Props, (
   px?: boolean
   py?: boolean
   background?: string
+  className?: string
 }
 
 const PageSection: React.FC<PageSectionProps> = ({
-  bgcolor, children, px = true, py = true, background
+  bgcolor, children, px = true, py = true, background, className
 }) => {
   return <>
     <Grid
@@ -25,7 +26,10 @@ const PageSection: React.FC<PageSectionProps> = ({
       px={px ? { xs: 3, sm: 2, md: 1 } : 0}
       sx={{ background, bgcolor }}
     >
-      <Container maxWidth={process.env.REACT_APP_CONTAINER_MAX_WIDTH as Breakpoint}>
+      <Container
+        maxWidth={process.env.REACT_APP_CONTAINER_MAX_WIDTH as Breakpoint}
+        className={className}
+      >
         {children}
       </Container>
     </Grid>
