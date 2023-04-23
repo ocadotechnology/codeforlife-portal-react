@@ -51,8 +51,8 @@ const MenuDrawer: React.FC<{
       onOpen={() => { setIsOpen(true); }}
     >
       <Stack sx={{ mx: 4, my: 2 }} spacing={5}>
-        <Button style={{ width: '100%' }}>
-          Register now
+        <Button style={{ width: '100%' }} href={paths.register}>
+          Register
         </Button>
         <Stack
           spacing={1}
