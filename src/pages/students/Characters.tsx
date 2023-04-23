@@ -28,6 +28,9 @@ const Characters: React.FC<{
         </Typography>
       </Grid>
       <OrderedGrid
+        containerProps={{
+          columnSpacing: 2
+        }}
         rows={[
           characters.map((character, index) => ({
             element: (
