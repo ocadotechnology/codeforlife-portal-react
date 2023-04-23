@@ -23,7 +23,7 @@ const RapidRouter: React.FC = () => {
   const theme = useTheme();
 
   return (
-    <Grid container>
+    <Grid container spacing={1}>
       <Grid xs={12}>
         <Typography variant='h4' textAlign='center'>
           Anyone can code, you can too!

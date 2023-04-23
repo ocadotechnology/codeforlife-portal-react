@@ -19,7 +19,7 @@ import KuronoIcon from 'images/kurono_logo.svg';
 
 const Kurono: React.FC = () => {
   return (
-    <Grid container>
+    <Grid container spacing={1}>
       <Grid
         xs={12}
         sx={{
