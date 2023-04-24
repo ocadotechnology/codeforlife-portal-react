@@ -31,6 +31,7 @@ const Password: React.FC<{
   const [pwd, setPwd] = useState('');
   const [repeatPwd, setRepeatPwd] = useState('');
   const [pwdStatus, setPwdStatus] = useState(pwdStrengths.NoPwd);
+  const [pwdMatch, setPwdMatch] = useState(true);
 
   useEffect(() => {
     if (pwd === '') {
@@ -43,6 +44,10 @@ const Password: React.FC<{
       setPwdStatus(pwdStrengths.TooWeak);
     }
   }, [pwd]);
+
+  useEffect(() => {
+    setPwdMatch((pwd === repeatPwd));
+  }, [pwd, repeatPwd]);
 
   return (
     <>
@@ -81,6 +86,7 @@ const Password: React.FC<{
       <Typography paddingTop={1}>
         Repeat password
       </Typography>
+      {!pwdMatch && <Typography fontSize={12}> Passwords do not match!</Typography>}
 
       <Grid xs={12} className='flex-center'>
         <CircleIcon htmlColor={pwdStatus.colour} stroke='white' strokeWidth={1} />&nbsp;&nbsp;
