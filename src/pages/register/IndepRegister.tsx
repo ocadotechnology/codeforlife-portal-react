@@ -17,20 +17,23 @@ import {
   Checkbox
 } from '@mui/material';
 import { ChevronRightRounded as ChevronRightRoundedIcon } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 import { paths } from 'app/router';
 import Password from './Password';
-import { useNavigate } from 'react-router-dom';
 
 const IndepForm: React.FC<{
   age: number
 }> = ({ age }) => {
+  const EmailApplicableAge = 13;
+  const ReceiveUpdateAge = 18
   const navigate = useNavigate();
   const onRegisterClick = (): void => {
     navigate(paths.emailVerificationSent, { state: { isTeacher: false } });
   };
 
   if (age < 0) {
+    // Hide the form if age is -1
     return null;
   }
   return (
@@ -45,23 +48,23 @@ const IndepForm: React.FC<{
         Enter your full name
       </Typography>
       <TextField id='email'
-        placeholder={(age >= 13) ? 'Email address' : 'Parent\'s email address'}
+        placeholder={(age >= EmailApplicableAge) ? 'Email address' : 'Parent\'s email address'}
         variant='outlined'
         size='small'
         required
       />
 
-      <Typography paddingTop={1} marginBottom={1} paddingBottom={(age >= 13) ? 1 : 0}>
-        {(age >= 13) ? 'Enter your email address' : 'Please enter your parent\'s email address'}
+      <Typography paddingTop={1} marginBottom={1} paddingBottom={(age >= EmailApplicableAge) ? 1 : 0}>
+        {(age >= EmailApplicableAge) ? 'Enter your email address' : 'Please enter your parent\'s email address'}
       </Typography>
 
-      {(age < 13) &&
+      {(age < EmailApplicableAge) &&
         <Typography fontWeight='bold'>
           We will send your parent/guardian an email to ask them to activate the account for you. Once they&apos;ve done this you&apos;ll be able to log in using your name and password.
         </Typography>
       }
 
-      {(age >= 13) &&
+      {(age >= EmailApplicableAge) &&
         <>
           <FormControlLabel
             control={<Checkbox required />}
@@ -74,7 +77,7 @@ const IndepForm: React.FC<{
         </>
       }
 
-      {(age >= 18) &&
+      {(age >= ReceiveUpdateAge) &&
         <>
           <FormControlLabel
             control={<Checkbox />}
@@ -86,7 +89,7 @@ const IndepForm: React.FC<{
 
       <Password isTeacher={false} />
 
-      <Grid xs={12} display='flex' justifyContent='end' marginY={3}>
+      <Grid xs={12} className='flex-end-x' marginY={3}>
         <Button endIcon={<ChevronRightRoundedIcon />} color='white' onClick={onRegisterClick}>Register</Button>
       </Grid >
     </>
@@ -112,18 +115,13 @@ const IndepRegister: React.FC = () => {
   const [year, setYear] = useState('yy');
   const [age, setAge] = useState(-1);
 
-  const dayOptions = Array.from(Array(31).keys()).map(x => x + 1);
-  const monthOptions = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-  const currentYear = new Date().getFullYear();
-  const yearOptions = Array.from(Array(100).keys()).map(x => (+x) + currentYear - 100 + 1).reverse();
-  const formMinWidth = 140;
-
   useEffect(() => {
+    // Check if all fields are numbers
     if (!isNaN(+day) && !isNaN(+month) && !isNaN(+year)) {
       const birthday = new Date(+year, +month, +day);
       const today = new Date();
 
-      // calculate age
+      // Calculate age
       let thisYear = 0;
       if (today.getMonth() < birthday.getMonth()) {
         thisYear = 1;
@@ -131,12 +129,19 @@ const IndepRegister: React.FC = () => {
         thisYear = 1;
       }
       const age = today.getFullYear() - birthday.getFullYear() - thisYear;
-
       setAge(age);
     } else {
+      // Some fields are not numbers - cannot calculate age
       setAge(-1);
     }
   }, [day, month, year]);
+
+
+  const dayOptions = Array.from(Array(31).keys()).map(x => x + 1);
+  const monthOptions = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const currentYear = new Date().getFullYear();
+  const yearOptions = Array.from(Array(100).keys()).map(x => x + currentYear - 100 + 1).reverse();
+  const formMinWidth = 140;
 
   const handleChangeDay = (e: SelectChangeEvent): void => {
     setDay(e.target.value);
@@ -160,11 +165,11 @@ const IndepRegister: React.FC = () => {
         <Typography>
           You will have access to learning resources for Rapid Router.
         </Typography>
-
         <Typography paddingTop={2}>
           Please enter your date of birth (we do not store this information).
         </Typography>
 
+        {/* Inputs for day / month / year */}
         <Grid container display='flex' justifyContent='space-between' paddingBottom={3}>
           <FormControl sx={{ minWidth: formMinWidth }} size='small'>
             <Select

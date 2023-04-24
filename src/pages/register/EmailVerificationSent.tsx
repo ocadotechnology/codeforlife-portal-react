@@ -17,12 +17,16 @@ import { useLocation } from 'react-router-dom';
 
 const EmailVerificationSent: React.FC = () => {
   const location = useLocation();
+  const MuiTypographyColor = location.state.isTeacher ? 'white' : 'black';
+  const PageBgcolor = location.state.isTeacher ? '#ee0857' : '#ffc709';
+  const HomepageLinkColor = location.state.isTeacher ? '#FFFFFF' : '#000000';
+
   const theme = createTheme(useTheme(), {
     components: {
       MuiTypography: {
         styleOverrides: {
           root: {
-            color: location.state.isTeacher ? 'white' : 'black',
+            color: MuiTypographyColor,
             fontSize: '14px'
           }
         }
@@ -32,7 +36,7 @@ const EmailVerificationSent: React.FC = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <BasePage containerProps={{ bgcolor: location.state.isTeacher ? '#ee0857' : '#ffc709' }}>
+      <BasePage containerProps={{ bgcolor: PageBgcolor }}>
         <PageSection>
           <Stack p={3} display='flex' alignItems='center'>
             <Typography variant='h4' textAlign='center' paddingY={1}>
@@ -55,7 +59,7 @@ const EmailVerificationSent: React.FC = () => {
 
             <Link
               href={paths.home}
-              color={location.state.isTeacher ? '#FFFFFF' : '#000000'}
+              color={HomepageLinkColor}
               underline='always'
               fontSize={18}
             >

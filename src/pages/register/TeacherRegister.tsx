@@ -73,7 +73,7 @@ const TeacherForm: React.FC = () => {
 
       <Password isTeacher={true} />
 
-      <Grid xs={12} display='flex' justifyContent='end' marginY={3}>
+      <Grid xs={12} className='flex-end-x' marginY={3}>
         <Button endIcon={<ChevronRightRoundedIcon />} onClick={onRegisterClick}>Register</Button>
       </Grid>
     </>

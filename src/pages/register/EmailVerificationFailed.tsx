@@ -8,11 +8,11 @@ import {
   useTheme
 } from '@mui/material';
 
-import { paths } from 'app/router';
 import { Image } from 'codeforlife/lib/esm/components';
-import SadFaceImg from 'images/sadface.png';
+import { paths } from 'app/router';
 import BasePage from 'pages/BasePage';
 import PageSection from 'components/PageSection';
+import SadFaceImg from 'images/sadface.png';
 
 const EmailVerificationFailed: React.FC = () => {
   const theme = createTheme(useTheme(), {
