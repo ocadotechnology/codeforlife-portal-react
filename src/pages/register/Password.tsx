@@ -18,8 +18,13 @@ function isPasswordStrong(password: string, isTeacher: boolean): boolean {
 }
 
 const Password: React.FC<{
-  isTeacher: boolean
-}> = ({ isTeacher }) => {
+  isTeacher: boolean,
+  pwd: string,
+  setPwd: React.Dispatch<React.SetStateAction<string>>,
+  pwdMatch: boolean,
+  setPwdMatch: React.Dispatch<React.SetStateAction<boolean>>
+  setIsStrongPwd: React.Dispatch<React.SetStateAction<boolean>>
+}> = ({ isTeacher, pwd, setPwd, pwdMatch, setPwdMatch, setIsStrongPwd }) => {
   const pwdStrengths = {
     NoPwd: { name: 'No password!', colour: '#FF0000' },
     TooWeak: { name: 'Password too weak!', colour: '#DBA901' },
@@ -28,20 +33,22 @@ const Password: React.FC<{
   };
   const mostUsedPasswords = ['Abcd1234', 'Password1', 'Qwerty123'];
 
-  const [pwd, setPwd] = useState('');
   const [repeatPwd, setRepeatPwd] = useState('');
   const [pwdStatus, setPwdStatus] = useState(pwdStrengths.NoPwd);
-  const [pwdMatch, setPwdMatch] = useState(true);
 
   useEffect(() => {
-    if (pwd === '') {
-      setPwdStatus(pwdStrengths.NoPwd);
-    } else if (mostUsedPasswords.includes(pwd)) {
-      setPwdStatus(pwdStrengths.TooCommon);
-    } else if (isPasswordStrong(pwd, isTeacher)) {
+    if (isPasswordStrong(pwd, isTeacher)) {
+      setIsStrongPwd(true);
       setPwdStatus(pwdStrengths.Strong);
     } else {
-      setPwdStatus(pwdStrengths.TooWeak);
+      setIsStrongPwd(false);
+      if (pwd === '') {
+        setPwdStatus(pwdStrengths.NoPwd);
+      } else if (mostUsedPasswords.includes(pwd)) {
+        setPwdStatus(pwdStrengths.TooCommon);
+      } else {
+        setPwdStatus(pwdStrengths.TooWeak);
+      }
     }
   }, [pwd]);
 
@@ -86,7 +93,6 @@ const Password: React.FC<{
       <Typography paddingTop={1}>
         Repeat password
       </Typography>
-      {!pwdMatch && <Typography fontSize={12}> Passwords do not match!</Typography>}
 
       <Grid xs={12} className='flex-center'>
         <CircleIcon htmlColor={pwdStatus.colour} stroke='white' strokeWidth={1} />&nbsp;&nbsp;

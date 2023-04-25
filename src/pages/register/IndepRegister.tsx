@@ -11,7 +11,6 @@ import {
   Button,
   Select,
   MenuItem,
-  FormControl,
   SelectChangeEvent,
   FormControlLabel,
   Checkbox
@@ -26,18 +25,29 @@ const IndepForm: React.FC<{
   age: number
 }> = ({ age }) => {
   const EmailApplicableAge = 13;
-  const ReceiveUpdateAge = 18
+  const ReceiveUpdateAge = 18;
+
+  const [pwd, setPwd] = useState('');
+  const [pwdMatch, setPwdMatch] = useState(true);
+  const [isStrongPwd, setIsStrongPwd] = useState(false);
+
   const navigate = useNavigate();
-  const onRegisterClick = (): void => {
-    navigate(paths.emailVerificationSent, { state: { isTeacher: false } });
-  };
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+    e.preventDefault();
+    if (!pwdMatch) {
+      alert('Passwords do not match!');
+    }
+    if (pwdMatch && isStrongPwd) {
+      navigate(paths.emailVerificationSent, { state: { isTeacher: false } });
+    }
+  }
 
   if (age < 0) {
     // Hide the form if age is -1
     return null;
   }
   return (
-    <>
+    <form onSubmit={handleSubmit}>
       <TextField id='full-name'
         placeholder='Full name'
         variant='outlined'
@@ -48,6 +58,7 @@ const IndepForm: React.FC<{
         Enter your full name
       </Typography>
       <TextField id='email'
+        type='email'
         placeholder={(age >= EmailApplicableAge) ? 'Email address' : 'Parent\'s email address'}
         variant='outlined'
         size='small'
@@ -79,6 +90,7 @@ const IndepForm: React.FC<{
 
       {(age >= ReceiveUpdateAge) &&
         <>
+          <br />
           <FormControlLabel
             control={<Checkbox />}
             label='Sign up to receive updates about Code for Life games and teaching resources.'
@@ -87,12 +99,26 @@ const IndepForm: React.FC<{
         </>
       }
 
-      <Password isTeacher={false} />
+      <br />
+      <Password
+        isTeacher={false}
+        pwd={pwd}
+        setPwd={setPwd}
+        pwdMatch={pwdMatch}
+        setPwdMatch={setPwdMatch}
+        setIsStrongPwd={setIsStrongPwd}
+      />
 
       <Grid xs={12} className='flex-end-x' marginY={3}>
-        <Button endIcon={<ChevronRightRoundedIcon />} color='white' onClick={onRegisterClick}>Register</Button>
-      </Grid >
-    </>
+        <Button
+          type='submit'
+          endIcon={<ChevronRightRoundedIcon />}
+          color='white'
+        >
+          Register
+        </Button>
+      </Grid>
+    </form>
   );
 };
 
@@ -171,42 +197,39 @@ const IndepRegister: React.FC = () => {
 
         {/* Inputs for day / month / year */}
         <Grid container display='flex' justifyContent='space-between' paddingBottom={3}>
-          <FormControl sx={{ minWidth: formMinWidth }} size='small'>
-            <Select
-              id='select-day'
-              value={day}
-              onChange={handleChangeDay}
-              displayEmpty
-              style={{ backgroundColor: 'white' }}
-            >
-              <MenuItem value='dd' dense>Day</MenuItem>
-              {dayOptions.map(i => <MenuItem key={i} value={i} dense>{i}</MenuItem>)}
-            </Select>
-          </FormControl>
-          <FormControl sx={{ minWidth: formMinWidth }} size='small'>
-            <Select
-              id='select-month'
-              value={month}
-              onChange={handleChangeMonth}
-              displayEmpty
-              style={{ backgroundColor: 'white' }}
-            >
-              <MenuItem value='mm' dense>Month</MenuItem>
-              {monthOptions.map(i => <MenuItem key={i} value={monthOptions.indexOf(i)} dense>{i}</MenuItem>)}
-            </Select>
-          </FormControl>
-          <FormControl sx={{ minWidth: formMinWidth }} size='small'>
-            <Select
-              id='select-year'
-              value={year}
-              onChange={handleChangeYear}
-              displayEmpty
-              style={{ backgroundColor: 'white' }}
-            >
-              <MenuItem value='yy' dense>Year</MenuItem>
-              {yearOptions.map(i => <MenuItem key={i} value={i} dense>{i}</MenuItem>)}
-            </Select>
-          </FormControl>
+          <Select
+            id='select-day'
+            value={day}
+            onChange={handleChangeDay}
+            displayEmpty
+            style={{ backgroundColor: 'white', minWidth: formMinWidth }}
+            size='small'
+          >
+            <MenuItem value='dd' dense>Day</MenuItem>
+            {dayOptions.map(i => <MenuItem key={i} value={i} dense>{i}</MenuItem>)}
+          </Select>
+          <Select
+            id='select-month'
+            value={month}
+            onChange={handleChangeMonth}
+            displayEmpty
+            style={{ backgroundColor: 'white', minWidth: formMinWidth }}
+            size='small'
+          >
+            <MenuItem value='mm' dense>Month</MenuItem>
+            {monthOptions.map(i => <MenuItem key={i} value={monthOptions.indexOf(i)} dense>{i}</MenuItem>)}
+          </Select>
+          <Select
+            id='select-year'
+            value={year}
+            onChange={handleChangeYear}
+            displayEmpty
+            style={{ backgroundColor: 'white', minWidth: formMinWidth }}
+            size='small'
+          >
+            <MenuItem value='yy' dense>Year</MenuItem>
+            {yearOptions.map(i => <MenuItem key={i} value={i} dense>{i}</MenuItem>)}
+          </Select>
         </Grid>
 
         <IndepForm age={age} />
