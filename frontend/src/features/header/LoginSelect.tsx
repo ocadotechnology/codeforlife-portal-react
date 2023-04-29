@@ -3,9 +3,11 @@ import {
   Select,
   SxProps,
   MenuItem,
-  Divider,
+  MenuItemProps,
   useTheme
 } from '@mui/material';
+
+import { insertDividerBetweenElements } from 'codeforlife/lib/esm/helpers';
 
 const LoginSelect: React.FC<{
   sx: SxProps
@@ -14,10 +16,10 @@ const LoginSelect: React.FC<{
 
   const paletteColor = 'tertiary';
   const borderColor = theme.palette[paletteColor].main;
-  const menuItems = [
-    ['Student', ''],
-    ['Teacher', ''],
-    ['Independent', '']
+  const menuItems: Array<MenuItemProps & React.AnchorHTMLAttributes<HTMLAnchorElement>> = [
+    { children: 'Student', href: '' },
+    { children: 'Teacher', href: '' },
+    { children: 'Independent', href: '' }
   ];
 
   return (
@@ -42,15 +44,12 @@ const LoginSelect: React.FC<{
       <MenuItem value='' sx={{ display: 'none' }}>
         Log in
       </MenuItem>
-      {menuItems.map(([text, link], index) => (
-        <>
-          <MenuItem>{text}</MenuItem>
-          {index !== menuItems.length - 1
-            ? <Divider sx={{ borderColor }} />
-            : null
-          }
-        </>
-      ))}
+      {insertDividerBetweenElements({
+        elements: menuItems.map((menuItem, index) => (
+          <MenuItem key={index} {...menuItem} />
+        )),
+        dividerProps: { sx: { borderColor } }
+      })}
     </Select>
   );
 };

@@ -11,6 +11,10 @@ import GetInvolved from '../pages/getInvolved/GetInvolved';
 import HomeLearning from '../pages/homeLearning/HomeLearning';
 import PrivacyNotice from '../pages/privacyNotice/PrivacyNotice';
 import TermsOfUse from '../pages/termsOfUse/TermsOfUse';
+import Newsletter from '../pages/newsletter/Newsletter';
+import Forbidden from '../pages/forbidden/Forbidden';
+import PageNotFound from '../pages/pageNotFound/PageNotFound';
+import InternalServerError from '../pages/internalServerError/InternalServerError';
 
 export const paths = {
   home: '/',
@@ -22,7 +26,12 @@ export const paths = {
   getInvolved: '/get-involved',
   homeLearning: '/home-learning',
   privacyNotice: '/privacy-notice',
-  termsOfUse: '/terms-of-use'
+  termsOfUse: '/terms-of-use',
+  newsletter: '/newsletter',
+  forbidden: '/error/forbidden',
+  pageNotFound: '/error/page-not-found',
+  internalServerError: '/error/internal-server-error',
+  rapidRouter: '/rapid-router'
 };
 
 const router = createBrowserRouter([
@@ -65,6 +74,22 @@ const router = createBrowserRouter([
   {
     path: paths.termsOfUse,
     element: <TermsOfUse />
+  },
+  {
+    path: paths.newsletter,
+    element: <Newsletter />
+  },
+  {
+    path: paths.forbidden,
+    element: <Forbidden />
+  },
+  {
+    path: paths.pageNotFound,
+    element: <PageNotFound />
+  },
+  {
+    path: paths.internalServerError,
+    element: <InternalServerError />
   }
 ]);
 

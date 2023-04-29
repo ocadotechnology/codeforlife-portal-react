@@ -15,8 +15,7 @@ const Links: React.FC = () => (
     components: {
       MuiLink: {
         defaultProps: {
-          color: '#fff',
-          fontSize: 18
+          color: '#fff'
         }
       }
     }

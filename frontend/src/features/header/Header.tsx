@@ -2,7 +2,8 @@ import React from 'react';
 import {
   IconButton,
   Link,
-  Button
+  Button,
+  Breakpoint
 } from '@mui/material';
 import {
   Menu as MenuIcon
@@ -24,45 +25,44 @@ const Header: React.FC = () => {
   const display = { xs: 'none', sm: 'inline' };
   const mr = { sm: 1, md: 4 };
 
-  return (
-    <>
-      <ElevatedAppBar props={{ color: 'white' }}>
-        <Image
-          alt='Code for Life'
-          src={CflLogo}
-          boxProps={{ maxWidth: '60px' }}
-          href={paths.home}
-        />
-        <Image
-          alt='Ocado Group'
-          src={OgLogo}
-          boxProps={{
-            maxWidth: '100px',
-            mx: { xs: 'auto', ...mr }
-          }}
-          href={process.env.REACT_APP_OCADO_GROUP_HREF}
-          hrefInNewTab
-        />
-        <Link sx={{ display, mr }} href={paths.teachers}>
-          Teachers
-        </Link>
-        <Link sx={{ display, mr }} href={paths.students} color='secondary'>
-          Students
-        </Link>
-        <Button sx={{ display, mr, ml: 'auto' }} href={paths.register}>
-          Register
-        </Button>
-        <LoginSelect sx={{ display, width: '200px' }} />
-        <IconButton
-          onClick={() => { setMenuIsOpen(true); }}
-          sx={{ display: { sm: 'none' } }}
-        >
-          <MenuIcon />
-        </IconButton>
-      </ElevatedAppBar>
-      <MenuDrawer isOpen={menuIsOpen} setIsOpen={setMenuIsOpen} />
-    </>
-  );
+  return <>
+    <ElevatedAppBar
+      color='white'
+      containerProps={{ maxWidth: process.env.REACT_APP_CONTAINER_MAX_WIDTH as Breakpoint }}
+    >
+      <Image
+        alt='Code for Life'
+        src={CflLogo}
+        maxWidth='60px'
+        href={paths.home}
+      />
+      <Image
+        alt='Ocado Group'
+        src={OgLogo}
+        maxWidth='100px'
+        mx={{ xs: 'auto', ...mr }}
+        href={process.env.REACT_APP_OCADO_GROUP_HREF}
+        hrefInNewTab
+      />
+      <Link sx={{ display, mr }} href={paths.teachers}>
+        Teachers
+      </Link>
+      <Link sx={{ display, mr }} href={paths.students} color='secondary'>
+        Students
+      </Link>
+      <Button sx={{ display, mr, ml: 'auto' }} href={paths.register}>
+        Register
+      </Button>
+      <LoginSelect sx={{ display, width: '200px' }} />
+      <IconButton
+        onClick={() => { setMenuIsOpen(true); }}
+        sx={{ display: { sm: 'none' } }}
+      >
+        <MenuIcon />
+      </IconButton>
+    </ElevatedAppBar >
+    <MenuDrawer isOpen={menuIsOpen} setIsOpen={setMenuIsOpen} />
+  </>;
 };
 
 export default Header;
