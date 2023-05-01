@@ -9,9 +9,6 @@ import {
   useTheme,
   Link,
   Button,
-  FormControlLabel,
-  Checkbox,
-  FormControl,
   InputAdornment
 } from '@mui/material';
 import { ChevronRightRounded as ChevronRightRoundedIcon } from '@mui/icons-material';
@@ -25,7 +22,7 @@ import { Formik, Field, Form, FormikHelpers, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { isPasswordStrong, PASSWORD_STATUS, MOST_USED_PASSWORDS } from './PasswordStatus';
 
-interface Values {
+interface TeacherFormValues {
   firstName: string;
   lastName: string;
   email: string;
@@ -35,7 +32,7 @@ interface Values {
   repeatPassword: string;
 }
 
-const passwordStrengthCheck = (password: string) => (password.length >= 10 && !(password.search(/[A-Z]/) === -1 || password.search(/[a-z]/) === -1 || password.search(/[0-9]/) === -1 || password.search(/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/) === -1));
+const teacherPasswordStrengthCheck = (password: string) => (password.length >= 10 && !(password.search(/[A-Z]/) === -1 || password.search(/[a-z]/) === -1 || password.search(/[0-9]/) === -1 || password.search(/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/) === -1));
 
 const TeacherFormSchema = Yup.object({
   firstName: Yup.string().required('Required'),
@@ -43,8 +40,8 @@ const TeacherFormSchema = Yup.object({
   email: Yup.string().email('Invalid email address').required('Required'),
   termsOfUse: Yup.bool().oneOf([true], 'You need to accept the terms and conditions'),
   password: Yup.string().required('Field is required').test(
-    "password-strength-check",
-    passwordStrengthCheck
+    'teacher-password-strength-check',
+    teacherPasswordStrengthCheck
   ),
   repeatPassword: Yup.string().oneOf([Yup.ref('password'), undefined], "Passwords don't match").required('Confirm Password is required'),
 })
@@ -52,6 +49,12 @@ const TeacherFormSchema = Yup.object({
 const TeacherForm: React.FC = () => {
   const [pwd, setPwd] = useState('');
   const [pwdStatus, setPwdStatus] = useState(PASSWORD_STATUS.NO_PWD);
+
+  const navigate = useNavigate();
+
+  const onChangePassword = (ev: React.ChangeEvent<HTMLInputElement>): void => {
+    setPwd(ev.target.value);
+  };
 
   useEffect(() => {
     if (pwd === '') {
@@ -64,10 +67,6 @@ const TeacherForm: React.FC = () => {
       setPwdStatus(PASSWORD_STATUS.TOO_WEAK);
     }
   }, [pwd]);
-
-  const onChangePassword = (ev: React.ChangeEvent<HTMLInputElement>): void => {
-    setPwd(ev.target.value);
-  };
 
   return (
     <Formik
@@ -82,13 +81,14 @@ const TeacherForm: React.FC = () => {
       }}
       validationSchema={TeacherFormSchema}
       onSubmit={(
-        values: Values,
-        { setSubmitting }: FormikHelpers<Values>
+        values: TeacherFormValues,
+        { setSubmitting }: FormikHelpers<TeacherFormValues>
       ) => {
-        setTimeout(() => {
-          alert(JSON.stringify(values, null, 2));
-          setSubmitting(false);
-        }, 500);
+        // setTimeout(() => {
+        //   alert(JSON.stringify(values, null, 2));
+        // }, 500);
+        setSubmitting(false);
+        navigate(paths.emailVerificationSent, { state: { isTeacher: true } });
       }}
     >
       {(formik) => (
@@ -157,8 +157,6 @@ const TeacherForm: React.FC = () => {
           <Typography paddingY={1}>
             Enter a password
           </Typography>
-          <ErrorMessage name="password">{msg => <Typography>{msg}</Typography>}</ErrorMessage>
-
 
           <Field
             id='repeatPassword'

@@ -12,14 +12,40 @@ import {
   Select,
   MenuItem,
   SelectChangeEvent,
-  FormControlLabel,
-  Checkbox
+  InputAdornment
 } from '@mui/material';
 import { ChevronRightRounded as ChevronRightRoundedIcon } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
+import SecurityIcon from '@mui/icons-material/Security';
+import CircleIcon from '@mui/icons-material/Circle';
 
+import { useNavigate } from 'react-router-dom';
 import { paths } from 'app/router';
-import Password from './Password';
+
+import { Formik, Field, Form, FormikHelpers, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import { isPasswordStrong, PASSWORD_STATUS, MOST_USED_PASSWORDS } from './PasswordStatus';
+
+interface IndepFormValues {
+  fullName: string;
+  email: string;
+  termsOfUse: boolean;
+  receiveUpdates: boolean;
+  password: string;
+  repeatPassword: string;
+}
+
+const indepPasswordStrengthCheck = (password: string) => (password.length >= 8 && !(password.search(/[A-Z]/) === -1 || password.search(/[a-z]/) === -1 || password.search(/[0-9]/) === -1));
+
+const IndepFormSchema = Yup.object({
+  fullName: Yup.string().required('Required'),
+  email: Yup.string().email('Invalid email address').required('Required'),
+  // termsOfUse: Yup.bool().oneOf([true], 'You need to accept the terms and conditions'),
+  password: Yup.string().required('Field is required').test(
+    'indep-password-strength-check',
+    indepPasswordStrengthCheck
+  ),
+  repeatPassword: Yup.string().oneOf([Yup.ref('password'), undefined], "Passwords don't match").required('Confirm Password is required'),
+})
 
 const IndepForm: React.FC<{
   age: number
@@ -28,97 +54,155 @@ const IndepForm: React.FC<{
   const ReceiveUpdateAge = 18;
 
   const [pwd, setPwd] = useState('');
-  const [pwdMatch, setPwdMatch] = useState(true);
-  const [isStrongPwd, setIsStrongPwd] = useState(false);
+  const [pwdStatus, setPwdStatus] = useState(PASSWORD_STATUS.NO_PWD);
 
   const navigate = useNavigate();
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
-    e.preventDefault();
-    if (!pwdMatch) {
-      alert('Passwords do not match!');
+
+  const onChangePassword = (ev: React.ChangeEvent<HTMLInputElement>): void => {
+    setPwd(ev.target.value);
+  };
+
+  useEffect(() => {
+    if (pwd === '') {
+      setPwdStatus(PASSWORD_STATUS.NO_PWD);
+    } else if (MOST_USED_PASSWORDS.includes(pwd)) {
+      setPwdStatus(PASSWORD_STATUS.TOO_COMMON);
+    } else if (isPasswordStrong(pwd, false)) {
+      setPwdStatus(PASSWORD_STATUS.STRONG);
+    } else {
+      setPwdStatus(PASSWORD_STATUS.TOO_WEAK);
     }
-    if (pwdMatch && isStrongPwd) {
-      navigate(paths.emailVerificationSent, { state: { isTeacher: false } });
-    }
-  }
+  }, [pwd]);
 
   if (age < 0) {
     // Hide the form if age is -1
     return null;
   }
   return (
-    <form onSubmit={handleSubmit}>
-      <TextField id='full-name'
-        placeholder='Full name'
-        variant='outlined'
-        size='small'
-        required
-      />
-      <Typography paddingY={1}>
-        Enter your full name
-      </Typography>
-      <TextField id='email'
-        type='email'
-        placeholder={(age >= EmailApplicableAge) ? 'Email address' : 'Parent\'s email address'}
-        variant='outlined'
-        size='small'
-        required
-      />
-
-      <Typography paddingTop={1} marginBottom={1} paddingBottom={(age >= EmailApplicableAge) ? 1 : 0}>
-        {(age >= EmailApplicableAge) ? 'Enter your email address' : 'Please enter your parent\'s email address'}
-      </Typography>
-
-      {(age < EmailApplicableAge) &&
-        <Typography fontWeight='bold'>
-          We will send your parent/guardian an email to ask them to activate the account for you. Once they&apos;ve done this you&apos;ll be able to log in using your name and password.
-        </Typography>
-      }
-
-      {(age >= EmailApplicableAge) &&
-        <>
-          <FormControlLabel
-            control={<Checkbox required />}
-            label={<>I have read and understood
-              the <Link href={paths.termsOfUse} color='inherit' underline='always' target='_blank'>Terms of use</Link>
-              &nbsp;and the <Link href={paths.privacyNotice} color='inherit' underline='always' target='_blank'>Privacy notice</Link>.
-            </>}
+    <Formik
+      initialValues={{
+        fullName: '',
+        email: '',
+        termsOfUse: false,
+        receiveUpdates: false,
+        password: '',
+        repeatPassword: '',
+      }}
+      validationSchema={IndepFormSchema}
+      onSubmit={(
+        values: IndepFormValues,
+        { setSubmitting }: FormikHelpers<IndepFormValues>
+      ) => {
+        // setTimeout(() => {
+        //   alert(JSON.stringify(values, null, 2));
+        // }, 500);
+        setSubmitting(false);
+        navigate(paths.emailVerificationSent, { state: { isTeacher: false } });
+      }}
+    >
+      {(formik) => (
+        <Form>
+          <Field
+            id='fullName'
+            name='fullName'
+            placeholder='Full name'
+            as={TextField}
+            size='small'
           />
-          <br />
-        </>
-      }
+          <Typography paddingY={1}>
+            Enter your full name
+          </Typography>
+          <ErrorMessage name="fullName">{msg => <Typography>{msg}</Typography>}</ErrorMessage>
 
-      {(age >= ReceiveUpdateAge) &&
-        <>
-          <br />
-          <FormControlLabel
-            control={<Checkbox />}
-            label='Sign up to receive updates about Code for Life games and teaching resources.'
+          <Field
+            id='email'
+            name='email'
+            placeholder='Email address'
+            as={TextField}
+            size='small'
           />
-          <br />
-        </>
-      }
+          <Typography paddingTop={1} marginBottom={1} paddingBottom={(age >= EmailApplicableAge) ? 1 : 0}>
+            {(age >= EmailApplicableAge) ? 'Enter your email address' : 'Please enter your parent\'s email address'}
+          </Typography>
+          <ErrorMessage name="email">{msg => <Typography>{msg}</Typography>}</ErrorMessage>
 
-      <br />
-      <Password
-        isTeacher={false}
-        pwd={pwd}
-        setPwd={setPwd}
-        pwdMatch={pwdMatch}
-        setPwdMatch={setPwdMatch}
-        setIsStrongPwd={setIsStrongPwd}
-      />
+          {(age < EmailApplicableAge) &&
+            <Typography fontWeight='bold'>
+              We will send your parent/guardian an email to ask them to activate the account for you. Once they&apos;ve done this you&apos;ll be able to log in using your name and password.
+            </Typography>
+          }
 
-      <Grid xs={12} className='flex-end-x' marginY={3}>
-        <Button
-          type='submit'
-          endIcon={<ChevronRightRoundedIcon />}
-          color='white'
-        >
-          Register
-        </Button>
-      </Grid>
-    </form>
+          {(age >= EmailApplicableAge) &&
+            <>
+              <Typography>
+                <Field type='checkbox' name='termsOfUse' />
+                &nbsp;I have read and understood
+                the <Link href={paths.termsOfUse} color='inherit' underline='always' target='_blank'>Terms of use</Link>
+                &nbsp;and the <Link href={paths.privacyNotice} color='inherit' underline='always' target='_blank'>Privacy notice</Link>.
+              </Typography>
+              <ErrorMessage name="termsOfUse">{msg => <Typography>{msg}</Typography>}</ErrorMessage>
+            </>
+          }
+
+          {(age >= ReceiveUpdateAge) &&
+            <>
+              <Typography paddingY={1}>
+                <Field type='checkbox' name='receiveUpdates' />
+                &nbsp;Sign up to receive updates about Code for Life games and teaching resources.
+              </Typography>
+            </>
+          }
+
+          <Field
+            id='password'
+            name='password'
+            placeholder='Password'
+            as={TextField}
+            size='small'
+            type='password'
+            onKeyUp={onChangePassword}
+            InputProps={{
+              endAdornment: <InputAdornment position='end'><SecurityIcon /></InputAdornment>
+            }}
+          />
+          <Typography paddingY={1}>
+            Enter a password
+          </Typography>
+
+          <Field
+            id='repeatPassword'
+            name='repeatPassword'
+            placeholder='Repeat password'
+            as={TextField}
+            size='small'
+            type='password'
+            InputProps={{
+              endAdornment: <InputAdornment position='end'><SecurityIcon /></InputAdornment>
+            }}
+          />
+          <Typography paddingTop={1}>
+            Repeat password
+          </Typography>
+          <ErrorMessage name="repeatPassword">{msg => <Typography>{msg}</Typography>}</ErrorMessage>
+
+          <Grid xs={12} className='flex-center'>
+            <CircleIcon htmlColor={pwdStatus.colour} stroke='white' strokeWidth={1} />&nbsp;&nbsp;
+            <Typography fontSize={18} fontWeight={500} margin={0}>{pwdStatus.name}</Typography>
+          </Grid>
+
+          <Grid xs={12} className='flex-end-x' marginY={3}>
+            <Button
+              type='submit'
+              endIcon={<ChevronRightRoundedIcon />}
+              disabled={!(formik.dirty && formik.isValid)}
+            >
+              Register
+            </Button>
+          </Grid>
+
+        </Form>
+      )}
+    </Formik>
   );
 };
 
