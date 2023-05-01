@@ -16,13 +16,14 @@ import {
 } from '@mui/material';
 import { ChevronRightRounded as ChevronRightRoundedIcon } from '@mui/icons-material';
 import SecurityIcon from '@mui/icons-material/Security';
-import { paths } from 'app/router';
-import Password from './Password';
+import CircleIcon from '@mui/icons-material/Circle';
+
 import { useNavigate } from 'react-router-dom';
+import { paths } from 'app/router';
 
 import { Formik, Field, Form, FormikHelpers, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import PasswordStatus from './PasswordStatus';
+import { isPasswordStrong, PASSWORD_STATUS, MOST_USED_PASSWORDS } from './PasswordStatus';
 
 interface Values {
   firstName: string;
@@ -34,19 +35,35 @@ interface Values {
   repeatPassword: string;
 }
 
+const passwordStrengthCheck = (password: string) => (password.length >= 10 && !(password.search(/[A-Z]/) === -1 || password.search(/[a-z]/) === -1 || password.search(/[0-9]/) === -1 || password.search(/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/) === -1));
+
 const TeacherFormSchema = Yup.object({
   firstName: Yup.string().required('Required'),
   lastName: Yup.string().required('Required'),
   email: Yup.string().email('Invalid email address').required('Required'),
   termsOfUse: Yup.bool().oneOf([true], 'You need to accept the terms and conditions'),
-  // TODO: strong password test
-  password: Yup.string().required('Field is required'),
+  password: Yup.string().required('Field is required').test(
+    "password-strength-check",
+    passwordStrengthCheck
+  ),
   repeatPassword: Yup.string().oneOf([Yup.ref('password'), undefined], "Passwords don't match").required('Confirm Password is required'),
 })
 
 const TeacherForm: React.FC = () => {
   const [pwd, setPwd] = useState('');
-  const [isStrongPwd, setIsStrongPwd] = useState(false);
+  const [pwdStatus, setPwdStatus] = useState(PASSWORD_STATUS.NO_PWD);
+
+  useEffect(() => {
+    if (pwd === '') {
+      setPwdStatus(PASSWORD_STATUS.NO_PWD);
+    } else if (MOST_USED_PASSWORDS.includes(pwd)) {
+      setPwdStatus(PASSWORD_STATUS.TOO_COMMON);
+    } else if (isPasswordStrong(pwd, true)) {
+      setPwdStatus(PASSWORD_STATUS.STRONG);
+    } else {
+      setPwdStatus(PASSWORD_STATUS.TOO_WEAK);
+    }
+  }, [pwd]);
 
   const onChangePassword = (ev: React.ChangeEvent<HTMLInputElement>): void => {
     setPwd(ev.target.value);
@@ -74,105 +91,108 @@ const TeacherForm: React.FC = () => {
         }, 500);
       }}
     >
-      <Form>
-        <Field
-          id='firstName'
-          name='firstName'
-          placeholder='First name'
-          as={TextField}
-          size='small'
-        />
-        <Typography paddingY={1}>
-          Enter your first name
-        </Typography>
-        <ErrorMessage name="firstName">{msg => <Typography>{msg}</Typography>}</ErrorMessage>
+      {(formik) => (
+        <Form>
+          <Field
+            id='firstName'
+            name='firstName'
+            placeholder='First name'
+            as={TextField}
+            size='small'
+          />
+          <Typography paddingY={1}>
+            Enter your first name
+          </Typography>
+          <ErrorMessage name="firstName">{msg => <Typography>{msg}</Typography>}</ErrorMessage>
 
-        <Field
-          id='lastName'
-          name='lastName'
-          placeholder='Last name'
-          as={TextField}
-          size='small'
-        />
-        <Typography paddingY={1}>
-          Enter your last name
-        </Typography>
-        <ErrorMessage name="lastName">{msg => <Typography>{msg}</Typography>}</ErrorMessage>
+          <Field
+            id='lastName'
+            name='lastName'
+            placeholder='Last name'
+            as={TextField}
+            size='small'
+          />
+          <Typography paddingY={1}>
+            Enter your last name
+          </Typography>
+          <ErrorMessage name="lastName">{msg => <Typography>{msg}</Typography>}</ErrorMessage>
 
-        <Field
-          id='email'
-          name='email'
-          placeholder='Email address'
-          as={TextField}
-          size='small'
-        />
-        <Typography paddingY={1}>
-          Enter your email address
-        </Typography>
-        <ErrorMessage name="email">{msg => <Typography>{msg}</Typography>}</ErrorMessage>
+          <Field
+            id='email'
+            name='email'
+            placeholder='Email address'
+            as={TextField}
+            size='small'
+          />
+          <Typography paddingY={1}>
+            Enter your email address
+          </Typography>
+          <ErrorMessage name="email">{msg => <Typography>{msg}</Typography>}</ErrorMessage>
 
-        <Typography>
-          <Field type='checkbox' name='termsOfUse' />
-          &nbsp;I am over 18 years old have read and understood
-          the <Link href={paths.termsOfUse} color='inherit' underline='always' target='_blank'>Terms of use</Link>
-          &nbsp;and the <Link href={paths.privacyNotice} color='inherit' underline='always' target='_blank'>Privacy notice</Link>.
-        </Typography>
-        <ErrorMessage name="termsOfUse">{msg => <Typography>{msg}</Typography>}</ErrorMessage>
+          <Typography>
+            <Field type='checkbox' name='termsOfUse' />
+            &nbsp;I am over 18 years old have read and understood
+            the <Link href={paths.termsOfUse} color='inherit' underline='always' target='_blank'>Terms of use</Link>
+            &nbsp;and the <Link href={paths.privacyNotice} color='inherit' underline='always' target='_blank'>Privacy notice</Link>.
+          </Typography>
+          <ErrorMessage name="termsOfUse">{msg => <Typography>{msg}</Typography>}</ErrorMessage>
 
-        <Typography paddingY={1}>
-          <Field type='checkbox' name='receiveUpdates' />
-          &nbsp;Sign up to receive updates about Code for Life games and teaching resources.
-        </Typography>
+          <Typography paddingY={1}>
+            <Field type='checkbox' name='receiveUpdates' />
+            &nbsp;Sign up to receive updates about Code for Life games and teaching resources.
+          </Typography>
 
-        <Field
-          id='password'
-          name='password'
-          placeholder='Password'
-          as={TextField}
-          size='small'
-          type='password'
-          onKeyUp={onChangePassword}
-          InputProps={{
-            endAdornment: <InputAdornment position='end'><SecurityIcon /></InputAdornment>
-          }}
-        />
-        <Typography paddingY={1}>
-          Enter a password
-        </Typography>
-        <ErrorMessage name="password">{msg => <Typography>{msg}</Typography>}</ErrorMessage>
+          <Field
+            id='password'
+            name='password'
+            placeholder='Password'
+            as={TextField}
+            size='small'
+            type='password'
+            onKeyUp={onChangePassword}
+            InputProps={{
+              endAdornment: <InputAdornment position='end'><SecurityIcon /></InputAdornment>
+            }}
+          />
+          <Typography paddingY={1}>
+            Enter a password
+          </Typography>
+          <ErrorMessage name="password">{msg => <Typography>{msg}</Typography>}</ErrorMessage>
 
 
-        <Field
-          id='repeatPassword'
-          name='repeatPassword'
-          placeholder='Repeat password'
-          as={TextField}
-          size='small'
-          type='password'
-          InputProps={{
-            endAdornment: <InputAdornment position='end'><SecurityIcon /></InputAdornment>
-          }}
-        />
-        <Typography paddingTop={1}>
-          Repeat password
-        </Typography>
-        <ErrorMessage name="repeatPassword">{msg => <Typography>{msg}</Typography>}</ErrorMessage>
+          <Field
+            id='repeatPassword'
+            name='repeatPassword'
+            placeholder='Repeat password'
+            as={TextField}
+            size='small'
+            type='password'
+            InputProps={{
+              endAdornment: <InputAdornment position='end'><SecurityIcon /></InputAdornment>
+            }}
+          />
+          <Typography paddingTop={1}>
+            Repeat password
+          </Typography>
+          <ErrorMessage name="repeatPassword">{msg => <Typography>{msg}</Typography>}</ErrorMessage>
 
-        <PasswordStatus
-          isTeacher={true}
-          pwd={pwd}
-          setIsStrongPwd={setIsStrongPwd}
-        />
+          <Grid xs={12} className='flex-center'>
+            <CircleIcon htmlColor={pwdStatus.colour} stroke='white' strokeWidth={1} />&nbsp;&nbsp;
+            <Typography fontSize={18} fontWeight={500} margin={0}>{pwdStatus.name}</Typography>
+          </Grid>
 
-        <Grid xs={12} className='flex-end-x' marginY={3}>
-          <Button
-            type='submit'
-            endIcon={<ChevronRightRoundedIcon />}
-          >
-            Register
-          </Button>
-        </Grid>
-      </Form>
+          <Grid xs={12} className='flex-end-x' marginY={3}>
+            <Button
+              type='submit'
+              endIcon={<ChevronRightRoundedIcon />}
+              disabled={!(formik.dirty && formik.isValid)}
+            >
+              Register
+            </Button>
+          </Grid>
+
+        </Form>
+      )}
     </Formik>
   );
 };
