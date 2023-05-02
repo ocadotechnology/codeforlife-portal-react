@@ -23,7 +23,8 @@ import { paths } from 'app/router';
 
 import { Formik, Field, Form, FormikHelpers, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { isPasswordStrong, PASSWORD_STATUS, MOST_USED_PASSWORDS } from './PasswordStatus';
+import { isPasswordStrong, PASSWORD_STATUS, MOST_USED_PASSWORDS } from './constants';
+import MyErrorMessage from './MyErrorMessage';
 
 interface IndepFormValues {
   fullName: string;
@@ -37,15 +38,17 @@ interface IndepFormValues {
 const indepPasswordStrengthCheck = (password: string) => (password.length >= 8 && !(password.search(/[A-Z]/) === -1 || password.search(/[a-z]/) === -1 || password.search(/[0-9]/) === -1));
 
 const IndepFormSchema = Yup.object({
-  fullName: Yup.string().required('Required'),
-  email: Yup.string().email('Invalid email address').required('Required'),
+  fullName: Yup.string().required('This field is required'),
+  email: Yup.string().email('Invalid email address').required('This field is required'),
   // termsOfUse: Yup.bool().oneOf([true], 'You need to accept the terms and conditions'),
-  password: Yup.string().required('Field is required').test(
-    'indep-password-strength-check',
-    indepPasswordStrengthCheck
-  ),
+  password: Yup.string().required('This field is required')
+    .test(
+      'indep-password-strength-check',
+      indepPasswordStrengthCheck
+    ),
   repeatPassword: Yup.string().oneOf([Yup.ref('password'), undefined], "Passwords don't match").required('Confirm Password is required'),
-})
+});
+
 
 const IndepForm: React.FC<{
   age: number
@@ -55,6 +58,9 @@ const IndepForm: React.FC<{
 
   const [pwd, setPwd] = useState('');
   const [pwdStatus, setPwdStatus] = useState(PASSWORD_STATUS.NO_PWD);
+
+  const theme = useTheme();
+  const errMsgColor = theme.palette.error.light;
 
   const navigate = useNavigate();
 
@@ -93,9 +99,7 @@ const IndepForm: React.FC<{
         values: IndepFormValues,
         { setSubmitting }: FormikHelpers<IndepFormValues>
       ) => {
-        // setTimeout(() => {
-        //   alert(JSON.stringify(values, null, 2));
-        // }, 500);
+        // TODO: to call backend
         setSubmitting(false);
         navigate(paths.emailVerificationSent, { state: { isTeacher: false } });
       }}
@@ -109,10 +113,10 @@ const IndepForm: React.FC<{
             as={TextField}
             size='small'
           />
-          <Typography paddingY={1}>
+          <Typography paddingTop={1}>
             Enter your full name
           </Typography>
-          <ErrorMessage name="fullName">{msg => <Typography>{msg}</Typography>}</ErrorMessage>
+          <MyErrorMessage fieldName='fullName' color={errMsgColor} />
 
           <Field
             id='email'
@@ -124,7 +128,7 @@ const IndepForm: React.FC<{
           <Typography paddingTop={1} marginBottom={1} paddingBottom={(age >= EmailApplicableAge) ? 1 : 0}>
             {(age >= EmailApplicableAge) ? 'Enter your email address' : 'Please enter your parent\'s email address'}
           </Typography>
-          <ErrorMessage name="email">{msg => <Typography>{msg}</Typography>}</ErrorMessage>
+          <MyErrorMessage fieldName='email' color={errMsgColor} />
 
           {(age < EmailApplicableAge) &&
             <Typography fontWeight='bold'>
@@ -140,13 +144,13 @@ const IndepForm: React.FC<{
                 the <Link href={paths.termsOfUse} color='inherit' underline='always' target='_blank'>Terms of use</Link>
                 &nbsp;and the <Link href={paths.privacyNotice} color='inherit' underline='always' target='_blank'>Privacy notice</Link>.
               </Typography>
-              <ErrorMessage name="termsOfUse">{msg => <Typography>{msg}</Typography>}</ErrorMessage>
+              <MyErrorMessage fieldName='termsOfUse' color={errMsgColor} />
             </>
           }
 
           {(age >= ReceiveUpdateAge) &&
             <>
-              <Typography paddingY={1}>
+              <Typography paddingTop={1}>
                 <Field type='checkbox' name='receiveUpdates' />
                 &nbsp;Sign up to receive updates about Code for Life games and teaching resources.
               </Typography>
@@ -165,7 +169,7 @@ const IndepForm: React.FC<{
               endAdornment: <InputAdornment position='end'><SecurityIcon /></InputAdornment>
             }}
           />
-          <Typography paddingY={1}>
+          <Typography paddingTop={1}>
             Enter a password
           </Typography>
 
@@ -183,7 +187,7 @@ const IndepForm: React.FC<{
           <Typography paddingTop={1}>
             Repeat password
           </Typography>
-          <ErrorMessage name="repeatPassword">{msg => <Typography>{msg}</Typography>}</ErrorMessage>
+          <MyErrorMessage fieldName='repeatPassword' color={errMsgColor} />
 
           <Grid xs={12} className='flex-center'>
             <CircleIcon htmlColor={pwdStatus.colour} stroke='white' strokeWidth={1} />&nbsp;&nbsp;
@@ -194,7 +198,7 @@ const IndepForm: React.FC<{
             <Button
               type='submit'
               endIcon={<ChevronRightRoundedIcon />}
-              disabled={!(formik.dirty && formik.isValid)}
+              disabled={!(formik.dirty)}
             >
               Register
             </Button>

@@ -20,7 +20,8 @@ import { paths } from 'app/router';
 
 import { Formik, Field, Form, FormikHelpers, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { isPasswordStrong, PASSWORD_STATUS, MOST_USED_PASSWORDS } from './PasswordStatus';
+import { isPasswordStrong, PASSWORD_STATUS, MOST_USED_PASSWORDS } from './constants';
+import MyErrorMessage from './MyErrorMessage';
 
 interface TeacherFormValues {
   firstName: string;
@@ -35,20 +36,24 @@ interface TeacherFormValues {
 const teacherPasswordStrengthCheck = (password: string) => (password.length >= 10 && !(password.search(/[A-Z]/) === -1 || password.search(/[a-z]/) === -1 || password.search(/[0-9]/) === -1 || password.search(/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/) === -1));
 
 const TeacherFormSchema = Yup.object({
-  firstName: Yup.string().required('Required'),
-  lastName: Yup.string().required('Required'),
-  email: Yup.string().email('Invalid email address').required('Required'),
+  firstName: Yup.string().required('This field is required'),
+  lastName: Yup.string().required('This field is required'),
+  email: Yup.string().email('Invalid email address').required('This field is required'),
   termsOfUse: Yup.bool().oneOf([true], 'You need to accept the terms and conditions'),
-  password: Yup.string().required('Field is required').test(
-    'teacher-password-strength-check',
-    teacherPasswordStrengthCheck
-  ),
+  password: Yup.string().required('This field is required')
+    .test(
+      'teacher-password-strength-check',
+      teacherPasswordStrengthCheck
+    ),
   repeatPassword: Yup.string().oneOf([Yup.ref('password'), undefined], "Passwords don't match").required('Confirm Password is required'),
 })
 
 const TeacherForm: React.FC = () => {
   const [pwd, setPwd] = useState('');
   const [pwdStatus, setPwdStatus] = useState(PASSWORD_STATUS.NO_PWD);
+
+  const theme = useTheme();
+  const errMsgColor = theme.palette.error.dark;
 
   const navigate = useNavigate();
 
@@ -84,9 +89,7 @@ const TeacherForm: React.FC = () => {
         values: TeacherFormValues,
         { setSubmitting }: FormikHelpers<TeacherFormValues>
       ) => {
-        // setTimeout(() => {
-        //   alert(JSON.stringify(values, null, 2));
-        // }, 500);
+        // TODO: to call backend
         setSubmitting(false);
         navigate(paths.emailVerificationSent, { state: { isTeacher: true } });
       }}
@@ -100,10 +103,10 @@ const TeacherForm: React.FC = () => {
             as={TextField}
             size='small'
           />
-          <Typography paddingY={1}>
+          <Typography paddingTop={1}>
             Enter your first name
           </Typography>
-          <ErrorMessage name="firstName">{msg => <Typography>{msg}</Typography>}</ErrorMessage>
+          <MyErrorMessage fieldName='firstName' color={errMsgColor} />
 
           <Field
             id='lastName'
@@ -112,10 +115,10 @@ const TeacherForm: React.FC = () => {
             as={TextField}
             size='small'
           />
-          <Typography paddingY={1}>
+          <Typography paddingTop={1}>
             Enter your last name
           </Typography>
-          <ErrorMessage name="lastName">{msg => <Typography>{msg}</Typography>}</ErrorMessage>
+          <MyErrorMessage fieldName='lastName' color={errMsgColor} />
 
           <Field
             id='email'
@@ -124,10 +127,10 @@ const TeacherForm: React.FC = () => {
             as={TextField}
             size='small'
           />
-          <Typography paddingY={1}>
+          <Typography paddingTop={1}>
             Enter your email address
           </Typography>
-          <ErrorMessage name="email">{msg => <Typography>{msg}</Typography>}</ErrorMessage>
+          <MyErrorMessage fieldName='email' color={errMsgColor} />
 
           <Typography>
             <Field type='checkbox' name='termsOfUse' />
@@ -135,9 +138,9 @@ const TeacherForm: React.FC = () => {
             the <Link href={paths.termsOfUse} color='inherit' underline='always' target='_blank'>Terms of use</Link>
             &nbsp;and the <Link href={paths.privacyNotice} color='inherit' underline='always' target='_blank'>Privacy notice</Link>.
           </Typography>
-          <ErrorMessage name="termsOfUse">{msg => <Typography>{msg}</Typography>}</ErrorMessage>
+          <MyErrorMessage fieldName='termsOfUse' color={errMsgColor} />
 
-          <Typography paddingY={1}>
+          <Typography paddingTop={1}>
             <Field type='checkbox' name='receiveUpdates' />
             &nbsp;Sign up to receive updates about Code for Life games and teaching resources.
           </Typography>
@@ -154,7 +157,7 @@ const TeacherForm: React.FC = () => {
               endAdornment: <InputAdornment position='end'><SecurityIcon /></InputAdornment>
             }}
           />
-          <Typography paddingY={1}>
+          <Typography paddingTop={1}>
             Enter a password
           </Typography>
 
@@ -172,7 +175,7 @@ const TeacherForm: React.FC = () => {
           <Typography paddingTop={1}>
             Repeat password
           </Typography>
-          <ErrorMessage name="repeatPassword">{msg => <Typography>{msg}</Typography>}</ErrorMessage>
+          <MyErrorMessage fieldName='repeatPassword' color={errMsgColor} />
 
           <Grid xs={12} className='flex-center'>
             <CircleIcon htmlColor={pwdStatus.colour} stroke='white' strokeWidth={1} />&nbsp;&nbsp;
@@ -183,7 +186,7 @@ const TeacherForm: React.FC = () => {
             <Button
               type='submit'
               endIcon={<ChevronRightRoundedIcon />}
-              disabled={!(formik.dirty && formik.isValid)}
+              disabled={!(formik.dirty)}
             >
               Register
             </Button>
