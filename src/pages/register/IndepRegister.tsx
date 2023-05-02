@@ -139,7 +139,7 @@ const IndepForm: React.FC<{
           {(age >= EmailApplicableAge) &&
             <>
               <Typography>
-                <Field type='checkbox' name='termsOfUse' />
+                <Field type='checkbox' name='termsOfUse' required />
                 &nbsp;I have read and understood
                 the <Link href={paths.termsOfUse} color='inherit' underline='always' target='_blank'>Terms of use</Link>
                 &nbsp;and the <Link href={paths.privacyNotice} color='inherit' underline='always' target='_blank'>Privacy notice</Link>.
