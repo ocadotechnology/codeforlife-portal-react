@@ -33,7 +33,7 @@ interface TeacherFormValues {
   repeatPassword: string;
 }
 
-const teacherPasswordStrengthCheck = (password: string) => (password.length >= 10 && !(password.search(/[A-Z]/) === -1 || password.search(/[a-z]/) === -1 || password.search(/[0-9]/) === -1 || password.search(/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/) === -1));
+const teacherPasswordStrengthCheck = (password: string): boolean => (password.length >= 10 && !(password.search(/[A-Z]/) === -1 || password.search(/[a-z]/) === -1 || password.search(/[0-9]/) === -1 || password.search(/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/) === -1));
 
 const TeacherFormSchema = Yup.object({
   firstName: Yup.string().required('This field is required'),
@@ -43,17 +43,17 @@ const TeacherFormSchema = Yup.object({
   password: Yup.string().required('This field is required')
     .test(
       'teacher-password-strength-check',
+      'Invalid password',
       teacherPasswordStrengthCheck
     ),
-  repeatPassword: Yup.string().oneOf([Yup.ref('password'), undefined], "Passwords don't match").required('Confirm Password is required'),
-})
+  repeatPassword: Yup.string().oneOf([Yup.ref('password'), undefined], "Passwords don't match").required('This field is required'),
+});
 
 const TeacherForm: React.FC = () => {
   const [pwd, setPwd] = useState('');
   const [pwdStatus, setPwdStatus] = useState(PASSWORD_STATUS.NO_PWD);
 
-  const theme = useTheme();
-  const errMsgColor = theme.palette.error.dark;
+  const errMsgColor = 'white';
 
   const navigate = useNavigate();
 
@@ -61,6 +61,7 @@ const TeacherForm: React.FC = () => {
     setPwd(ev.target.value);
   };
 
+  // TODO: use Yup to update password status
   useEffect(() => {
     if (pwd === '') {
       setPwdStatus(PASSWORD_STATUS.NO_PWD);
@@ -102,11 +103,10 @@ const TeacherForm: React.FC = () => {
             placeholder='First name'
             as={TextField}
             size='small'
+            helperText='Enter your first name'
+            FormHelperTextProps={{ color: 'primary' }}
           />
-          <Typography paddingTop={1}>
-            Enter your first name
-          </Typography>
-          <CflErrorMessage fieldName='firstName' />
+          <CflErrorMessage fieldName='firstName' color={errMsgColor} />
 
           <Field
             id='lastName'
@@ -114,10 +114,9 @@ const TeacherForm: React.FC = () => {
             placeholder='Last name'
             as={TextField}
             size='small'
+            helperText='Enter your last name'
+            FormHelperTextProps={{ color: 'primary' }}
           />
-          <Typography paddingTop={1}>
-            Enter your last name
-          </Typography>
           <CflErrorMessage fieldName='lastName' color={errMsgColor} />
 
           <Field
@@ -126,10 +125,9 @@ const TeacherForm: React.FC = () => {
             placeholder='Email address'
             as={TextField}
             size='small'
+            helperText='Enter your email address'
+            FormHelperTextProps={{ color: 'primary' }}
           />
-          <Typography paddingTop={1}>
-            Enter your email address
-          </Typography>
           <CflErrorMessage fieldName='email' color={errMsgColor} />
 
           <Typography>
@@ -156,10 +154,10 @@ const TeacherForm: React.FC = () => {
             InputProps={{
               endAdornment: <InputAdornment position='end'><SecurityIcon /></InputAdornment>
             }}
+            helperText='Enter a password'
+            FormHelperTextProps={{ color: 'primary' }}
           />
-          <Typography paddingTop={1}>
-            Enter a password
-          </Typography>
+          <CflErrorMessage fieldName='password' color={errMsgColor} />
 
           <Field
             id='repeatPassword'
@@ -171,10 +169,9 @@ const TeacherForm: React.FC = () => {
             InputProps={{
               endAdornment: <InputAdornment position='end'><SecurityIcon /></InputAdornment>
             }}
+            helperText='Repeat password'
+            FormHelperTextProps={{ color: 'primary' }}
           />
-          <Typography paddingTop={1}>
-            Repeat password
-          </Typography>
           <CflErrorMessage fieldName='repeatPassword' color={errMsgColor} />
 
           <Grid xs={12} className='flex-center'>

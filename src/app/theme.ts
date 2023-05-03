@@ -98,6 +98,7 @@ const options: ThemeOptions = {
     MuiInputBase: {
       styleOverrides: {
         root: {
+          background: 'white',
           margin: 0
         }
       }
@@ -108,6 +109,21 @@ const options: ThemeOptions = {
           '&.MuiContainer-root': {
             padding: 0
           }
+        }
+      }
+    },
+    MuiFormHelperText: {
+      styleOverrides: {
+        root: ({ ownerState }) => ({
+          color: ownerState.color === 'primary' ? 'white' : 'black',
+          margin: '4px 0 8px 4px'
+        })
+      }
+    },
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          background: 'transparent'
         }
       }
     }

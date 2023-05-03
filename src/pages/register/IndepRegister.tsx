@@ -35,18 +35,18 @@ interface IndepFormValues {
   repeatPassword: string;
 }
 
-const indepPasswordStrengthCheck = (password: string) => (password.length >= 8 && !(password.search(/[A-Z]/) === -1 || password.search(/[a-z]/) === -1 || password.search(/[0-9]/) === -1));
+const indepPasswordStrengthCheck = (password: string): boolean => (password.length >= 8 && !(password.search(/[A-Z]/) === -1 || password.search(/[a-z]/) === -1 || password.search(/[0-9]/) === -1));
 
 const IndepFormSchema = Yup.object({
   fullName: Yup.string().required('This field is required'),
   email: Yup.string().email('Invalid email address').required('This field is required'),
-  // termsOfUse: Yup.bool().oneOf([true], 'You need to accept the terms and conditions'),
   password: Yup.string().required('This field is required')
     .test(
       'indep-password-strength-check',
+      'Invalid password',
       indepPasswordStrengthCheck
     ),
-  repeatPassword: Yup.string().oneOf([Yup.ref('password'), undefined], "Passwords don't match").required('Confirm Password is required'),
+  repeatPassword: Yup.string().oneOf([Yup.ref('password'), undefined], "Passwords don't match").required('This field is required'),
 });
 
 const IndepForm: React.FC<{
@@ -111,10 +111,9 @@ const IndepForm: React.FC<{
             placeholder='Full name'
             as={TextField}
             size='small'
+            helperText='Enter your full name'
+            error={formik.touched.fullName && formik.errors.fullName}
           />
-          <Typography paddingTop={1}>
-            Enter your full name
-          </Typography>
           <CflErrorMessage fieldName='fullName' color={errMsgColor} />
 
           <Field
@@ -123,10 +122,9 @@ const IndepForm: React.FC<{
             placeholder='Email address'
             as={TextField}
             size='small'
+            helperText={(age >= EmailApplicableAge) ? 'Enter your email address' : 'Please enter your parent\'s email address'}
+            error={formik.touched.email && formik.errors.email}
           />
-          <Typography paddingTop={1} marginBottom={1} paddingBottom={(age >= EmailApplicableAge) ? 1 : 0}>
-            {(age >= EmailApplicableAge) ? 'Enter your email address' : 'Please enter your parent\'s email address'}
-          </Typography>
           <CflErrorMessage fieldName='email' color={errMsgColor} />
 
           {(age < EmailApplicableAge) &&
@@ -135,10 +133,15 @@ const IndepForm: React.FC<{
             </Typography>
           }
 
+          {/* TODO: use Yup to validate the T&C checkbox */}
           {(age >= EmailApplicableAge) &&
             <>
               <Typography>
-                <Field type='checkbox' name='termsOfUse' required />
+                <Field
+                  type='checkbox'
+                  name='termsOfUse'
+                  required
+                />
                 &nbsp;I have read and understood
                 the <Link href={paths.termsOfUse} color='inherit' underline='always' target='_blank'>Terms of use</Link>
                 &nbsp;and the <Link href={paths.privacyNotice} color='inherit' underline='always' target='_blank'>Privacy notice</Link>.
@@ -149,8 +152,11 @@ const IndepForm: React.FC<{
 
           {(age >= ReceiveUpdateAge) &&
             <>
-              <Typography paddingTop={1}>
-                <Field type='checkbox' name='receiveUpdates' />
+              <Typography>
+                <Field
+                  type='checkbox'
+                  name='receiveUpdates'
+                />
                 &nbsp;Sign up to receive updates about Code for Life games and teaching resources.
               </Typography>
             </>
@@ -167,10 +173,10 @@ const IndepForm: React.FC<{
             InputProps={{
               endAdornment: <InputAdornment position='end'><SecurityIcon /></InputAdornment>
             }}
+            helperText='Enter a password'
+            error={formik.touched.password && formik.errors.password}
           />
-          <Typography paddingTop={1}>
-            Enter a password
-          </Typography>
+          <CflErrorMessage fieldName='password' color={errMsgColor} />
 
           <Field
             id='repeatPassword'
@@ -182,10 +188,9 @@ const IndepForm: React.FC<{
             InputProps={{
               endAdornment: <InputAdornment position='end'><SecurityIcon /></InputAdornment>
             }}
+            helperText='Repeat password'
+            error={formik.touched.repeatPassword && formik.errors.repeatPassword}
           />
-          <Typography paddingTop={1}>
-            Repeat password
-          </Typography>
           <CflErrorMessage fieldName='repeatPassword' color={errMsgColor} />
 
           <Grid xs={12} className='flex-center'>
