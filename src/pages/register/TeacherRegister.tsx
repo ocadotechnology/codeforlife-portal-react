@@ -18,10 +18,10 @@ import CircleIcon from '@mui/icons-material/Circle';
 import { useNavigate } from 'react-router-dom';
 import { paths } from 'app/router';
 
-import { Formik, Field, Form, FormikHelpers, ErrorMessage } from 'formik';
+import { Formik, Field, Form, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { isPasswordStrong, PASSWORD_STATUS, MOST_USED_PASSWORDS } from './constants';
-import MyErrorMessage from './MyErrorMessage';
+import CflErrorMessage from 'components/CflErrorMessage';
 
 interface TeacherFormValues {
   firstName: string;
@@ -82,7 +82,7 @@ const TeacherForm: React.FC = () => {
         termsOfUse: false,
         receiveUpdates: false,
         password: '',
-        repeatPassword: '',
+        repeatPassword: ''
       }}
       validationSchema={TeacherFormSchema}
       onSubmit={(
@@ -106,7 +106,7 @@ const TeacherForm: React.FC = () => {
           <Typography paddingTop={1}>
             Enter your first name
           </Typography>
-          <MyErrorMessage fieldName='firstName' color={errMsgColor} />
+          <CflErrorMessage fieldName='firstName' />
 
           <Field
             id='lastName'
@@ -118,7 +118,7 @@ const TeacherForm: React.FC = () => {
           <Typography paddingTop={1}>
             Enter your last name
           </Typography>
-          <MyErrorMessage fieldName='lastName' color={errMsgColor} />
+          <CflErrorMessage fieldName='lastName' color={errMsgColor} />
 
           <Field
             id='email'
@@ -130,7 +130,7 @@ const TeacherForm: React.FC = () => {
           <Typography paddingTop={1}>
             Enter your email address
           </Typography>
-          <MyErrorMessage fieldName='email' color={errMsgColor} />
+          <CflErrorMessage fieldName='email' color={errMsgColor} />
 
           <Typography>
             <Field type='checkbox' name='termsOfUse' />
@@ -138,7 +138,7 @@ const TeacherForm: React.FC = () => {
             the <Link href={paths.termsOfUse} color='inherit' underline='always' target='_blank'>Terms of use</Link>
             &nbsp;and the <Link href={paths.privacyNotice} color='inherit' underline='always' target='_blank'>Privacy notice</Link>.
           </Typography>
-          <MyErrorMessage fieldName='termsOfUse' color={errMsgColor} />
+          <CflErrorMessage fieldName='termsOfUse' color={errMsgColor} />
 
           <Typography paddingTop={1}>
             <Field type='checkbox' name='receiveUpdates' />
@@ -175,7 +175,7 @@ const TeacherForm: React.FC = () => {
           <Typography paddingTop={1}>
             Repeat password
           </Typography>
-          <MyErrorMessage fieldName='repeatPassword' color={errMsgColor} />
+          <CflErrorMessage fieldName='repeatPassword' color={errMsgColor} />
 
           <Grid xs={12} className='flex-center'>
             <CircleIcon htmlColor={pwdStatus.colour} stroke='white' strokeWidth={1} />&nbsp;&nbsp;

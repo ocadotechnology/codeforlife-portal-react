@@ -21,10 +21,10 @@ import CircleIcon from '@mui/icons-material/Circle';
 import { useNavigate } from 'react-router-dom';
 import { paths } from 'app/router';
 
-import { Formik, Field, Form, FormikHelpers, ErrorMessage } from 'formik';
+import { Formik, Field, Form, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { isPasswordStrong, PASSWORD_STATUS, MOST_USED_PASSWORDS } from './constants';
-import MyErrorMessage from './MyErrorMessage';
+import CflErrorMessage from 'components/CflErrorMessage';
 
 interface IndepFormValues {
   fullName: string;
@@ -48,7 +48,6 @@ const IndepFormSchema = Yup.object({
     ),
   repeatPassword: Yup.string().oneOf([Yup.ref('password'), undefined], "Passwords don't match").required('Confirm Password is required'),
 });
-
 
 const IndepForm: React.FC<{
   age: number
@@ -92,7 +91,7 @@ const IndepForm: React.FC<{
         termsOfUse: false,
         receiveUpdates: false,
         password: '',
-        repeatPassword: '',
+        repeatPassword: ''
       }}
       validationSchema={IndepFormSchema}
       onSubmit={(
@@ -116,7 +115,7 @@ const IndepForm: React.FC<{
           <Typography paddingTop={1}>
             Enter your full name
           </Typography>
-          <MyErrorMessage fieldName='fullName' color={errMsgColor} />
+          <CflErrorMessage fieldName='fullName' color={errMsgColor} />
 
           <Field
             id='email'
@@ -128,7 +127,7 @@ const IndepForm: React.FC<{
           <Typography paddingTop={1} marginBottom={1} paddingBottom={(age >= EmailApplicableAge) ? 1 : 0}>
             {(age >= EmailApplicableAge) ? 'Enter your email address' : 'Please enter your parent\'s email address'}
           </Typography>
-          <MyErrorMessage fieldName='email' color={errMsgColor} />
+          <CflErrorMessage fieldName='email' color={errMsgColor} />
 
           {(age < EmailApplicableAge) &&
             <Typography fontWeight='bold'>
@@ -144,7 +143,7 @@ const IndepForm: React.FC<{
                 the <Link href={paths.termsOfUse} color='inherit' underline='always' target='_blank'>Terms of use</Link>
                 &nbsp;and the <Link href={paths.privacyNotice} color='inherit' underline='always' target='_blank'>Privacy notice</Link>.
               </Typography>
-              <MyErrorMessage fieldName='termsOfUse' color={errMsgColor} />
+              <CflErrorMessage fieldName='termsOfUse' color={errMsgColor} />
             </>
           }
 
@@ -187,7 +186,7 @@ const IndepForm: React.FC<{
           <Typography paddingTop={1}>
             Repeat password
           </Typography>
-          <MyErrorMessage fieldName='repeatPassword' color={errMsgColor} />
+          <CflErrorMessage fieldName='repeatPassword' color={errMsgColor} />
 
           <Grid xs={12} className='flex-center'>
             <CircleIcon htmlColor={pwdStatus.colour} stroke='white' strokeWidth={1} />&nbsp;&nbsp;
