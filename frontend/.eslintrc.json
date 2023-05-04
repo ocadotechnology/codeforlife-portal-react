@@ -12,7 +12,7 @@
     "ecmaVersion": "latest",
     "sourceType": "module",
     "project": [
-      "tsconfig.json",
+      "frontend/tsconfig.json",
       "frontend/cypress/tsconfig.json"
     ]
   },
