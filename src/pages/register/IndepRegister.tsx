@@ -46,7 +46,7 @@ const IndepFormSchema = Yup.object({
       'Invalid password',
       indepPasswordStrengthCheck
     ),
-  repeatPassword: Yup.string().oneOf([Yup.ref('password'), undefined], "Passwords don't match").required('This field is required'),
+  repeatPassword: Yup.string().oneOf([Yup.ref('password'), undefined], "Passwords don't match").required('This field is required')
 });
 
 const IndepForm: React.FC<{
@@ -253,7 +253,6 @@ const IndepRegister: React.FC = () => {
       setAge(-1);
     }
   }, [day, month, year]);
-
 
   const dayOptions = Array.from(Array(31).keys()).map(x => x + 1);
   const monthOptions = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];

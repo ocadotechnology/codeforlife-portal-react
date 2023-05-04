@@ -46,7 +46,7 @@ const TeacherFormSchema = Yup.object({
       'Invalid password',
       teacherPasswordStrengthCheck
     ),
-  repeatPassword: Yup.string().oneOf([Yup.ref('password'), undefined], "Passwords don't match").required('This field is required'),
+  repeatPassword: Yup.string().oneOf([Yup.ref('password'), undefined], "Passwords don't match").required('This field is required')
 });
 
 const TeacherForm: React.FC = () => {
