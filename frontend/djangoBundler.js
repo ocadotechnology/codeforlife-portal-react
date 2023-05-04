@@ -23,10 +23,8 @@ const handlebarsTemplatePath = Path.resolve(
 
 const bundler = new Bundler(file, options)
 
-function getReactURL(entryPointHTML) {
-  const regex =
-    /(<script src="\/static\/react\/)(.*\.js)("><\/script>\n?)/g
-  return regex.exec(entryPointHTML)[2]
+function getHashedFileName(indexHtml, fileName, fileType) {
+  return new RegExp(`"/static/react/(${fileName}\\..*\\.${fileType})"`).exec(indexHtml)[1];
 }
 
 Handlebars.registerHelper('if_eq', function (a, b, opts) {
@@ -37,19 +35,33 @@ Handlebars.registerHelper('if_eq', function (a, b, opts) {
   }
 })
 
-function generateHTML(reactFileName) {
+function generateHTML(
+  srcFileName,
+  spaceGroteskFontFileName,
+  interFontFileName
+) {
   const templateString = fs.readFileSync(handlebarsTemplatePath, 'utf-8')
   const template = Handlebars.compile(templateString)
   return template({
-    reactUrl: `react/${reactFileName}`,
+    reactUrl: `react/${srcFileName}`,
+    spaceGroteskFontUrl: `react/${spaceGroteskFontFileName}`,
+    interFontUrl: `react/${interFontFileName}`,
     environment: process.env.SERVER_ENV,
   })
 }
 
 bundler.on('bundled', (bundle) => {
-  const entryPointHTML = fs.readFileSync(bundle.name, 'utf-8')
-  const reactUrl = getReactURL(entryPointHTML)
-  const HTML = generateHTML(reactUrl)
+  const indexHtml = fs.readFileSync(bundle.name, 'utf-8')
+
+  const srcFileName = getHashedFileName(indexHtml, 'src', 'js')
+  const spaceGroteskFileName = getHashedFileName(indexHtml, 'SpaceGrotesk-VariableFont_wght', 'ttf')
+  const interFileName = getHashedFileName(indexHtml, 'Inter-VariableFont_slnt,wght', 'ttf')
+
+  const HTML = generateHTML(
+    srcFileName,
+    spaceGroteskFileName,
+    interFileName
+  )
 
   fs.writeFile(`${templateFolder}/portal.html`, HTML, (error) => {
     if (error) {

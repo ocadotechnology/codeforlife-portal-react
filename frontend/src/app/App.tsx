@@ -5,7 +5,6 @@ import { ThemeProvider } from '@mui/material/styles';
 
 import store from './store';
 import theme from './theme';
-import './App.css';
 
 const App: React.FC<{
   children: React.ReactNode

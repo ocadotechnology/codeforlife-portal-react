@@ -2,8 +2,6 @@ import { createTheme, ThemeOptions } from '@mui/material/styles';
 
 import { theme as cflTheme } from 'codeforlife';
 
-// import '../fonts/SpaceGrotesk-VariableFont_wght.ttf';
-
 const options: ThemeOptions = {
   typography: {
     h1: {
@@ -53,15 +51,6 @@ const options: ThemeOptions = {
     }
   },
   components: {
-    // TODO: https://mui.com/material-ui/customization/typography/#self-hosted-fonts
-    // MuiCssBaseline: {
-    //   styleOverrides: `
-    //     @font-face {
-    //       font-family: "SpaceGrotesk";
-    //       src: local("SpaceGrotesk"), url("../../../fonts/SpaceGrotesk-VariableFont_wght.ttf") format("truetype");
-    //     }
-    //   `
-    // }
     MuiButton: {
       defaultProps: {
         variant: 'contained',

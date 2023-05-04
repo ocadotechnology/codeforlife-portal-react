@@ -2,11 +2,35 @@
 <!DOCTYPE html>
 
 <head>
-    <title>Portal</title>
-    <link rel="shortcut icon" href="{% static 'favicon.ico' %}" type="image/x-icon" />
+  <title>Code for Life</title>
+  <link rel="shortcut icon" href="{% static 'favicon.ico' %}" type="image/x-icon" />
+  <style>
+    html,
+    body,
+    div#root {
+      height: 100%;
+      min-height: 100%;
+      max-height: 100%;
+      width: 100%;
+      min-width: 100%;
+      max-width: 100%;
+    }
+
+    @font-face {
+      font-family: "SpaceGrotesk";
+      src: local("SpaceGrotesk"),
+      url("{% static '{{ spaceGroteskFontUrl }}' %}") format("truetype");
+    }
+
+    @font-face {
+      font-family: "Inter";
+      src: local("Inter"),
+      url("{% static '{{ interFontUrl }}' %}") format("truetype");
+    }
+  </style>
 </head>
 
 <body>
-<div id="root"></div>
-<script src="{% static '{{ reactUrl }}' %}"></script>
+  <div id="root"></div>
+  <script src="{% static '{{ reactUrl }}' %}"></script>
 </body>
