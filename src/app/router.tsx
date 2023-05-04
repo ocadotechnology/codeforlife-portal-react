@@ -15,6 +15,10 @@ import Newsletter from 'pages/newsletter/Newsletter';
 import Forbidden from 'pages/forbidden/Forbidden';
 import PageNotFound from 'pages/pageNotFound/PageNotFound';
 import InternalServerError from 'pages/internalServerError/InternalServerError';
+import TeacherLogin from 'pages/login/TeacherLogin';
+import IndependentLogin from 'pages/login/IndependentLogin';
+import AccessCodeLogin from 'pages/login/AccessCodeLogin';
+import StudentLogin from 'pages/login/StudentLogin';
 
 export const paths = {
   home: '/',
@@ -31,7 +35,18 @@ export const paths = {
   forbidden: '/error/forbidden',
   pageNotFound: '/error/page-not-found',
   internalServerError: '/error/internal-server-error',
-  rapidRouter: '/rapid-router'
+  rapidRouter: '/rapid-router',
+  login: {
+    teacher: '/login/teacher',
+    student: '/login/student/:accessCode', // TODO: use regex to validate access code
+    independent: '/login/independent',
+    accessCode: '/login/access-code'
+  },
+  resetPassword: {
+    teacher: '/resetPassword/teacher',
+    student: '/resetPassword/student',
+    independent: '/resetPassword/independent'
+  }
 };
 
 const router = createBrowserRouter([
@@ -90,7 +105,11 @@ const router = createBrowserRouter([
   {
     path: paths.internalServerError,
     element: <InternalServerError />
-  }
+  },
+  { path: paths.login.teacher, element: <TeacherLogin /> },
+  { path: paths.login.independent, element: <IndependentLogin /> },
+  { path: paths.login.student, element: <StudentLogin /> },
+  { path: paths.login.accessCode, element: <AccessCodeLogin /> }
 ]);
 
 export default router;

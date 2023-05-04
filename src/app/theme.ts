@@ -1,3 +1,4 @@
+import { FormHelperText } from '@mui/material';
 import { createTheme, ThemeOptions } from '@mui/material/styles';
 
 import { theme as cflTheme } from 'codeforlife';
@@ -98,7 +99,7 @@ const options: ThemeOptions = {
     MuiInputBase: {
       styleOverrides: {
         root: {
-          margin: 0
+          margin: 0,
         }
       }
     },
@@ -125,7 +126,7 @@ const options: ThemeOptions = {
           padding: 0
         })
       }
-    }
+    },
     // MuiToolbar: {
     //   styleOverrides: {
     //     root: {
