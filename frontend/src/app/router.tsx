@@ -1,26 +1,9 @@
 import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
-
-<<<<<<< HEAD:src/app/router.tsx
-import Home from 'pages/home/Home';
-import Teachers from 'pages/teachers/Teachers';
-import Students from 'pages/students/Students';
-import Register from 'pages/register/Register';
-import AboutUs from 'pages/aboutUs/AboutUs';
-import CodingClubs from 'pages/codingClubs/CodingClubs';
-import GetInvolved from 'pages/getInvolved/GetInvolved';
-import HomeLearning from 'pages/homeLearning/HomeLearning';
-import PrivacyNotice from 'pages/privacyNotice/PrivacyNotice';
-import TermsOfUse from 'pages/termsOfUse/TermsOfUse';
-import Newsletter from 'pages/newsletter/Newsletter';
-import Forbidden from 'pages/forbidden/Forbidden';
-import PageNotFound from 'pages/pageNotFound/PageNotFound';
-import InternalServerError from 'pages/internalServerError/InternalServerError';
-import TeacherLogin from 'pages/login/TeacherLogin';
-import IndependentLogin from 'pages/login/IndependentLogin';
-import AccessCodeLogin from 'pages/login/AccessCodeLogin';
-import StudentLogin from 'pages/login/StudentLogin';
-=======
+import TeacherLogin from '../pages/login/TeacherLogin';
+import IndependentLogin from '../pages/login/IndependentLogin';
+import AccessCodeLogin from '../pages/login/AccessCodeLogin';
+import StudentLogin from '../pages/login/StudentLogin';
 import Home from '../pages/home/Home';
 import Teachers from '../pages/teachers/Teachers';
 import Students from '../pages/students/Students';
@@ -35,7 +18,6 @@ import Newsletter from '../pages/newsletter/Newsletter';
 import Forbidden from '../pages/forbidden/Forbidden';
 import PageNotFound from '../pages/pageNotFound/PageNotFound';
 import InternalServerError from '../pages/internalServerError/InternalServerError';
->>>>>>> main:frontend/src/app/router.tsx
 
 export const paths = {
   home: '/',
