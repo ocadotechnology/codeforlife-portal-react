@@ -82,7 +82,7 @@ const IndependentStudentLogin: React.FC = (): JSX.Element => {
   );
 };
 
-const IndependentForgotPassword: React.FC = () => {
+const IndependentForgotPassword: React.FC = (): JSX.Element => {
   const theme = useTheme();
   return (
     <Box marginRight="auto">

@@ -14,7 +14,7 @@ import {
 import { LoginSchema } from './schemas';
 import BasePage from 'pages/BasePage';
 
-const TeacherForgotPassword: React.FC = () => {
+const TeacherForgotPassword: React.FC = (): JSX.Element => {
   const theme = useTheme();
   return (
     <Box marginRight="auto">
@@ -113,7 +113,7 @@ const TeacherLoginForm: React.FC = (): JSX.Element => {
   );
 };
 
-const TeacherLogin: React.FC = () => {
+const TeacherLogin: React.FC = (): JSX.Element => {
   const theme = useTheme();
   return (
     <BasePage>
