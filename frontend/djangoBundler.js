@@ -36,6 +36,7 @@ Handlebars.registerHelper('if_eq', function (a, b, opts) {
 })
 
 function generateHTML(
+  faviconFileName,
   srcFileName,
   spaceGroteskFontFileName,
   interFontFileName
@@ -43,6 +44,7 @@ function generateHTML(
   const templateString = fs.readFileSync(handlebarsTemplatePath, 'utf-8')
   const template = Handlebars.compile(templateString)
   return template({
+    faviconUrl: `react/${faviconFileName}`,
     reactUrl: `react/${srcFileName}`,
     spaceGroteskFontUrl: `react/${spaceGroteskFontFileName}`,
     interFontUrl: `react/${interFontFileName}`,
@@ -53,14 +55,11 @@ function generateHTML(
 bundler.on('bundled', (bundle) => {
   const indexHtml = fs.readFileSync(bundle.name, 'utf-8')
 
-  const srcFileName = getHashedFileName(indexHtml, 'src', 'js')
-  const spaceGroteskFileName = getHashedFileName(indexHtml, 'SpaceGrotesk-VariableFont_wght', 'ttf')
-  const interFileName = getHashedFileName(indexHtml, 'Inter-VariableFont_slnt,wght', 'ttf')
-
   const HTML = generateHTML(
-    srcFileName,
-    spaceGroteskFileName,
-    interFileName
+    getHashedFileName(indexHtml, 'favicon', 'ico'),
+    getHashedFileName(indexHtml, 'src', 'js'),
+    getHashedFileName(indexHtml, 'SpaceGrotesk-VariableFont_wght', 'ttf'),
+    getHashedFileName(indexHtml, 'Inter-VariableFont_slnt,wght', 'ttf')
   )
 
   fs.writeFile(`${templateFolder}/portal.html`, HTML, (error) => {
