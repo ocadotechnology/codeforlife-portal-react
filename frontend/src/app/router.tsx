@@ -15,6 +15,7 @@ import Newsletter from '../pages/newsletter/Newsletter';
 import Forbidden from '../pages/forbidden/Forbidden';
 import PageNotFound from '../pages/pageNotFound/PageNotFound';
 import InternalServerError from '../pages/internalServerError/InternalServerError';
+import GameDetails from 'pages/gameDetails/GameDetails';
 
 export const paths = {
   home: '/',
@@ -31,7 +32,8 @@ export const paths = {
   forbidden: '/error/forbidden',
   pageNotFound: '/error/page-not-found',
   internalServerError: '/error/internal-server-error',
-  rapidRouter: '/rapid-router'
+  rapidRouter: '/rapid-router',
+  gameDetails: '/play'
 };
 
 const router = createBrowserRouter([
@@ -90,6 +92,10 @@ const router = createBrowserRouter([
   {
     path: paths.internalServerError,
     element: <InternalServerError />
+  },
+  {
+    path: paths.gameDetails,
+    element: <GameDetails />
   }
 ]);
 
