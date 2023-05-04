@@ -28,12 +28,8 @@
     "@mui/icons-material": "^5.11.11",
     "@mui/material": "^5.11.12",
     "@reduxjs/toolkit": "^1.9.3",
-<<<<<<< HEAD:package.json
-    "codeforlife": "github:ocadotechnology/codeforlife-package-javascript#v1.5.4",
     "formik": "^2.2.9",
-=======
     "codeforlife": "github:ocadotechnology/codeforlife-package-javascript#v1.5.5",
->>>>>>> main:frontend/package.json
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^8.0.5",
