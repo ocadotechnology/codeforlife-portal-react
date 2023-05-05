@@ -2,6 +2,12 @@ import { createTheme, ThemeOptions } from '@mui/material/styles';
 
 import { theme as cflTheme } from 'codeforlife';
 
+declare module '@mui/material/Typography' {
+  interface TypographyPropsVariantOverrides {
+    form: true;
+  }
+}
+
 const options: ThemeOptions = {
   typography: {
     h1: {
@@ -51,6 +57,18 @@ const options: ThemeOptions = {
     }
   },
   components: {
+    MuiTypography: {
+      variants: [
+        {
+          props: { variant: 'form' },
+          style: {
+            fontFamily: '"Inter"',
+            fontSize: 14,
+            marginBottom: 12
+          }
+        }
+      ]
+    },
     MuiButton: {
       defaultProps: {
         variant: 'contained',
@@ -118,16 +136,8 @@ const options: ThemeOptions = {
     },
     MuiFormHelperText: {
       styleOverrides: {
-        root: ({ ownerState }) => ({
-          color: ownerState.color === 'primary' ? 'white' : 'black',
-          margin: '4px 0 8px 4px'
-        })
-      }
-    },
-    MuiTextField: {
-      styleOverrides: {
         root: {
-          background: 'transparent'
+          margin: '4px 0 8px 4px'
         }
       }
     }

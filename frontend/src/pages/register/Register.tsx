@@ -5,8 +5,8 @@ import {
 
 import BasePage from '../../pages/BasePage';
 import PageSection from '../../components/PageSection';
-import Teacher from './Teacher';
-import Independent from './Independent';
+import TeacherForm from './TeacherForm';
+// import Independent from './Independent';
 
 const Register: React.FC = () => {
   return (
@@ -14,10 +14,10 @@ const Register: React.FC = () => {
       <PageSection>
         <Grid container spacing={2}>
           <Grid xs={12} md={6}>
-            <Teacher />
+            <TeacherForm />
           </Grid>
           <Grid xs={12} md={6}>
-            <Independent />
+            {/* <Independent /> */}
           </Grid>
         </Grid>
       </PageSection>
