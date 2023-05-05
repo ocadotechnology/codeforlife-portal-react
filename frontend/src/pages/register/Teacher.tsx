@@ -195,7 +195,7 @@ const TeacherForm: React.FC = () => {
   );
 };
 
-const TeacherRegister: React.FC = () => {
+const Teacher: React.FC = () => {
   const theme = createTheme(useTheme(), {
     components: {
       MuiTypography: {
@@ -229,4 +229,4 @@ const TeacherRegister: React.FC = () => {
   );
 };
 
-export default TeacherRegister;
+export default Teacher;

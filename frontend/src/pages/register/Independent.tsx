@@ -214,7 +214,7 @@ const IndepForm: React.FC<{
   );
 };
 
-const IndepRegister: React.FC = () => {
+const Independent: React.FC = () => {
   const theme = createTheme(useTheme(), {
     components: {
       MuiTypography: {
@@ -329,4 +329,4 @@ const IndepRegister: React.FC = () => {
   );
 };
 
-export default IndepRegister;
+export default Independent;
