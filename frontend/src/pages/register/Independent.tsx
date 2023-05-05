@@ -272,7 +272,7 @@ const Independent: React.FC = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <Stack p={3}>
+      <Stack p={3} bgcolor='#ffc709'>
         <Typography variant='h4' textAlign='center' paddingY={1}>
           Independent learner
         </Typography>

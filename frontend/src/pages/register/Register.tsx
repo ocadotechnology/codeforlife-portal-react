@@ -4,7 +4,7 @@ import {
 } from '@mui/material';
 
 import BasePage from '../../pages/BasePage';
-import PageSection from 'components/PageSection';
+import PageSection from '../../components/PageSection';
 import Teacher from './Teacher';
 import Independent from './Independent';
 
@@ -12,11 +12,11 @@ const Register: React.FC = () => {
   return (
     <BasePage>
       <PageSection>
-        <Grid container xs={12}>
-          <Grid xs={12} md={5.5} marginX={{ xs: 1, md: 'auto' }} marginBottom={{ xs: 2, md: 'auto' }} bgcolor='#ee0857'>
+        <Grid container spacing={2}>
+          <Grid xs={12} md={6}>
             <Teacher />
           </Grid>
-          <Grid xs={12} md={5.5} marginX={{ xs: 1, md: 'auto' }} marginBottom='auto' bgcolor='#ffc709'>
+          <Grid xs={12} md={6}>
             <Independent />
           </Grid>
         </Grid>

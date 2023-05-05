@@ -212,7 +212,7 @@ const Teacher: React.FC = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <Stack p={3}>
+      <Stack p={3} bgcolor='#ee0857'>
         <Typography variant='h4' textAlign='center' paddingY={1}>
           Teacher/Tutor
         </Typography>
@@ -222,7 +222,6 @@ const Teacher: React.FC = () => {
         <Typography paddingBottom={2}>
           You will have access to teaching resources, progress tracking and lesson plans for both Rapid Router and Kurono.
         </Typography>
-
         <TeacherForm />
       </Stack>
     </ThemeProvider>
