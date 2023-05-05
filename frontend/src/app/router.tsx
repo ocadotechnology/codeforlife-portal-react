@@ -15,6 +15,9 @@ import Newsletter from '../pages/newsletter/Newsletter';
 import Forbidden from '../pages/forbidden/Forbidden';
 import PageNotFound from '../pages/pageNotFound/PageNotFound';
 import InternalServerError from '../pages/internalServerError/InternalServerError';
+import TeacherSchool from 'pages/teacherDashboard/TeacherSchool';
+import TeacherClasses from 'pages/teacherDashboard/TeacherClasses';
+import TeacherAccount from 'pages/teacherDashboard/TeacherAccount';
 
 export const paths = {
   home: '/',
@@ -31,7 +34,10 @@ export const paths = {
   forbidden: '/error/forbidden',
   pageNotFound: '/error/page-not-found',
   internalServerError: '/error/internal-server-error',
-  rapidRouter: '/rapid-router'
+  rapidRouter: '/rapid-router',
+  teacherSchool: '/teacher/school',
+  teacherClasses: '/teacher/classes',
+  teacherAccount: '/teacher/account'
 };
 
 const router = createBrowserRouter([
@@ -90,7 +96,13 @@ const router = createBrowserRouter([
   {
     path: paths.internalServerError,
     element: <InternalServerError />
-  }
+  },
+  {
+    path: paths.teacherSchool,
+    element: <TeacherSchool />
+  },
+  { path: paths.teacherClasses, element: <TeacherClasses /> },
+  { path: paths.teacherAccount, element: <TeacherAccount /> }
 ]);
 
 export default router;
