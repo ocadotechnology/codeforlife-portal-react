@@ -8,7 +8,7 @@ declare module '@mui/material/Typography' {
   }
 }
 
-const MuiTypographyFormVariantStyle = {
+export const MuiTypographyFormVariantStyle = {
   fontFamily: '"Inter"',
   fontSize: 14,
   marginBottom: 12

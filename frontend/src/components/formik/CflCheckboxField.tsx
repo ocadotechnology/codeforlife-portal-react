@@ -10,6 +10,7 @@ import {
   Error as ErrorIcon
 } from '@mui/icons-material';
 
+import { MuiTypographyFormVariantStyle } from '../../app/theme';
 import CflField, { CflFieldProps } from './CflField';
 
 export type CflCheckboxFieldProps = (
@@ -49,7 +50,9 @@ const CflCheckboxField: React.FC<CflCheckboxFieldProps> = ({
       }}
       stackProps={{
         direction: 'row',
-        style: { marginBottom: '12px' }
+        style: {
+          marginBottom: MuiTypographyFormVariantStyle.marginBottom
+        }
       }}
       tooltipProps={tooltipProps}
       errorIconProps={{
