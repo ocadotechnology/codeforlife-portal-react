@@ -2,9 +2,7 @@ import React from 'react';
 import {
   Typography,
   Stack,
-  InputAdornment,
-  TextField,
-  TextFieldProps
+  InputAdornment
 } from '@mui/material';
 import {
   Circle as CircleIcon,
@@ -12,13 +10,6 @@ import {
 } from '@mui/icons-material';
 
 import CflTextField, { CflTextFieldProps } from './CflTextField';
-
-const PASSWORD_STATUS = {
-  NO_PWD: { name: 'No password!', colour: '#FF0000' },
-  TOO_WEAK: { name: 'Password too weak!', colour: '#DBA901' },
-  STRONG: { name: 'Strong password!', colour: '#088A08' },
-  TOO_COMMON: { name: 'Password too common!', colour: '#DBA901' }
-};
 
 export function isStrongPassword(
   password: string,
@@ -46,7 +37,8 @@ interface CflPasswordFieldProps extends Omit<CflTextFieldProps, (
   'InputProps'
 )> { }
 
-export interface CflPasswordFieldsProps {
+export interface CflPasswordFieldsProps
+  extends Omit<CflPasswordFieldProps, 'name'> {
   forTeacher: boolean,
   passwordFieldProps?: CflPasswordFieldProps,
   repeatPasswordFieldProps?: CflPasswordFieldProps
@@ -63,26 +55,24 @@ const CflPasswordFields: React.FC<CflPasswordFieldsProps> = ({
     name: 'repeatPassword',
     placeholder: 'Repeat password',
     helperText: 'Repeat password'
-  }
+  },
+  ...commonPasswordFieldProps
 }) => {
   const [password, setPassword] = React.useState('');
-  const [status, setStatus] = React.useState(PASSWORD_STATUS.NO_PWD);
 
   // TODO: Load from central storage.
   const mostUsed = ['Abcd1234', 'Password1', 'Qwerty123'];
 
-  // TODO: use Yup to update password status
-  React.useEffect(() => {
-    if (password === '') {
-      setStatus(PASSWORD_STATUS.NO_PWD);
-    } else if (mostUsed.includes(password)) {
-      setStatus(PASSWORD_STATUS.TOO_COMMON);
-    } else if (isStrongPassword(password, { forTeacher })) {
-      setStatus(PASSWORD_STATUS.STRONG);
-    } else {
-      setStatus(PASSWORD_STATUS.TOO_WEAK);
-    }
-  }, [password]);
+  let status: { name: string, color: string };
+  if (password === '') {
+    status = { name: 'No password!', color: '#FF0000' };
+  } else if (mostUsed.includes(password)) {
+    status = { name: 'Password too common!', color: '#DBA901' };
+  } else if (isStrongPassword(password, { forTeacher })) {
+    status = { name: 'Strong password!', color: '#088A08' };
+  } else {
+    status = { name: 'Password too weak!', color: '#DBA901' };
+  }
 
   const inputProps: CflTextFieldProps['InputProps'] = {
     endAdornment: (
@@ -100,15 +90,17 @@ const CflPasswordFields: React.FC<CflPasswordFieldsProps> = ({
         setPassword((event.target as HTMLTextAreaElement).value);
       }}
       {...passwordFieldProps}
+      {...commonPasswordFieldProps}
     />
     <CflTextField
       type='password'
       InputProps={inputProps}
       {...repeatPasswordFieldProps}
+      {...commonPasswordFieldProps}
     />
     <Stack direction='row' justifyContent='center'>
       <CircleIcon
-        htmlColor={status.colour}
+        htmlColor={status.color}
         stroke='white'
         strokeWidth={1}
       />

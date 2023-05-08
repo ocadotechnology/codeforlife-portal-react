@@ -26,14 +26,24 @@ export type CflTextFieldProps = (
 
 const CflTextField: React.FC<CflTextFieldProps> = ({
   name,
+  type,
   stackProps,
   tooltipProps,
   errorIconProps = { color: 'error' },
   InputProps = {},
+  onKeyUp,
   ...otherTextFieldProps
 }) => {
   const [errorMessage, setErrorMessage] = React.useState('');
   const [valueChanged, setValueChanged] = React.useState(false);
+
+  const resetErrorMessage = (): void => {
+    if (valueChanged) {
+      setErrorMessage('');
+    } else {
+      setValueChanged(true);
+    }
+  };
 
   let {
     endAdornment,
@@ -55,17 +65,23 @@ const CflTextField: React.FC<CflTextFieldProps> = ({
     );
   }
 
+  if (onKeyUp === undefined) {
+    onKeyUp = resetErrorMessage;
+  } else {
+    const originalOnKeyUp = onKeyUp;
+    onKeyUp = (event) => {
+      originalOnKeyUp(event);
+      resetErrorMessage();
+    };
+  }
+
   const textFieldProps: TextFieldProps = {
+    name,
+    type,
+    onKeyUp,
     InputProps: {
       endAdornment,
       ...otherInputProps
-    },
-    onKeyUp: () => {
-      if (valueChanged) {
-        setErrorMessage('');
-      } else {
-        setValueChanged(true);
-      }
     },
     ...otherTextFieldProps
   };
@@ -73,6 +89,7 @@ const CflTextField: React.FC<CflTextFieldProps> = ({
   return (
     <CflField
       name={name}
+      type={type}
       as={TextField}
       asProps={textFieldProps}
       errorMessageProps={{

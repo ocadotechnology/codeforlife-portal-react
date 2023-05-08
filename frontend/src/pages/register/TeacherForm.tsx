@@ -4,9 +4,11 @@ import {
   Typography,
   Stack,
   Link,
-  Button
+  Button,
+  InputAdornment
 } from '@mui/material';
 import {
+  EmailOutlined as EmailOutlinedIcon,
   ChevronRight as ChevronRightIcon
 } from '@mui/icons-material';
 import {
@@ -17,11 +19,10 @@ import {
 import * as Yup from 'yup';
 
 import { paths } from 'app/router';
-
-import BaseForm from './form/BaseForm';
-import TextFormField from './form/TextFormField';
-import FormField from '../../components/FormField';
-import PasswordFormFields, { isStrongPassword } from '../../components/PasswordFormFields';
+import BaseForm from './BaseForm';
+import CflField from '../../components/formik/CflField';
+import CflTextField from '../../components/formik/CflTextField';
+import CflPasswordFields, { isStrongPassword } from '../../components/formik/CflPasswordFields';
 
 interface TeacherFormValues {
   firstName: string;
@@ -98,24 +99,31 @@ const TeacherForm: React.FC = () => {
       >
         {(formik) => (
           <Form>
-            <TextFormField
+            <CflTextField
               name='firstName'
               placeholder='First name'
               helperText='Enter your first name'
             />
-            <TextFormField
+            <CflTextField
               name='lastName'
               placeholder='Last name'
               helperText='Enter your last name'
             />
-            <TextFormField
+            <CflTextField
               name='email'
               placeholder='Email address'
               helperText='Enter your email address'
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position='end'>
+                    <EmailOutlinedIcon />
+                  </InputAdornment>
+                )
+              }}
             />
 
             <Typography>
-              <FormField type='checkbox' name='termsOfUse' />
+              <CflField type='checkbox' name='termsOfUse' />
               &nbsp;I am over 18 years old have read and understood the&nbsp;
               <Link
                 href={paths.termsOfUse}
@@ -137,17 +145,15 @@ const TeacherForm: React.FC = () => {
               .
             </Typography>
             <Typography>
-              <FormField type='checkbox' name='receiveUpdates' />
+              <CflField type='checkbox' name='receiveUpdates' />
               &nbsp;Sign up to receive updates about Code for Life games and teaching resources.
             </Typography>
 
-            <PasswordFormFields
+            <CflPasswordFields
               forTeacher={true}
-              textFieldProps={{
-                size: 'small',
-                FormHelperTextProps: {
-                  style: { color: 'white' }
-                }
+              size='small'
+              FormHelperTextProps={{
+                style: { color: 'white' }
               }}
             />
             <Stack direction='row' justifyContent='end'>
