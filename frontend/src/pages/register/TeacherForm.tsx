@@ -47,7 +47,7 @@ const TeacherForm: React.FC = () => {
     repeatPassword: ''
   };
 
-  const validationSchema = Yup.object({
+  const validationSchema: { [K in keyof TeacherFormValues]: Yup.Schema } = {
     firstName: Yup
       .string()
       .required('This field is required'),
@@ -61,6 +61,8 @@ const TeacherForm: React.FC = () => {
     termsOfUse: Yup
       .bool()
       .oneOf([true], 'You need to accept the terms and conditions'),
+    receiveUpdates: Yup
+      .bool(),
     password: Yup
       .string()
       .required('This field is required')
@@ -73,7 +75,7 @@ const TeacherForm: React.FC = () => {
       .string()
       .oneOf([Yup.ref('password'), undefined], "Passwords don't match")
       .required('This field is required')
-  });
+  };
 
   return (
     <BaseForm
@@ -85,7 +87,7 @@ const TeacherForm: React.FC = () => {
     >
       <Formik
         initialValues={initialValues}
-        validationSchema={validationSchema}
+        validationSchema={Yup.object(validationSchema)}
         onSubmit={(
           values: TeacherFormValues,
           { setSubmitting }: FormikHelpers<TeacherFormValues>
