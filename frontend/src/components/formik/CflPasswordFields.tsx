@@ -11,7 +11,7 @@ import {
   Security as SecurityIcon
 } from '@mui/icons-material';
 
-import FormField, { FormFieldProps } from './FormField';
+import CflTextField, { CflTextFieldProps } from './CflTextField';
 
 const PASSWORD_STATUS = {
   NO_PWD: { name: 'No password!', colour: '#FF0000' },
@@ -40,23 +40,30 @@ export function isStrongPassword(
       ));
 }
 
-export interface PasswordFormFieldsProps {
+interface CflPasswordFieldProps extends Omit<CflTextFieldProps, (
+  'type' |
+  'onKeyUp' |
+  'InputProps'
+)> { }
+
+export interface CflPasswordFieldsProps {
   forTeacher: boolean,
-  textFieldProps?: Omit<TextFieldProps, (
-    'placeholder' |
-    'helperText' |
-    'type' |
-    'onKeyUp' |
-    'InputProps'
-  )>,
-  formFieldProps?: Omit<FormFieldProps, (
-    'name' |
-    'as'
-  )>
+  passwordFieldProps?: CflPasswordFieldProps,
+  repeatPasswordFieldProps?: CflPasswordFieldProps
 }
 
-const PasswordFormFields: React.FC<PasswordFormFieldsProps> = ({
-  forTeacher, textFieldProps, formFieldProps
+const CflPasswordFields: React.FC<CflPasswordFieldsProps> = ({
+  forTeacher,
+  passwordFieldProps = {
+    name: 'password',
+    placeholder: 'Password',
+    helperText: 'Enter a password'
+  },
+  repeatPasswordFieldProps = {
+    name: 'repeatPassword',
+    placeholder: 'Repeat password',
+    helperText: 'Repeat password'
+  }
 }) => {
   const [password, setPassword] = React.useState('');
   const [status, setStatus] = React.useState(PASSWORD_STATUS.NO_PWD);
@@ -77,37 +84,27 @@ const PasswordFormFields: React.FC<PasswordFormFieldsProps> = ({
     }
   }, [password]);
 
-  const endAdornment = (
-    <InputAdornment position='end'>
-      <SecurityIcon />
-    </InputAdornment>
-  );
+  const inputProps: CflTextFieldProps['InputProps'] = {
+    endAdornment: (
+      <InputAdornment position='end'>
+        <SecurityIcon />
+      </InputAdornment>
+    )
+  };
 
   return <>
-    <FormField
-      name='password'
-      as={() => <TextField
-        placeholder='Password'
-        helperText='Enter a password'
-        type='password'
-        InputProps={{ endAdornment }}
-        onKeyUp={(event: React.KeyboardEvent<HTMLDivElement>) => {
-          setPassword((event.target as HTMLTextAreaElement).value);
-        }}
-        {...textFieldProps}
-      />}
-      {...formFieldProps}
+    <CflTextField
+      type='password'
+      InputProps={inputProps}
+      onKeyUp={(event) => {
+        setPassword((event.target as HTMLTextAreaElement).value);
+      }}
+      {...passwordFieldProps}
     />
-    <FormField
-      name='repeatPassword'
-      as={() => <TextField
-        placeholder='Repeat password'
-        helperText='Repeat password'
-        type='password'
-        InputProps={{ endAdornment }}
-        {...textFieldProps}
-      />}
-      {...formFieldProps}
+    <CflTextField
+      type='password'
+      InputProps={inputProps}
+      {...repeatPasswordFieldProps}
     />
     <Stack direction='row' justifyContent='center'>
       <CircleIcon
@@ -126,4 +123,4 @@ const PasswordFormFields: React.FC<PasswordFormFieldsProps> = ({
   </>;
 };
 
-export default PasswordFormFields;
+export default CflPasswordFields;
