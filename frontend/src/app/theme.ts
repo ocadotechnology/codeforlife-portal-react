@@ -98,7 +98,10 @@ const options: ThemeOptions = {
     MuiFormControlLabel: {
       defaultProps: {
         sx: {
-          '.MuiTypography-root': { m: 0 }
+          '.MuiTypography-root': {
+            m: 0,
+            fontSize: '14px'
+          }
         }
       }
     },
@@ -138,6 +141,13 @@ const options: ThemeOptions = {
       styleOverrides: {
         root: {
           margin: '4px 0 8px 4px'
+        }
+      }
+    },
+    MuiCheckbox: {
+      styleOverrides: {
+        root: {
+          color: 'white'
         }
       }
     }

@@ -19,7 +19,7 @@ import {
 
 export interface CflFieldProps extends FieldConfig<any> {
   stackProps?: StackProps,
-  tooltipProps?: Omit<TooltipProps, 'title'>,
+  tooltipProps?: Omit<TooltipProps, 'title' | 'children'>,
   errorIconProps?: IconProps
   errorMessageProps?: Omit<ErrorMessageProps, (
     'name' |
@@ -50,10 +50,15 @@ const CflField: React.FC<CflFieldProps> = ({
   } = errorMessageProps;
 
   if (render === undefined) {
+    const {
+      children = <ErrorOutlineIcon />,
+      ...otherErrorIconProps
+    } = errorIconProps;
+
     render = (errorMessage: string) => (
       <Tooltip title={errorMessage} {...tooltipProps}>
-        <Icon {...errorIconProps}>
-          <ErrorOutlineIcon />
+        <Icon {...otherErrorIconProps}>
+          {children}
         </Icon>
       </Tooltip>
     );

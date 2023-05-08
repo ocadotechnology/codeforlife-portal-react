@@ -14,7 +14,8 @@ const BaseForm: React.FC<{
   description: string,
   color: string,
   bgcolor: StackProps['bgcolor'],
-  children: StackProps['children']
+  children: StackProps['children'],
+  formHelperTextColor: string
 }> =
   ({
     header,
@@ -22,7 +23,8 @@ const BaseForm: React.FC<{
     description,
     color,
     bgcolor,
-    children
+    children,
+    formHelperTextColor
   }) => (
     <ThemeProvider theme={createTheme(useTheme(), {
       components: {
@@ -38,6 +40,13 @@ const BaseForm: React.FC<{
           styleOverrides: {
             root: {
               background: 'transparent'
+            }
+          }
+        },
+        MuiFormHelperText: {
+          styleOverrides: {
+            root: {
+              color: formHelperTextColor
             }
           }
         }

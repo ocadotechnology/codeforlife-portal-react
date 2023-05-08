@@ -22,6 +22,7 @@ import { paths } from 'app/router';
 import BaseForm from './BaseForm';
 import CflField from '../../components/formik/CflField';
 import CflTextField from '../../components/formik/CflTextField';
+import CflCheckboxField from 'components/formik/CflCheckboxField';
 import CflPasswordFields, { isStrongPassword } from '../../components/formik/CflPasswordFields';
 
 interface TeacherFormValues {
@@ -84,6 +85,7 @@ const TeacherForm: React.FC = () => {
       description='You will have access to teaching resources, progress tracking and lesson plans for both Rapid Router and Kurono.'
       color='white'
       bgcolor='#ee0857'
+      formHelperTextColor='white'
     >
       <Formik
         initialValues={initialValues}
@@ -123,40 +125,41 @@ const TeacherForm: React.FC = () => {
                 )
               }}
             />
-
-            <Typography>
-              <CflField type='checkbox' name='termsOfUse' />
-              &nbsp;I am over 18 years old have read and understood the&nbsp;
-              <Link
-                href={paths.termsOfUse}
-                target='_blank'
-                color='inherit'
-                className='body'
-              >
-                Terms of use
-              </Link>
-              &nbsp;and the&nbsp;
-              <Link
-                href={paths.privacyNotice}
-                target='_blank'
-                color='inherit'
-                className='body'
-              >
-                Privacy notice
-              </Link>
-              .
-            </Typography>
-            <Typography>
-              <CflField type='checkbox' name='receiveUpdates' />
-              &nbsp;Sign up to receive updates about Code for Life games and teaching resources.
-            </Typography>
-
+            <CflCheckboxField
+              name='termsOfUse'
+              formControlLabelProps={{
+                label: <>
+                  I am over 18 years old have read and understood the&nbsp;
+                  <Link
+                    href={paths.termsOfUse}
+                    target='_blank'
+                    color='inherit'
+                    className='body'
+                  >
+                    Terms of use
+                  </Link>
+                  &nbsp;and the&nbsp;
+                  <Link
+                    href={paths.privacyNotice}
+                    target='_blank'
+                    color='inherit'
+                    className='body'
+                  >
+                    Privacy notice
+                  </Link>
+                  .
+                </>
+              }}
+            />
+            <CflCheckboxField
+              name='receiveUpdates'
+              formControlLabelProps={{
+                label: 'Sign up to receive updates about Code for Life games and teaching resources.'
+              }}
+            />
             <CflPasswordFields
               forTeacher={true}
               size='small'
-              FormHelperTextProps={{
-                style: { color: 'white' }
-              }}
             />
             <Stack direction='row' justifyContent='end'>
               <Button

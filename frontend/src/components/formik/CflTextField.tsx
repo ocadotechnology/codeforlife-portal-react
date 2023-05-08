@@ -20,14 +20,14 @@ export type CflTextFieldProps = (
     'component' |
     'render' |
     'children' |
-    'errorMessageProps'
+    'errorMessageProps' |
+    'stackProps'
   )>
 );
 
 const CflTextField: React.FC<CflTextFieldProps> = ({
   name,
   type,
-  stackProps,
   tooltipProps,
   errorIconProps = { color: 'error' },
   InputProps = {},
