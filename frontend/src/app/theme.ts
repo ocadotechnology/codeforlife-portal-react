@@ -8,6 +8,12 @@ declare module '@mui/material/Typography' {
   }
 }
 
+const MuiTypographyFormVariantStyle = {
+  fontFamily: '"Inter"',
+  fontSize: 14,
+  marginBottom: 12
+};
+
 const options: ThemeOptions = {
   typography: {
     h1: {
@@ -61,11 +67,7 @@ const options: ThemeOptions = {
       variants: [
         {
           props: { variant: 'form' },
-          style: {
-            fontFamily: '"Inter"',
-            fontSize: 14,
-            marginBottom: 12
-          }
+          style: MuiTypographyFormVariantStyle
         }
       ]
     },
@@ -99,8 +101,8 @@ const options: ThemeOptions = {
       defaultProps: {
         sx: {
           '.MuiTypography-root': {
-            m: 0,
-            fontSize: '14px'
+            ...MuiTypographyFormVariantStyle,
+            m: 0
           }
         }
       }
@@ -140,7 +142,9 @@ const options: ThemeOptions = {
     MuiFormHelperText: {
       styleOverrides: {
         root: {
-          margin: '4px 0 8px 4px'
+          ...MuiTypographyFormVariantStyle,
+          marginTop: 4,
+          marginLeft: 4
         }
       }
     },
