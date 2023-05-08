@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Typography,
   Stack,
   Link,
   Button,
@@ -20,7 +19,6 @@ import * as Yup from 'yup';
 
 import { paths } from 'app/router';
 import BaseForm from './BaseForm';
-import CflField from '../../components/formik/CflField';
 import CflTextField from '../../components/formik/CflTextField';
 import CflCheckboxField from 'components/formik/CflCheckboxField';
 import CflPasswordFields, { isStrongPassword } from '../../components/formik/CflPasswordFields';
