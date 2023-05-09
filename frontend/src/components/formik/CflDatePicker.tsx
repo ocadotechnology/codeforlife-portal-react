@@ -3,7 +3,9 @@ import {
   Unstable_Grid2 as Grid,
   Select,
   SelectProps,
-  MenuItem
+  MenuItem,
+  FormHelperText,
+  FormHelperTextProps
 } from '@mui/material';
 
 const monthOptions = [
@@ -24,12 +26,16 @@ const monthOptions = [
 export interface CflDatePickerProps {
   defaultsToToday?: boolean,
   previousYears?: number,
+  helperText?: string,
+  formHelperTextProps?: FormHelperTextProps,
   onChange: (date: Date) => void
 }
 
 const CflDatePicker: React.FC<CflDatePickerProps> = ({
   defaultsToToday = false,
   previousYears = 150,
+  helperText,
+  formHelperTextProps,
   onChange
 }) => {
   const now = new Date();
@@ -89,6 +95,13 @@ const CflDatePicker: React.FC<CflDatePickerProps> = ({
       container
       columnSpacing={2}
     >
+      {helperText !== undefined && helperText !== '' &&
+        <Grid xs={12}>
+          <FormHelperText {...formHelperTextProps}>
+            {helperText}
+          </FormHelperText>
+        </Grid>
+      }
       <Grid xs={4}>
         <Select
           id='select-day'

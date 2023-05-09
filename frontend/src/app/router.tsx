@@ -15,15 +15,16 @@ import Newsletter from '../pages/newsletter/Newsletter';
 import Forbidden from '../pages/forbidden/Forbidden';
 import PageNotFound from '../pages/pageNotFound/PageNotFound';
 import InternalServerError from '../pages/internalServerError/InternalServerError';
-import EmailVerificationSent from 'pages/register/EmailVerificationSent';
-import EmailVerificationFailed from 'pages/register/EmailVerificationFailed';
-
+import EmailVerificationSent from 'pages/emailVerification/EmailVerificationSent';
+import EmailVerificationFailed from 'pages/emailVerification/EmailVerificationFailed';
 
 export const paths = {
   home: '/',
   teachers: '/teachers',
   students: '/students',
   register: '/register',
+  emailVerificationSent: '/register/email-verification-sent',
+  emailVerificationFailed: '/register/email-verification-failed',
   aboutUs: '/about-us',
   codingClubs: '/coding-clubs',
   getInvolved: '/get-involved',
@@ -34,9 +35,7 @@ export const paths = {
   forbidden: '/error/forbidden',
   pageNotFound: '/error/page-not-found',
   internalServerError: '/error/internal-server-error',
-  rapidRouter: '/rapid-router',
-  emailVerificationSent: '/email-verification-sent',
-  emailVerificationFailed: '/email-verification-failed'
+  rapidRouter: '/rapid-router'
 };
 
 const router = createBrowserRouter([

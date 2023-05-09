@@ -12,7 +12,6 @@ const BaseForm: React.FC<{
   header: string,
   subheader: string,
   description: string,
-  color: string,
   bgcolor: StackProps['bgcolor'],
   children: StackProps['children'],
   formHelperTextColor: string
@@ -21,7 +20,6 @@ const BaseForm: React.FC<{
     header,
     subheader,
     description,
-    color,
     bgcolor,
     children,
     formHelperTextColor

@@ -33,56 +33,55 @@ interface TeacherFormValues {
   repeatPassword: string;
 }
 
+const initialValues: TeacherFormValues = {
+  firstName: '',
+  lastName: '',
+  email: '',
+  termsOfUse: false,
+  receiveUpdates: false,
+  password: '',
+  repeatPassword: ''
+};
+
+const validationSchema: { [K in keyof TeacherFormValues]: Yup.Schema } = {
+  firstName: Yup
+    .string()
+    .required('This field is required'),
+  lastName: Yup
+    .string()
+    .required('This field is required'),
+  email: Yup
+    .string()
+    .email('Invalid email address')
+    .required('This field is required'),
+  termsOfUse: Yup
+    .bool()
+    .oneOf([true], 'You need to accept the terms and conditions'),
+  receiveUpdates: Yup
+    .bool(),
+  password: Yup
+    .string()
+    .required('This field is required')
+    .test(
+      'teacher-password-strength-check',
+      'Invalid password',
+      (password) => isStrongPassword(password, { forTeacher: true })
+    ),
+  repeatPassword: Yup
+    .string()
+    .oneOf([Yup.ref('password'), undefined], "Passwords don't match")
+    .required('This field is required')
+};
+
 const TeacherForm: React.FC = () => {
   const navigate = useNavigate();
-
-  const initialValues: TeacherFormValues = {
-    firstName: '',
-    lastName: '',
-    email: '',
-    termsOfUse: false,
-    receiveUpdates: false,
-    password: '',
-    repeatPassword: ''
-  };
-
-  const validationSchema: { [K in keyof TeacherFormValues]: Yup.Schema } = {
-    firstName: Yup
-      .string()
-      .required('This field is required'),
-    lastName: Yup
-      .string()
-      .required('This field is required'),
-    email: Yup
-      .string()
-      .email('Invalid email address')
-      .required('This field is required'),
-    termsOfUse: Yup
-      .bool()
-      .oneOf([true], 'You need to accept the terms and conditions'),
-    receiveUpdates: Yup
-      .bool(),
-    password: Yup
-      .string()
-      .required('This field is required')
-      .test(
-        'teacher-password-strength-check',
-        'Invalid password',
-        (password) => isStrongPassword(password, { forTeacher: true })
-      ),
-    repeatPassword: Yup
-      .string()
-      .oneOf([Yup.ref('password'), undefined], "Passwords don't match")
-      .required('This field is required')
-  };
 
   return (
     <BaseForm
       header='Teacher/Tutor'
       subheader='Register below to create your school or club.'
       description='You will have access to teaching resources, progress tracking and lesson plans for both Rapid Router and Kurono.'
-      color='white'
-      bgcolor='#ee0857'
+      bgcolor='#ee0857' // TODO: use theme.palette
       formHelperTextColor='white'
     >
       <Formik
@@ -105,16 +104,19 @@ const TeacherForm: React.FC = () => {
               name='firstName'
               placeholder='First name'
               helperText='Enter your first name'
+              size='small'
             />
             <CflTextField
               name='lastName'
               placeholder='Last name'
               helperText='Enter your last name'
+              size='small'
             />
             <CflTextField
               name='email'
               placeholder='Email address'
               helperText='Enter your email address'
+              size='small'
               InputProps={{
                 endAdornment: (
                   <InputAdornment position='end'>
