@@ -8,6 +8,8 @@ import {
   FormHelperTextProps
 } from '@mui/material';
 
+import { formStyleOverrides } from '../app/theme';
+
 const monthOptions = [
   'January',
   'February',
@@ -23,15 +25,15 @@ const monthOptions = [
   'December'
 ];
 
-export interface CflDatePickerProps {
+export interface DatePickerProps {
   defaultsToToday?: boolean,
   previousYears?: number,
   helperText?: string,
   formHelperTextProps?: FormHelperTextProps,
-  onChange: (date: Date) => void
+  onChange: (date: Date | undefined) => void
 }
 
-const CflDatePicker: React.FC<CflDatePickerProps> = ({
+const DatePicker: React.FC<DatePickerProps> = ({
   defaultsToToday = false,
   previousYears = 150,
   helperText,
@@ -40,19 +42,15 @@ const CflDatePicker: React.FC<CflDatePickerProps> = ({
 }) => {
   const now = new Date();
 
-  const [date, setDate] = React.useState({
-    wasChanged: false,
-    value: (defaultsToToday)
-      ? { day: now.getDay(), month: now.getMonth(), year: now.getFullYear() }
-      : { day: 0, month: 0, year: 0 }
-  });
+  const [date, setDate] = React.useState((defaultsToToday)
+    ? { day: now.getDay(), month: now.getMonth(), year: now.getFullYear() }
+    : { day: 0, month: 0, year: 0 }
+  );
 
-  const dayIsDisabled = date.value.month === 0 || date.value.year === 0;
+  const dayIsDisabled = date.month === 0 || date.year === 0;
 
-  if (date.wasChanged && [
-    date.value.day, date.value.month, date.value.year
-  ].every(n => n !== 0)) {
-    onChange(new Date(date.value.year, date.value.month, date.value.day));
+  if ([date.day, date.month, date.year].every(n => n !== 0)) {
+    onChange(new Date(date.year, date.month, date.day));
   }
 
   function getLastDay(month: number, year: number): number {
@@ -63,20 +61,23 @@ const CflDatePicker: React.FC<CflDatePickerProps> = ({
     key: 'day' | 'month' | 'year',
     value: number | string
   ): void {
-    const newDateValue = { ...date.value };
-    newDateValue[key] = Number(value);
+    const newDate = { ...date };
+    newDate[key] = Number(value);
 
     if (key !== 'day' &&
       !dayIsDisabled &&
-      newDateValue.day > getLastDay(newDateValue.month, newDateValue.year)
-    ) { newDateValue.day = 0; }
+      newDate.day > getLastDay(newDate.month, newDate.year)
+    ) {
+      newDate.day = 0;
+      onChange(undefined);
+    }
 
-    setDate({ wasChanged: true, value: newDateValue });
+    setDate(newDate);
   }
 
   function getDayOptions(): number[] {
     return Array
-      .from(Array(getLastDay(date.value.month, date.value.year)).keys())
+      .from(Array(getLastDay(date.month, date.year)).keys())
       .map(day => day + 1);
   }
 
@@ -94,6 +95,7 @@ const CflDatePicker: React.FC<CflDatePickerProps> = ({
     <Grid
       container
       columnSpacing={2}
+      marginBottom={formStyleOverrides.marginBottom}
     >
       {helperText !== undefined && helperText !== '' &&
         <Grid xs={12}>
@@ -105,7 +107,7 @@ const CflDatePicker: React.FC<CflDatePickerProps> = ({
       <Grid xs={4}>
         <Select
           id='select-day'
-          value={date.value.day}
+          value={date.day}
           onChange={(event) => { _onChange('day', event.target.value); }}
           disabled={dayIsDisabled}
           {...commonSelectProps}
@@ -123,7 +125,7 @@ const CflDatePicker: React.FC<CflDatePickerProps> = ({
       <Grid xs={4}>
         <Select
           id='select-month'
-          value={date.value.month}
+          value={date.month}
           onChange={(event) => { _onChange('month', event.target.value); }}
           {...commonSelectProps}
         >
@@ -140,7 +142,7 @@ const CflDatePicker: React.FC<CflDatePickerProps> = ({
       <Grid xs={4}>
         <Select
           id='select-year'
-          value={date.value.year}
+          value={date.year}
           onChange={(event) => { _onChange('year', event.target.value); }}
           {...commonSelectProps}
         >
@@ -158,4 +160,4 @@ const CflDatePicker: React.FC<CflDatePickerProps> = ({
   );
 };
 
-export default CflDatePicker;
+export default DatePicker;

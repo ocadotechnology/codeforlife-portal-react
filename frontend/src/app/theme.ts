@@ -2,16 +2,11 @@ import { createTheme, ThemeOptions } from '@mui/material/styles';
 
 import { theme as cflTheme } from 'codeforlife';
 
-declare module '@mui/material/Typography' {
-  interface TypographyPropsVariantOverrides {
-    form: true;
-  }
-}
-
-export const MuiTypographyFormVariantStyle = {
+// Styles shared by all form components.
+export const formStyleOverrides = {
   fontFamily: '"Inter"',
-  fontSize: 14,
-  marginBottom: 12
+  fontSize: '14px',
+  marginBottom: '12px'
 };
 
 const options: ThemeOptions = {
@@ -19,58 +14,50 @@ const options: ThemeOptions = {
     h1: {
       fontFamily: '"SpaceGrotesk"',
       fontWeight: 500,
-      marginBottom: 24
+      marginBottom: '24px'
     },
     h2: {
       fontFamily: '"SpaceGrotesk"',
       fontWeight: 500,
-      marginBottom: 22
+      marginBottom: '22px'
     },
     h3: {
       fontFamily: '"SpaceGrotesk"',
       fontWeight: 500,
-      marginBottom: 20
+      marginBottom: '20px'
     },
     h4: {
       fontFamily: '"SpaceGrotesk"',
       fontWeight: 500,
-      marginBottom: 18
+      marginBottom: '18px'
     },
     h5: {
       fontFamily: '"SpaceGrotesk"',
       fontWeight: 500,
-      marginBottom: 16
+      marginBottom: '16px'
     },
     h6: {
       fontFamily: '"SpaceGrotesk"',
       fontWeight: 500,
-      marginBottom: 14
+      marginBottom: '14px'
     },
     body1: {
       fontFamily: '"Inter"',
-      fontSize: 18,
-      marginBottom: 16
+      fontSize: '18px',
+      marginBottom: '16px'
     },
     body2: {
       fontFamily: '"Inter"',
-      fontSize: 16,
-      marginBottom: 14
+      fontSize: '16px',
+      marginBottom: '14px'
     },
     button: {
       fontFamily: '"Inter"',
-      fontSize: 14,
+      fontSize: '14px',
       fontWeight: 550
     }
   },
   components: {
-    MuiTypography: {
-      variants: [
-        {
-          props: { variant: 'form' },
-          style: MuiTypographyFormVariantStyle
-        }
-      ]
-    },
     MuiButton: {
       defaultProps: {
         variant: 'contained',
@@ -101,7 +88,7 @@ const options: ThemeOptions = {
       defaultProps: {
         sx: {
           '.MuiTypography-root': {
-            ...MuiTypographyFormVariantStyle,
+            ...formStyleOverrides,
             m: 0
           }
         }
@@ -142,7 +129,7 @@ const options: ThemeOptions = {
     MuiFormHelperText: {
       styleOverrides: {
         root: {
-          ...MuiTypographyFormVariantStyle,
+          ...formStyleOverrides,
           marginTop: 4,
           marginLeft: 4
         }

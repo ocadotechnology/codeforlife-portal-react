@@ -19,7 +19,7 @@ import * as Yup from 'yup';
 import { isPasswordStrong, PASSWORD_STATUS, MOST_USED_PASSWORDS } from './constants';
 
 import { paths } from 'app/router';
-import CflDatePicker from '../../components/formik/CflDatePicker';
+import DatePicker from '../../components/DatePicker';
 import CflTextField from '../../components/formik/CflTextField';
 import CflCheckboxField from 'components/formik/CflCheckboxField';
 import CflPasswordFields, { isStrongPassword } from '../../components/formik/CflPasswordFields';
@@ -79,11 +79,14 @@ const IndependentForm: React.FC = () => {
   const EmailApplicableAge = 13;
   const ReceiveUpdateAge = 18;
 
-  function onDateOfBirthChange(dob: Date): void {
-    setYearsOfAge(Math.floor(
-      (new Date().getTime() - dob.getTime()) /
-      (1000 * 60 * 60 * 24 * 365)
-    ));
+  function onDateOfBirthChange(dob: Date | undefined): void {
+    setYearsOfAge((dob === undefined)
+      ? undefined
+      : Math.floor(
+        (new Date().getTime() - dob.getTime()) /
+        (1000 * 60 * 60 * 24 * 365)
+      )
+    );
   }
 
   return (
@@ -92,9 +95,9 @@ const IndependentForm: React.FC = () => {
       subheader='Register below if you are not part of a school or club and wish to set up a home learning account.'
       description='You will have access to learning resources for Rapid Router.'
       bgcolor='#ffc709' // TODO: use theme.palette
-      formHelperTextColor='black'
+      color='black'
     >
-      <CflDatePicker
+      <DatePicker
         helperText='Please enter your date of birth (we do not store this information).'
         onChange={onDateOfBirthChange}
       />

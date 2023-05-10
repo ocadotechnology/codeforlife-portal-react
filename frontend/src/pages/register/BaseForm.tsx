@@ -5,7 +5,8 @@ import {
   ThemeProvider,
   Stack,
   StackProps,
-  Typography
+  Typography,
+  FormHelperText
 } from '@mui/material';
 
 const BaseForm: React.FC<{
@@ -14,7 +15,7 @@ const BaseForm: React.FC<{
   description: string,
   bgcolor: StackProps['bgcolor'],
   children: StackProps['children'],
-  formHelperTextColor: string
+  color: string
 }> =
   ({
     header,
@@ -22,30 +23,23 @@ const BaseForm: React.FC<{
     description,
     bgcolor,
     children,
-    formHelperTextColor
+    color
   }) => (
     <ThemeProvider theme={createTheme(useTheme(), {
       components: {
         MuiTypography: {
           styleOverrides: {
-            root: {
-              color: 'white',
-              fontWeight: 500
-            }
+            root: { color, fontWeight: 500 }
           }
         },
         MuiTextField: {
           styleOverrides: {
-            root: {
-              background: 'transparent'
-            }
+            root: { background: 'transparent' }
           }
         },
         MuiFormHelperText: {
           styleOverrides: {
-            root: {
-              color: formHelperTextColor
-            }
+            root: { color }
           }
         }
       }
@@ -57,9 +51,9 @@ const BaseForm: React.FC<{
         <Typography>
           {subheader}
         </Typography>
-        <Typography variant='form'>
+        <FormHelperText style={{ marginBottom: 30 }}>
           {description}
-        </Typography>
+        </FormHelperText>
         {children}
       </Stack>
     </ThemeProvider>
