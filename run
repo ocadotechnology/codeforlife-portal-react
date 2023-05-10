@@ -4,14 +4,12 @@ cd "${BASH_SOURCE%/*}"
 
 cd frontend
 
-# TODO: use check bellow
-yarn install
-# if [ "$NODE_ENV" != "production" ]
-# then
-#   yarn install
-# else
-#   yarn install --prod
-# fi
+if [ "$NODE_ENV" != "production" ]
+then
+  yarn install --production=false
+else
+  yarn install --production=true
+fi
 
 yarn run build
 
