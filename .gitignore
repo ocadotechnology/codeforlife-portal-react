@@ -35,3 +35,4 @@ cypress/screenshots
 *.sqlite3
 /frontend/build
 node_modules
+.cache
