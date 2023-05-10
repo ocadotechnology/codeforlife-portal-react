@@ -16,10 +16,10 @@ import {
 } from 'formik';
 import * as Yup from 'yup';
 
-import { paths } from 'app/router';
+import { paths } from '../../app/router';
 import BaseForm from './BaseForm';
 import CflTextField from '../../components/formik/CflTextField';
-import CflCheckboxField from 'components/formik/CflCheckboxField';
+import CflCheckboxField from '../../components/formik/CflCheckboxField';
 import CflPasswordFields, { isStrongPassword } from '../../components/formik/CflPasswordFields';
 
 interface TeacherFormValues {

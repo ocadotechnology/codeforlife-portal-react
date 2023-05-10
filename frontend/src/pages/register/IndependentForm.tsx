@@ -19,7 +19,7 @@ import { paths } from '../../app/router';
 import BaseForm from './BaseForm';
 import DatePicker from '../../components/DatePicker';
 import CflTextField from '../../components/formik/CflTextField';
-import CflCheckboxField from 'components/formik/CflCheckboxField';
+import CflCheckboxField from '../../components/formik/CflCheckboxField';
 import CflPasswordFields, { isStrongPassword } from '../../components/formik/CflPasswordFields';
 
 interface IndependentFormValues {

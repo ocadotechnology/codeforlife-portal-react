@@ -15,7 +15,7 @@ import Newsletter from '../pages/newsletter/Newsletter';
 import Forbidden from '../pages/forbidden/Forbidden';
 import PageNotFound from '../pages/pageNotFound/PageNotFound';
 import InternalServerError from '../pages/internalServerError/InternalServerError';
-import EmailVerification from 'pages/emailVerification/EmailVerification';
+import EmailVerification from '../pages/emailVerification/EmailVerification';
 
 export const paths = {
   home: '/',
