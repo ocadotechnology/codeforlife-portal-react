@@ -44,7 +44,7 @@ const BaseForm: React.FC<{
         }
       }
     })}>
-      <Stack bgcolor={bgcolor} p={3}>
+      <Stack bgcolor={bgcolor} p={3} height='100%'>
         <Typography variant='h4' textAlign='center'>
           {header}
         </Typography>

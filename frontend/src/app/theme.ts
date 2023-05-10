@@ -6,6 +6,7 @@ import { theme as cflTheme } from 'codeforlife';
 export const formStyleOverrides = {
   fontFamily: '"Inter"',
   fontSize: '14px',
+  fontWeight: 500,
   marginBottom: '12px'
 };
 

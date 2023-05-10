@@ -2,7 +2,6 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Stack,
-  useTheme,
   Link,
   Button,
   FormHelperText
@@ -16,14 +15,13 @@ import {
   FormikHelpers
 } from 'formik';
 import * as Yup from 'yup';
-import { isPasswordStrong, PASSWORD_STATUS, MOST_USED_PASSWORDS } from './constants';
 
-import { paths } from 'app/router';
+import { paths } from '../../app/router';
+import BaseForm from './BaseForm';
 import DatePicker from '../../components/DatePicker';
 import CflTextField from '../../components/formik/CflTextField';
 import CflCheckboxField from 'components/formik/CflCheckboxField';
 import CflPasswordFields, { isStrongPassword } from '../../components/formik/CflPasswordFields';
-import BaseForm from './BaseForm';
 
 interface IndependentFormValues {
   fullName: string;
@@ -42,8 +40,6 @@ const initialValues: IndependentFormValues = {
   password: '',
   repeatPassword: ''
 };
-
-const indepPasswordStrengthCheck = (password: string): boolean => (password.length >= 8 && !(password.search(/[A-Z]/) === -1 || password.search(/[a-z]/) === -1 || password.search(/[0-9]/) === -1));
 
 const validationSchema: { [K in keyof IndependentFormValues]: Yup.Schema } = {
   fullName: Yup
@@ -64,7 +60,7 @@ const validationSchema: { [K in keyof IndependentFormValues]: Yup.Schema } = {
     .test(
       'independent-password-strength-check',
       'Invalid password',
-      indepPasswordStrengthCheck
+      (password) => isStrongPassword(password, { forTeacher: false })
     ),
   repeatPassword: Yup
     .string()
