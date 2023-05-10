@@ -5,7 +5,7 @@ on: [push]
 env:
   CYPRESS_WAIT_ON: http://localhost:8000
   CYPRESS_WAIT_ON_TIMEOUT: 300
-  CYPRESS_SPEC: frontend/cypress/e2e/**/*.cy.ts
+  CYPRESS_SPEC: cypress/e2e/**/*.cy.ts
 
 jobs:
   # The below code was adapted from this documentation.
@@ -34,7 +34,7 @@ jobs:
           browser: chrome
           record: true
           spec: ${{ env.CYPRESS_SPEC }}
-          cache-key: os-${{ runner.os }}-dependencies-${{ hashFiles('frontend/yarn.lock') }}
+          cache-key: os-${{ runner.os }}-dependencies-${{ hashFiles('yarn.lock') }}
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
