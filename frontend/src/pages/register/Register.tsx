@@ -4,13 +4,23 @@ import {
 } from '@mui/material';
 
 import BasePage from '../../pages/BasePage';
+import PageSection from '../../components/PageSection';
+import TeacherForm from './TeacherForm';
+import IndependentForm from './IndependentForm';
 
 const Register: React.FC = () => {
   return (
     <BasePage>
-      <Grid xs={12}>
-        TODO
-      </Grid>
+      <PageSection>
+        <Grid container spacing={2}>
+          <Grid xs={12} md={6}>
+            <TeacherForm />
+          </Grid>
+          <Grid xs={12} md={6}>
+            <IndependentForm />
+          </Grid>
+        </Grid>
+      </PageSection>
     </BasePage>
   );
 };

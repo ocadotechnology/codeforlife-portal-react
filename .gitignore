@@ -36,3 +36,4 @@ yarn-error.log*
 /backend/static
 *.sqlite3
 /frontend/build
+node_modules
