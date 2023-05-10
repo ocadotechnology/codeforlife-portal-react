@@ -4,13 +4,8 @@ cd "${BASH_SOURCE%/*}"
 
 cd frontend
 
-if [ "$NODE_ENV" != "production" ]
-then
-  yarn install --production=false
-else
-  yarn install --production=true
-fi
-
+# TODO: fix dependencies in package.json. Ignore NODE_ENV for now.
+yarn install --production=false
 yarn run build
 
 if [ "$NODE_ENV" != "production" ]
