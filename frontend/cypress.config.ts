@@ -14,6 +14,6 @@ export default defineConfig({
       require('@cypress/code-coverage/task')(on, config); // eslint-disable-line
       return config;
     },
-    baseUrl: 'http://localhost:3000'
+    baseUrl: 'http://localhost:8000'
   }
 });

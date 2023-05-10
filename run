@@ -4,15 +4,35 @@ cd "${BASH_SOURCE%/*}"
 
 cd frontend
 
+# TODO: use check bellow
 yarn install
+# if [ "$NODE_ENV" != "production" ]
+# then
+#   yarn install
+# else
+#   yarn install --prod
+# fi
+
 yarn run build
-node djangoBundler.js &
+
+if [ "$NODE_ENV" != "production" ]
+then
+  node djangoBundler.js &
+else
+  node djangoBundler.js
+fi
 
 cd ../backend
 
 pip install pipenv
 
-pipenv install --dev
+if [ "$NODE_ENV" != "production" ]
+then
+  pipenv install --dev
+else
+  pipenv install
+fi
+
 pipenv run python ./manage.py migrate --noinput
 pipenv run python ./manage.py collectstatic --noinput --clear
 pipenv run python ./manage.py runserver "$@" & cd ..
