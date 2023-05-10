@@ -1,5 +1,4 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
   Stack,
   Link,
@@ -74,8 +73,6 @@ const validationSchema: { [K in keyof TeacherFormValues]: Yup.Schema } = {
 };
 
 const TeacherForm: React.FC = () => {
-  const navigate = useNavigate();
-
   return (
     <BaseForm
       header='Teacher/Tutor'
@@ -93,9 +90,6 @@ const TeacherForm: React.FC = () => {
         ) => {
           // TODO: to call backend
           setSubmitting(false);
-          navigate(paths.emailVerificationSent, {
-            state: { isTeacher: true }
-          });
         }}
       >
         {(formik) => (

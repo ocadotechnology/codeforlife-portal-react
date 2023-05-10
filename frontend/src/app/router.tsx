@@ -15,16 +15,14 @@ import Newsletter from '../pages/newsletter/Newsletter';
 import Forbidden from '../pages/forbidden/Forbidden';
 import PageNotFound from '../pages/pageNotFound/PageNotFound';
 import InternalServerError from '../pages/internalServerError/InternalServerError';
-import EmailVerificationSent from 'pages/emailVerification/EmailVerificationSent';
-import EmailVerificationFailed from 'pages/emailVerification/EmailVerificationFailed';
+import EmailVerification from 'pages/emailVerification/EmailVerification';
 
 export const paths = {
   home: '/',
   teachers: '/teachers',
   students: '/students',
   register: '/register',
-  emailVerificationSent: '/register/email-verification-sent',
-  emailVerificationFailed: '/register/email-verification-failed',
+  emailVerification: '/register/email-verification',
   aboutUs: '/about-us',
   codingClubs: '/coding-clubs',
   getInvolved: '/get-involved',
@@ -96,12 +94,8 @@ const router = createBrowserRouter([
     element: <InternalServerError />
   },
   {
-    path: paths.emailVerificationSent,
-    element: <EmailVerificationSent />
-  },
-  {
-    path: paths.emailVerificationFailed,
-    element: <EmailVerificationFailed />
+    path: paths.emailVerification,
+    element: <EmailVerification />
   }
 ]);
 

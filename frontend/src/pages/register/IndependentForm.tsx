@@ -1,5 +1,4 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
   Stack,
   Link,
@@ -69,7 +68,6 @@ const validationSchema: { [K in keyof IndependentFormValues]: Yup.Schema } = {
 };
 
 const IndependentForm: React.FC = () => {
-  const navigate = useNavigate();
   const [yearsOfAge, setYearsOfAge] = React.useState<number>();
 
   const EmailApplicableAge = 13;
@@ -107,7 +105,6 @@ const IndependentForm: React.FC = () => {
           ) => {
             // TODO: to call backend
             setSubmitting(false);
-            navigate(paths.emailVerificationSent, { state: { isTeacher: false } });
           }}
         >
           {(formik) => (
