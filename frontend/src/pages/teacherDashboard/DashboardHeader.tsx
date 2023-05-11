@@ -9,6 +9,8 @@ const DashboardHeaderButton: React.FC<{
 }> = ({ active = false, text, href }): JSX.Element => {
   const theme = useTheme();
   const DashboardHeaderButtonStyle = {
+    border: '2px solid !important',
+    margin: 1,
     color: active
       ? theme.palette.primary.light
       : theme.palette.primary.contrastText
