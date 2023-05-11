@@ -1,53 +1,60 @@
-import { FormHelperText } from '@mui/material';
 import { createTheme, ThemeOptions } from '@mui/material/styles';
 
 import { theme as cflTheme } from 'codeforlife';
+
+// Styles shared by all form components.
+export const formStyleOverrides = {
+  fontFamily: '"Inter"',
+  fontSize: '14px',
+  fontWeight: 500,
+  marginBottom: '12px'
+};
 
 const options: ThemeOptions = {
   typography: {
     h1: {
       fontFamily: '"SpaceGrotesk"',
       fontWeight: 500,
-      marginBottom: 24
+      marginBottom: '24px'
     },
     h2: {
       fontFamily: '"SpaceGrotesk"',
       fontWeight: 500,
-      marginBottom: 22
+      marginBottom: '22px'
     },
     h3: {
       fontFamily: '"SpaceGrotesk"',
       fontWeight: 500,
-      marginBottom: 20
+      marginBottom: '20px'
     },
     h4: {
       fontFamily: '"SpaceGrotesk"',
       fontWeight: 500,
-      marginBottom: 18
+      marginBottom: '18px'
     },
     h5: {
       fontFamily: '"SpaceGrotesk"',
       fontWeight: 500,
-      marginBottom: 16
+      marginBottom: '16px'
     },
     h6: {
       fontFamily: '"SpaceGrotesk"',
       fontWeight: 500,
-      marginBottom: 14
+      marginBottom: '14px'
     },
     body1: {
       fontFamily: '"Inter"',
-      fontSize: 18,
-      marginBottom: 16
+      fontSize: '18px',
+      marginBottom: '16px'
     },
     body2: {
       fontFamily: '"Inter"',
-      fontSize: 16,
-      marginBottom: 14
+      fontSize: '16px',
+      marginBottom: '14px'
     },
     button: {
       fontFamily: '"Inter"',
-      fontSize: 14,
+      fontSize: '14px',
       fontWeight: 550
     }
   },
@@ -81,14 +88,18 @@ const options: ThemeOptions = {
     MuiFormControlLabel: {
       defaultProps: {
         sx: {
-          '.MuiTypography-root': { m: 0 }
+          '.MuiTypography-root': {
+            ...formStyleOverrides,
+            m: 0
+          }
         }
       }
     },
     MuiInputBase: {
       styleOverrides: {
         root: {
-          margin: 0,
+          background: 'white',
+          margin: 0
         }
       }
     },
@@ -116,6 +127,22 @@ const options: ThemeOptions = {
         })
       }
     },
+    MuiFormHelperText: {
+      styleOverrides: {
+        root: {
+          ...formStyleOverrides,
+          marginTop: 4,
+          marginLeft: 4
+        }
+      }
+    },
+    MuiCheckbox: {
+      styleOverrides: {
+        root: {
+          color: 'white'
+        }
+      }
+    }
     // MuiToolbar: {
     //   styleOverrides: {
     //     root: {

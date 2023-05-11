@@ -18,12 +18,14 @@ import Newsletter from '../pages/newsletter/Newsletter';
 import Forbidden from '../pages/forbidden/Forbidden';
 import PageNotFound from '../pages/pageNotFound/PageNotFound';
 import InternalServerError from '../pages/internalServerError/InternalServerError';
+import EmailVerification from '../pages/emailVerification/EmailVerification';
 
 export const paths = {
   home: '/',
   teachers: '/teachers',
   students: '/students',
   register: '/register',
+  emailVerification: '/register/email-verification',
   aboutUs: '/about-us',
   codingClubs: '/coding-clubs',
   getInvolved: '/get-involved',
@@ -105,10 +107,26 @@ const router = createBrowserRouter([
     path: paths.internalServerError,
     element: <InternalServerError />
   },
-  { path: paths.login.teacher, element: <TeacherLogin /> },
-  { path: paths.login.independent, element: <IndependentLogin /> },
-  { path: paths.login.student, element: <StudentLogin /> },
-  { path: paths.login.accessCode, element: <AccessCodeLogin /> }
+  {
+    path: paths.emailVerification,
+    element: <EmailVerification />
+  },
+  {
+    path: paths.login.teacher,
+    element: <TeacherLogin />
+  },
+  {
+    path: paths.login.student,
+    element: <StudentLogin />
+  },
+  {
+    path: paths.login.independent,
+    element: <IndependentLogin />
+  },
+  {
+    path: paths.login.accessCode,
+    element: <AccessCodeLogin />
+  }
 ]);
 
 export default router;
