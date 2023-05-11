@@ -34,14 +34,22 @@ const CflTextField: React.FC<CflTextFieldProps> = ({
   onKeyUp,
   ...otherTextFieldProps
 }) => {
-  const [errorMessage, setErrorMessage] = React.useState('');
-  const [valueChanged, setValueChanged] = React.useState(false);
+  const [value, setValue] = React.useState({
+    field: '',
+    errorMessage: '',
+    newError: false
+  });
 
-  const resetErrorMessage = (): void => {
-    if (valueChanged) {
-      setErrorMessage('');
-    } else {
-      setValueChanged(true);
+  const resetErrorMessage = (
+    event: React.KeyboardEvent<HTMLDivElement>
+  ): void => {
+    const field = (event.target as HTMLTextAreaElement).value;
+    if (value.field === '' && field !== '') {
+      setValue({ field, newError: false, errorMessage: '' });
+    } else if (value.newError) {
+      setValue({ ...value, field, newError: false });
+    } else if (field !== '') {
+      setValue({ ...value, field, errorMessage: '' });
     }
   };
 
@@ -50,12 +58,12 @@ const CflTextField: React.FC<CflTextFieldProps> = ({
     ...otherInputProps
   } = InputProps;
 
-  if (errorMessage !== '') {
+  if (value.errorMessage !== '') {
     endAdornment = (
       <>
         {endAdornment}
         <InputAdornment position='end'>
-          <Tooltip title={errorMessage} {...tooltipProps}>
+          <Tooltip title={value.errorMessage} {...tooltipProps}>
             <Icon {...errorIconProps}>
               <ErrorOutlineIcon />
             </Icon>
@@ -71,7 +79,7 @@ const CflTextField: React.FC<CflTextFieldProps> = ({
     const originalOnKeyUp = onKeyUp;
     onKeyUp = (event) => {
       originalOnKeyUp(event);
-      resetErrorMessage();
+      resetErrorMessage(event);
     };
   }
 
@@ -94,8 +102,7 @@ const CflTextField: React.FC<CflTextFieldProps> = ({
       asProps={textFieldProps}
       errorMessageProps={{
         render: (errorMessage) => {
-          setErrorMessage(errorMessage);
-          setValueChanged(false);
+          setValue({ ...value, errorMessage, newError: true });
           return <></>;
         }
       }}
