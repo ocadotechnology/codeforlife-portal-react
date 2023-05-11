@@ -1,30 +1,42 @@
 import React from 'react';
-import LoginWindow from './LoginWindow';
+
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { ACCESS_CODE_LOGIN_INITIAL_VALUES } from './constants';
 import { AccessCodeLoginSchema } from './schemas';
 import {
   Box,
   Button,
+  Container,
   Stack,
   TextField,
   Typography,
   useTheme
 } from '@mui/material';
+import BaseForm from './BaseForm';
+import BasePage from 'pages/BasePage';
+import { paths } from 'app/router';
 
-const IndependentStudentLogin: React.FC = (): JSX.Element => {
+const getStudentUrl = (): string => {
+  // TODO: find out how we can create a dynamic url
+  // so this horrible function can be removed
+  const studentUrlSplit = paths.login.student.split('/');
+  studentUrlSplit.pop();
+  const studentUrlPrefix = studentUrlSplit.join('/');
+  return studentUrlPrefix;
+};
+
+const AccessCodeLoginForm: React.FC = (): JSX.Element => {
+  const studentUrlPrefix: string = getStudentUrl();
   return (
     <Formik
       initialValues={ACCESS_CODE_LOGIN_INITIAL_VALUES}
       validationSchema={AccessCodeLoginSchema}
       onSubmit={async (values, errors) => {
         console.log(errors);
-
         const validate = await errors.validateForm();
         const val = await AccessCodeLoginSchema.validate(values);
         console.log(val);
         console.log(validate);
-        alert(JSON.stringify(values));
         // TODO: Connect this to the backend
       }}
     >
@@ -46,9 +58,10 @@ const IndependentStudentLogin: React.FC = (): JSX.Element => {
             <ErrorMessage name="accessCode">
               {(msg) => <Typography color="error">{msg}</Typography>}
             </ErrorMessage>
-            <IndependentForgotPassword />
+            <AccessCodeForgotPassword />
             <Button
               disabled={!(formik.dirty && formik.isValid)}
+              href={`${studentUrlPrefix}/${formik.values.accessCode}`}
               type="submit"
               variant="contained"
               color="tertiary"
@@ -62,7 +75,7 @@ const IndependentStudentLogin: React.FC = (): JSX.Element => {
   );
 };
 
-const IndependentForgotPassword: React.FC = (): JSX.Element => {
+const AccessCodeForgotPassword: React.FC = (): JSX.Element => {
   const theme = useTheme();
   return (
     <Box>
@@ -79,27 +92,20 @@ const IndependentForgotPassword: React.FC = (): JSX.Element => {
   );
 };
 
-const IndependentLogin: React.FC = (): JSX.Element => {
-  const theme = useTheme();
+const AccessCodeLogin: React.FC = (): JSX.Element => {
   return (
-    <LoginWindow userType="student">
-      <Typography
-        variant="h4"
-        align="center"
-        color={theme.palette.primary.contrastText}
-      >
-        Welcome
-      </Typography>
-      <Typography
-        variant="h5"
-        align="center"
-        color={theme.palette.primary.contrastText}
-      >
-        Please enter your login details.
-      </Typography>
-      <IndependentStudentLogin />
-    </LoginWindow>
+    <BasePage>
+      <Container>
+        <BaseForm
+          header="Welcome"
+          subheader="Please enter your login details."
+          userType="student"
+        >
+          <AccessCodeLoginForm />
+        </BaseForm>
+      </Container>
+    </BasePage>
   );
 };
 
-export default IndependentLogin;
+export default AccessCodeLogin;

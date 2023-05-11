@@ -14,8 +14,8 @@ import { paths } from '../../app/router';
 import { insertDividerBetweenElements } from 'codeforlife/lib/esm/helpers';
 
 const MenuDrawer: React.FC<{
-  isOpen: boolean,
-  setIsOpen: (open: boolean) => void
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
 }> = ({ isOpen, setIsOpen }) => {
   const theme = useTheme();
 
@@ -45,10 +45,14 @@ const MenuDrawer: React.FC<{
 
   return (
     <SwipeableDrawer
-      anchor='right'
+      anchor="right"
       open={isOpen}
-      onClose={() => { setIsOpen(false); }}
-      onOpen={() => { setIsOpen(true); }}
+      onClose={() => {
+        setIsOpen(false);
+      }}
+      onOpen={() => {
+        setIsOpen(true);
+      }}
     >
       <Stack sx={{ mx: 4, my: 2 }} spacing={5}>
         <Button style={{ width: '100%' }} href={paths.register}>
@@ -62,14 +66,14 @@ const MenuDrawer: React.FC<{
           <Typography
             color={theme.palette.tertiary.main}
             style={{ textShadow: '1px 1px 1px rgba(0, 0, 0, 0.5)' }}
-            fontWeight='bold'
-            variant='body2'
+            fontWeight="bold"
+            variant="body2"
           >
             Log in
           </Typography>
           {insertDividerBetweenElements({
             elements: accordionDetailLinks.map((linkProps, index) => (
-              <Link key={index} {...linkProps} color='Black' />
+              <Link key={index} {...linkProps} color="Black" />
             )),
             dividerProps: {
               sx: {
@@ -84,16 +88,15 @@ const MenuDrawer: React.FC<{
               <Link
                 key={index}
                 {...linkProps}
-                color={linkProps.color === undefined
-                  ? 'Black'
-                  : linkProps.color
+                color={
+                  linkProps.color === undefined ? 'Black' : linkProps.color
                 }
               />
             ))
           })}
         </Stack>
       </Stack>
-    </SwipeableDrawer >
+    </SwipeableDrawer>
   );
 };
 

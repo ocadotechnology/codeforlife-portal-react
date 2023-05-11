@@ -1,7 +1,9 @@
 import theme from 'app/theme';
 import React from 'react';
 import { userType } from 'components/types';
-import { ColourProps } from './interfaces';
+import { StackProps } from '@mui/material';
+import type { Color } from '@mui/material';
+import { ShapeColorProps } from './interfaces';
 
 const polygonStyle: React.CSSProperties = {
   position: 'absolute',
@@ -10,7 +12,7 @@ const polygonStyle: React.CSSProperties = {
   right: '-10%'
 };
 
-const polygonColour: ColourProps = {
+const polygonColour: ShapeColorProps = {
   student: theme.palette.primary.main,
   teacher: theme.palette.tertiary.main,
   independent: theme.palette.secondary.main

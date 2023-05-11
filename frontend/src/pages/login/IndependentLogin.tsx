@@ -1,69 +1,50 @@
 import React from 'react';
-import LoginWindow from './LoginWindow';
-import { ErrorMessage, Field, Form, Formik } from 'formik';
-import { LOGIN_INITIAL_VALUES } from './constants';
-import { LoginSchema } from './schemas';
+
+import { Form, Formik } from 'formik';
+import { DEFAULT_LOGIN_INITIAL_VALUES } from './constants';
+import { DefaultLoginSchema } from './schemas';
 import {
   Box,
   Button,
+  Container,
   Link,
   Stack,
-  TextField,
   Typography,
   useTheme
 } from '@mui/material';
 import BasePage from 'pages/BasePage';
+import BaseForm from './BaseForm';
+import CflTextField from 'components/formik/CflTextField';
 
 const IndependentStudentLogin: React.FC = (): JSX.Element => {
   return (
     <Formik
-      initialValues={LOGIN_INITIAL_VALUES}
-      validationSchema={LoginSchema}
+      initialValues={DEFAULT_LOGIN_INITIAL_VALUES}
+      validationSchema={DefaultLoginSchema}
       onSubmit={async (values, errors) => {
-        console.log(errors);
-
-        const validate = await errors.validateForm();
-        const val = await LoginSchema.validate(values);
-        console.log(val);
-        console.log(validate);
         alert(JSON.stringify(values));
         // TODO: Connect this to the backend
       }}
     >
       {(formik) => (
         <Form>
-          <Stack gap={2} alignItems="flex-start">
-            <Field
-              error={formik.errors.username && formik.touched.username}
-              as={TextField}
-              required
-              id="username"
-              label="Email address"
+          <Stack gap={2} alignItems="stretch">
+            <CflTextField
               name="username"
-              type="email"
-              variant="filled"
-              color="tertiary"
+              placeholder="Email address"
               helperText="Enter your email address"
-            />
-            <ErrorMessage name="username">
-              {(msg) => <Typography color="error">{msg}</Typography>}
-            </ErrorMessage>
-
-            <Field
-              error={formik.errors.password && formik.touched.password}
-              as={TextField}
-              required
-              id="password"
-              label="Password"
-              name="password"
-              type="password"
-              variant="filled"
-              helperText="Enter your password"
+              size="small"
+              type="email"
               color="tertiary"
             />
-            <ErrorMessage name="password">
-              {(msg) => <Typography color="error">{msg}</Typography>}
-            </ErrorMessage>
+            <CflTextField
+              name="password"
+              placeholder="Password"
+              helperText="Enter your password"
+              size="small"
+              type="password"
+              color="tertiary"
+            />
             <IndependentForgotPassword />
             <Box marginLeft="auto">
               <Button
@@ -131,26 +112,17 @@ const IndependentForgotPassword: React.FC = (): JSX.Element => {
 };
 
 const IndependentLogin: React.FC = () => {
-  const theme = useTheme();
   return (
     <BasePage>
-      <LoginWindow userType="independent">
-        <Typography
-          variant="h4"
-          align="center"
-          color={theme.palette.tertiary.contrastText}
+      <Container>
+        <BaseForm
+          header="Welcome"
+          subheader="Please enter your login details."
+          userType="independent"
         >
-          Welcome
-        </Typography>
-        <Typography
-          variant="h5"
-          align="center"
-          color={theme.palette.tertiary.contrastText}
-        >
-          Please enter your login details.
-        </Typography>
-        <IndependentStudentLogin />
-      </LoginWindow>
+          <IndependentStudentLogin />
+        </BaseForm>
+      </Container>
     </BasePage>
   );
 };

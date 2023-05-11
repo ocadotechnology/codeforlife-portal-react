@@ -3,32 +3,35 @@ import {
   Select,
   SxProps,
   MenuItem,
-  MenuItemProps,
-  useTheme
+  useTheme,
+  Link,
+  LinkProps
 } from '@mui/material';
 
 import { insertDividerBetweenElements } from 'codeforlife/lib/esm/helpers';
+import { paths } from 'app/router';
 
 const LoginSelect: React.FC<{
-  sx: SxProps
+  sx: SxProps;
 }> = ({ sx }) => {
   const theme = useTheme();
 
   const paletteColor = 'tertiary';
   const borderColor = theme.palette[paletteColor].main;
-  const menuItems: Array<MenuItemProps & React.AnchorHTMLAttributes<HTMLAnchorElement>> = [
-    { children: 'Student', href: '' },
-    { children: 'Teacher', href: '' },
-    { children: 'Independent', href: '' }
+  const menuItems: Array<
+    LinkProps & React.AnchorHTMLAttributes<HTMLAnchorElement>
+  > = [
+    { children: 'Student', href: paths.login.accessCode },
+    { children: 'Teacher', href: paths.login.teacher },
+    { children: 'Independent', href: paths.login.independent }
   ];
-
   return (
     <Select
       SelectDisplayProps={{ style: { width: 'auto' } }}
       displayEmpty
-      value=''
+      value=""
       color={paletteColor}
-      className='Mui-focused'
+      className="Mui-focused"
       inputProps={{
         MenuProps: {
           sx: { mt: 0.5 },
@@ -41,12 +44,17 @@ const LoginSelect: React.FC<{
       }}
       sx={sx}
     >
-      <MenuItem value='' sx={{ display: 'none' }}>
+      <MenuItem value="" sx={{ display: 'none' }}>
         Log in
       </MenuItem>
       {insertDividerBetweenElements({
         elements: menuItems.map((menuItem, index) => (
-          <MenuItem key={index} {...menuItem} />
+          <Link
+            marginLeft="auto"
+            color={theme.palette.common.black}
+            key={index}
+            {...menuItem}
+          /> // this needs to be a clickable element for the elements to redirect to the correct page
         )),
         dividerProps: { sx: { borderColor } }
       })}

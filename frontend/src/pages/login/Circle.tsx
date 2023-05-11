@@ -1,7 +1,7 @@
 import theme from 'app/theme';
 import React from 'react';
 import { userType } from 'components/types';
-import { ColourProps } from './interfaces';
+import { ShapeColorProps } from './interfaces';
 
 export const circleStyle: React.CSSProperties = {
   position: 'absolute',
@@ -9,7 +9,7 @@ export const circleStyle: React.CSSProperties = {
   zIndex: 1,
   left: '-10%'
 };
-const circleColours: ColourProps = {
+const circleColours: ShapeColorProps = {
   independent: theme.palette.primary.main,
   student: theme.palette.tertiary.main,
   teacher: theme.palette.secondary.main

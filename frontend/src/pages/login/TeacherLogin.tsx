@@ -1,18 +1,20 @@
 import React from 'react';
-import LoginWindow from './LoginWindow';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { LOGIN_INITIAL_VALUES } from './constants';
+import { Formik, Form } from 'formik';
+import { DEFAULT_LOGIN_INITIAL_VALUES } from './constants';
 import {
   Box,
   Link,
   Stack,
-  TextField,
   Typography,
   useTheme,
-  Button
+  Button,
+  Container
 } from '@mui/material';
-import { LoginSchema } from './schemas';
+import { DefaultLoginSchema } from './schemas';
 import BasePage from 'pages/BasePage';
+import BaseForm from './BaseForm';
+import { DefaultLoginProps } from './interfaces';
+import CflTextField from 'components/formik/CflTextField';
 
 const TeacherForgotPassword: React.FC = (): JSX.Element => {
   const theme = useTheme();
@@ -48,53 +50,30 @@ const TeacherForgotPassword: React.FC = (): JSX.Element => {
 const TeacherLoginForm: React.FC = (): JSX.Element => {
   return (
     <Formik
-      initialValues={LOGIN_INITIAL_VALUES}
-      validationSchema={LoginSchema}
-      onSubmit={async (values, errors) => {
-        console.log(errors);
-
-        const validate = await errors.validateForm();
-        const val = await LoginSchema.validate(values);
-        console.log(val);
-        console.log(validate);
-        alert(JSON.stringify(values));
+      initialValues={DEFAULT_LOGIN_INITIAL_VALUES}
+      validationSchema={DefaultLoginSchema}
+      onSubmit={async (values: DefaultLoginProps, { setSubmitting }) => {
         // TODO: Connect this to the backend
+        console.log(values);
+        setSubmitting(false);
       }}
     >
       {(formik) => (
         <Form>
-          <Stack gap={2} alignItems="flex-start">
-            <Field
-              error={formik.errors.username && formik.touched.username}
-              as={TextField}
-              required
-              id="username"
-              label="Email address"
+          <Stack gap={2} alignItems="stretch">
+            <CflTextField
               name="username"
-              type="email"
-              variant="filled"
-              color="primary"
+              placeholder="Email address"
               helperText="Enter your email address"
+              size="small"
             />
-            <ErrorMessage name="username">
-              {(msg) => <Typography color="error">{msg}</Typography>}
-            </ErrorMessage>
-
-            <Field
-              error={formik.errors.password && formik.touched.password}
-              as={TextField}
-              required
-              id="password"
-              label="Password"
+            <CflTextField
               name="password"
-              type="password"
-              variant="filled"
+              placeholder="Password"
               helperText="Enter your password"
-              color="primary"
+              size="small"
+              type="password"
             />
-            <ErrorMessage name="password">
-              {(msg) => <Typography color="error">{msg}</Typography>}
-            </ErrorMessage>
             <TeacherForgotPassword />
             <Box marginLeft="auto">
               <Button
@@ -114,26 +93,17 @@ const TeacherLoginForm: React.FC = (): JSX.Element => {
 };
 
 const TeacherLogin: React.FC = (): JSX.Element => {
-  const theme = useTheme();
   return (
     <BasePage>
-      <LoginWindow userType="teacher">
-        <Typography
-          variant="h4"
-          align="center"
-          color={theme.palette.primary.contrastText}
+      <Container>
+        <BaseForm
+          header="Welcome"
+          subheader="Please enter your login details."
+          userType="teacher"
         >
-          Welcome
-        </Typography>
-        <Typography
-          variant="h5"
-          align="center"
-          color={theme.palette.primary.contrastText}
-        >
-          Please enter your login details.
-        </Typography>
-        <TeacherLoginForm />
-      </LoginWindow>
+          <TeacherLoginForm />
+        </BaseForm>
+      </Container>
     </BasePage>
   );
 };
