@@ -1,8 +1,6 @@
 import theme from 'app/theme';
 import React from 'react';
 import { userType } from 'components/types';
-import { StackProps } from '@mui/material';
-import type { Color } from '@mui/material';
 import { ShapeColorProps } from './interfaces';
 
 const polygonStyle: React.CSSProperties = {

@@ -1,15 +1,8 @@
 import React from 'react';
 
 import { useLocation } from 'react-router-dom';
-import {
-  Box,
-  Button,
-  Container,
-  Stack,
-  TextField,
-  Typography
-} from '@mui/material';
-import { ErrorMessage, Field, Form, Formik } from 'formik';
+import { Box, Button, Container, Stack } from '@mui/material';
+import { Form, Formik } from 'formik';
 import { SCHOOL_STUDENT_LOGIN_INITIAL_VALUES } from './constants';
 import { SchoolStudentLoginSchema } from './schemas';
 import BasePage from 'pages/BasePage';
