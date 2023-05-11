@@ -15,6 +15,7 @@ import Newsletter from '../pages/newsletter/Newsletter';
 import Forbidden from '../pages/forbidden/Forbidden';
 import PageNotFound from '../pages/pageNotFound/PageNotFound';
 import InternalServerError from '../pages/internalServerError/InternalServerError';
+import EmailVerification from '../pages/emailVerification/EmailVerification';
 import GameDetails from 'pages/gameDetails/GameDetails';
 
 export const paths = {
@@ -22,6 +23,7 @@ export const paths = {
   teachers: '/teachers',
   students: '/students',
   register: '/register',
+  emailVerification: '/register/email-verification',
   aboutUs: '/about-us',
   codingClubs: '/coding-clubs',
   getInvolved: '/get-involved',
@@ -92,6 +94,10 @@ const router = createBrowserRouter([
   {
     path: paths.internalServerError,
     element: <InternalServerError />
+  },
+  {
+    path: paths.emailVerification,
+    element: <EmailVerification />
   },
   {
     path: paths.gameDetails,

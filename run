@@ -4,15 +4,28 @@ cd "${BASH_SOURCE%/*}"
 
 cd frontend
 
-yarn install
+# TODO: fix dependencies in package.json. Ignore NODE_ENV for now.
+yarn install --production=false
 yarn run build
-node djangoBundler.js &
+
+if [ "$NODE_ENV" != "production" ]
+then
+  node djangoBundler.js &
+else
+  node djangoBundler.js
+fi
 
 cd ../backend
 
 pip install pipenv
 
-pipenv install --dev
+if [ "$NODE_ENV" != "production" ]
+then
+  pipenv install --dev
+else
+  pipenv install
+fi
+
 pipenv run python ./manage.py migrate --noinput
 pipenv run python ./manage.py collectstatic --noinput --clear
 pipenv run python ./manage.py runserver "$@" & cd ..
