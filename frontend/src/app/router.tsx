@@ -18,12 +18,14 @@ import InternalServerError from '../pages/internalServerError/InternalServerErro
 import TeacherSchool from 'pages/teacherDashboard/TeacherSchool';
 import TeacherClasses from 'pages/teacherDashboard/TeacherClasses';
 import TeacherAccount from 'pages/teacherDashboard/TeacherAccount';
+import EmailVerification from '../pages/emailVerification/EmailVerification';
 
 export const paths = {
   home: '/',
   teachers: '/teachers',
   students: '/students',
   register: '/register',
+  emailVerification: '/register/email-verification',
   aboutUs: '/about-us',
   codingClubs: '/coding-clubs',
   getInvolved: '/get-involved',
@@ -102,7 +104,11 @@ const router = createBrowserRouter([
     element: <TeacherSchool />
   },
   { path: paths.teacherClasses, element: <TeacherClasses /> },
-  { path: paths.teacherAccount, element: <TeacherAccount /> }
+  { path: paths.teacherAccount, element: <TeacherAccount /> },
+    {
+    path: paths.emailVerification,
+    element: <EmailVerification />
+  }
 ]);
 
 export default router;

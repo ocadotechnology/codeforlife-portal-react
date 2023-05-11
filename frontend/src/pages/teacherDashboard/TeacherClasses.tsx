@@ -18,6 +18,7 @@ import { getClassesData, getUser } from './dummyMethods';
 import { Form, Field, Formik } from 'formik';
 import { CREATE_CLASS_INITIAL_VALUES } from './constants';
 import { CREATE_CLASS_SCHEMA } from './schemas';
+import CflTextField from 'components/formik/CflTextField';
 
 const YourClasses: React.FC = (): JSX.Element => {
   return (
@@ -90,21 +91,19 @@ const CreateNewClassForm: React.FC = (): JSX.Element => {
         <Form>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={4}>
-              <Field
-                as={TextField}
+              <CflTextField
                 name="className"
-                label="Class name"
+                placeholder="Class name"
                 helperText="Enter a class name"
-                required
+                size="small"
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <Field
-                as={TextField}
+              <CflTextField
                 name="teacherName"
-                label="Teacher's name"
+                placeholder="Teacher's name"
                 helperText="Enter the teacher's name"
-                required
+                size="small"
               />
             </Grid>
             <Grid item xs={12}>
@@ -170,8 +169,3 @@ const TeacherClasses: React.FC = (): JSX.Element => {
 };
 
 export default TeacherClasses;
-ExternalStudentsJoiningRequests: React.FC = (): JSX.Element => {
-  return (
-    <>
-      <Typography align="center" variant="h5">
-        External requests

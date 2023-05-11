@@ -11,7 +11,8 @@ import {
   FormGroup,
   Stack,
   FormHelperText,
-  Checkbox
+  Checkbox,
+  useTheme
 } from '@mui/material';
 import DashboardBanner from './DashboardBanner';
 import DashboardHeader from './DashboardHeader';
@@ -27,8 +28,11 @@ import {
 } from './constants';
 import CflTable, { TableCellStyled, TableRowStyled } from 'components/CflTable';
 import { getSchool, getTeachersData } from './dummyMethods';
+import CflTextField from 'components/formik/CflTextField';
+import CflCheckboxField from 'components/formik/CflCheckboxField';
 
 const InviteTeacherForm: React.FC = (): JSX.Element => {
+  const theme = useTheme();
   return (
     <Formik
       initialValues={INVITE_TEACHER_INITIAL_VALUES}
@@ -41,48 +45,37 @@ const InviteTeacherForm: React.FC = (): JSX.Element => {
         <Form>
           <Grid container columnSpacing={2} alignItems="center">
             <Grid item xs={12} sm={4}>
-              <Field
-                as={TextField}
-                variant="outlined"
-                required
-                color="primary"
-                label="Teacher's first name"
+              <CflTextField
+                placeholder="Teacher's first name"
                 helperText="Enter the teacher's name"
                 name="teacherFirstName"
-                type="text"
+                size="small"
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <Field
-                as={TextField}
-                variant="outlined"
-                required
-                color="primary"
-                label="Teacher's last name"
+              <CflTextField
+                placeholder="Teacher's last name"
                 helperText="Enter the teacher's last name"
                 name="teacherLastName"
-                type="text"
+                size="small"
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <Field
-                as={TextField}
-                variant="outlined"
-                required
-                color="primary"
-                label="Teacher's email"
+              <CflTextField
+                placeholder="Teacher's email"
                 helperText="Enter the teacher's email"
                 name="teacherEmail"
-                type="text"
+                size="small"
               />
             </Grid>
             <Grid alignItems="center" item xs={12}>
-              <FormGroup>
-                <FormControlLabel
-                  control={<Field as={Checkbox} name="isAdmin" />}
-                  label="Make an administrator of the school"
-                />
-              </FormGroup>
+              <CflCheckboxField
+                name="isAdmin"
+                sx={{ color: theme.palette.info.dark }}
+                formControlLabelProps={{
+                  label: 'Make an administrator of the school'
+                }}
+              />
             </Grid>
             <Grid item xs={12}></Grid>
           </Grid>
@@ -112,28 +105,24 @@ const UpdateSchoolDetailsForm: React.FC = (): JSX.Element => {
     >
       {(formik) => (
         <Form>
-          <Stack spacing={2}>
-            <Stack direction={{ sm: 'row', xs: 'column' }} spacing={2}>
-              <Field
-                as={TextField}
-                variant="outlined"
-                required
-                color="primary"
-                label="Name of school or club"
+          <Grid container direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+            <Grid item xs={12} sm={4}>
+              <CflTextField
+                placeholder="Name of school or club"
                 helperText="Enter your school's name"
                 name="schoolName"
-                type="text"
+                size="small"
               />
-              <Field
-                as={TextField}
-                variant="outlined"
-                required
-                color="primary"
-                label="Postcode / Zipcode"
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <CflTextField
+                placeholder="Postcode / Zipcode"
                 helperText="Enter your school's postcode"
                 name="schoolPostcode"
-                type="text"
+                size="small"
               />
+            </Grid>
+            <Grid item xs={12} sm={4}>
               <FormControl
                 fullWidth
                 variant="outlined"
@@ -146,6 +135,7 @@ const UpdateSchoolDetailsForm: React.FC = (): JSX.Element => {
                   required
                   color="primary"
                   name="schoolCountry"
+                  size="small"
                 >
                   {COUNTRY_LIST.map((country) => (
                     <MenuItem key={country} value={country}>
@@ -157,11 +147,13 @@ const UpdateSchoolDetailsForm: React.FC = (): JSX.Element => {
                   Select your school&apos;s country
                 </FormHelperText>
               </FormControl>
-            </Stack>
-            <Button type="submit" color="tertiary">
-              Update details
-            </Button>
-          </Stack>
+            </Grid>
+            <Grid item xs={12}>
+              <Button type="submit" color="tertiary">
+                Update details
+              </Button>
+            </Grid>
+          </Grid>
         </Form>
       )}
     </Formik>

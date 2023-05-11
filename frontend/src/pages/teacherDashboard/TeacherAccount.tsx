@@ -11,7 +11,8 @@ import {
   Grid,
   Stack,
   TextField,
-  Typography
+  Typography,
+  useTheme
 } from '@mui/material';
 import { Field, Form, Formik } from 'formik';
 import {
@@ -24,6 +25,9 @@ import {
 } from './schemas';
 import { DeleteOutline } from '@mui/icons-material';
 import { getUser } from './dummyMethods';
+import CflField from 'components/formik/CflField';
+import CflTextField from 'components/formik/CflTextField';
+import CflCheckboxField from 'components/formik/CflCheckboxField';
 
 const TwoFactorAuthentication: React.FC = (): JSX.Element => {
   return (
@@ -59,72 +63,54 @@ const YourAccountForm: React.FC = () => {
         <Form>
           <Grid container direction="row" spacing={2}>
             <Grid item xs={12} sm={4}>
-              <Field
-                as={TextField}
-                variant="outlined"
-                required
-                color="primary"
-                label="First name"
-                helperText="Enter your first name"
+              <CflTextField
                 name="firstName"
-                type="text"
+                helperText="Enter your first name"
+                placeholder="First name"
+                size="small"
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <Field
-                as={TextField}
-                variant="outlined"
-                required
-                color="primary"
-                label="Last name"
+              <CflTextField
+                placeholder="Last name"
                 helperText="Enter your last name"
                 name="lastName"
-                type="text"
+                size="small"
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <Field
-                as={TextField}
-                variant="outlined"
-                color="primary"
-                label="New email address (optional)"
+              <CflTextField
+                placeholder="New email address (optional)"
                 helperText="Enter your new email address (optional)"
                 name="newEmail"
-                type="text"
+                size="small"
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <Field
-                as={TextField}
-                variant="outlined"
-                color="primary"
-                label="New password (optional)"
+              <CflTextField
+                placeholder="New password (optional)"
                 helperText="Enter your new password (optional)"
                 name="newPassword"
                 type="password"
+                size="small"
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <Field
-                as={TextField}
-                variant="outlined"
-                color="primary"
-                label="Confirm new password (optional)"
+              <CflTextField
+                placeholder="Confirm new password (optional)"
                 helperText="Confirm your new password (optional)"
                 name="confirmPassword"
                 type="password"
+                size="small"
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <Field
-                as={TextField}
-                variant="outlined"
-                required
-                color="primary"
-                label="Current password"
+              <CflTextField
+                placeholder="Current password"
                 helperText="Enter your current password"
                 name="currentPassword"
                 type="password"
+                size="small"
               />
             </Grid>
             <Grid item xs={12}></Grid>
@@ -160,6 +146,7 @@ const YourAccount: React.FC = (): JSX.Element => {
 };
 
 const DeleteAccountForm: React.FC = (): JSX.Element => {
+  const theme = useTheme();
   return (
     <Formik
       initialValues={DELETE_ACCOUNT_INITIAL_VALUES}
@@ -171,26 +158,25 @@ const DeleteAccountForm: React.FC = (): JSX.Element => {
     >
       {(formik) => (
         <Form>
-          <Grid container direction="row" alignItems="center">
+          <Grid container direction="row" alignItems="flex-start">
             <Grid item xs={12} sm={4}>
-              <Field
-                as={TextField}
-                variant="outlined"
-                required
-                color="primary"
+              <CflTextField
+                name="password"
                 label="Current password"
                 helperText="Enter your current password"
-                name="currentPassword"
                 type="password"
+                size="small"
               />
             </Grid>
             <Grid item xs={12} sm={8}>
-              <FormGroup>
-                <FormControlLabel
-                  control={<Field as={Checkbox} name="removeFromNewsletter" />}
-                  label="Make an administrator of the school"
-                />
-              </FormGroup>
+              <CflCheckboxField
+                name="removeFromNewsletter"
+                sx={{ color: theme.palette.info.dark }}
+                required
+                formControlLabelProps={{
+                  label: 'Remove me from the Code for Life newsletter'
+                }}
+              />
             </Grid>
             <Grid item xs={12}></Grid>
           </Grid>
