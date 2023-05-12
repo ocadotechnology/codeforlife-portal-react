@@ -107,7 +107,7 @@ const options: ThemeOptions = {
       styleOverrides: {
         root: ({ ownerState }) => ({
           ...(ownerState.className === 'body' && {
-            ...(cflTheme.components?.MuiLink?.styleOverrides?.root as Record<string, unknown>),
+            ...(cflTheme.components?.MuiLink?.styleOverrides?.root as object),
             color: 'black',
             textDecorationColor: 'black',
             textDecoration: 'underline',
@@ -140,6 +140,18 @@ const options: ThemeOptions = {
       styleOverrides: {
         root: {
           color: 'white'
+        }
+      }
+    },
+    MuiTextField: {
+      defaultProps: {
+        size: 'small'
+      },
+      styleOverrides: {
+        root: {
+          ...(cflTheme.components?.MuiTextField?.styleOverrides?.root as object),
+          backgroundColor: 'transparent',
+          borderColor: 'black'
         }
       }
     }

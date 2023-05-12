@@ -1,10 +1,8 @@
 import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
-import TeacherLogin from '../pages/login/TeacherLogin';
-import IndependentLogin from '../pages/login/IndependentLogin';
-import AccessCodeLogin from '../pages/login/AccessCodeLogin';
-import StudentLogin from '../pages/login/StudentLogin';
+
 import Home from '../pages/home/Home';
+import Login from '../pages/login/Login';
 import Teachers from '../pages/teachers/Teachers';
 import Students from '../pages/students/Students';
 import Register from '../pages/register/Register';
@@ -22,6 +20,18 @@ import EmailVerification from '../pages/emailVerification/EmailVerification';
 
 export const paths = {
   home: '/',
+  login: {
+    _: '/login',
+    teacher: '/login?userType=teacher',
+    student: '/login?userType=student',
+    independent: '/login?userType=independent'
+  },
+  resetPassword: {
+    _: '/reset-password',
+    teacher: '/reset-password?userType=teacher',
+    student: '/reset-password?userType=student',
+    independent: '/reset-password?userType=independent'
+  },
   teachers: '/teachers',
   students: '/students',
   register: '/register',
@@ -36,24 +46,17 @@ export const paths = {
   forbidden: '/error/forbidden',
   pageNotFound: '/error/page-not-found',
   internalServerError: '/error/internal-server-error',
-  rapidRouter: '/rapid-router',
-  login: {
-    teacher: '/login/teacher',
-    student: '/login/student/:accessCode', // TODO: use regex to validate access code
-    independent: '/login/independent',
-    accessCode: '/login/access-code'
-  },
-  resetPassword: {
-    teacher: '/resetPassword/teacher',
-    student: '/resetPassword/student',
-    independent: '/resetPassword/independent'
-  }
+  rapidRouter: '/rapid-router'
 };
 
 const router = createBrowserRouter([
   {
     path: paths.home,
     element: <Home />
+  },
+  {
+    path: paths.login._,
+    element: <Login />
   },
   {
     path: paths.teachers,
@@ -110,22 +113,6 @@ const router = createBrowserRouter([
   {
     path: paths.emailVerification,
     element: <EmailVerification />
-  },
-  {
-    path: paths.login.teacher,
-    element: <TeacherLogin />
-  },
-  {
-    path: paths.login.student,
-    element: <StudentLogin />
-  },
-  {
-    path: paths.login.independent,
-    element: <IndependentLogin />
-  },
-  {
-    path: paths.login.accessCode,
-    element: <AccessCodeLogin />
   }
 ]);
 

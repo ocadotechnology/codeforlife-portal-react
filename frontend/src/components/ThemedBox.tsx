@@ -31,18 +31,22 @@ const ThemedBox: React.FC<ThemedBoxProps> = ({
 
   let circleColor: ThemedBoxProps['bgcolor'];
   let hexagonColor: ThemedBoxProps['bgcolor'];
+  let buttonBgcolor: string;
   switch (bgcolor) {
     case 'primary':
       circleColor = 'secondary';
       hexagonColor = 'tertiary';
+      buttonBgcolor = theme.palette.tertiary.main;
       break;
     case 'secondary':
       circleColor = 'tertiary';
       hexagonColor = 'primary';
+      buttonBgcolor = theme.palette.tertiary.main;
       break;
     case 'tertiary':
       circleColor = 'primary';
       hexagonColor = 'secondary';
+      buttonBgcolor = 'white';
       break;
   }
 
@@ -64,6 +68,10 @@ const ThemedBox: React.FC<ThemedBoxProps> = ({
       textDecorationColor: contrastTextColor
     },
     theme
+  );
+
+  theme = overrideComponentsRootStyles(
+    ['MuiButton'], { backgroundColor: buttonBgcolor }, theme
   );
 
   return (

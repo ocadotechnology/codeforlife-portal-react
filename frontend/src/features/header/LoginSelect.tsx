@@ -18,13 +18,14 @@ const LoginSelect: React.FC<{
 
   const paletteColor = 'tertiary';
   const borderColor = theme.palette[paletteColor].main;
-  const menuItems: Array<
+  const menuItems: Array<(
     LinkProps & React.AnchorHTMLAttributes<HTMLAnchorElement>
-  > = [
-    { children: 'Student', href: paths.login.accessCode },
-    { children: 'Teacher', href: paths.login.teacher },
-    { children: 'Independent', href: paths.login.independent }
-  ];
+  )> =
+    [
+      { children: 'Student', href: paths.login.student },
+      { children: 'Teacher', href: paths.login.teacher },
+      { children: 'Independent', href: paths.login.independent }
+    ];
   return (
     <Select
       SelectDisplayProps={{ style: { width: 'auto' } }}
