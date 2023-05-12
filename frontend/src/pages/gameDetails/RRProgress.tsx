@@ -7,7 +7,9 @@ import { Image } from 'codeforlife/lib/esm/components';
 import RRLogoImage from '../../images/RR_logo.svg';
 import { paths } from 'app/router';
 
-const RRProgress: React.FC = () => {
+const RRProgress: React.FC<{
+  isStudent: boolean,
+}> = ({ isStudent }) => {
   // TODO: fetch from login detail
   const completedLevels = 0;
   const topScores = 0;
@@ -29,12 +31,14 @@ const RRProgress: React.FC = () => {
         You have a score of {score}. There are {availablePoints} available points.
       </Typography>
       <Grid xs={12} className='flex-center' marginY={2}>
-        <Button
-          endIcon={<ChevronRightIcon />}
-          href={paths.rapidRouter} // TODO: change to RR dashboard
-        >
-          Check scoreboard
-        </Button>
+        {isStudent &&
+          <Button
+            endIcon={<ChevronRightIcon />}
+            href={paths.rapidRouter} // TODO: change to RR dashboard
+          >
+            Check scoreboard
+          </Button>
+        }
       </Grid>
     </Stack>
   );

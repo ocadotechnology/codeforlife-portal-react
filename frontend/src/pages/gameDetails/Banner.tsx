@@ -8,14 +8,14 @@ import {
 import PageSection from 'components/PageSection';
 
 const Banner: React.FC<{
-  identity: string,
+  isStudent: boolean,
   name: string
-}> = ({ identity, name }) => {
+}> = ({ isStudent, name }) => {
   const theme = useTheme();
 
   return (
     <PageSection
-      bgcolor={identity.includes('indep') ? theme.palette.tertiary.main : theme.palette.secondary.main}
+      bgcolor={isStudent ? theme.palette.tertiary.main : theme.palette.secondary.main}
       py={false}
     >
       <Stack
@@ -23,10 +23,10 @@ const Banner: React.FC<{
         alignItems='center'
         py={{ xs: 8, md: 16 }}
       >
-        <Typography variant='h2' color={identity.includes('indep') ? 'black' : 'White'}>
+        <Typography variant='h2' color={isStudent ? 'black' : 'White'}>
           Welcome, {name}
         </Typography>
-        <Typography variant='h4' color={identity.includes('indep') ? 'black' : 'White'}>
+        <Typography variant='h4' color={isStudent ? 'black' : 'White'}>
           This is where you can access your games
         </Typography>
       </Stack>

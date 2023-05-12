@@ -16,18 +16,18 @@ const GameDetailsIndependent: React.FC = () => {
 
   return (
     <BasePage>
-      <Banner identity='indep' name={name} />
+      <Banner isStudent={false} name={name} />
 
       <PageSection>
-        <GameList />
+        <GameList isStudent={false} />
       </PageSection>
 
       <PageSection bgcolor={theme.palette.info.main}>
-        <RRProgress />
+        <RRProgress isStudent={false} />
       </PageSection>
 
       <PageSection>
-        <KuronoProgress />
+        <KuronoProgress isStudent={false} />
       </PageSection>
     </BasePage>
   );

@@ -8,7 +8,9 @@ import RRLogoGreenImage from '../../images/RR_logo_green.svg';
 import KuronoLogoGreyImage from '../../images/kurono_logo_grey_background.svg';
 import { paths } from 'app/router';
 
-const GameList: React.FC = () => {
+const GameList: React.FC<{
+  isStudent: boolean,
+}> = ({ isStudent }) => {
   return (
     <Grid container spacing={4} justifyContent='center'>
       <Grid xs={12} marginTop={3}>
@@ -26,8 +28,8 @@ const GameList: React.FC = () => {
             href: paths.rapidRouter
           }}
         />
-      </Grid >
-      <Grid xs={12} md={4}>
+      </Grid>
+      {isStudent && <Grid xs={12} md={4}>
         <CflCard
           text={{
             title: 'Kurono',
@@ -40,6 +42,7 @@ const GameList: React.FC = () => {
           }}
         />
       </Grid>
+      }
     </Grid>
   );
 };
