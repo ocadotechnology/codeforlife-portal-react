@@ -13,12 +13,19 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import { paths } from 'app/router';
 
-const Message: React.FC<{
+interface MessageProps {
   isStudent: boolean,
   theme: Theme,
-  setShowMessage: React.Dispatch<React.SetStateAction<boolean>>,
-}> = ({ isStudent, theme, setShowMessage }) => {
-  const classCode = 'ABCDE'; // TODO: fetch from login details
+  setShowMessage: React.Dispatch<React.SetStateAction<boolean>>
+};
+
+interface BannerProps {
+  isStudent: boolean,
+  name: string
+}
+
+const Message: React.FC<MessageProps> = ({ isStudent, theme, setShowMessage }) => {
+  const classCode = 'ABCDE'; // TODO: fetch from login detail
 
   const onClickCloseIcon = (): void => {
     setShowMessage(false);
@@ -57,10 +64,7 @@ const Message: React.FC<{
   );
 };
 
-const Banner: React.FC<{
-  isStudent: boolean,
-  name: string
-}> = ({ isStudent, name }) => {
+const Banner: React.FC<BannerProps> = ({ isStudent, name }) => {
   const theme = useTheme();
   const [showMessage, setShowMessage] = useState(true);
 
