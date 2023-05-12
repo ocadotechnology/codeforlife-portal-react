@@ -16,7 +16,8 @@ import Forbidden from '../pages/forbidden/Forbidden';
 import PageNotFound from '../pages/pageNotFound/PageNotFound';
 import InternalServerError from '../pages/internalServerError/InternalServerError';
 import EmailVerification from '../pages/emailVerification/EmailVerification';
-import GameDetails from 'pages/gameDetails/GameDetails';
+import GameDetailsStudent from '../pages/gameDetails/GameDetailsStudent';
+import GameDetailsIndependent from '../pages/gameDetails/GameDetailsIndependent';
 
 export const paths = {
   home: '/',
@@ -35,7 +36,10 @@ export const paths = {
   pageNotFound: '/error/page-not-found',
   internalServerError: '/error/internal-server-error',
   rapidRouter: '/rapid-router',
-  gameDetails: '/play'
+  gameDetails: {
+    students: '/play',
+    independent: '/play/independent'
+  }
 };
 
 const router = createBrowserRouter([
@@ -100,8 +104,12 @@ const router = createBrowserRouter([
     element: <EmailVerification />
   },
   {
-    path: paths.gameDetails,
-    element: <GameDetails />
+    path: paths.gameDetails.students,
+    element: <GameDetailsStudent />
+  },
+  {
+    path: paths.gameDetails.independent,
+    element: <GameDetailsIndependent />
   }
 ]);
 

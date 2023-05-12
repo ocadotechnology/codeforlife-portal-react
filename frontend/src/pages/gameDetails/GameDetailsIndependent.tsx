@@ -1,16 +1,16 @@
 import React from 'react';
 import {
-  Unstable_Grid2 as Grid, useTheme,
+  useTheme
 } from '@mui/material';
 
-import BasePage from '../../pages/BasePage';
+import BasePage from '../BasePage';
 import PageSection from 'components/PageSection';
 import Banner from './Banner';
 import GameList from './GameList';
 import RRProgress from './RRProgress';
 import KuronoProgress from './KuronoProgress';
 
-const GameDetails: React.FC = () => {
+const GameDetailsIndependent: React.FC = () => {
   const theme = useTheme();
   const name = 'username'; // TODO: fetch from login detail
 
@@ -33,4 +33,4 @@ const GameDetails: React.FC = () => {
   );
 };
 
-export default GameDetails;
+export default GameDetailsIndependent;
