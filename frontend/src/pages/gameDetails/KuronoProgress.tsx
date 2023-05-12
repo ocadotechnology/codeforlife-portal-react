@@ -1,8 +1,9 @@
 import React from 'react';
-import { Unstable_Grid2 as Grid, Button, Stack, Typography } from '@mui/material';
 import {
-  ChevronRight as ChevronRightIcon
-} from '@mui/icons-material';
+  Unstable_Grid2 as Grid,
+  Stack,
+  Typography
+} from '@mui/material';
 import { Image } from 'codeforlife/lib/esm/components';
 import KuronoLogoImage from '../../images/kurono_logo.svg';
 

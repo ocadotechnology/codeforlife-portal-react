@@ -9,6 +9,7 @@ import Banner from './Banner';
 import GameList from './GameList';
 import RRProgress from './RRProgress';
 import KuronoProgress from './KuronoProgress';
+import KuronoCharacters from './KuronoCharacters';
 
 const GameDetailsIndependent: React.FC = () => {
   const theme = useTheme();
@@ -28,6 +29,10 @@ const GameDetailsIndependent: React.FC = () => {
 
       <PageSection>
         <KuronoProgress isStudent={false} />
+      </PageSection>
+
+      <PageSection bgcolor={theme.palette.info.main} >
+        <KuronoCharacters />
       </PageSection>
     </BasePage>
   );
