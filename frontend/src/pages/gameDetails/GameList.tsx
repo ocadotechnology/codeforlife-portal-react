@@ -14,7 +14,7 @@ const GameList: React.FC<{
   return (
     <Grid container spacing={4} justifyContent='center'>
       <Grid xs={12} marginTop={3}>
-        <Typography variant='h4' textAlign='center'>Your class games</Typography>
+        <Typography variant='h4' textAlign='center'>Your {isStudent && 'class'} games</Typography>
       </Grid>
       <Grid xs={12} md={4}>
         <CflCard

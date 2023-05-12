@@ -35,7 +35,7 @@ const KuronoProgress: React.FC<{
           />
         </Grid>
         : <Grid xs={12} className='flex-center'>
-          <video loop autoPlay muted width='1400px'>
+          <video loop autoPlay muted width='100%'>
             <source src={require('../../videos/aimmo_play_now_background_video.mp4')} type="video/mp4" />
           </video>
         </Grid>
