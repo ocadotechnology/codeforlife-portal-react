@@ -3,26 +3,17 @@ import {
   Grid,
   Typography,
   Button,
-  TextField,
-  Select,
-  FormControl,
-  FormControlLabel,
-  MenuItem,
-  FormGroup,
-  Stack,
-  FormHelperText,
-  Checkbox,
-  useTheme
+  useTheme,
+  Autocomplete
 } from '@mui/material';
 import DashboardBanner from './DashboardBanner';
 import DashboardHeader from './DashboardHeader';
 import BasePage from 'pages/BasePage';
 import React from 'react';
 import { Create } from '@mui/icons-material';
-import { Field, Form, Formik } from 'formik';
+import { Form, Formik } from 'formik';
 import { INVITE_TEACHER_SCHEMA, SCHOOL_DETAILS_UPDATE_SCHEMA } from './schemas';
 import {
-  COUNTRY_LIST,
   INVITE_TEACHER_INITIAL_VALUES,
   SCHOOL_DETAILS_INITIAL_VALUES
 } from './constants';
@@ -30,6 +21,7 @@ import CflTable, { TableCellStyled, TableRowStyled } from 'components/CflTable';
 import { getSchool, getTeachersData } from './dummyMethods';
 import CflTextField from 'components/formik/CflTextField';
 import CflCheckboxField from 'components/formik/CflCheckboxField';
+import { getNames } from 'country-list';
 
 const InviteTeacherForm: React.FC = (): JSX.Element => {
   const theme = useTheme();
@@ -123,30 +115,19 @@ const UpdateSchoolDetailsForm: React.FC = (): JSX.Element => {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <FormControl
-                fullWidth
-                variant="outlined"
-                required
-                color="primary"
-              >
-                <Field
-                  as={Select}
-                  defaultValue={COUNTRY_LIST[0]}
-                  required
-                  color="primary"
-                  name="schoolCountry"
-                  size="small"
-                >
-                  {COUNTRY_LIST.map((country) => (
-                    <MenuItem key={country} value={country}>
-                      {country}
-                    </MenuItem>
-                  ))}
-                </Field>
-                <FormHelperText>
-                  Select your school&apos;s country
-                </FormHelperText>
-              </FormControl>
+              <Autocomplete
+                options={getNames()}
+                defaultValue={schoolCountry}
+                renderInput={(params) => (
+                  <CflTextField
+                    placeholder="Country"
+                    {...params}
+                    helperText="Enter your school's country"
+                    name="Country"
+                    size="small"
+                  />
+                )}
+              />
             </Grid>
             <Grid item xs={12}>
               <Button type="submit" color="tertiary">
