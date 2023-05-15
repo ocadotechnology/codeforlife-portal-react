@@ -1,7 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { getSearchParams, stringToBoolean } from 'codeforlife/lib/esm/helpers';
+import {
+  getSearchParams,
+  stringToBoolean,
+  stringToProperty
+} from 'codeforlife/lib/esm/helpers';
 
 import SadFaceImg from '../../images/sadface.png';
 import PaperPlaneImg from '../../images/paper_plane.png';
@@ -11,9 +15,9 @@ import PageSection from '../../components/PageSection';
 import Status from './Status';
 
 enum UserType {
-  Teacher = 'teacher',
-  Student = 'student',
-  Independent = 'independent'
+  teacher = 'teacher',
+  student = 'student',
+  independent = 'independent'
 }
 
 interface EmailVerificationParams {
@@ -25,8 +29,8 @@ const EmailVerification: React.FC = () => {
   const navigate = useNavigate();
 
   let params = getSearchParams({
-    success: stringToBoolean,
-    userType: String
+    success: { cast: stringToBoolean },
+    userType: { cast: stringToProperty(UserType) }
   }) as EmailVerificationParams | null;
 
   React.useEffect(() => {
@@ -36,7 +40,7 @@ const EmailVerification: React.FC = () => {
   }, []);
 
   if (params === null) return <></>;
-  else if (!Object.values(UserType).includes(params.userType)) {
+  else if (params.userType === undefined) {
     params = null;
     return <></>;
   }

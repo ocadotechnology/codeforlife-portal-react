@@ -12,7 +12,7 @@ import {
 } from '@mui/icons-material';
 
 import {
-  overrideComponentsRootStyles
+  overrideComponentsInTheme
 } from 'codeforlife/lib/esm/helpers';
 
 export interface ThemedBoxProps extends BoxProps {
@@ -61,23 +61,35 @@ const ThemedBox: React.FC<ThemedBoxProps> = ({
     position: 'absolute'
   };
 
-  const contrastTextColor = theme.palette[bgcolor].contrastText;
-  theme = overrideComponentsRootStyles(
-    [
-      'MuiTypography',
-      'MuiFormHelperText',
-      'MuiLink'
-    ],
-    {
-      color: contrastTextColor,
-      textDecorationColor: contrastTextColor
-    },
-    theme
-  );
+  const commonStyleOverrides = {
+    color: theme.palette[bgcolor].contrastText,
+    textDecorationColor: theme.palette[bgcolor].contrastText
+  };
 
-  theme = overrideComponentsRootStyles(
-    ['MuiButton'], { backgroundColor: buttonBgcolor }, theme
-  );
+  theme = overrideComponentsInTheme({
+    MuiTypography: {
+      styleOverrides: {
+        root: { ...commonStyleOverrides }
+      }
+    },
+    MuiFormHelperText: {
+      styleOverrides: {
+        root: { ...commonStyleOverrides }
+      }
+    },
+    MuiLink: {
+      styleOverrides: {
+        root: { ...commonStyleOverrides }
+      }
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          backgroundColor: buttonBgcolor
+        }
+      }
+    }
+  }, theme);
 
   return (
     <ThemeProvider theme={theme}>

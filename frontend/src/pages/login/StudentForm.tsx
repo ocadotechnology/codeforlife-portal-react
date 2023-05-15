@@ -136,8 +136,8 @@ interface StudentFormParams {
 }
 
 const StudentForm: React.FC = () => {
-  const params = getSearchParams({}, {
-    accessCode: String
+  const params = getSearchParams({
+    accessCode: { cast: String, isRequired: false }
   }) as StudentFormParams;
 
   const [accessCode, setAccessCode] = React.useState(params.accessCode);

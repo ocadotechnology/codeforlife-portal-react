@@ -24,7 +24,7 @@ interface LoginParams {
 const Login: React.FC = () => {
   const navigate = useNavigate();
   let params = getSearchParams({
-    userType: String
+    userType: { cast: String }
   }) as LoginParams | null;
 
   React.useEffect(() => {
@@ -34,10 +34,6 @@ const Login: React.FC = () => {
   }, []);
 
   if (params === null) return <></>;
-  else if (!Object.values(UserType).includes(params.userType)) {
-    params = null;
-    return <></>;
-  }
 
   let form: React.ReactElement<typeof BaseForm>;
   switch (params.userType) {
@@ -50,6 +46,9 @@ const Login: React.FC = () => {
     case UserType.Independent:
       form = <IndependentForm />;
       break;
+    default:
+      params = null;
+      return <></>;
   }
 
   return (
