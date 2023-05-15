@@ -150,8 +150,7 @@ const options: ThemeOptions = {
       styleOverrides: {
         root: {
           ...(cflTheme.components?.MuiTextField?.styleOverrides?.root as object),
-          backgroundColor: 'transparent',
-          borderColor: 'black'
+          backgroundColor: 'transparent'
         }
       }
     }

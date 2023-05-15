@@ -1,11 +1,11 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Select,
   SxProps,
   MenuItem,
-  useTheme,
-  Link,
-  LinkProps
+  MenuItemProps,
+  useTheme
 } from '@mui/material';
 
 import { insertDividerBetweenElements } from 'codeforlife/lib/esm/helpers';
@@ -15,17 +15,24 @@ const LoginSelect: React.FC<{
   sx: SxProps;
 }> = ({ sx }) => {
   const theme = useTheme();
+  const navigate = useNavigate();
 
   const paletteColor = 'tertiary';
   const borderColor = theme.palette[paletteColor].main;
+
+  function onClick(navigateTo: string): () => void {
+    return () => { navigate(navigateTo); };
+  }
+
   const menuItems: Array<(
-    LinkProps & React.AnchorHTMLAttributes<HTMLAnchorElement>
+    MenuItemProps & React.AnchorHTMLAttributes<HTMLAnchorElement>
   )> =
     [
-      { children: 'Student', href: paths.login.student },
-      { children: 'Teacher', href: paths.login.teacher },
-      { children: 'Independent', href: paths.login.independent }
+      { children: 'Student', onClick: onClick(paths.login.student) },
+      { children: 'Teacher', onClick: onClick(paths.login.teacher) },
+      { children: 'Independent', onClick: onClick(paths.login.independent) }
     ];
+
   return (
     <Select
       SelectDisplayProps={{ style: { width: 'auto' } }}
@@ -50,12 +57,7 @@ const LoginSelect: React.FC<{
       </MenuItem>
       {insertDividerBetweenElements({
         elements: menuItems.map((menuItem, index) => (
-          <Link
-            marginLeft="auto"
-            color={theme.palette.common.black}
-            key={index}
-            {...menuItem}
-          /> // this needs to be a clickable element for the elements to redirect to the correct page
+          <MenuItem key={index} {...menuItem} />
         )),
         dividerProps: { sx: { borderColor } }
       })}
