@@ -19,11 +19,11 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "baseUrl": "src"
+    // NOTE: this has been commented out to discourage alias imports. We must use relative imports.
+    //"baseUrl": "src"
   },
   "include": [
-    // NOTE: this has been commented out to discourage alias imports. We must use relative imports.
-    // "src"
+    "src"
   ],
   "exclude": [
     "**/*.cy.*",
