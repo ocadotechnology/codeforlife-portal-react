@@ -17,6 +17,7 @@ import Forbidden from '../pages/forbidden/Forbidden';
 import PageNotFound from '../pages/pageNotFound/PageNotFound';
 import InternalServerError from '../pages/internalServerError/InternalServerError';
 import EmailVerification from '../pages/emailVerification/EmailVerification';
+import ResetPassword from '../pages/resetPassword/ResetPassword';
 
 export const paths = {
   home: '/',
@@ -29,7 +30,6 @@ export const paths = {
   resetPassword: {
     _: '/reset-password',
     teacher: '/reset-password?userType=teacher',
-    student: '/reset-password?userType=student',
     independent: '/reset-password?userType=independent'
   },
   teachers: '/teachers',
@@ -113,6 +113,10 @@ const router = createBrowserRouter([
   {
     path: paths.emailVerification,
     element: <EmailVerification />
+  },
+  {
+    path: paths.resetPassword._,
+    element: <ResetPassword />
   }
 ]);
 

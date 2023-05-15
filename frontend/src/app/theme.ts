@@ -69,7 +69,10 @@ const options: ThemeOptions = {
           textTransform: 'none',
           color: 'black',
           padding: '5px 20px',
-          width: 'fit-content'
+          width: 'fit-content',
+          '&:hover': {
+            backgroundColor: 'inherit'
+          }
         }
       }
     },

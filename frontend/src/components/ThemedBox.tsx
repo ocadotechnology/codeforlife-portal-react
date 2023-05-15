@@ -61,9 +61,10 @@ const ThemedBox: React.FC<ThemedBoxProps> = ({
     position: 'absolute'
   };
 
+  const contrastText = theme.palette[bgcolor].contrastText;
   const commonStyleOverrides = {
-    color: theme.palette[bgcolor].contrastText,
-    textDecorationColor: theme.palette[bgcolor].contrastText
+    color: contrastText,
+    textDecorationColor: contrastText
   };
 
   theme = overrideComponentsInTheme({
@@ -84,9 +85,14 @@ const ThemedBox: React.FC<ThemedBoxProps> = ({
     },
     MuiButton: {
       styleOverrides: {
-        root: {
-          backgroundColor: buttonBgcolor
-        }
+        root: ({ ownerState }) => ({
+          backgroundColor: buttonBgcolor,
+          ...(ownerState.className === 'cancel' && {
+            backgroundColor: 'transparent',
+            border: `2px solid ${contrastText}`,
+            color: contrastText
+          })
+        })
       }
     }
   }, theme);
