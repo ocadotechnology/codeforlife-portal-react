@@ -4,7 +4,8 @@ import {
   TextFieldProps,
   InputAdornment,
   Tooltip,
-  Icon
+  Icon,
+  useTheme
 } from '@mui/material';
 import {
   ErrorOutline as ErrorOutlineIcon
@@ -32,8 +33,10 @@ const CflTextField: React.FC<CflTextFieldProps> = ({
   errorIconProps = { color: 'error' },
   InputProps = {},
   onKeyUp,
+  sx,
   ...otherTextFieldProps
 }) => {
+  const theme = useTheme();
   const [value, setValue] = React.useState({
     field: '',
     errorMessage: '',
@@ -90,6 +93,14 @@ const CflTextField: React.FC<CflTextFieldProps> = ({
     InputProps: {
       endAdornment,
       ...otherInputProps
+    },
+    sx: {
+      ...sx,
+      '& .MuiOutlinedInput-root.Mui-focused > fieldset': {
+        borderColor: (value.errorMessage === '')
+          ? '#000'
+          : theme.palette.error.main
+      }
     },
     ...otherTextFieldProps
   };
