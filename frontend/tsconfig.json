@@ -22,7 +22,8 @@
     "baseUrl": "src"
   },
   "include": [
-    "src"
+    // NOTE: this has been commented out to discourage alias imports. We must use relative imports.
+    // "src"
   ],
   "exclude": [
     "**/*.cy.*",
