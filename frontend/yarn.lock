@@ -3277,6 +3277,8 @@ babel-jest@^27.4.2, babel-jest@^27.5.1:
 
 "babel-loader@^8.0.2 || ^9":
   version "9.1.2"
+  resolved "https://registry.npmjs.org/babel-loader/-/babel-loader-9.1.2.tgz"
+  integrity sha512-mN14niXW43tddohGl8HPu5yfQq70iUThvFL/4QzESA7GcZoC0eVOhvWdQ8+3UlSjaDE9MVtsW9mxDY07W7VpVA==
   dependencies:
     find-cache-dir "^3.3.2"
     schema-utils "^4.0.0"
@@ -4240,7 +4242,8 @@ coa@^2.0.2:
 
 "codeforlife@github:ocadotechnology/codeforlife-package-javascript#v1.7.1":
   version "1.0.0"
-  resolved "git+ssh://git@github.com/ocadotechnology/codeforlife-package-javascript.git#52217abca0badc2b047dd632a6b7ee272d5d0e44"
+  resolved "git+ssh://git@github.com/ocadotechnology/codeforlife-package-javascript.git"
+  integrity sha512-pB9TM05N51+NC6cFzxUIb5WG2lwoNInp763lGNrib+hqtazruDoKik/79hAUZeQP/awj9bEpVko9aWtrtBwmZg==
   dependencies:
     "@emotion/react" "^11.10.6"
     "@emotion/styled" "^11.10.6"
@@ -13152,17 +13155,17 @@ tsconfig-paths@^3.14.1:
     minimist "^1.2.6"
     strip-bom "^3.0.0"
 
-tslib@^1.10.0:
+tslib@^1.10.0, tslib@^1.8.1:
   version "1.14.1"
   resolved "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
 
-tslib@^1.8.1:
-  version "1.14.1"
-  resolved "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz"
-  integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
+tslib@^2.0.3:
+  version "2.5.0"
+  resolved "https://registry.npmjs.org/tslib/-/tslib-2.5.0.tgz"
+  integrity sha512-336iVw3rtn2BUK7ORdIAHTyxHGRIHVReokCR3XjbckJMK7ms8FysBfhLR8IXnAgy7T0PTPNBWKiH514FOW/WSg==
 
-tslib@^2.0.3, tslib@^2.1.0:
+tslib@^2.1.0:
   version "2.5.0"
   resolved "https://registry.npmjs.org/tslib/-/tslib-2.5.0.tgz"
   integrity sha512-336iVw3rtn2BUK7ORdIAHTyxHGRIHVReokCR3XjbckJMK7ms8FysBfhLR8IXnAgy7T0PTPNBWKiH514FOW/WSg==
