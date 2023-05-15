@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 
 import { insertDividerBetweenElements } from 'codeforlife/lib/esm/helpers';
-import { paths } from 'app/router';
+import { paths } from '../../app/router';
 
 const LoginSelect: React.FC<{
   sx: SxProps;
