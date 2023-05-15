@@ -34,7 +34,7 @@ const validationSchema: { [V in keyof IndependentFormValues]: Yup.Schema } = {
 const IndependentForm: React.FC = (): JSX.Element => {
   return (
     <BaseForm
-      themedBoxProps={{ bgcolor: 'tertiary' }}
+      themedBoxProps={{ userType: 'independent' }}
       header='Welcome'
       subheader='Please enter your login details.'
       initialValues={initialValues}

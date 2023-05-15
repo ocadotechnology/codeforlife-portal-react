@@ -17,33 +17,38 @@ import {
 
 export interface ThemedBoxProps extends BoxProps {
   withIcons?: boolean,
-  bgcolor: 'primary' | 'secondary' | 'tertiary'
+  userType: 'teacher' | 'student' | 'independent'
 }
 
 const ThemedBox: React.FC<ThemedBoxProps> = ({
   withIcons = false,
-  bgcolor,
+  userType,
   children,
   sx,
   ...otherBoxProps
 }) => {
   let theme = useTheme();
 
-  let circleColor: ThemedBoxProps['bgcolor'];
-  let hexagonColor: ThemedBoxProps['bgcolor'];
+  type Color = 'primary' | 'secondary' | 'tertiary';
+  let bgcolor: Color;
+  let circleColor: Color;
+  let hexagonColor: Color;
   let buttonBgcolor: string;
-  switch (bgcolor) {
-    case 'primary':
+  switch (userType) {
+    case 'teacher':
+      bgcolor = 'primary';
       circleColor = 'secondary';
       hexagonColor = 'tertiary';
       buttonBgcolor = theme.palette.tertiary.main;
       break;
-    case 'secondary':
+    case 'student':
+      bgcolor = 'secondary';
       circleColor = 'tertiary';
       hexagonColor = 'primary';
       buttonBgcolor = theme.palette.tertiary.main;
       break;
-    case 'tertiary':
+    case 'independent':
+      bgcolor = 'tertiary';
       circleColor = 'primary';
       hexagonColor = 'secondary';
       buttonBgcolor = 'white';

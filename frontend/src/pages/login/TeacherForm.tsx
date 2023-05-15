@@ -34,7 +34,7 @@ const validationSchema: { [V in keyof TeacherFormValues]: Yup.Schema } = {
 const TeacherForm: React.FC = (): JSX.Element => {
   return (
     <BaseForm
-      themedBoxProps={{ bgcolor: 'primary' }}
+      themedBoxProps={{ userType: 'teacher' }}
       header='Welcome'
       subheader='Please enter your login details.'
       initialValues={initialValues}

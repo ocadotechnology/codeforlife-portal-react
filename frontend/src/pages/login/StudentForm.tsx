@@ -34,7 +34,7 @@ const AccessCodeForm: React.FC<{
 
   return (
     <BaseForm
-      themedBoxProps={{ bgcolor: 'secondary' }}
+      themedBoxProps={{ userType: 'student' }}
       header='Welcome'
       subheader='Please enter your class code.'
       initialValues={initialValues}
@@ -95,7 +95,7 @@ const CredentialsForm: React.FC<{
 
   return (
     <BaseForm
-      themedBoxProps={{ bgcolor: 'secondary' }}
+      themedBoxProps={{ userType: 'student' }}
       header={`Welcome to class: ${accessCode}`}
       subheader='Please enter your login details.'
       initialValues={initialValues}
