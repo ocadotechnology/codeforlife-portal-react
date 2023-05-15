@@ -16,12 +16,16 @@ const LoginSelect: React.FC<{
 }> = ({ sx }) => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const [open, setOpen] = React.useState(false);
 
   const paletteColor = 'tertiary';
   const borderColor = theme.palette[paletteColor].main;
 
   function onClick(navigateTo: string): () => void {
-    return () => { navigate(navigateTo); };
+    return () => {
+      setOpen(false);
+      navigate(navigateTo);
+    };
   }
 
   const menuItems: Array<(
@@ -35,6 +39,9 @@ const LoginSelect: React.FC<{
 
   return (
     <Select
+      open={open}
+      onOpen={() => { setOpen(true); }}
+      onClose={() => { setOpen(false); }}
       SelectDisplayProps={{ style: { width: 'auto' } }}
       displayEmpty
       value=""
