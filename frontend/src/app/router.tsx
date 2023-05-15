@@ -16,6 +16,7 @@ import Forbidden from '../pages/forbidden/Forbidden';
 import PageNotFound from '../pages/pageNotFound/PageNotFound';
 import InternalServerError from '../pages/internalServerError/InternalServerError';
 import EmailVerification from '../pages/emailVerification/EmailVerification';
+import StudentManagment from 'pages/studentManagment/StudentManagment';
 
 export const paths = {
   home: '/',
@@ -33,7 +34,10 @@ export const paths = {
   forbidden: '/error/forbidden',
   pageNotFound: '/error/page-not-found',
   internalServerError: '/error/internal-server-error',
-  rapidRouter: '/rapid-router'
+  rapidRouter: '/rapid-router',
+  teacher: {
+    class: (accessCode: string) => `/teacher/class/${accessCode}`
+  }
 };
 
 const router = createBrowserRouter([
@@ -96,6 +100,10 @@ const router = createBrowserRouter([
   {
     path: paths.emailVerification,
     element: <EmailVerification />
+  },
+  {
+    path: paths.teacher.class(':accessCode'),
+    element: <StudentManagment />
   }
 ]);
 
