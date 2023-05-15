@@ -7,9 +7,9 @@ import {
 } from '@mui/material';
 import * as Yup from 'yup';
 
-import { paths } from 'app/router';
-import CflForm from 'components/formik/CflForm';
-import CflTextField from 'components/formik/CflTextField';
+import { paths } from '../../app/router';
+import CflTextField from '../../components/formik/CflTextField';
+import BaseForm from './BaseForm';
 
 interface TeacherFormValues {
   username: string;
@@ -33,7 +33,10 @@ const validationSchema: { [V in keyof TeacherFormValues]: Yup.Schema } = {
 
 const TeacherForm: React.FC = (): JSX.Element => {
   return (
-    <CflForm
+    <BaseForm
+      themedBoxProps={{ bgcolor: 'primary' }}
+      header='Welcome'
+      subheader='Please enter your login details.'
       initialValues={initialValues}
       validationSchema={Yup.object(validationSchema)}
       onSubmit={(values, { setSubmitting }) => {
@@ -83,7 +86,7 @@ const TeacherForm: React.FC = (): JSX.Element => {
           </Button>
         </Stack>
       </>}
-    </CflForm>
+    </BaseForm>
   );
 };
 

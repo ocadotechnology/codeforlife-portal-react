@@ -11,8 +11,8 @@ import * as Yup from 'yup';
 
 import { getSearchParams } from 'codeforlife/lib/esm/helpers';
 
-import CflForm from 'components/formik/CflForm';
-import CflTextField from 'components/formik/CflTextField';
+import CflTextField from '../../components/formik/CflTextField';
+import BaseForm from './BaseForm';
 
 const AccessCodeForm: React.FC<{
   setAccessCode: (accessCode: string) => void
@@ -33,7 +33,10 @@ const AccessCodeForm: React.FC<{
   };
 
   return (
-    <CflForm
+    <BaseForm
+      themedBoxProps={{ bgcolor: 'secondary' }}
+      header='Welcome'
+      subheader='Please enter your class code.'
       initialValues={initialValues}
       validationSchema={Yup.object(validationSchema)}
       onSubmit={(values) => {
@@ -63,7 +66,7 @@ const AccessCodeForm: React.FC<{
           </Button>
         </Stack>
       </>}
-    </CflForm>
+    </BaseForm>
   );
 };
 
@@ -91,7 +94,10 @@ const CredentialsForm: React.FC<{
   };
 
   return (
-    <CflForm
+    <BaseForm
+      themedBoxProps={{ bgcolor: 'secondary' }}
+      header={`Welcome to class: ${accessCode}`}
+      subheader='Please enter your login details.'
       initialValues={initialValues}
       validationSchema={Yup.object(validationSchema)}
       onSubmit={(values, errors) => {
@@ -121,7 +127,7 @@ const CredentialsForm: React.FC<{
           </Button>
         </Stack>
       </>}
-    </CflForm>
+    </BaseForm>
   );
 };
 
