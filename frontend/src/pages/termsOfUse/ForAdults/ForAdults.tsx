@@ -15,7 +15,7 @@ import Misc from './Misc';
 
 const ForAdults: React.FC = () => {
   return (
-    <Grid container>
+    <Grid container marginTop={2}>
       <Grid xs={12}>
         <Typography variant='h4' textAlign='center'>
           Terms of Use
