@@ -8,10 +8,10 @@ import {
   Typography,
   useTheme
 } from '@mui/material';
-import PageSection from 'components/PageSection';
+import PageSection from '../../components/PageSection';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
-import { paths } from 'app/router';
+import { paths } from '../../app/router';
 
 interface MessageProps {
   isStudent: boolean,

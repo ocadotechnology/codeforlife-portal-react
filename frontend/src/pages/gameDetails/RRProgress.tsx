@@ -5,7 +5,7 @@ import {
 } from '@mui/icons-material';
 import { Image } from 'codeforlife/lib/esm/components';
 import RRLogoImage from '../../images/RR_logo.svg';
-import { paths } from 'app/router';
+import { paths } from '../../app/router';
 
 const RRProgress: React.FC<{
   isStudent: boolean,

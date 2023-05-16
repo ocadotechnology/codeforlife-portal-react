@@ -4,7 +4,7 @@ import {
 } from '@mui/material';
 
 import BasePage from '../BasePage';
-import PageSection from 'components/PageSection';
+import PageSection from '../../components/PageSection';
 import Banner from './Banner';
 import GameList from './GameList';
 import RRProgress from './RRProgress';

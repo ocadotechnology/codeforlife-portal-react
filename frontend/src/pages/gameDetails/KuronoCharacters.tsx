@@ -2,7 +2,7 @@ import React from 'react';
 import {
   Unstable_Grid2 as Grid
 } from '@mui/material';
-import Characters from 'pages/students/Characters';
+import Characters from '../../pages/students/Characters';
 import XianImage from '../../images/Xian.png';
 import JoolsImage from '../../images/Jools.png';
 import ZayedImage from '../../images/Zayed.png';

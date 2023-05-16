@@ -3,10 +3,10 @@ import {
   Unstable_Grid2 as Grid, Typography
 } from '@mui/material';
 
-import CflCard from 'components/CflCard';
+import CflCard from '../../components/CflCard';
 import RRLogoGreenImage from '../../images/RR_logo_green.svg';
 import KuronoLogoGreyImage from '../../images/kurono_logo_grey_background.svg';
-import { paths } from 'app/router';
+import { paths } from '../../app/router';
 
 const GameList: React.FC<{
   isStudent: boolean,
