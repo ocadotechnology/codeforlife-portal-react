@@ -2,6 +2,7 @@ import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 
 import Home from '../pages/home/Home';
+import Login from '../pages/login/Login';
 import Teachers from '../pages/teachers/Teachers';
 import Students from '../pages/students/Students';
 import Register from '../pages/register/Register';
@@ -19,9 +20,21 @@ import TeacherSchool from 'pages/teacherDashboard/TeacherSchool';
 import TeacherClasses from 'pages/teacherDashboard/TeacherClasses';
 import TeacherAccount from 'pages/teacherDashboard/TeacherAccount';
 import EmailVerification from '../pages/emailVerification/EmailVerification';
+import ResetPassword from '../pages/resetPassword/ResetPassword';
 
 export const paths = {
   home: '/',
+  login: {
+    _: '/login',
+    teacher: '/login?userType=teacher',
+    student: '/login?userType=student',
+    independent: '/login?userType=independent'
+  },
+  resetPassword: {
+    _: '/reset-password',
+    teacher: '/reset-password?userType=teacher',
+    independent: '/reset-password?userType=independent'
+  },
   teachers: '/teachers',
   students: '/students',
   register: '/register',
@@ -46,6 +59,10 @@ const router = createBrowserRouter([
   {
     path: paths.home,
     element: <Home />
+  },
+  {
+    path: paths.login._,
+    element: <Login />
   },
   {
     path: paths.teachers,
@@ -108,6 +125,10 @@ const router = createBrowserRouter([
     {
     path: paths.emailVerification,
     element: <EmailVerification />
+  },
+  {
+    path: paths.resetPassword._,
+    element: <ResetPassword />
   }
 ]);
 

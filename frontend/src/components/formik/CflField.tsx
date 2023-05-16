@@ -1,7 +1,5 @@
 import React from 'react';
 import {
-  Tooltip,
-  TooltipProps,
   Stack,
   StackProps,
   Icon,
@@ -17,9 +15,11 @@ import {
   ErrorMessageProps
 } from 'formik';
 
+import CflTooltip, { CflTooltipProps } from '../CflTooltip';
+
 export interface CflFieldProps extends FieldConfig<any> {
   stackProps?: StackProps,
-  tooltipProps?: Omit<TooltipProps, 'title' | 'children'>,
+  tooltipProps?: Omit<CflTooltipProps, 'title' | 'children'>,
   errorIconProps?: IconProps
   errorMessageProps?: Omit<ErrorMessageProps, (
     'name' |
@@ -56,11 +56,11 @@ const CflField: React.FC<CflFieldProps> = ({
     } = errorIconProps;
 
     render = (errorMessage: string) => (
-      <Tooltip title={errorMessage} {...tooltipProps}>
+      <CflTooltip title={errorMessage} {...tooltipProps}>
         <Icon {...otherErrorIconProps}>
           {children}
         </Icon>
-      </Tooltip>
+      </CflTooltip>
     );
   }
 

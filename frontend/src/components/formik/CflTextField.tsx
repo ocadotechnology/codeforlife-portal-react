@@ -3,13 +3,14 @@ import {
   TextField,
   TextFieldProps,
   InputAdornment,
-  Tooltip,
-  Icon
+  Icon,
+  useTheme
 } from '@mui/material';
 import {
   ErrorOutline as ErrorOutlineIcon
 } from '@mui/icons-material';
 
+import CflTooltip from '../CflTooltip';
 import CflField, { CflFieldProps } from './CflField';
 
 export type CflTextFieldProps = (
@@ -32,8 +33,10 @@ const CflTextField: React.FC<CflTextFieldProps> = ({
   errorIconProps = { color: 'error' },
   InputProps = {},
   onKeyUp,
+  sx,
   ...otherTextFieldProps
 }) => {
+  const theme = useTheme();
   const [value, setValue] = React.useState({
     field: '',
     errorMessage: '',
@@ -63,11 +66,11 @@ const CflTextField: React.FC<CflTextFieldProps> = ({
       <>
         {endAdornment}
         <InputAdornment position='end'>
-          <Tooltip title={value.errorMessage} {...tooltipProps}>
+          <CflTooltip title={value.errorMessage} {...tooltipProps}>
             <Icon {...errorIconProps}>
               <ErrorOutlineIcon />
             </Icon>
-          </Tooltip>
+          </CflTooltip>
         </InputAdornment>
       </>
     );
@@ -90,6 +93,14 @@ const CflTextField: React.FC<CflTextFieldProps> = ({
     InputProps: {
       endAdornment,
       ...otherInputProps
+    },
+    sx: {
+      ...sx,
+      '& .MuiOutlinedInput-root.Mui-focused > fieldset': {
+        borderColor: (value.errorMessage === '')
+          ? '#000'
+          : theme.palette.error.main
+      }
     },
     ...otherTextFieldProps
   };
