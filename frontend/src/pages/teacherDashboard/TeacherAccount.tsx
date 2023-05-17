@@ -1,20 +1,8 @@
 import React from 'react';
-import BasePage from 'pages/BasePage';
+import BasePage from '../BasePage';
 import DashboardBanner from './DashboardBanner';
 import DashboardHeader from './DashboardHeader';
-import {
-  Button,
-  Checkbox,
-  Container,
-  FormControlLabel,
-  FormGroup,
-  Grid,
-  Stack,
-  TextField,
-  Typography,
-  useTheme
-} from '@mui/material';
-import { Field, Form, Formik } from 'formik';
+import { Button, Stack, Typography, useTheme } from '@mui/material';
 import {
   DELETE_ACCOUNT_INITIAL_VALUES,
   UPDATE_TEACHER_ACCOUNT_INITIAL_VALUES
@@ -25,9 +13,10 @@ import {
 } from './schemas';
 import { DeleteOutline } from '@mui/icons-material';
 import { getUser } from './dummyMethods';
-import CflField from 'components/formik/CflField';
-import CflTextField from 'components/formik/CflTextField';
-import CflCheckboxField from 'components/formik/CflCheckboxField';
+import CflTextField from '../../components/formik/CflTextField';
+import CflCheckboxField from '../../components/formik/CflCheckboxField';
+import { CflHorizontalForm } from '../../components/formik/CflForm';
+import PageSection from '../../components/PageSection';
 
 const TwoFactorAuthentication: React.FC = (): JSX.Element => {
   return (
@@ -46,9 +35,8 @@ const TwoFactorAuthentication: React.FC = (): JSX.Element => {
 
 const YourAccountForm: React.FC = () => {
   const { firstName, lastName } = getUser();
-
   return (
-    <Formik
+    <CflHorizontalForm
       initialValues={{
         ...UPDATE_TEACHER_ACCOUNT_INITIAL_VALUES,
         firstName,
@@ -58,170 +46,111 @@ const YourAccountForm: React.FC = () => {
       onSubmit={(values) => {
         alert(JSON.stringify(values, null, 2));
       }}
+      header="Your account"
+      headerAlignment="center"
+      subheader="You can update you account details below."
+      submitButton={<Button variant="contained">Save changes</Button>}
     >
-      {(formik) => (
-        <Form>
-          <Grid container direction="row" spacing={2}>
-            <Grid item xs={12} sm={4}>
-              <CflTextField
-                name="firstName"
-                helperText="Enter your first name"
-                placeholder="First name"
-                size="small"
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <CflTextField
-                placeholder="Last name"
-                helperText="Enter your last name"
-                name="lastName"
-                size="small"
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <CflTextField
-                placeholder="New email address (optional)"
-                helperText="Enter your new email address (optional)"
-                name="newEmail"
-                size="small"
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <CflTextField
-                placeholder="New password (optional)"
-                helperText="Enter your new password (optional)"
-                name="newPassword"
-                type="password"
-                size="small"
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <CflTextField
-                placeholder="Confirm new password (optional)"
-                helperText="Confirm your new password (optional)"
-                name="confirmPassword"
-                type="password"
-                size="small"
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <CflTextField
-                placeholder="Current password"
-                helperText="Enter your current password"
-                name="currentPassword"
-                type="password"
-                size="small"
-              />
-            </Grid>
-            <Grid item xs={12}></Grid>
-          </Grid>
-          <Button
-            disabled={formik.isSubmitting || !(formik.isValid && formik.dirty)}
-            variant="contained"
-            color="tertiary"
-            type="submit"
-          >
-            Update details
-          </Button>
-        </Form>
-      )}
-    </Formik>
-  );
-};
-
-const YourAccount: React.FC = (): JSX.Element => {
-  return (
-    <Grid container>
-      <Grid item xs={12}>
-        <Typography align="center" variant="h5">
-          Your account
-        </Typography>
-        <Typography>You can update your account details below</Typography>
-      </Grid>
-      <Grid item xs={12}>
-        <YourAccountForm />
-      </Grid>
-    </Grid>
+      <CflTextField
+        name="firstName"
+        helperText="Enter your first name"
+        placeholder="First name"
+        size="small"
+      />
+      <CflTextField
+        placeholder="Last name"
+        helperText="Enter your last name"
+        name="lastName"
+        size="small"
+      />
+      <CflTextField
+        placeholder="New email address (optional)"
+        helperText="Enter your new email address (optional)"
+        name="newEmail"
+        size="small"
+      />
+      <CflTextField
+        placeholder="New password (optional)"
+        helperText="Enter your new password (optional)"
+        name="newPassword"
+        type="password"
+        size="small"
+      />
+      <CflTextField
+        placeholder="Confirm new password (optional)"
+        helperText="Confirm your new password (optional)"
+        name="confirmPassword"
+        type="password"
+        size="small"
+      />
+      <CflTextField
+        placeholder="Current password"
+        helperText="Enter your current password"
+        name="currentPassword"
+        type="password"
+        size="small"
+      />
+    </CflHorizontalForm>
   );
 };
 
 const DeleteAccountForm: React.FC = (): JSX.Element => {
   const theme = useTheme();
   return (
-    <Formik
+    <CflHorizontalForm
+      header="Delete account"
+      subheader="If you no longer wish to have a Code for Life account, you can delete it by confirming below. You will receive an email to confirm this decision."
+      subheaderBold="This can't be reversed. All classes you've created will be permanently erased."
       initialValues={DELETE_ACCOUNT_INITIAL_VALUES}
       validationSchema={DELETE_ACCOUNT_SCHEMA}
       onSubmit={(formik, { setSubmitting }) => {
         alert(JSON.stringify(formik, null, 2));
         setSubmitting(false);
       }}
+      submitButton={
+        <Button
+          variant="contained"
+          color="error"
+          type="submit"
+          endIcon={<DeleteOutline />}
+        >
+          Delete account
+        </Button>
+      }
     >
-      {(formik) => (
-        <Form>
-          <Grid container direction="row" alignItems="flex-start">
-            <Grid item xs={12} sm={4}>
-              <CflTextField
-                name="password"
-                label="Current password"
-                helperText="Enter your current password"
-                type="password"
-                size="small"
-              />
-            </Grid>
-            <Grid item xs={12} sm={8}>
-              <CflCheckboxField
-                name="removeFromNewsletter"
-                sx={{ color: theme.palette.info.dark }}
-                required
-                formControlLabelProps={{
-                  label: 'Remove me from the Code for Life newsletter'
-                }}
-              />
-            </Grid>
-            <Grid item xs={12}></Grid>
-          </Grid>
-          <Button
-            disabled={formik.isSubmitting || !(formik.isValid && formik.dirty)}
-            variant="contained"
-            color="error"
-            type="submit"
-            endIcon={<DeleteOutline />}
-          >
-            Delete account
-          </Button>
-        </Form>
-      )}
-    </Formik>
-  );
-};
-
-const DeleteAccount: React.FC = (): JSX.Element => {
-  return (
-    <Stack>
-      <Typography variant="h5">Delete account</Typography>
-      <Typography>
-        If you no longer wish to have a Code for Life account, you can delete it
-        by confirming below. You will receive an email to confirm this decision.
-      </Typography>
-      <Typography fontWeight="bold">
-        This can&apos;t be reversed. All classes you&apos;ve created will be
-        permanently erased.
-      </Typography>
-      <DeleteAccountForm />
-    </Stack>
+      <CflTextField
+        name="currentPassword"
+        label="Current password"
+        helperText="Enter your current password"
+        type="password"
+        size="small"
+      />
+      <CflCheckboxField
+        name="removeFromNewsletter"
+        sx={{ color: theme.palette.info.dark }}
+        formControlLabelProps={{
+          label: 'Remove me from the Code for Life newsletter'
+        }}
+      />
+    </CflHorizontalForm>
   );
 };
 
 const TeacherAccount: React.FC = (): JSX.Element => {
+  const theme = useTheme();
   return (
     <BasePage>
       <DashboardBanner />
       <DashboardHeader page="Your account" />
-      <Container>
-        <YourAccount />
+      <PageSection>
+        <YourAccountForm />
+      </PageSection>
+      <PageSection bgcolor={theme.palette.info.main}>
         <TwoFactorAuthentication />
-        <DeleteAccount />
-      </Container>
+      </PageSection>
+      <PageSection>
+        <DeleteAccountForm />
+      </PageSection>
     </BasePage>
   );
 };

@@ -1,26 +1,19 @@
 import React from 'react';
-import {
-  Stack,
-  Link,
-  Button,
-  InputAdornment
-} from '@mui/material';
+import { Stack, Link, Button, InputAdornment } from '@mui/material';
 import {
   EmailOutlined as EmailOutlinedIcon,
   ChevronRight as ChevronRightIcon
 } from '@mui/icons-material';
-import {
-  Formik,
-  FormikHelpers,
-  Form
-} from 'formik';
+import { Formik, FormikHelpers, Form } from 'formik';
 import * as Yup from 'yup';
 
 import { paths } from '../../app/router';
 import BaseForm from './BaseForm';
 import CflTextField from '../../components/formik/CflTextField';
 import CflCheckboxField from '../../components/formik/CflCheckboxField';
-import CflPasswordFields, { isStrongPassword } from '../../components/formik/CflPasswordFields';
+import CflPasswordFields, {
+  isStrongPassword
+} from '../../components/formik/CflPasswordFields';
 
 interface TeacherFormValues {
   firstName: string;
@@ -43,31 +36,22 @@ const initialValues: TeacherFormValues = {
 };
 
 const validationSchema: { [K in keyof TeacherFormValues]: Yup.Schema } = {
-  firstName: Yup
-    .string()
-    .required('This field is required'),
-  lastName: Yup
-    .string()
-    .required('This field is required'),
-  email: Yup
-    .string()
+  firstName: Yup.string().required('This field is required'),
+  lastName: Yup.string().required('This field is required'),
+  email: Yup.string()
     .email('Invalid email address')
     .required('This field is required'),
-  termsOfUse: Yup
-    .bool()
-    .oneOf([true], 'You need to accept the terms and conditions'),
-  receiveUpdates: Yup
-    .bool(),
-  password: Yup
-    .string()
+  termsOfUse: Yup.bool().oneOf(
+    [true],
+    'You need to accept the terms and conditions'
+  ),
+  receiveUpdates: Yup.bool(),
+  password: Yup.string()
     .required('This field is required')
-    .test(
-      'teacher-password-strength-check',
-      'Invalid password',
-      (password) => isStrongPassword(password, { forTeacher: true })
+    .test('teacher-password-strength-check', 'Invalid password', (password) =>
+      isStrongPassword(password, { forTeacher: true })
     ),
-  repeatPassword: Yup
-    .string()
+  repeatPassword: Yup.string()
     .oneOf([Yup.ref('password'), undefined], "Passwords don't match")
     .required('This field is required')
 };
@@ -75,11 +59,11 @@ const validationSchema: { [K in keyof TeacherFormValues]: Yup.Schema } = {
 const TeacherForm: React.FC = () => {
   return (
     <BaseForm
-      header='Teacher/Tutor'
-      subheader='Register below to create your school or club.'
-      description='You will have access to teaching resources, progress tracking and lesson plans for both Rapid Router and Kurono.'
-      bgcolor='#ee0857' // TODO: use theme.palette
-      color='white'
+      header="Teacher/Tutor"
+      subheader="Register below to create your school or club."
+      description="You will have access to teaching resources, progress tracking and lesson plans for both Rapid Router and Kurono."
+      bgcolor="#ee0857" // TODO: use theme.palette
+      color="white"
     >
       <Formik
         initialValues={initialValues}
@@ -95,69 +79,66 @@ const TeacherForm: React.FC = () => {
         {(formik) => (
           <Form>
             <CflTextField
-              name='firstName'
-              placeholder='First name'
-              helperText='Enter your first name'
-              size='small'
+              name="firstName"
+              placeholder="First name"
+              helperText="Enter your first name"
             />
             <CflTextField
-              name='lastName'
-              placeholder='Last name'
-              helperText='Enter your last name'
-              size='small'
+              name="lastName"
+              placeholder="Last name"
+              helperText="Enter your last name"
             />
             <CflTextField
-              name='email'
-              placeholder='Email address'
-              helperText='Enter your email address'
-              size='small'
+              name="email"
+              placeholder="Email address"
+              helperText="Enter your email address"
               InputProps={{
                 endAdornment: (
-                  <InputAdornment position='end'>
+                  <InputAdornment position="end">
                     <EmailOutlinedIcon />
                   </InputAdornment>
                 )
               }}
             />
             <CflCheckboxField
-              name='termsOfUse'
+              name="termsOfUse"
               formControlLabelProps={{
-                label: <>
-                  I am over 18 years old have read and understood the&nbsp;
-                  <Link
-                    href={paths.termsOfUse}
-                    target='_blank'
-                    color='inherit'
-                    className='body'
-                  >
-                    Terms of use
-                  </Link>
-                  &nbsp;and the&nbsp;
-                  <Link
-                    href={paths.privacyNotice}
-                    target='_blank'
-                    color='inherit'
-                    className='body'
-                  >
-                    Privacy notice
-                  </Link>
-                  .
-                </>
+                label: (
+                  <>
+                    I am over 18 years old have read and understood the&nbsp;
+                    <Link
+                      href={paths.termsOfUse}
+                      target="_blank"
+                      color="inherit"
+                      className="body"
+                    >
+                      Terms of use
+                    </Link>
+                    &nbsp;and the&nbsp;
+                    <Link
+                      href={paths.privacyNotice}
+                      target="_blank"
+                      color="inherit"
+                      className="body"
+                    >
+                      Privacy notice
+                    </Link>
+                    .
+                  </>
+                )
               }}
             />
             <CflCheckboxField
-              name='receiveUpdates'
+              name="receiveUpdates"
               formControlLabelProps={{
-                label: 'Sign up to receive updates about Code for Life games and teaching resources.'
+                label:
+                  'Sign up to receive updates about Code for Life games and teaching resources.'
               }}
             />
-            <CflPasswordFields
-              forTeacher={true}
-              size='small'
-            />
-            <Stack direction='row' justifyContent='end'>
+            <CflPasswordFields forTeacher={true} />
+            <Stack direction="row" justifyContent="end">
               <Button
-                type='submit'
+                type="submit"
                 endIcon={<ChevronRightIcon />}
                 disabled={!formik.dirty}
               >

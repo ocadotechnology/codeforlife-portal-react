@@ -1,23 +1,21 @@
 import React from 'react';
-import BasePage from 'pages/BasePage';
+import BasePage from '../BasePage';
 import DashboardBanner from './DashboardBanner';
 import DashboardHeader from './DashboardHeader';
-import CflTable, { TableCellStyled, TableRowStyled } from 'components/CflTable';
-import {
-  Button,
-  Checkbox,
-  Container,
-  FormControl,
-  FormControlLabel,
-  Grid,
-  Typography
-} from '@mui/material';
-import { CreateOutlined } from '@mui/icons-material';
-import { getClassesData, getUser } from './dummyMethods';
-import { Form, Field, Formik } from 'formik';
+import CflTable, {
+  CflTableBody,
+  CflTableCellElement
+} from '../../components/CflTable';
+import { Box, Button, Typography, useTheme } from '@mui/material';
+import { Add, CreateOutlined, DoNotDisturb } from '@mui/icons-material';
+import { getClassesData, getTeachersData, getUser } from './dummyMethods';
 import { CREATE_CLASS_INITIAL_VALUES } from './constants';
 import { CREATE_CLASS_SCHEMA } from './schemas';
-import CflTextField from 'components/formik/CflTextField';
+import CflTextField from '../../components/formik/CflTextField';
+import { CflHorizontalForm } from '../../components/formik/CflForm';
+import CflCheckboxField from '../../components/formik/CflCheckboxField';
+import CopyToClipboardIcon from '../../components/formik/CopyToClipboardIcon';
+import PageSection from '../../components/PageSection';
 
 const YourClasses: React.FC = (): JSX.Element => {
   return (
@@ -41,19 +39,59 @@ const ClassTable = (): JSX.Element => {
   return (
     <CflTable titles={['Class name', 'Access code', 'Teacher', 'Action']}>
       {classData.map(({ className, accessCode, teacher }, keyIdx: number) => (
-        <TableRowStyled key={`BodyTableRow${keyIdx}`}>
-          <TableCellStyled>{className}</TableCellStyled>
-          <TableCellStyled>{accessCode}</TableCellStyled>
-          <TableCellStyled>
+        <CflTableBody key={`${keyIdx}`}>
+          <CflTableCellElement>{className}</CflTableCellElement>
+          <CflTableCellElement
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            {accessCode}
+            <CopyToClipboardIcon accessCode={accessCode} />
+          </CflTableCellElement>
+          <CflTableCellElement>
             {teacher === `${firstName} ${lastName}` ? 'You' : teacher}
-          </TableCellStyled>
-          <TableCellStyled align="center">
+          </CflTableCellElement>
+          <CflTableCellElement justifyContent="center">
             <Button color="tertiary" endIcon={<CreateOutlined />}>
               Update details
             </Button>
-          </TableCellStyled>
-        </TableRowStyled>
+          </CflTableCellElement>
+        </CflTableBody>
       ))}
+    </CflTable>
+  );
+};
+
+const ExternalStudentsJoiningRequestsActions: React.FC = () => {
+  return (
+    <>
+      <Button endIcon={<Add />}>Add to class</Button>
+      <Button color="error" endIcon={<DoNotDisturb />}>
+        Reject
+      </Button>
+    </>
+  );
+};
+
+const ExternalStudentsJoiningRequestsTable: React.FC = (): JSX.Element => {
+  const teacherData = getTeachersData();
+  return (
+    <CflTable titles={['Name', 'Email address', 'Class', 'Actions']}>
+      {teacherData.map(
+        (
+          { teacherName, teacherClass, teacherEmail, isTeacherAdmin },
+          keyIdx: number
+        ) => (
+          <CflTableBody key={`${keyIdx}`}>
+            <CflTableCellElement>{teacherName}</CflTableCellElement>
+            <CflTableCellElement>{teacherEmail}</CflTableCellElement>
+            <CflTableCellElement>{teacherClass}</CflTableCellElement>
+            <CflTableCellElement justifyContent="center">
+              <ExternalStudentsJoiningRequestsActions />
+            </CflTableCellElement>
+          </CflTableBody>
+        )
+      )}
     </CflTable>
   );
 };
@@ -69,6 +107,7 @@ const ExternalStudentsJoiningRequests: React.FC = (): JSX.Element => {
         student has been given a Class Access Code, and provided you have
         enabled external requests for that class.
       </Typography>
+      <ExternalStudentsJoiningRequestsTable />
       <Typography fontWeight="bold">
         No student has currently requested to join your classes.
       </Typography>
@@ -78,62 +117,41 @@ const ExternalStudentsJoiningRequests: React.FC = (): JSX.Element => {
 
 const CreateNewClassForm: React.FC = (): JSX.Element => {
   return (
-    <Formik
+    <CflHorizontalForm
+      header="Create a new class"
       initialValues={CREATE_CLASS_INITIAL_VALUES}
       validationSchema={CREATE_CLASS_SCHEMA}
       onSubmit={(values, { setSubmitting }) => {
         alert(JSON.stringify(values, null, 2));
         setSubmitting(false);
       }}
+      submitButton={
+        <Button type="submit" variant="contained" color="tertiary">
+          Create class
+        </Button>
+      }
     >
-      {(formik) => (
-        <Form>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={4}>
-              <CflTextField
-                name="className"
-                placeholder="Class name"
-                helperText="Enter a class name"
-                size="small"
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <CflTextField
-                name="teacherName"
-                placeholder="Teacher's name"
-                helperText="Enter the teacher's name"
-                size="small"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <FormControl>
-                <FormControlLabel
-                  control={
-                    <Field
-                      as={Checkbox}
-                      name="isStudentProgressVisibleToOthers"
-                    />
-                  }
-                  label="Allow students to see their classmates' progress?"
-                />
-              </FormControl>
-            </Grid>
-            <Grid item xs={12}>
-              <Button
-                disabled={
-                  !(formik.isValid && formik.dirty) || formik.isSubmitting
-                }
-                type="submit"
-                variant="contained"
-                color="tertiary"
-              >
-                Create class
-              </Button>
-            </Grid>
-          </Grid>
-        </Form>
-      )}
-    </Formik>
+      <CflTextField
+        name="className"
+        placeholder="Class name"
+        helperText="Enter a class name"
+        size="small"
+      />
+      <CflTextField
+        name="teacherName"
+        placeholder="Teacher's name"
+        helperText="Enter the teacher's name"
+        size="small"
+      />
+
+      <Box>{/* Blank component to fill the grid */}</Box>
+      <CflCheckboxField
+        name="isStudentProgressVisibleToOthers"
+        formControlLabelProps={{
+          label: "Allow students to see their classmates' progress?"
+        }}
+      />
+    </CflHorizontalForm>
   );
 };
 
@@ -153,16 +171,19 @@ const CreateNewClass: React.FC = (): JSX.Element => {
 };
 
 const TeacherClasses: React.FC = (): JSX.Element => {
+  const theme = useTheme();
   return (
     <BasePage>
       <DashboardBanner />
       <DashboardHeader page="Your classes" />
-      <Container>
+      <PageSection>
         <YourClasses />
         <ClassTable />
         <ExternalStudentsJoiningRequests />
+      </PageSection>
+      <PageSection bgcolor={theme.palette.info.main}>
         <CreateNewClass />
-      </Container>
+      </PageSection>
     </BasePage>
   );
 };

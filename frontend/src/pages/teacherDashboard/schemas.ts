@@ -1,9 +1,10 @@
 import { boolean, object, ref, string } from 'yup';
+import { getNames } from 'country-list';
 
 export const SCHOOL_DETAILS_UPDATE_SCHEMA = object({
   schoolName: string().required('School name is required'),
   schoolPostcode: string().required('School postcode is required'),
-  schoolCountry: string().required('School country is required')
+  schoolCountry: string().required('School country is required').test('is-country', 'Please select a country', (value) => value in getNames())
 });
 
 export const INVITE_TEACHER_SCHEMA = object({

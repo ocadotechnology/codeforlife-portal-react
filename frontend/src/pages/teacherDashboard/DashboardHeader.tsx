@@ -1,6 +1,6 @@
 import { Button, Grid, useTheme } from '@mui/material';
-import { paths } from 'app/router';
 import React from 'react';
+import { paths } from '../../app/router';
 
 const DashboardHeaderButton: React.FC<{
   active: boolean;
@@ -13,7 +13,10 @@ const DashboardHeaderButton: React.FC<{
     margin: 1,
     color: active
       ? theme.palette.primary.light
-      : theme.palette.primary.contrastText
+      : theme.palette.primary.contrastText,
+    '&:hover': {
+      backgroundColor: active ? theme.palette.common.white : 'transparent'
+    }
   };
 
   return (

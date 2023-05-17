@@ -6,20 +6,45 @@ import {
   TableContainer,
   Table,
   TableHead,
-  TableBody
+  TableBody,
+  Stack,
+  StackProps
 } from '@mui/material';
 import { tableCellClasses } from '@mui/material/TableCell';
 
-export const TableCellStyled = styled(TableCell)(({ theme }) => ({
+export const TableCellElementStyled = styled(TableCell)(({ theme }) => ({
   outline: `1px solid ${theme.palette.common.white}`,
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.black,
     color: theme.palette.common.white
-  },
-  [`&.${tableCellClasses.body}`]: {
-    fontSize: 14
   }
 }));
+
+export interface CflTableCellProps {
+  children: React.ReactNode;
+  alignItems?: StackProps['alignItems'];
+  justifyContent?: StackProps['justifyContent'];
+  direction?: StackProps['direction'];
+}
+export const CflTableCellElement: React.FC<CflTableCellProps> = ({
+  children,
+  alignItems = 'center',
+  justifyContent = 'flex-start',
+  direction = 'row'
+}) => {
+  return (
+    <TableCellElementStyled>
+      <Stack
+        alignItems={alignItems}
+        justifyContent={justifyContent}
+        direction={direction}
+        columnGap={3}
+      >
+        {children}
+      </Stack>
+    </TableCellElementStyled>
+  );
+};
 
 export const TableRowStyled = styled(TableRow)(({ theme }) => ({
   '&:nth-of-type(odd)': {
@@ -30,6 +55,18 @@ export const TableRowStyled = styled(TableRow)(({ theme }) => ({
     border: 0
   }
 }));
+
+export const CflTableBody: React.FC<{
+  children: React.ReactNode;
+}> = ({ children }): JSX.Element => {
+  return (
+    <TableRowStyled>
+      {React.Children.map(children, (child) => (
+        <>{child}</>
+      ))}
+    </TableRowStyled>
+  );
+};
 
 interface CflTableProps {
   titles: string[];
@@ -45,9 +82,9 @@ const CflTable: React.FC<CflTableProps> = ({
         <TableHead>
           <TableRowStyled>
             {titles.map((title) => (
-              <TableCellStyled key={`table-title-${title}`}>
+              <CflTableCellElement key={`table-title-${title}`}>
                 {title}
-              </TableCellStyled>
+              </CflTableCellElement>
             ))}
           </TableRowStyled>
         </TableHead>

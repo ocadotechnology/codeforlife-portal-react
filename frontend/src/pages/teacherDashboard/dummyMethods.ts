@@ -1,13 +1,15 @@
 interface UserData {
   firstName: string;
   lastName: string;
+  email: string;
 }
 
 export const getUser = (): UserData => {
   // TODO: get user data
   return {
     firstName: 'John',
-    lastName: 'Doe'
+    lastName: 'Doe',
+    email: 'aa@aa.aa'
   };
 };
 
@@ -27,29 +29,33 @@ export const getSchool = (): SchoolData => {
   };
 };
 
-interface TeacherData {
-  name: string;
-  isAdmin: boolean;
-  email: string;
+export interface TeacherData {
+  teacherName: string;
+  isTeacherAdmin: boolean;
+  teacherEmail: string;
+  teacherClass: string;
 }
 
 export const getTeachersData = (): TeacherData[] => {
   // TODO: implement get teachers data from the backend
   return [
     {
-      name: 'John Doe',
-      isAdmin: true,
-      email: 'aa@aa.aa'
+      teacherName: 'John Doe',
+      isTeacherAdmin: true,
+      teacherEmail: 'aa@aa.aa',
+      teacherClass: 'Class 1'
     },
     {
-      name: 'Jane Doe',
-      isAdmin: false,
-      email: 'ghejkhrjh@grrtr.ghr'
+      teacherName: 'Jane Doe',
+      isTeacherAdmin: false,
+      teacherEmail: 'ghejkhrjh@grrtr.ghr',
+      teacherClass: 'Class 2'
     },
     {
-      name: 'Doe John',
-      isAdmin: true,
-      email: 'em@il.com'
+      teacherName: 'Doe John',
+      isTeacherAdmin: true,
+      teacherEmail: 'em@il.com',
+      teacherClass: 'Class 3'
     }
   ];
 };

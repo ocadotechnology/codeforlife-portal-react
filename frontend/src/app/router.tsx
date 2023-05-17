@@ -16,9 +16,9 @@ import Newsletter from '../pages/newsletter/Newsletter';
 import Forbidden from '../pages/forbidden/Forbidden';
 import PageNotFound from '../pages/pageNotFound/PageNotFound';
 import InternalServerError from '../pages/internalServerError/InternalServerError';
-import TeacherSchool from 'pages/teacherDashboard/TeacherSchool';
-import TeacherClasses from 'pages/teacherDashboard/TeacherClasses';
-import TeacherAccount from 'pages/teacherDashboard/TeacherAccount';
+import TeacherSchool from '../pages/teacherDashboard/TeacherSchool';
+import TeacherClasses from '../pages/teacherDashboard/TeacherClasses';
+import TeacherAccount from '../pages/teacherDashboard/TeacherAccount';
 import EmailVerification from '../pages/emailVerification/EmailVerification';
 import ResetPassword from '../pages/resetPassword/ResetPassword';
 
@@ -122,7 +122,7 @@ const router = createBrowserRouter([
   },
   { path: paths.teacherClasses, element: <TeacherClasses /> },
   { path: paths.teacherAccount, element: <TeacherAccount /> },
-    {
+  {
     path: paths.emailVerification,
     element: <EmailVerification />
   },
