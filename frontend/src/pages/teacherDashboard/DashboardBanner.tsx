@@ -19,7 +19,7 @@ const DashboardBanner: React.FC = (): JSX.Element => {
         color={theme.palette.primary.contrastText}
         xs="auto"
       >
-        <Typography variant="h1">
+        <Typography variant="h2">
           Welcome back, {firstName} {lastName}
         </Typography>
       </Grid>

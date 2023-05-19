@@ -1,21 +1,31 @@
-import { Container, Grid, Typography, Button, useTheme } from '@mui/material';
+import {
+  Container,
+  Grid,
+  Typography,
+  Button,
+  useTheme,
+  InputAdornment
+} from '@mui/material';
 import DashboardBanner from './DashboardBanner';
 import DashboardHeader from './DashboardHeader';
 import BasePage from '../BasePage';
 import React from 'react';
-import { Add, CopyAll, Create, DoNotDisturb } from '@mui/icons-material';
+import {
+  Add,
+  Business,
+  CopyAll,
+  Create,
+  DoNotDisturb,
+  EmailOutlined,
+  PersonOutlined
+} from '@mui/icons-material';
 import { INVITE_TEACHER_SCHEMA, SCHOOL_DETAILS_UPDATE_SCHEMA } from './schemas';
 import { INVITE_TEACHER_INITIAL_VALUES } from './constants';
 import CflTable, {
   CflTableBody,
   CflTableCellElement
 } from '../../components/CflTable';
-import {
-  TeacherData,
-  getSchool,
-  getTeachersData,
-  getUser
-} from './dummyMethods';
+import { getSchool, getTeachersData, getUser } from './dummyMethods';
 import CflTextField from '../../components/formik/CflTextField';
 import CflCheckboxField from '../../components/formik/CflCheckboxField';
 import { getNames } from 'country-list';
@@ -40,19 +50,40 @@ const InviteTeacherForm: React.FC = (): JSX.Element => {
       }
     >
       <CflTextField
-        placeholder="Teacher's first name"
-        helperText="Enter the teacher's name"
+        placeholder="First name of teacher"
+        helperText="Enter first name of teacher"
         name="teacherFirstName"
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <PersonOutlined />
+            </InputAdornment>
+          )
+        }}
       />
       <CflTextField
         placeholder="Teacher's last name"
         helperText="Enter the teacher's last name"
         name="teacherLastName"
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <PersonOutlined />
+            </InputAdornment>
+          )
+        }}
       />
       <CflTextField
         placeholder="Teacher's email"
         helperText="Enter the teacher's email"
         name="teacherEmail"
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <EmailOutlined />
+            </InputAdornment>
+          )
+        }}
       />
       <CflCheckboxField
         name="isAdmin"
@@ -90,11 +121,25 @@ const UpdateSchoolDetailsForm: React.FC = (): JSX.Element => {
         placeholder="Name of school or club"
         helperText="Enter your school's name"
         name="schoolName"
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <Business />
+            </InputAdornment>
+          )
+        }}
       />
       <CflTextField
         placeholder="Postcode / Zipcode"
         helperText="Enter your school's postcode"
         name="schoolPostcode"
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <Business />
+            </InputAdornment>
+          )
+        }}
       />
       <CflAutocomplete
         options={getNames()}
@@ -202,10 +247,10 @@ const TeacherSchool: React.FC = (): JSX.Element => {
       <DashboardBanner />
       <DashboardHeader page="Your school" />
       <PageSection>
-        <Typography align="center" variant="h5">
+        <Typography align="center" variant="h4">
           Your school: {schoolName}: {accessCode}
         </Typography>
-        <Typography>
+        <Typography align="left">
           As an administrator of your school or club, you can select other
           teachers to whom you can provide or revoke administrative rights. You
           can also add and remove teachers from your school or club. As
@@ -213,10 +258,17 @@ const TeacherSchool: React.FC = (): JSX.Element => {
           teachers&apos; classes. Please bear this in mind when assigning admin
           rights to other teachers.
         </Typography>
+      </PageSection>
+      <PageSection>
+        <InviteTeacherForm />
+      </PageSection>
+      <PageSection>
         <Typography variant="h5">
           These teachers are already part of your school or club
         </Typography>
         <TeachersTable />
+      </PageSection>
+      <PageSection>
         <Grid container>
           <Grid item sm={6}>
             <Typography>

@@ -2,7 +2,13 @@ import React from 'react';
 import BasePage from '../BasePage';
 import DashboardBanner from './DashboardBanner';
 import DashboardHeader from './DashboardHeader';
-import { Button, Stack, Typography, useTheme } from '@mui/material';
+import {
+  Button,
+  InputAdornment,
+  Stack,
+  Typography,
+  useTheme
+} from '@mui/material';
 import {
   DELETE_ACCOUNT_INITIAL_VALUES,
   UPDATE_TEACHER_ACCOUNT_INITIAL_VALUES
@@ -11,7 +17,12 @@ import {
   DELETE_ACCOUNT_SCHEMA,
   UPDATE_TEACHER_ACCOUNT_SCHEMA
 } from './schemas';
-import { DeleteOutline } from '@mui/icons-material';
+import {
+  DeleteOutline,
+  EmailOutlined,
+  LockOutlined,
+  SecurityOutlined
+} from '@mui/icons-material';
 import { getUser } from './dummyMethods';
 import CflTextField from '../../components/formik/CflTextField';
 import CflCheckboxField from '../../components/formik/CflCheckboxField';
@@ -55,40 +66,55 @@ const YourAccountForm: React.FC = () => {
         name="firstName"
         helperText="Enter your first name"
         placeholder="First name"
-        size="small"
       />
       <CflTextField
         placeholder="Last name"
         helperText="Enter your last name"
         name="lastName"
-        size="small"
       />
       <CflTextField
         placeholder="New email address (optional)"
         helperText="Enter your new email address (optional)"
         name="newEmail"
-        size="small"
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <EmailOutlined />
+            </InputAdornment>
+          )
+        }}
       />
       <CflTextField
         placeholder="New password (optional)"
         helperText="Enter your new password (optional)"
         name="newPassword"
         type="password"
-        size="small"
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <SecurityOutlined />
+            </InputAdornment>
+          )
+        }}
       />
       <CflTextField
         placeholder="Confirm new password (optional)"
         helperText="Confirm your new password (optional)"
         name="confirmPassword"
         type="password"
-        size="small"
       />
       <CflTextField
         placeholder="Current password"
         helperText="Enter your current password"
         name="currentPassword"
         type="password"
-        size="small"
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <LockOutlined />
+            </InputAdornment>
+          )
+        }}
       />
     </CflHorizontalForm>
   );
@@ -123,13 +149,20 @@ const DeleteAccountForm: React.FC = (): JSX.Element => {
         label="Current password"
         helperText="Enter your current password"
         type="password"
-        size="small"
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <SecurityOutlined />
+            </InputAdornment>
+          )
+        }}
       />
       <CflCheckboxField
         name="removeFromNewsletter"
         sx={{ color: theme.palette.info.dark }}
         formControlLabelProps={{
-          label: 'Remove me from the Code for Life newsletter'
+          label:
+            'Please remove me from the newsletter and marketing emails too.'
         }}
       />
     </CflHorizontalForm>

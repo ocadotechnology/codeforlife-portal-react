@@ -6,8 +6,14 @@ import CflTable, {
   CflTableBody,
   CflTableCellElement
 } from '../../components/CflTable';
-import { Box, Button, Typography, useTheme } from '@mui/material';
-import { Add, CreateOutlined, DoNotDisturb } from '@mui/icons-material';
+import {
+  Box,
+  Button,
+  InputAdornment,
+  Typography,
+  useTheme
+} from '@mui/material';
+import { Add, Create, DoNotDisturb, GroupOutlined } from '@mui/icons-material';
 import { getClassesData, getTeachersData, getUser } from './dummyMethods';
 import { CREATE_CLASS_INITIAL_VALUES } from './constants';
 import { CREATE_CLASS_SCHEMA } from './schemas';
@@ -20,7 +26,7 @@ import PageSection from '../../components/PageSection';
 const YourClasses: React.FC = (): JSX.Element => {
   return (
     <>
-      <Typography align="center" variant="h5">
+      <Typography align="center" variant="h4">
         Your classes
       </Typography>
       <Typography>
@@ -52,7 +58,7 @@ const ClassTable = (): JSX.Element => {
             {teacher === `${firstName} ${lastName}` ? 'You' : teacher}
           </CflTableCellElement>
           <CflTableCellElement justifyContent="center">
-            <Button color="tertiary" endIcon={<CreateOutlined />}>
+            <Button color="tertiary" endIcon={<Create />}>
               Update details
             </Button>
           </CflTableCellElement>
@@ -99,7 +105,7 @@ const ExternalStudentsJoiningRequestsTable: React.FC = (): JSX.Element => {
 const ExternalStudentsJoiningRequests: React.FC = (): JSX.Element => {
   return (
     <>
-      <Typography align="center" variant="h5">
+      <Typography align="center" variant="h4">
         External requests to join your classes
       </Typography>
       <Typography>
@@ -135,7 +141,13 @@ const CreateNewClassForm: React.FC = (): JSX.Element => {
         name="className"
         placeholder="Class name"
         helperText="Enter a class name"
-        size="small"
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <GroupOutlined />
+            </InputAdornment>
+          )
+        }}
       />
       <CflTextField
         name="teacherName"
