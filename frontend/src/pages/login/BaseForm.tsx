@@ -6,9 +6,9 @@ import {
 import { FormikValues } from 'formik';
 
 import ThemedBox, { ThemedBoxProps } from '../../components/ThemedBox';
-import CflForm, { CflFormProps } from '../../components/formik/CflForm';
+import { Form, FormProps } from 'codeforlife/lib/esm/components/form';
 
-export interface BaseFormProps<Values> extends CflFormProps<Values> {
+export interface BaseFormProps<Values> extends FormProps<Values> {
   themedBoxProps: Omit<ThemedBoxProps, 'withIcons'>;
   header: string;
   subheader: string;
@@ -18,7 +18,7 @@ const BaseForm = <Values extends FormikValues = FormikValues>({
   themedBoxProps,
   header,
   subheader,
-  ...cflFormProps
+  ...formProps
 }: BaseFormProps<Values>): JSX.Element => {
   return (
     <ThemedBox withIcons {...themedBoxProps}>
@@ -29,7 +29,7 @@ const BaseForm = <Values extends FormikValues = FormikValues>({
         <Typography align='center' variant='h5'>
           {subheader}
         </Typography>
-        <CflForm {...cflFormProps} />
+        <Form {...formProps} />
       </Stack>
     </ThemedBox>
   );
