@@ -42,6 +42,7 @@ const IndependentForm: React.FC = (): JSX.Element => {
         helperText="Enter your email address"
       />
       <TextField
+        required
         name="password"
         placeholder="Password"
         helperText="Enter your password"
