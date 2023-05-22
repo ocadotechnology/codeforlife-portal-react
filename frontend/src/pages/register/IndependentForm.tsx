@@ -1,29 +1,14 @@
 import React from 'react';
-<<<<<<< HEAD
 import { Stack, Link, Button, FormHelperText } from '@mui/material';
-import { ChevronRight as ChevronRightIcon } from '@mui/icons-material';
-import { Formik, Form, FormikHelpers } from 'formik';
+import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-=======
-import {
-  Link,
-  FormHelperText
-} from '@mui/material';
 import {
   ChevronRight as ChevronRightIcon
 } from '@mui/icons-material';
->>>>>>> main
 
 import { paths } from '../../app/router';
 import BaseForm from './BaseForm';
 import DatePicker from '../../components/DatePicker';
-<<<<<<< HEAD
-import CflTextField from '../../components/formik/CflTextField';
-import CflCheckboxField from '../../components/formik/CflCheckboxField';
-import CflPasswordFields, {
-  isStrongPassword
-} from '../../components/formik/CflPasswordFields';
-=======
 import CflPasswordFields from '../../components/CflPasswordFields';
 
 import {
@@ -33,7 +18,6 @@ import {
   TextField,
   CheckboxField
 } from 'codeforlife/lib/esm/components/form';
->>>>>>> main
 
 interface IndependentFormValues {
   fullName: string;
@@ -53,7 +37,6 @@ const initialValues: IndependentFormValues = {
   repeatPassword: ''
 };
 
-<<<<<<< HEAD
 const validationSchema: { [K in keyof IndependentFormValues]: Yup.Schema } = {
   fullName: Yup.string().required('This field is required'),
   email: Yup.string()
@@ -76,8 +59,6 @@ const validationSchema: { [K in keyof IndependentFormValues]: Yup.Schema } = {
     .required('This field is required')
 };
 
-=======
->>>>>>> main
 const IndependentForm: React.FC = () => {
   const [yearsOfAge, setYearsOfAge] = React.useState<number>();
 
@@ -106,20 +87,16 @@ const IndependentForm: React.FC = () => {
         helperText="Please enter your date of birth (we do not store this information)."
         onChange={onDateOfBirthChange}
       />
-<<<<<<< HEAD
       {yearsOfAge !== undefined && (
         <Formik
-=======
-      {yearsOfAge !== undefined &&
+      {yearsOfAge !== undefined && (
         <Form
->>>>>>> main
           initialValues={initialValues}
           onSubmit={(values, { setSubmitting }) => {
             // TODO: to call backend
             setSubmitting(false);
           }}
         >
-<<<<<<< HEAD
           {(formik) => (
             <Form>
               <CflTextField
@@ -196,63 +173,68 @@ const IndependentForm: React.FC = () => {
           )}
         </Formik>
       )}
-=======
           <TextField
             required
-            name='fullName'
-            placeholder='Full name'
-            helperText='Enter your full name'
+            name="fullName"
+            placeholder="Full name"
+            helperText="Enter your full name"
           />
           <EmailField
             required
-            placeholder='Email address'
-            helperText={(yearsOfAge >= EmailApplicableAge)
-              ? 'Enter your email address'
-              : 'Please enter your parent\'s email address'
+            placeholder="Email address"
+            helperText={
+              yearsOfAge >= EmailApplicableAge
+                ? 'Enter your email address'
+                : "Please enter your parent's email address"
             }
           />
-          {yearsOfAge < EmailApplicableAge &&
+          {yearsOfAge < EmailApplicableAge && (
             <FormHelperText style={{ fontWeight: 'bold' }}>
-              We will send your parent/guardian an email to ask them to activate the account for you. Once they&apos;ve done this you&apos;ll be able to log in using your name and password.
+              We will send your parent/guardian an email to ask them to activate
+              the account for you. Once they&apos;ve done this you&apos;ll be
+              able to log in using your name and password.
             </FormHelperText>
-          }
-          {yearsOfAge >= EmailApplicableAge &&
+          )}
+          {yearsOfAge >= EmailApplicableAge && (
             <CheckboxField
               required
-              name='termsOfUse'
+              name="termsOfUse"
               formControlLabelProps={{
-                label: <>
-                  I have read and understood the &nbsp;
-                  <Link
-                    href={paths.termsOfUse}
-                    target='_blank'
-                    color='inherit'
-                    className='body'
-                  >
-                    Terms of use
-                  </Link>
-                  &nbsp;and the&nbsp;
-                  <Link
-                    href={paths.privacyNotice}
-                    target='_blank'
-                    color='inherit'
-                    className='body'
-                  >
-                    Privacy notice
-                  </Link>
-                  .
-                </>
+                label: (
+                  <>
+                    I have read and understood the &nbsp;
+                    <Link
+                      href={paths.termsOfUse}
+                      target="_blank"
+                      color="inherit"
+                      className="body"
+                    >
+                      Terms of use
+                    </Link>
+                    &nbsp;and the&nbsp;
+                    <Link
+                      href={paths.privacyNotice}
+                      target="_blank"
+                      color="inherit"
+                      className="body"
+                    >
+                      Privacy notice
+                    </Link>
+                    .
+                  </>
+                )
               }}
             />
-          }
-          {yearsOfAge >= ReceiveUpdateAge &&
+          )}
+          {yearsOfAge >= ReceiveUpdateAge && (
             <CheckboxField
-              name='receiveUpdates'
+              name="receiveUpdates"
               formControlLabelProps={{
-                label: 'Sign up to receive updates about Code for Life games and teaching resources.'
+                label:
+                  'Sign up to receive updates about Code for Life games and teaching resources.'
               }}
             />
-          }
+          )}
           <CflPasswordFields forTeacher={false} />
           <SubmitButton
             stackProps={{ alignItems: 'end' }}
@@ -262,7 +244,7 @@ const IndependentForm: React.FC = () => {
           </SubmitButton>
         </Form>
       }
->>>>>>> main
+      )}
     </BaseForm>
   );
 };

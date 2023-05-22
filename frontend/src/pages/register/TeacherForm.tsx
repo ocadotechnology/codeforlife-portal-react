@@ -1,7 +1,11 @@
 import React from 'react';
+<<<<<<< Updated upstream
 <<<<<<< HEAD
 import { Stack, Link, Button, InputAdornment } from '@mui/material';
 =======
+=======
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
 import {
   Link
 } from '@mui/material';
@@ -9,6 +13,7 @@ import {
 import {
   ChevronRight as ChevronRightIcon
 } from '@mui/icons-material';
+<<<<<<< Updated upstream
 <<<<<<< HEAD
 import { Formik, FormikHelpers, Form } from 'formik';
 import * as Yup from 'yup';
@@ -21,6 +26,12 @@ import CflPasswordFields, {
   isStrongPassword
 } from '../../components/formik/CflPasswordFields';
 =======
+=======
+=======
+import { Link } from '@mui/material';
+import { ChevronRight as ChevronRightIcon } from '@mui/icons-material';
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 
 import { paths } from '../../app/router';
 import BaseForm from './BaseForm';
@@ -164,25 +175,26 @@ const TeacherForm: React.FC = () => {
 =======
         <TextField
           required
-          name='firstName'
-          placeholder='First name'
-          helperText='Enter your first name'
+          name="firstName"
+          placeholder="First name"
+          helperText="Enter your first name"
         />
         <TextField
           required
-          name='lastName'
-          placeholder='Last name'
-          helperText='Enter your last name'
+          name="lastName"
+          placeholder="Last name"
+          helperText="Enter your last name"
         />
         <EmailField
           required
-          placeholder='Email address'
-          helperText='Enter your email address'
+          placeholder="Email address"
+          helperText="Enter your email address"
         />
         <CheckboxField
           required
-          name='termsOfUse'
+          name="termsOfUse"
           formControlLabelProps={{
+<<<<<<< Updated upstream
             label: <>
               I am over 18 years old have read and understood the&nbsp;
               <Link
@@ -205,12 +217,38 @@ const TeacherForm: React.FC = () => {
               </Link>
               .
             </>
+=======
+            label: (
+              <>
+                I am over 18 years old have read and understood the&nbsp;
+                <Link
+                  href={paths.termsOfUse}
+                  target="_blank"
+                  color="inherit"
+                  className="body"
+                >
+                  Terms of use
+                </Link>
+                &nbsp;and the&nbsp;
+                <Link
+                  href={paths.privacyNotice}
+                  target="_blank"
+                  color="inherit"
+                  className="body"
+                >
+                  Privacy notice
+                </Link>
+                .
+              </>
+            )
+>>>>>>> Stashed changes
           }}
         />
         <CheckboxField
-          name='receiveUpdates'
+          name="receiveUpdates"
           formControlLabelProps={{
-            label: 'Sign up to receive updates about Code for Life games and teaching resources.'
+            label:
+              'Sign up to receive updates about Code for Life games and teaching resources.'
           }}
         />
         <CflPasswordFields forTeacher={true} />

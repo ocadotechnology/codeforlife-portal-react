@@ -26,11 +26,18 @@ import CflTable, {
 } from '../../components/CflTable';
 import { getSchool, getTeachersData, getUser } from './dummyMethods';
 import CflTextField from '../../components/formik/CflTextField';
+<<<<<<< Updated upstream
 import CflCheckboxField from '../../components/formik/CflCheckboxField';
 import { getNames } from 'country-list';
 import { CflHorizontalForm } from '../../components/formik/CflForm';
 import CflAutocomplete from '../../components/formik/CflAutoComplete';
 import PageSection from '../../components/PageSection';
+=======
+import { getNames } from 'country-list';
+import { CflHorizontalForm } from '../../components/formik/CflForm';
+import PageSection from '../../components/PageSection';
+import { AutocompleteField } from 'codeforlife/lib/esm/components/form';
+>>>>>>> Stashed changes
 
 const InviteTeacherForm: React.FC = (): JSX.Element => {
   const theme = useTheme();
@@ -141,6 +148,17 @@ const UpdateSchoolDetailsForm: React.FC = (): JSX.Element => {
         }}
       />
       <AutocompleteField
+<<<<<<< Updated upstream
+=======
+        options={getNames()}
+        textFieldProps={{
+          name: 'schoolCountry',
+          required: true,
+          helperText: "Enter your school's country",
+          placeholder: 'Country'
+        }}
+      />
+>>>>>>> Stashed changes
       {/*
       <Autocomplete
         options={getNames()}
