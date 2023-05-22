@@ -1,7 +1,5 @@
 import React from 'react';
-import {
-  Unstable_Grid2 as Grid, useTheme
-} from '@mui/material';
+import { useTheme } from '@mui/material';
 
 import HomeEducateHeroImage from '../../images/home_educate_hero_hexagon.png';
 import BasePage from '../../pages/BasePage';
@@ -10,6 +8,7 @@ import PageSection from '../../components/PageSection';
 import Kurono from './Kurono';
 import RR from './RR';
 import Resources from './Resources';
+import TeacherSlides from './TeacherSlides';
 
 const Teachers: React.FC = () => {
   const theme = useTheme();
@@ -25,7 +24,7 @@ const Teachers: React.FC = () => {
       />
 
       <PageSection>
-        <RR />
+        <TeacherSlides />
       </PageSection>
 
       <PageSection bgcolor={theme.palette.info.main}>
