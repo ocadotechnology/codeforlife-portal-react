@@ -32,7 +32,7 @@ const MenuDrawer: React.FC<{
     },
     {
       children: 'Students',
-      href: paths.students,
+      href: paths.students._,
       color: theme.palette.secondary.main
     },
     { children: 'About us', href: paths.aboutUs },

@@ -17,9 +17,8 @@ import Forbidden from '../pages/forbidden/Forbidden';
 import PageNotFound from '../pages/pageNotFound/PageNotFound';
 import InternalServerError from '../pages/internalServerError/InternalServerError';
 import EmailVerification from '../pages/emailVerification/EmailVerification';
-import GameDetailsStudent from '../pages/gameDetails/GameDetailsStudent';
-import GameDetailsIndependent from '../pages/gameDetails/GameDetailsIndependent';
 import ResetPassword from '../pages/resetPassword/ResetPassword';
+import StudentsDashboard from '../pages/studentsDashboard/StudentsDashboard';
 
 export const paths = {
   home: '/',
@@ -35,7 +34,14 @@ export const paths = {
     independent: '/reset-password?userType=independent'
   },
   teachers: '/teachers',
-  students: '/students',
+  students: {
+    _: '/students',
+    dashboard: {
+      _: '/students/dashboard',
+      dependent: '/students/dashboard?userType=dependent',
+      independent: '/students/dashboard?userType=independent'
+    }
+  },
   register: '/register',
   emailVerification: '/register/email-verification',
   aboutUs: '/about-us',
@@ -49,10 +55,7 @@ export const paths = {
   pageNotFound: '/error/page-not-found',
   internalServerError: '/error/internal-server-error',
   rapidRouter: '/rapid-router',
-  gameDetails: {
-    students: '/play',
-    independent: '/play/independent'
-  }
+  kurono: '/kurono'
 };
 
 const router = createBrowserRouter([
@@ -69,8 +72,12 @@ const router = createBrowserRouter([
     element: <Teachers />
   },
   {
-    path: paths.students,
+    path: paths.students._,
     element: <Students />
+  },
+  {
+    path: paths.students.dashboard._,
+    element: <StudentsDashboard />
   },
   {
     path: paths.register,
@@ -119,14 +126,6 @@ const router = createBrowserRouter([
   {
     path: paths.emailVerification,
     element: <EmailVerification />
-  },
-  {
-    path: paths.gameDetails.students,
-    element: <GameDetailsStudent />
-  },
-  {
-    path: paths.gameDetails.independent,
-    element: <GameDetailsIndependent />
   },
   {
     path: paths.resetPassword._,

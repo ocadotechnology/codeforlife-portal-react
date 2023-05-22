@@ -1,5 +1,9 @@
 import React from 'react';
-import { Unstable_Grid2 as Grid, Button, Stack, Typography } from '@mui/material';
+import {
+  Button,
+  Stack,
+  Typography
+} from '@mui/material';
 import {
   ChevronRight as ChevronRightIcon
 } from '@mui/icons-material';
@@ -7,20 +11,25 @@ import { Image } from 'codeforlife/lib/esm/components';
 import RRLogoImage from '../../images/RR_logo.svg';
 import { paths } from '../../app/router';
 
-const RRProgress: React.FC<{
-  isStudent: boolean,
-}> = ({ isStudent }) => {
-  // TODO: fetch from login detail
+const RapidRouterProgress: React.FC<{
+  isDependent: boolean
+}> = ({ isDependent }) => {
+  // TODO: get this from api store.
   const completedLevels = 0;
   const topScores = 0;
   const score = 0;
   const availablePoints = 2070;
 
   return (
-    <Stack textAlign='center'>
-      <Grid xs={12} className='flex-center' marginY={2}>
-        <Image alt={'RR_logo'} src={RRLogoImage} maxWidth='200px' />
-      </Grid>
+    <Stack
+      alignItems='center'
+      textAlign='center'
+    >
+      <Image
+        alt={'RR_logo'}
+        src={RRLogoImage}
+        maxWidth='200px'
+      />
       <Typography variant='h4'>
         You have completed {completedLevels} Rapid Router levels!
       </Typography>
@@ -30,18 +39,17 @@ const RRProgress: React.FC<{
       <Typography variant='h4'>
         You have a score of {score}. There are {availablePoints} available points.
       </Typography>
-      <Grid xs={12} className='flex-center' marginY={2}>
-        {isStudent &&
-          <Button
-            endIcon={<ChevronRightIcon />}
-            href={paths.rapidRouter} // TODO: change to RR dashboard
-          >
-            Check scoreboard
-          </Button>
-        }
-      </Grid>
+      {isDependent &&
+        <Button
+          style={{ marginTop: 20 }}
+          endIcon={<ChevronRightIcon />}
+          href={paths.rapidRouter}
+        >
+          Check scoreboard
+        </Button>
+      }
     </Stack>
   );
 };
 
-export default RRProgress;
+export default RapidRouterProgress;
