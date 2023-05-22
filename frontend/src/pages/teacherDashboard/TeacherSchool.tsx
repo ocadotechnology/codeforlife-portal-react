@@ -3,7 +3,8 @@ import {
   Typography,
   Button,
   useTheme,
-  InputAdornment
+  InputAdornment,
+  Autocomplete
 } from '@mui/material';
 import DashboardBanner from './DashboardBanner';
 import DashboardHeader from './DashboardHeader';
@@ -139,15 +140,7 @@ const UpdateSchoolDetailsForm: React.FC = (): JSX.Element => {
           )
         }}
       />
-      <CflAutocomplete
-        options={getNames()}
-        defaultValue={schoolCountry}
-        cflTextFieldProps={{
-          name: 'schoolCountry',
-          placeholder: 'Country',
-          helperText: "Enter your school's country"
-        }}
-      />
+      <AutocompleteField
       {/*
       <Autocomplete
         options={getNames()}

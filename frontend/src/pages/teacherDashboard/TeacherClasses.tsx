@@ -122,9 +122,11 @@ const ExternalStudentsJoiningRequests: React.FC = (): JSX.Element => {
 };
 
 const CreateNewClassForm: React.FC = (): JSX.Element => {
+  const theme = useTheme();
   return (
     <CflHorizontalForm
       header="Create a new class"
+      subheader="When you set up a new class, a unique class access code will automatically be generated for the teacher assigned to the class."
       initialValues={CREATE_CLASS_INITIAL_VALUES}
       validationSchema={CREATE_CLASS_SCHEMA}
       onSubmit={(values, { setSubmitting }) => {
@@ -159,26 +161,12 @@ const CreateNewClassForm: React.FC = (): JSX.Element => {
       <Box>{/* Blank component to fill the grid */}</Box>
       <CflCheckboxField
         name="isStudentProgressVisibleToOthers"
+        sx={{ color: theme.palette.info.dark }}
         formControlLabelProps={{
           label: "Allow students to see their classmates' progress?"
         }}
       />
     </CflHorizontalForm>
-  );
-};
-
-const CreateNewClass: React.FC = (): JSX.Element => {
-  return (
-    <>
-      <Typography align="center" variant="h5">
-        Create a new class
-      </Typography>
-      <Typography>
-        When you set up a new class, a unique class access code will
-        automatically be generated for the teacher assigned to the class.
-      </Typography>
-      <CreateNewClassForm />
-    </>
   );
 };
 
@@ -194,7 +182,7 @@ const TeacherClasses: React.FC = (): JSX.Element => {
         <ExternalStudentsJoiningRequests />
       </PageSection>
       <PageSection bgcolor={theme.palette.info.main}>
-        <CreateNewClass />
+        <CreateNewClassForm />
       </PageSection>
     </BasePage>
   );

@@ -1,9 +1,15 @@
 import React from 'react';
+<<<<<<< HEAD
 import { Stack, Link, Button, InputAdornment } from '@mui/material';
+=======
 import {
-  EmailOutlined as EmailOutlinedIcon,
+  Link
+} from '@mui/material';
+>>>>>>> main
+import {
   ChevronRight as ChevronRightIcon
 } from '@mui/icons-material';
+<<<<<<< HEAD
 import { Formik, FormikHelpers, Form } from 'formik';
 import * as Yup from 'yup';
 
@@ -14,6 +20,20 @@ import CflCheckboxField from '../../components/formik/CflCheckboxField';
 import CflPasswordFields, {
   isStrongPassword
 } from '../../components/formik/CflPasswordFields';
+=======
+
+import { paths } from '../../app/router';
+import BaseForm from './BaseForm';
+import CflPasswordFields from '../../components/CflPasswordFields';
+
+import {
+  Form,
+  SubmitButton,
+  EmailField,
+  CheckboxField,
+  TextField
+} from 'codeforlife/lib/esm/components/form';
+>>>>>>> main
 
 interface TeacherFormValues {
   firstName: string;
@@ -35,6 +55,7 @@ const initialValues: TeacherFormValues = {
   repeatPassword: ''
 };
 
+<<<<<<< HEAD
 const validationSchema: { [K in keyof TeacherFormValues]: Yup.Schema } = {
   firstName: Yup.string().required('This field is required'),
   lastName: Yup.string().required('This field is required'),
@@ -56,6 +77,8 @@ const validationSchema: { [K in keyof TeacherFormValues]: Yup.Schema } = {
     .required('This field is required')
 };
 
+=======
+>>>>>>> main
 const TeacherForm: React.FC = () => {
   return (
     <BaseForm
@@ -65,17 +88,14 @@ const TeacherForm: React.FC = () => {
       bgcolor="#ee0857" // TODO: use theme.palette
       color="white"
     >
-      <Formik
+      <Form
         initialValues={initialValues}
-        validationSchema={Yup.object(validationSchema)}
-        onSubmit={(
-          values: TeacherFormValues,
-          { setSubmitting }: FormikHelpers<TeacherFormValues>
-        ) => {
+        onSubmit={(values, { setSubmitting }) => {
           // TODO: to call backend
           setSubmitting(false);
         }}
       >
+<<<<<<< HEAD
         {(formik) => (
           <Form>
             <CflTextField
@@ -141,13 +161,66 @@ const TeacherForm: React.FC = () => {
                 type="submit"
                 endIcon={<ChevronRightIcon />}
                 disabled={!formik.dirty}
+=======
+        <TextField
+          required
+          name='firstName'
+          placeholder='First name'
+          helperText='Enter your first name'
+        />
+        <TextField
+          required
+          name='lastName'
+          placeholder='Last name'
+          helperText='Enter your last name'
+        />
+        <EmailField
+          required
+          placeholder='Email address'
+          helperText='Enter your email address'
+        />
+        <CheckboxField
+          required
+          name='termsOfUse'
+          formControlLabelProps={{
+            label: <>
+              I am over 18 years old have read and understood the&nbsp;
+              <Link
+                href={paths.termsOfUse}
+                target='_blank'
+                color='inherit'
+                className='body'
+>>>>>>> main
               >
-                Register
-              </Button>
-            </Stack>
-          </Form>
-        )}
-      </Formik>
+                Terms of use
+              </Link>
+              &nbsp;and the&nbsp;
+              <Link
+                href={paths.privacyNotice}
+                target='_blank'
+                color='inherit'
+                className='body'
+              >
+                Privacy notice
+              </Link>
+              .
+            </>
+          }}
+        />
+        <CheckboxField
+          name='receiveUpdates'
+          formControlLabelProps={{
+            label: 'Sign up to receive updates about Code for Life games and teaching resources.'
+          }}
+        />
+        <CflPasswordFields forTeacher={true} />
+        <SubmitButton
+          stackProps={{ alignItems: 'end' }}
+          endIcon={<ChevronRightIcon />}
+        >
+          Register
+        </SubmitButton>
+      </Form>
     </BaseForm>
   );
 };
