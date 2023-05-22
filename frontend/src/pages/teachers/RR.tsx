@@ -14,9 +14,9 @@ import { YouTubeVideo } from 'codeforlife/lib/esm/components';
 
 const RR: React.FC = () => {
   return (
-    <Grid container>
+    <Grid container spacing={3}>
       <Grid xs={12} md={6} className='flex-center'>
-        <YouTubeVideo src={process.env.REACT_APP_KURONO_YOUTUBE_VIDEO_SRC as string} />
+        <YouTubeVideo src={process.env.REACT_APP_RR_FOR_TEACHER_YOUTUBE_VIDEO_SRC as string} />
       </Grid>
       <Grid xs={12} md={6}>
         <Stack height='100%'>
@@ -30,7 +30,22 @@ const RR: React.FC = () => {
             Built on &apos;Blockly&apos;, an easy-to-use visual programming language, Rapid Router enables teachers to monitor and manage individual pupil progress and identify where more support is required.
           </Typography>
           <Typography>
-            See how the Rapid Router fits into <Link href={'/'} color="inherit" underline="always" target="_blank">English national curriculum — the computer science strand</Link>  and <Link href={'/'} color="inherit" underline="always" target="_blank">the Scottish curriculum.</Link>
+            See how the Rapid Router fits into&nbsp;
+            <Link
+              href={process.env.REACT_APP_INTRO_TO_CODING_ENGLAND}
+              color="inherit"
+              underline="always"
+              target="_blank">
+              English national curriculum — the computer science strand
+            </Link>
+            &nbsp;and&nbsp;
+            <Link
+              href={process.env.REACT_APP_INTRO_TO_CODING_SCOTLAND}
+              color="inherit"
+              underline="always"
+              target="_blank">
+              the Scottish curriculum.
+            </Link>
           </Typography>
           <Button
             endIcon={<ChevronRightIcon />}

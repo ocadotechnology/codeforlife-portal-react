@@ -13,7 +13,7 @@ import { YouTubeVideo } from 'codeforlife/lib/esm/components';
 
 const Resources: React.FC = () => {
   return (
-    <Grid container>
+    <Grid container spacing={3}>
       <Grid xs={12} md={6}>
         <Stack height='100%'>
           <Typography variant='h5'>
@@ -37,7 +37,7 @@ const Resources: React.FC = () => {
         </Stack>
       </Grid>
       <Grid xs={12} md={6} className='flex-center'>
-        <YouTubeVideo src={process.env.REACT_APP_KURONO_YOUTUBE_VIDEO_SRC as string} />
+        <YouTubeVideo src={process.env.REACT_APP_TEACHER_RESOURCES_YOUTUBE_VIDEO_SRC as string} />
       </Grid>
     </Grid>
   );
