@@ -3,7 +3,8 @@ import {
   Unstable_Grid2 as Grid,
   Typography
 } from '@mui/material';
-import TableOfContents from 'components/TableOfContents';
+
+import TableOfContents from '../../../components/TableOfContents';
 import Introduction from './Introduction';
 import RegistrationAndMembership from './RegistrationAndMembership';
 import Misuse from './Misuse';
