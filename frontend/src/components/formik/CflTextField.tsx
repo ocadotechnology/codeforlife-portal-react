@@ -8,7 +8,6 @@ import {
 } from '@mui/material';
 import { ErrorOutline as ErrorOutlineIcon } from '@mui/icons-material';
 
-import CflTooltip from '../CflTooltip';
 import CflField, { CflFieldProps } from './CflField';
 
 export type CflTextFieldProps = Omit<TextFieldProps, 'name'> &
