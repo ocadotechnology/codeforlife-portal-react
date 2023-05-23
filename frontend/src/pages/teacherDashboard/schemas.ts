@@ -1,6 +1,5 @@
 import { boolean, object, ref, string } from 'yup';
 import { getNames } from 'country-list';
-import { get } from 'http';
 
 export const SCHOOL_DETAILS_UPDATE_SCHEMA = object({
   schoolName: string().required('School name is required'),

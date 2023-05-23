@@ -56,9 +56,6 @@ const YourAccountForm: React.FC = () => {
       onSubmit={(values) => {
         alert(JSON.stringify(values, null, 2));
       }}
-      header="Your account"
-      headerAlignment="center"
-      subheader="You can update you account details below."
       submitButton={<Button variant="contained">Save changes</Button>}
     >
       <TextField
@@ -177,6 +174,12 @@ const TeacherAccount: React.FC = (): JSX.Element => {
     <BasePage>
       <DashboardBanner />
       <DashboardHeader page="Your account" />
+      <PageSection>
+        <Typography align="center" variant="h4">
+          Your account
+        </Typography>
+        <Typography>You can update your account details below.</Typography>
+      </PageSection>
       <PageSection>
         <YourAccountForm />
       </PageSection>

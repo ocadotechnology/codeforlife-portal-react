@@ -5,26 +5,23 @@ import {
   StackProps,
   Typography,
   GridProps,
-  ButtonProps,
-  TypographyProps
+  ButtonProps
 } from '@mui/material';
 import { Formik, FormikValues, FormikConfig, FormikProps, Form } from 'formik';
 
 export interface CflHorizontalFormProps<Values> extends FormikConfig<Values> {
-  header: string;
+  header?: string;
   subheader?: string;
   subheaderBold?: string;
   children?: JSX.Element[];
   gridProps?: GridProps;
   submitButton: React.ReactElement<ButtonProps>;
-  headerAlignment?: TypographyProps['align'];
 }
 
 export const CflHorizontalForm = <Values extends FormikValues = FormikValues>({
   children,
   gridProps = { container: true, columnSpacing: 3 },
   header,
-  headerAlignment = 'left',
   subheader,
   subheaderBold,
   submitButton,
@@ -34,11 +31,11 @@ export const CflHorizontalForm = <Values extends FormikValues = FormikValues>({
     <Formik {...formikProps}>
       {(formik) => (
         <React.Fragment>
-          <Typography align={headerAlignment} variant="h4" sx={{ mb: 2 }}>
-            {header}
-          </Typography>
-          <Typography>{subheader}</Typography>
-          <Typography fontWeight="bold">{subheaderBold}</Typography>
+          {header && <Typography sx={{ mb: 2 }}>{header}</Typography>}
+          {subheader && <Typography>{subheader}</Typography>}
+          {subheaderBold && (
+            <Typography fontWeight="bold">{subheaderBold}</Typography>
+          )}
           <Form>
             <Grid {...gridProps}>
               {React.Children.map(children, (child, index) => {
