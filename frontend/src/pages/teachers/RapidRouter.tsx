@@ -1,18 +1,17 @@
 import React from 'react';
 import {
   Button,
-
   Link,
-
   Typography
 } from '@mui/material';
 import {
   ChevronRight as ChevronRightIcon
 } from '@mui/icons-material';
+
 import { paths } from '../../app/router';
 import TeacherSection from './TeacherSection';
 
-const RR: React.FC = () => {
+const RapidRouter: React.FC = () => {
   return (
     <TeacherSection
       videoSource={process.env.REACT_APP_RR_FOR_TEACHER_YOUTUBE_VIDEO_SRC as string}
@@ -33,7 +32,8 @@ const RR: React.FC = () => {
           href={process.env.REACT_APP_INTRO_TO_CODING_ENGLAND}
           color="inherit"
           underline="always"
-          target="_blank">
+          target="_blank"
+        >
           English national curriculum — the computer science strand
         </Link>
         &nbsp;and&nbsp;
@@ -41,7 +41,8 @@ const RR: React.FC = () => {
           href={process.env.REACT_APP_INTRO_TO_CODING_SCOTLAND}
           color="inherit"
           underline="always"
-          target="_blank">
+          target="_blank"
+        >
           the Scottish curriculum.
         </Link>
       </Typography>
@@ -59,4 +60,4 @@ const RR: React.FC = () => {
   );
 };
 
-export default RR;
+export default RapidRouter;

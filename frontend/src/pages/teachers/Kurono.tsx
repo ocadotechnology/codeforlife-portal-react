@@ -7,6 +7,7 @@ import {
 import {
   ChevronRight as ChevronRightIcon
 } from '@mui/icons-material';
+
 import { paths } from '../../app/router';
 import TeacherSection from './TeacherSection';
 
@@ -26,7 +27,8 @@ const Kurono: React.FC = () => {
           href={process.env.REACT_APP_KURONO_AND_CURRICULUM}
           color="inherit"
           underline="always"
-          target="_blank">
+          target="_blank"
+        >
           See how Kurono relates to Key Stages 3 & 4 of the computer science strand here.
         </Link>
       </Typography>

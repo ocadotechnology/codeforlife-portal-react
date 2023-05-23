@@ -6,7 +6,7 @@ import BasePage from '../../pages/BasePage';
 import PageBanner from '../../components/PageBanner';
 import PageSection from '../../components/PageSection';
 import Kurono from './Kurono';
-import RR from './RR';
+import RapidRouter from './RapidRouter';
 import Resources from './Resources';
 import TeacherSlides from './TeacherSlides';
 
@@ -32,7 +32,7 @@ const Teachers: React.FC = () => {
       </PageSection>
 
       <PageSection>
-        <RR />
+        <RapidRouter />
       </PageSection>
 
       <PageSection bgcolor={theme.palette.info.main}>

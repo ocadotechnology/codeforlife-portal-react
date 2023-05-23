@@ -6,6 +6,7 @@ import {
 import {
   ChevronRight as ChevronRightIcon
 } from '@mui/icons-material';
+
 import { paths } from '../../app/router';
 import TeacherSection from './TeacherSection';
 
