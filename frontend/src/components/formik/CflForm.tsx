@@ -34,7 +34,7 @@ export const CflHorizontalForm = <Values extends FormikValues = FormikValues>({
     <Formik {...formikProps}>
       {(formik) => (
         <React.Fragment>
-          <Typography align={headerAlignment} variant="h5" sx={{ mb: 2 }}>
+          <Typography align={headerAlignment} variant="h4" sx={{ mb: 2 }}>
             {header}
           </Typography>
           <Typography>{subheader}</Typography>
