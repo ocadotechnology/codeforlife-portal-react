@@ -7,7 +7,7 @@ import {
 
 const Introduction: React.FC = () => {
   return (
-    <Grid container spacing={3}>
+    <Grid container columnSpacing={3}>
       <Grid xs={12} md={6}>
         <Typography>
           Ocado Innovation Limited (as “Ocado Technology”), the division that powers Ocado.com, the world’s largest online-only grocery retailer, has launched Code for Life. Code for Life is a nationwide corporate social responsibility initiative to help support primary and secondary school teachers deliver the new computer science curriculum. The aim of the initiative is to equip every child in the country with the “coding survival skills” that will enable them to flourish in an increasingly digital world.
@@ -22,7 +22,7 @@ const Introduction: React.FC = () => {
         </Typography>
       </Grid>
       <Grid xs={12}>
-        <Divider sx={{ my: 1 }} />
+        <Divider style={{ marginTop: 2, marginBottom: 18 }} />
       </Grid>
       <Grid xs={12} md={6}>
         <Typography fontWeight='bold'>
