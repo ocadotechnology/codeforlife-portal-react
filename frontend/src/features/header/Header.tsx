@@ -47,7 +47,7 @@ const Header: React.FC = () => {
       <Link sx={{ display, mr }} href={paths.teachers}>
         Teachers
       </Link>
-      <Link sx={{ display, mr }} href={paths.students} color='secondary'>
+      <Link sx={{ display, mr }} href={paths.students._} color='secondary'>
         Students
       </Link>
       <Button sx={{ display, mr, ml: 'auto' }} href={paths.register}>
