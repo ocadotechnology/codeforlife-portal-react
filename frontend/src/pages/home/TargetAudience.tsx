@@ -29,7 +29,7 @@ const TargetAudience: React.FC = () => {
   ];
   const buttons: ButtonProps[] = [
     { children: 'Learn more', href: paths.teachers },
-    { children: 'Get started', href: paths.students }
+    { children: 'Get started', href: paths.students._ }
   ];
 
   return (

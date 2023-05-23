@@ -2,6 +2,7 @@ import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 
 import Home from '../pages/home/Home';
+import Login from '../pages/login/Login';
 import Teachers from '../pages/teachers/Teachers';
 import Students from '../pages/students/Students';
 import Register from '../pages/register/Register';
@@ -16,11 +17,31 @@ import Forbidden from '../pages/forbidden/Forbidden';
 import PageNotFound from '../pages/pageNotFound/PageNotFound';
 import InternalServerError from '../pages/internalServerError/InternalServerError';
 import EmailVerification from '../pages/emailVerification/EmailVerification';
+import ResetPassword from '../pages/resetPassword/ResetPassword';
+import StudentsDashboard from '../pages/studentsDashboard/StudentsDashboard';
 
 export const paths = {
   home: '/',
+  login: {
+    _: '/login',
+    teacher: '/login?userType=teacher',
+    student: '/login?userType=student',
+    independent: '/login?userType=independent'
+  },
+  resetPassword: {
+    _: '/reset-password',
+    teacher: '/reset-password?userType=teacher',
+    independent: '/reset-password?userType=independent'
+  },
   teachers: '/teachers',
-  students: '/students',
+  students: {
+    _: '/students',
+    dashboard: {
+      _: '/students/dashboard',
+      dependent: '/students/dashboard?userType=dependent',
+      independent: '/students/dashboard?userType=independent'
+    }
+  },
   register: '/register',
   emailVerification: '/register/email-verification',
   aboutUs: '/about-us',
@@ -33,7 +54,8 @@ export const paths = {
   forbidden: '/error/forbidden',
   pageNotFound: '/error/page-not-found',
   internalServerError: '/error/internal-server-error',
-  rapidRouter: '/rapid-router'
+  rapidRouter: '/rapid-router',
+  kurono: '/kurono'
 };
 
 const router = createBrowserRouter([
@@ -42,12 +64,20 @@ const router = createBrowserRouter([
     element: <Home />
   },
   {
+    path: paths.login._,
+    element: <Login />
+  },
+  {
     path: paths.teachers,
     element: <Teachers />
   },
   {
-    path: paths.students,
+    path: paths.students._,
     element: <Students />
+  },
+  {
+    path: paths.students.dashboard._,
+    element: <StudentsDashboard />
   },
   {
     path: paths.register,
@@ -96,6 +126,10 @@ const router = createBrowserRouter([
   {
     path: paths.emailVerification,
     element: <EmailVerification />
+  },
+  {
+    path: paths.resetPassword._,
+    element: <ResetPassword />
   }
 ]);
 
