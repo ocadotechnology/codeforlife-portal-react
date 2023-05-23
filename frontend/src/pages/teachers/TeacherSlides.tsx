@@ -1,8 +1,8 @@
 import React from 'react';
 import {
   Unstable_Grid2 as Grid,
-  Paper,
-  Typography
+  Typography,
+  useTheme
 } from '@mui/material';
 import Carousel from 'react-material-ui-carousel';
 import { Image, ImageProps } from 'codeforlife/lib/esm/components';
@@ -16,18 +16,23 @@ interface ItemProps {
   description: string
 };
 
+const SlideHeight = '500px';
+const ImageHeight = '400px';
+
 function Item(props: ItemProps): any {
+  const theme = useTheme();
+
   return (
-    <Paper>
-      <Grid container spacing={3}>
-        <Grid xs={6}>
-          <Image src={props.img.src} alt={props.img.alt} maxWidth='500px' />
-        </Grid>
-        <Grid xs={6}>
-          <Typography>{props.description}</Typography>
+    <Grid container margin={0} spacing={3} bgcolor={theme.palette.info.main} className='flex-center' height={SlideHeight}>
+      <Grid xs={6} padding={0}>
+        <Grid bgcolor='White' margin={3} className='flex-center' height={ImageHeight}>
+          <Image src={props.img.src} alt={props.img.alt} maxWidth={ImageHeight} />
         </Grid>
       </Grid>
-    </Paper>
+      <Grid xs={6} padding={0} className='flex-center'>
+        <Typography variant='h5' margin={3}>{props.description}</Typography>
+      </Grid>
+    </Grid>
   );
 }
 
@@ -57,7 +62,7 @@ const TeacherSlides: React.FC = () => {
   ];
 
   return (
-    <Carousel>
+    <Carousel height={SlideHeight}>
       {
         items.map((item, i) => <Item key={i} img={item.image} description={item.description} />)
       }
