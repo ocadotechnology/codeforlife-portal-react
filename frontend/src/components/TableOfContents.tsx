@@ -9,7 +9,8 @@ import {
 } from '@mui/material';
 
 export interface TableOfContentsProps {
-  contents: Array<{ header: string, element: React.ReactElement }>
+  description?: React.ReactNode;
+  contents: Array<{ header: string, element: React.ReactElement }>;
 }
 
 export const ids = {
@@ -17,7 +18,10 @@ export const ids = {
   rightLinkStack: 'right-link-stack'
 };
 
-const TableOfContents: React.FC<TableOfContentsProps> = ({ contents }) => {
+const TableOfContents: React.FC<TableOfContentsProps> = ({
+  description,
+  contents
+}) => {
   const headerRefs = contents.map(() => React.useRef<HTMLSpanElement>(null));
   const halfLength = Math.ceil(contents.length / 2);
 
@@ -55,6 +59,11 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ contents }) => {
 
   return (
     <Grid container spacing={0}>
+      {description !== undefined &&
+        <Grid xs={12} mb={5}>
+          {description}
+        </Grid>
+      }
       <Grid container xs={12} spacing={2}>
         <Grid id={ids.leftLinkStack} xs={12} sm={6}>
           {generateLinkStack(ids.leftLinkStack, 0, halfLength)}

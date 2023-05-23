@@ -4,12 +4,12 @@ import {
   Typography
 } from '@mui/material';
 
+import TableOfContents from '../../../components/TableOfContents';
 import Misuse from './Misuse';
 import OtherLimitsOfUse from './OtherLimitsOfUse';
 import Alerting from './Alerting';
 import IP from './IP';
 import OurResponsibilities from './OurResponsibilities';
-import TableOfContentsChildren from './TableOfContentsChildren';
 import ChildrenIntro from './ChildrenIntro';
 
 const ForChildren: React.FC = () => {
@@ -22,29 +22,31 @@ const ForChildren: React.FC = () => {
       >
         Terms of Use
       </Typography>
-      <ChildrenIntro />
-      <TableOfContentsChildren contents={[
-        {
-          header: 'Misuse of Code for Life site',
-          element: <Misuse />
-        },
-        {
-          header: 'Other limits of use',
-          element: <OtherLimitsOfUse />
-        },
-        {
-          header: 'Alerting Code for Life',
-          element: <Alerting />
-        },
-        {
-          header: 'Intellectual Property',
-          element: <IP />
-        },
-        {
-          header: 'Our Responsibilities',
-          element: <OurResponsibilities />
-        }
-      ]} />
+      <TableOfContents
+        description={<ChildrenIntro />}
+        contents={[
+          {
+            header: 'Misuse of Code for Life site',
+            element: <Misuse />
+          },
+          {
+            header: 'Other limits of use',
+            element: <OtherLimitsOfUse />
+          },
+          {
+            header: 'Alerting Code for Life',
+            element: <Alerting />
+          },
+          {
+            header: 'Intellectual Property',
+            element: <IP />
+          },
+          {
+            header: 'Our Responsibilities',
+            element: <OurResponsibilities />
+          }
+        ]}
+      />
     </Stack>
   );
 };
