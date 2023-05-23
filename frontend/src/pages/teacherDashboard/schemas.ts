@@ -1,10 +1,15 @@
 import { boolean, object, ref, string } from 'yup';
 import { getNames } from 'country-list';
+import { get } from 'http';
 
 export const SCHOOL_DETAILS_UPDATE_SCHEMA = object({
   schoolName: string().required('School name is required'),
   schoolPostcode: string().required('School postcode is required'),
-  schoolCountry: string().required('School country is required').test('is-country', 'Please select a country', (value) => value in getNames())
+  schoolCountry: string()
+    .required('School country is required')
+    .test('is-country', 'Country is invalid', (value) =>
+      getNames().includes(value)
+    )
 });
 
 export const INVITE_TEACHER_SCHEMA = object({
@@ -20,7 +25,10 @@ export const UPDATE_TEACHER_ACCOUNT_SCHEMA = object({
   newEmailAddress: string().email('Email is invalid'),
   currentPassword: string().required('Current password is required'),
   newPassword: string(),
-  confirmPassword: string().oneOf([ref('newPassword'), ''], 'Passwords must match')
+  confirmPassword: string().oneOf(
+    [ref('newPassword'), ''],
+    'Passwords must match'
+  )
 });
 
 export const DELETE_ACCOUNT_SCHEMA = object({

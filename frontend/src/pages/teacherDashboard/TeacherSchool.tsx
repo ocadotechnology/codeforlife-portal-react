@@ -3,8 +3,7 @@ import {
   Typography,
   Button,
   useTheme,
-  InputAdornment,
-  Autocomplete
+  InputAdornment
 } from '@mui/material';
 import DashboardBanner from './DashboardBanner';
 import DashboardHeader from './DashboardHeader';
@@ -25,11 +24,14 @@ import CflTable, {
   CflTableCellElement
 } from '../../components/CflTable';
 import { getSchool, getTeachersData, getUser } from './dummyMethods';
-import CflTextField from '../../components/formik/CflTextField';
+import {
+  TextField,
+  CheckboxField,
+  AutocompleteField
+} from 'codeforlife/lib/esm/components/form';
 import { getNames } from 'country-list';
 import { CflHorizontalForm } from '../../components/formik/CflForm';
 import PageSection from '../../components/PageSection';
-import { AutocompleteField } from 'codeforlife/lib/esm/components/form';
 
 const InviteTeacherForm: React.FC = (): JSX.Element => {
   const theme = useTheme();
@@ -47,7 +49,7 @@ const InviteTeacherForm: React.FC = (): JSX.Element => {
         </Button>
       }
     >
-      <CflTextField
+      <TextField
         placeholder="First name of teacher"
         helperText="Enter first name of teacher"
         name="teacherFirstName"
@@ -59,7 +61,7 @@ const InviteTeacherForm: React.FC = (): JSX.Element => {
           )
         }}
       />
-      <CflTextField
+      <TextField
         placeholder="Teacher's last name"
         helperText="Enter the teacher's last name"
         name="teacherLastName"
@@ -71,7 +73,7 @@ const InviteTeacherForm: React.FC = (): JSX.Element => {
           )
         }}
       />
-      <CflTextField
+      <TextField
         placeholder="Teacher's email"
         helperText="Enter the teacher's email"
         name="teacherEmail"
@@ -83,9 +85,12 @@ const InviteTeacherForm: React.FC = (): JSX.Element => {
           )
         }}
       />
-      <CflCheckboxField
+      <CheckboxField
         name="isAdmin"
         sx={{ color: theme.palette.info.dark }}
+        stackProps={{
+          justifyContent: 'flex-start'
+        }}
         formControlLabelProps={{
           label: 'Make an administrator of the school'
         }}
@@ -115,7 +120,7 @@ const UpdateSchoolDetailsForm: React.FC = (): JSX.Element => {
         </Button>
       }
     >
-      <CflTextField
+      <TextField
         placeholder="Name of school or club"
         helperText="Enter your school's name"
         name="schoolName"
@@ -127,7 +132,7 @@ const UpdateSchoolDetailsForm: React.FC = (): JSX.Element => {
           )
         }}
       />
-      <CflTextField
+      <TextField
         placeholder="Postcode / Zipcode"
         helperText="Enter your school's postcode"
         name="schoolPostcode"
@@ -143,7 +148,6 @@ const UpdateSchoolDetailsForm: React.FC = (): JSX.Element => {
         options={getNames()}
         textFieldProps={{
           name: 'schoolCountry',
-          required: true,
           helperText: "Enter your school's country",
           placeholder: 'Country'
         }}
@@ -182,7 +186,7 @@ const TeachersTableActions: React.FC<{
 };
 
 const TeachersTable: React.FC = (): JSX.Element => {
-  const { firstName, lastName, email } = getUser();
+  const { email } = getUser();
   const teachersData = getTeachersData();
 
   return (
@@ -229,7 +233,7 @@ const TeacherSchool: React.FC = (): JSX.Element => {
       <DashboardHeader page="Your school" />
       <PageSection>
         <Typography align="center" variant="h4">
-          Your school: {schoolName}: {accessCode}
+          Your school: {schoolName} ({accessCode})
         </Typography>
         <Typography align="left">
           As an administrator of your school or club, you can select other

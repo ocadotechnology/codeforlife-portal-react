@@ -21,6 +21,7 @@ import TeacherClasses from '../pages/teacherDashboard/TeacherClasses';
 import TeacherAccount from '../pages/teacherDashboard/TeacherAccount';
 import EmailVerification from '../pages/emailVerification/EmailVerification';
 import ResetPassword from '../pages/resetPassword/ResetPassword';
+import StudentsDashboard from '../pages/studentsDashboard/StudentsDashboard';
 
 export const paths = {
   home: '/',
@@ -36,7 +37,14 @@ export const paths = {
     independent: '/reset-password?userType=independent'
   },
   teachers: '/teachers',
-  students: '/students',
+  students: {
+    _: '/students',
+    dashboard: {
+      _: '/students/dashboard',
+      dependent: '/students/dashboard?userType=dependent',
+      independent: '/students/dashboard?userType=independent'
+    }
+  },
   register: '/register',
   emailVerification: '/register/email-verification',
   aboutUs: '/about-us',
@@ -52,7 +60,8 @@ export const paths = {
   rapidRouter: '/rapid-router',
   teacherSchool: '/teacher/school',
   teacherClasses: '/teacher/classes',
-  teacherAccount: '/teacher/account'
+  teacherAccount: '/teacher/account',
+  kurono: '/kurono'
 };
 
 const router = createBrowserRouter([
@@ -69,8 +78,12 @@ const router = createBrowserRouter([
     element: <Teachers />
   },
   {
-    path: paths.students,
+    path: paths.students._,
     element: <Students />
+  },
+  {
+    path: paths.students.dashboard._,
+    element: <StudentsDashboard />
   },
   {
     path: paths.register,

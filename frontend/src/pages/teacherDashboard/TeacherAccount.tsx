@@ -24,8 +24,7 @@ import {
   SecurityOutlined
 } from '@mui/icons-material';
 import { getUser } from './dummyMethods';
-import CflTextField from '../../components/formik/CflTextField';
-import CflCheckboxField from '../../components/formik/CflCheckboxField';
+import { TextField, CheckboxField } from 'codeforlife/lib/esm/components/form';
 import { CflHorizontalForm } from '../../components/formik/CflForm';
 import PageSection from '../../components/PageSection';
 
@@ -62,17 +61,17 @@ const YourAccountForm: React.FC = () => {
       subheader="You can update you account details below."
       submitButton={<Button variant="contained">Save changes</Button>}
     >
-      <CflTextField
+      <TextField
         name="firstName"
         helperText="Enter your first name"
         placeholder="First name"
       />
-      <CflTextField
+      <TextField
         placeholder="Last name"
         helperText="Enter your last name"
         name="lastName"
       />
-      <CflTextField
+      <TextField
         placeholder="New email address (optional)"
         helperText="Enter your new email address (optional)"
         name="newEmail"
@@ -84,7 +83,7 @@ const YourAccountForm: React.FC = () => {
           )
         }}
       />
-      <CflTextField
+      <TextField
         placeholder="New password (optional)"
         helperText="Enter your new password (optional)"
         name="newPassword"
@@ -97,13 +96,13 @@ const YourAccountForm: React.FC = () => {
           )
         }}
       />
-      <CflTextField
+      <TextField
         placeholder="Confirm new password (optional)"
         helperText="Confirm your new password (optional)"
         name="confirmPassword"
         type="password"
       />
-      <CflTextField
+      <TextField
         placeholder="Current password"
         helperText="Enter your current password"
         name="currentPassword"
@@ -144,7 +143,7 @@ const DeleteAccountForm: React.FC = (): JSX.Element => {
         </Button>
       }
     >
-      <CflTextField
+      <TextField
         name="currentPassword"
         label="Current password"
         helperText="Enter your current password"
@@ -157,9 +156,12 @@ const DeleteAccountForm: React.FC = (): JSX.Element => {
           )
         }}
       />
-      <CflCheckboxField
+      <CheckboxField
         name="removeFromNewsletter"
         sx={{ color: theme.palette.info.dark }}
+        stackProps={{
+          justifyContent: 'flex-start'
+        }}
         formControlLabelProps={{
           label:
             'Please remove me from the newsletter and marketing emails too.'

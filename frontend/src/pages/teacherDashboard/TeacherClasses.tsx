@@ -17,7 +17,11 @@ import { Add, Create, DoNotDisturb, GroupOutlined } from '@mui/icons-material';
 import { getClassesData, getTeachersData, getUser } from './dummyMethods';
 import { CREATE_CLASS_INITIAL_VALUES } from './constants';
 import { CREATE_CLASS_SCHEMA } from './schemas';
-import CflTextField from '../../components/formik/CflTextField';
+import {
+  TextField,
+  CheckboxField,
+  AutocompleteField
+} from 'codeforlife/lib/esm/components/form';
 import { CflHorizontalForm } from '../../components/formik/CflForm';
 import CopyToClipboardIcon from '../../components/CopyToClipboardIcon';
 import PageSection from '../../components/PageSection';
@@ -122,6 +126,7 @@ const ExternalStudentsJoiningRequests: React.FC = (): JSX.Element => {
 
 const CreateNewClassForm: React.FC = (): JSX.Element => {
   const theme = useTheme();
+  const teachersData = getTeachersData();
   return (
     <CflHorizontalForm
       header="Create a new class"
@@ -138,7 +143,7 @@ const CreateNewClassForm: React.FC = (): JSX.Element => {
         </Button>
       }
     >
-      <CflTextField
+      <TextField
         name="className"
         placeholder="Class name"
         helperText="Enter a class name"
@@ -150,16 +155,20 @@ const CreateNewClassForm: React.FC = (): JSX.Element => {
           )
         }}
       />
-      <CflTextField
-        name="teacherName"
-        placeholder="Teacher's name"
-        helperText="Enter the teacher's name"
-        size="small"
+      <AutocompleteField
+        options={teachersData.map(({ teacherName }) => teacherName)}
+        textFieldProps={{
+          name: 'teacherName',
+          placeholder: "Teacher's name",
+          helperText: 'Select a teacher'
+        }}
       />
-
       <Box>{/* Blank component to fill the grid */}</Box>
-      <CflCheckboxField
+      <CheckboxField
         name="isStudentProgressVisibleToOthers"
+        stackProps={{
+          justifyContent: 'flex-start'
+        }}
         sx={{ color: theme.palette.info.dark }}
         formControlLabelProps={{
           label: "Allow students to see their classmates' progress?"
