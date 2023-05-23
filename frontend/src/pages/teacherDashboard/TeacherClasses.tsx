@@ -19,8 +19,7 @@ import { CREATE_CLASS_INITIAL_VALUES } from './constants';
 import { CREATE_CLASS_SCHEMA } from './schemas';
 import CflTextField from '../../components/formik/CflTextField';
 import { CflHorizontalForm } from '../../components/formik/CflForm';
-import CflCheckboxField from '../../components/formik/CflCheckboxField';
-import CopyToClipboardIcon from '../../components/formik/CopyToClipboardIcon';
+import CopyToClipboardIcon from '../../components/CopyToClipboardIcon';
 import PageSection from '../../components/PageSection';
 
 const YourClasses: React.FC = (): JSX.Element => {

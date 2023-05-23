@@ -1,5 +1,5 @@
 import { ContentCopy } from '@mui/icons-material';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { styled } from '@mui/material/styles';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { Tooltip } from '@mui/material';
