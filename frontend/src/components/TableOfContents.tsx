@@ -32,7 +32,7 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ contents }) => {
     sliceEnd: number
   ): React.ReactElement {
     return (
-      <Stack id={stackId}>
+      <Stack id={stackId} gap={2}>
         {contents.slice(sliceStart, sliceEnd).map((content, index) => {
           index += sliceStart;
           return (
@@ -55,20 +55,20 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ contents }) => {
 
   return (
     <Grid container spacing={0}>
-      <Grid id={ids.leftLinkStack} xs={12} sm={6}>
-        {generateLinkStack(ids.leftLinkStack, 0, halfLength)}
-      </Grid>
-      <Grid id={ids.rightLinkStack} xs={12} sm={6}>
-        {generateLinkStack(ids.rightLinkStack, halfLength, contents.length)}
+      <Grid container xs={12} spacing={2}>
+        <Grid id={ids.leftLinkStack} xs={12} sm={6}>
+          {generateLinkStack(ids.leftLinkStack, 0, halfLength)}
+        </Grid>
+        <Grid id={ids.rightLinkStack} xs={12} sm={6}>
+          {generateLinkStack(ids.rightLinkStack, halfLength, contents.length)}
+        </Grid>
       </Grid>
       {contents.map((content, index) => (
-        <Grid key={index} xs={12}>
+        <Grid key={index} xs={12} mt={index === 0 ? 2 : 0}>
           <Divider sx={{ my: 2 }} />
           <Typography
             ref={headerRefs[index]}
-            variant='h6'
-            fontWeight='bold'
-            mb={3}
+            variant='h5'
           >
             {index + 1}. {content.header}
           </Typography>
