@@ -34,7 +34,27 @@ export interface TeacherData {
   isTeacherAdmin: boolean;
   teacherEmail: string;
   teacherClass: string;
+  twoFactorAuthEnabled: boolean;
 }
+
+export interface TeacherInvitesProps {
+  teacherName: string;
+  teacherEmail: string;
+  isTeacherAdmin: boolean;
+  teacherClass: string;
+}
+
+export const getTeachersInvitesData = (): TeacherInvitesProps[] => {
+  // TODO: implement get teachers invites data from the backend
+  return [
+    {
+      teacherName: 'Johnny Depp',
+      teacherEmail: 'jj@jj.jj',
+      isTeacherAdmin: true,
+      teacherClass: 'Class 1'
+    }
+  ];
+};
 
 export const getTeachersData = (): TeacherData[] => {
   // TODO: implement get teachers data from the backend
@@ -43,19 +63,22 @@ export const getTeachersData = (): TeacherData[] => {
       teacherName: 'John Doe',
       isTeacherAdmin: true,
       teacherEmail: 'aa@aa.aa',
-      teacherClass: 'Class 1'
+      teacherClass: 'Class 1',
+      twoFactorAuthEnabled: true
     },
     {
       teacherName: 'Jane Doe',
       isTeacherAdmin: false,
       teacherEmail: 'ghejkhrjh@grrtr.ghr',
-      teacherClass: 'Class 2'
+      teacherClass: 'Class 2',
+      twoFactorAuthEnabled: true
     },
     {
       teacherName: 'Doe John',
       isTeacherAdmin: true,
       teacherEmail: 'em@il.com',
-      teacherClass: 'Class 3'
+      teacherClass: 'Class 3',
+      twoFactorAuthEnabled: false
     }
   ];
 };

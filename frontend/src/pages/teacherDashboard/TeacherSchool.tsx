@@ -13,9 +13,12 @@ import {
   Add,
   Business,
   Create,
+  DeleteOutline,
   DoNotDisturb,
+  Email,
   EmailOutlined,
-  PersonOutlined
+  PersonOutlined,
+  StopCircleOutlined
 } from '@mui/icons-material';
 import { INVITE_TEACHER_SCHEMA, SCHOOL_DETAILS_UPDATE_SCHEMA } from './schemas';
 import { INVITE_TEACHER_INITIAL_VALUES } from './constants';
@@ -160,12 +163,30 @@ const TeachersTableActions: React.FC<{
   teacherEmail: string;
   userEmail: string;
   isTeacherAdmin: boolean;
-}> = ({ teacherEmail, userEmail, isTeacherAdmin }): JSX.Element => {
+  twoFactorAuthentication?: boolean;
+}> = ({
+  teacherEmail,
+  userEmail,
+  isTeacherAdmin,
+  twoFactorAuthentication
+}): JSX.Element => {
+  const twoFactorAuthenticationButton = (
+    <Button endIcon={<StopCircleOutlined />} color="error">
+      Disable 2FA
+    </Button>
+  );
+
   if (teacherEmail === userEmail) {
     return (
-      <Button endIcon={<Create />} color="tertiary">
-        Update details
-      </Button>
+      <>
+        <Button endIcon={<Create />} color="tertiary">
+          Update details
+        </Button>
+        {/* This button below will be used for pending invites  */}
+        <Button endIcon={<EmailOutlined />} color="tertiary">
+          Resend invite
+        </Button>
+      </>
     );
   } else if (isTeacherAdmin) {
     return (
@@ -173,13 +194,17 @@ const TeachersTableActions: React.FC<{
         <Button color="error" endIcon={<DoNotDisturb />}>
           Revoke admin
         </Button>
-        <Button color="error">Delete</Button>
+        <Button color="error" endIcon={<DeleteOutline />}>
+          Delete
+        </Button>
+        {twoFactorAuthentication && twoFactorAuthenticationButton}
       </>
     );
   } else {
     return (
       <>
         <Button endIcon={<Add />}>Make admin </Button>
+        {twoFactorAuthentication && twoFactorAuthenticationButton}
       </>
     );
   }
@@ -188,6 +213,11 @@ const TeachersTableActions: React.FC<{
 const TeachersTable: React.FC = (): JSX.Element => {
   const { email } = getUser();
   const teachersData = getTeachersData();
+  const youText = (
+    <Typography variant="body2" fontWeight="bold">
+      (you)
+    </Typography>
+  );
 
   return (
     <CflTable titles={['Name', 'Administrator status', 'Actions']}>
@@ -196,7 +226,7 @@ const TeachersTable: React.FC = (): JSX.Element => {
           <CflTableBody key={`${keyIdx}`}>
             <CflTableCellElement>
               <Typography variant="subtitle1">
-                {teacherName} {teacherEmail === email ? '(you)' : ''}{' '}
+                {teacherName} {teacherEmail === email ? youText : ''}{' '}
               </Typography>
             </CflTableCellElement>
             <CflTableCellElement
