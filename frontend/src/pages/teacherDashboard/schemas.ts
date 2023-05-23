@@ -12,9 +12,9 @@ export const SCHOOL_DETAILS_UPDATE_SCHEMA = object({
 });
 
 export const INVITE_TEACHER_SCHEMA = object({
-  teacherFirstName: string().required('First name is required'),
-  teacherLastName: string().required('Last name is required'),
-  teacherEmail: string().required('Email is required'),
+  teacherFirstName: string().required('First name is required').min(1, 'First name cannot be empty'),
+  teacherLastName: string().required('Last name is required').min(1, 'Last name cannot be empty'),
+  teacherEmail: string().required('Email is required').email('Email is invalid').min(1, 'Email cannot be empty'),
   isAdmin: boolean().required()
 });
 

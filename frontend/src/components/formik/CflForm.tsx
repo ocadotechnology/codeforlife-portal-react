@@ -28,7 +28,7 @@ export const CflHorizontalForm = <Values extends FormikValues = FormikValues>({
   ...formikProps
 }: CflHorizontalFormProps<Values>): JSX.Element => {
   return (
-    <Formik {...formikProps}>
+    <Formik {...formikProps} validateOnMount={true}>
       {(formik) => (
         <React.Fragment>
           {header && (
@@ -53,7 +53,7 @@ export const CflHorizontalForm = <Values extends FormikValues = FormikValues>({
               })}
               <Grid item xs={12}>
                 {React.cloneElement(submitButton, {
-                  disabled: !(formik.isValid && formik.dirty)
+                  disabled: !formik.isValid
                 })}
               </Grid>
             </Grid>

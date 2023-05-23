@@ -56,7 +56,7 @@ const YourAccountForm: React.FC = () => {
       onSubmit={(values) => {
         alert(JSON.stringify(values, null, 2));
       }}
-      submitButton={<Button variant="contained">Save changes</Button>}
+      submitButton={<Button variant="contained">Update details</Button>}
     >
       <TextField
         name="firstName"

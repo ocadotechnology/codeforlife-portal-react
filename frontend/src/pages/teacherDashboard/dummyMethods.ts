@@ -24,7 +24,7 @@ export const getSchool = (): SchoolData => {
   return {
     schoolName: 'Real School',
     schoolPostcode: 'AB1 2CD',
-    schoolCountry: 'United Kingdom',
+    schoolCountry: 'United States of America',
     accessCode: 'AB123'
   };
 };
