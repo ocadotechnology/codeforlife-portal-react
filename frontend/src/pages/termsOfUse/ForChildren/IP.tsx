@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Unstable_Grid2 as Grid,
+  Stack,
   ListItemText,
   Typography
 } from '@mui/material';
@@ -8,7 +8,7 @@ import { ItemizedList } from 'codeforlife/lib/esm/components';
 
 const IP: React.FC = () => {
   return (
-    <Grid>
+    <Stack>
       <Typography>
         The contents of the Code for Life website are our ‘Intellectual Property’. This means that you cannot copy or reuse them without our permission. Just because it is easy to copy some of the content on the website, this does not mean it is allowed. The content covered by Intellectual Property includes:
       </Typography>
@@ -29,7 +29,7 @@ const IP: React.FC = () => {
           Source Code (this is the code that our website and games are made up of)
         </ListItemText>
       </ItemizedList>
-    </Grid>
+    </Stack>
   );
 };
 

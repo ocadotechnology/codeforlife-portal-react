@@ -12,21 +12,17 @@ export interface TableOfContentsProps {
 const TableOfContentsChildren: React.FC<TableOfContentsProps> = ({ contents }) => {
   return (
     <Grid container spacing={0}>
-      {
-        contents.map((content, index) => (
-          <Grid key={index} xs={12}>
-            <Divider sx={{ my: 2 }} />
-            <Typography
-              variant='h6'
-              fontWeight='bold'
-              mb={3}
-            >
-              {index + 1}. {content.header}
-            </Typography>
-            {content.element}
-          </Grid>
-        ))
-      }
+      {contents.map((content, index) => (
+        <Grid key={index} xs={12}>
+          <Divider sx={{ my: 2 }} />
+          <Typography
+            variant='h5'
+          >
+            {index + 1}. {content.header}
+          </Typography>
+          {content.element}
+        </Grid>
+      ))}
     </Grid>
   );
 };

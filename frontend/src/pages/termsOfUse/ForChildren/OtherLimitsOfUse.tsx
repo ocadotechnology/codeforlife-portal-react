@@ -1,14 +1,15 @@
 import React from 'react';
 import {
-  Unstable_Grid2 as Grid,
+  Stack,
   ListItemText,
   Typography
 } from '@mui/material';
+
 import { ItemizedList } from 'codeforlife/lib/esm/components';
 
 const OtherLimitsOfUse: React.FC = () => {
   return (
-    <Grid>
+    <Stack>
       <Typography>
         You must not:
       </Typography>
@@ -35,7 +36,7 @@ const OtherLimitsOfUse: React.FC = () => {
           do anything that could cause damage the site, for example taking action that allows in, computer viruses, logic bombs, Trojan horses or some other kind of harmful software or data.
         </ListItemText>
       </ItemizedList>
-    </Grid>
+    </Stack>
   );
 };
 
