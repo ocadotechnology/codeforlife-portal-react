@@ -2,6 +2,7 @@ import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 
 import Home from '../pages/home/Home';
+import Login from '../pages/login/Login';
 import Teachers from '../pages/teachers/Teachers';
 import Students from '../pages/students/Students';
 import Register from '../pages/register/Register';
@@ -15,13 +16,36 @@ import Newsletter from '../pages/newsletter/Newsletter';
 import Forbidden from '../pages/forbidden/Forbidden';
 import PageNotFound from '../pages/pageNotFound/PageNotFound';
 import InternalServerError from '../pages/internalServerError/InternalServerError';
+import TeacherSchool from '../pages/teacherDashboard/TeacherSchool';
+import TeacherClasses from '../pages/teacherDashboard/TeacherClasses';
+import TeacherAccount from '../pages/teacherDashboard/TeacherAccount';
 import EmailVerification from '../pages/emailVerification/EmailVerification';
-import StudentManagment from 'pages/studentManagment/StudentManagment';
+import StudentManagment from '../pages/studentManagment/StudentManagment';
+import ResetPassword from '../pages/resetPassword/ResetPassword';
+import StudentsDashboard from '../pages/studentsDashboard/StudentsDashboard';
 
 export const paths = {
   home: '/',
+  login: {
+    _: '/login',
+    teacher: '/login?userType=teacher',
+    student: '/login?userType=student',
+    independent: '/login?userType=independent'
+  },
+  resetPassword: {
+    _: '/reset-password',
+    teacher: '/reset-password?userType=teacher',
+    independent: '/reset-password?userType=independent'
+  },
   teachers: '/teachers',
-  students: '/students',
+  students: {
+    _: '/students',
+    dashboard: {
+      _: '/students/dashboard',
+      dependent: '/students/dashboard?userType=dependent',
+      independent: '/students/dashboard?userType=independent'
+    }
+  },
   register: '/register',
   emailVerification: '/register/email-verification',
   aboutUs: '/about-us',
@@ -35,9 +59,11 @@ export const paths = {
   pageNotFound: '/error/page-not-found',
   internalServerError: '/error/internal-server-error',
   rapidRouter: '/rapid-router',
-  teacher: {
-    class: (accessCode: string) => `/teacher/class/${accessCode}`
-  }
+  teacherSchool: '/teacher/school',
+  teacherClasses: '/teacher/classes',
+  teacherAccount: '/teacher/account',
+  kurono: '/kurono',
+  teacherClass: '/teacher/class/?accessCode='
 };
 
 const router = createBrowserRouter([
@@ -46,12 +72,20 @@ const router = createBrowserRouter([
     element: <Home />
   },
   {
+    path: paths.login._,
+    element: <Login />
+  },
+  {
     path: paths.teachers,
     element: <Teachers />
   },
   {
-    path: paths.students,
+    path: paths.students._,
     element: <Students />
+  },
+  {
+    path: paths.students.dashboard._,
+    element: <StudentsDashboard />
   },
   {
     path: paths.register,
@@ -98,11 +132,21 @@ const router = createBrowserRouter([
     element: <InternalServerError />
   },
   {
+    path: paths.teacherSchool,
+    element: <TeacherSchool />
+  },
+  { path: paths.teacherClasses, element: <TeacherClasses /> },
+  { path: paths.teacherAccount, element: <TeacherAccount /> },
+  {
     path: paths.emailVerification,
     element: <EmailVerification />
   },
   {
-    path: paths.teacher.class(':accessCode'),
+    path: paths.resetPassword._,
+    element: <ResetPassword />
+  },
+  {
+    path: paths.teacherClass,
     element: <StudentManagment />
   }
 ]);

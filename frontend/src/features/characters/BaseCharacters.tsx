@@ -10,7 +10,7 @@ import {
   OrderedGrid
 } from 'codeforlife/lib/esm/components';
 
-const Characters: React.FC<{
+const BaseCharacters: React.FC<{
   characters: Array<{
     name: string
     description: string
@@ -73,4 +73,4 @@ const Characters: React.FC<{
   );
 };
 
-export default Characters;
+export default BaseCharacters;

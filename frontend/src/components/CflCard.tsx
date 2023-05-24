@@ -26,7 +26,8 @@ const CflCard: React.FC<CflCardProps> = ({
     <Card style={{
       display: 'flex',
       flexDirection: 'column',
-      height: '100%'
+      minHeight: '100%',
+      maxWidth: '400px'
     }}>
       <CardMedia
         component='img'

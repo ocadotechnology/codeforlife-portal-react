@@ -1,17 +1,18 @@
 import React from 'react';
 import {
   Typography,
-  Stack,
-  InputAdornment
+  Stack
 } from '@mui/material';
 import {
-  Circle as CircleIcon,
-  Security as SecurityIcon
+  Circle as CircleIcon
 } from '@mui/icons-material';
+import * as Yup from 'yup';
 
-import CflTextField, { CflTextFieldProps } from './CflTextField';
+import {
+  NewPasswordField
+} from 'codeforlife/lib/esm/components/form';
 
-export function isStrongPassword(
+function isStrongPassword(
   password: string,
   { forTeacher }: { forTeacher: boolean }
 ): boolean {
@@ -31,32 +32,12 @@ export function isStrongPassword(
       ));
 }
 
-interface CflPasswordFieldProps extends Omit<CflTextFieldProps, (
-  'type' |
-  'onKeyUp' |
-  'InputProps'
-)> { }
-
-export interface CflPasswordFieldsProps
-  extends Omit<CflPasswordFieldProps, 'name'> {
-  forTeacher: boolean,
-  passwordFieldProps?: CflPasswordFieldProps,
-  repeatPasswordFieldProps?: CflPasswordFieldProps
+export interface CflPasswordFieldsProps {
+  forTeacher: boolean
 }
 
 const CflPasswordFields: React.FC<CflPasswordFieldsProps> = ({
-  forTeacher,
-  passwordFieldProps = {
-    name: 'password',
-    placeholder: 'Password',
-    helperText: 'Enter a password'
-  },
-  repeatPasswordFieldProps = {
-    name: 'repeatPassword',
-    placeholder: 'Repeat password',
-    helperText: 'Repeat password'
-  },
-  ...commonPasswordFieldProps
+  forTeacher
 }) => {
   const [password, setPassword] = React.useState('');
 
@@ -74,29 +55,27 @@ const CflPasswordFields: React.FC<CflPasswordFieldsProps> = ({
     status = { name: 'Password too weak!', color: '#DBA901' };
   }
 
-  const inputProps: CflTextFieldProps['InputProps'] = {
-    endAdornment: (
-      <InputAdornment position='end'>
-        <SecurityIcon />
-      </InputAdornment>
-    )
-  };
-
   return <>
-    <CflTextField
-      type='password'
-      InputProps={inputProps}
-      onKeyUp={(event) => {
-        setPassword((event.target as HTMLTextAreaElement).value);
+    <NewPasswordField
+      passwordFieldProps={{
+        placeholder: 'Password',
+        helperText: 'Enter a password',
+        validate: Yup
+          .string()
+          .required()
+          .test(
+            'independent-password-strength-check',
+            'Invalid password',
+            (password) => {
+              setPassword(password);
+              return isStrongPassword(password, { forTeacher });
+            }
+          )
       }}
-      {...passwordFieldProps}
-      {...commonPasswordFieldProps}
-    />
-    <CflTextField
-      type='password'
-      InputProps={inputProps}
-      {...repeatPasswordFieldProps}
-      {...commonPasswordFieldProps}
+      repeatPasswordFieldProps={{
+        placeholder: 'Repeat password',
+        helperText: 'Repeat password'
+      }}
     />
     <Stack direction='row' justifyContent='center'>
       <CircleIcon
