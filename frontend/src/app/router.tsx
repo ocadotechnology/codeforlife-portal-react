@@ -3,6 +3,7 @@ import { createBrowserRouter } from 'react-router-dom';
 
 import Home from '../pages/home/Home';
 import Login from '../pages/login/Login';
+import Login2fa from '../pages/login/Login2fa';
 import Teachers from '../pages/teachers/Teachers';
 import Students from '../pages/students/Students';
 import Register from '../pages/register/Register';
@@ -18,7 +19,11 @@ import PageNotFound from '../pages/pageNotFound/PageNotFound';
 import InternalServerError from '../pages/internalServerError/InternalServerError';
 import TeacherSchool from '../pages/teacherDashboard/TeacherSchool';
 import TeacherClasses from '../pages/teacherDashboard/TeacherClasses';
-import TeacherAccount from '../pages/teacherDashboard/TeacherAccount';
+import TeacherAccount from '../pages/teacherDashboard/account/TeacherAccount';
+import Setup2fa from '../pages/teacherDashboard/account/2fa/Setup2fa';
+import Setup2faComplete from '../pages/teacherDashboard/account/2fa/Setup2faComplete';
+import BackupTokens from '../pages/teacherDashboard/account/2fa/BackupTokens';
+import Disable2fa from '../pages/teacherDashboard/account/2fa/Disable2fa';
 import EmailVerification from '../pages/emailVerification/EmailVerification';
 import ResetPassword from '../pages/resetPassword/ResetPassword';
 import StudentsDashboard from '../pages/studentsDashboard/StudentsDashboard';
@@ -31,6 +36,7 @@ export const paths = {
     student: '/login?userType=student',
     independent: '/login?userType=independent'
   },
+  login2fa: 'login/2fa',
   resetPassword: {
     _: '/reset-password',
     teacher: '/reset-password?userType=teacher',
@@ -61,6 +67,10 @@ export const paths = {
   teacherSchool: '/teacher/school',
   teacherClasses: '/teacher/classes',
   teacherAccount: '/teacher/account',
+  setup2fa: '/teacher/account/2fa/setup',
+  setup2faComplete: 'teacher/account/2fa/setup-complete',
+  backupTokens: '/teacher/account/2fa/backup-tokens',
+  disable2fa: '/teacher/account/2fa/disable',
   kurono: '/kurono'
 };
 
@@ -72,6 +82,10 @@ const router = createBrowserRouter([
   {
     path: paths.login._,
     element: <Login />
+  },
+  {
+    path: paths.login2fa,
+    element: <Login2fa />
   },
   {
     path: paths.teachers,
@@ -133,8 +147,30 @@ const router = createBrowserRouter([
     path: paths.teacherSchool,
     element: <TeacherSchool />
   },
-  { path: paths.teacherClasses, element: <TeacherClasses /> },
-  { path: paths.teacherAccount, element: <TeacherAccount /> },
+  {
+    path: paths.teacherClasses,
+    element: <TeacherClasses />
+  },
+  {
+    path: paths.teacherAccount,
+    element: <TeacherAccount />
+  },
+  {
+    path: paths.setup2fa,
+    element: <Setup2fa />
+  },
+  {
+    path: paths.setup2faComplete,
+    element: <Setup2faComplete />
+  },
+  {
+    path: paths.backupTokens,
+    element: <BackupTokens />
+  },
+  {
+    path: paths.disable2fa,
+    element: <Disable2fa />
+  },
   {
     path: paths.emailVerification,
     element: <EmailVerification />
