@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   Typography,
-  ListItem,
   Table,
   TableHead,
   TableBody,
@@ -75,26 +74,14 @@ const HowWeUseInfo: React.FC = () => (
     <Typography>
       We summarise below the purposes for which we use your personal data and the lawful basis on which we rely.
     </Typography>
-    <Table sx={{
-      [`.${tableCellClasses.root}`]: {
-        border: '1px solid grey'
-      }
-    }}>
-      <TableHead sx={{
-        [`.${tableCellClasses.head}`]: {
-          backgroundColor: 'grey',
-          '.MuiTypography-root': {
-            color: '#fff',
-            fontWeight: 'bold'
-          }
-        }
-      }}>
+    <Table className='text'>
+      <TableHead>
         <CustomTableRow
           left="Purpose"
           right="Legal basis"
         />
       </TableHead>
-      <TableBody>
+      <TableBody className='text'>
         <CustomTableRow
           left="To allow you to create an account and provide our services to you through our portal, such as providing course material and resources"
           right="Contractual necessity: the information is necessary to fulfil our contract with you."
@@ -150,7 +137,7 @@ const HowWeUseInfo: React.FC = () => (
       </TableBody>
     </Table>
     <Typography>
-      When we rely on legitimate interests to process personal data, we consider and balance those interests against any potential impact on you (both positive and negative) and your rights and interests. If we consider that our interests are overridden by the impact on you, we will not use your personal data in this way (unless the law gives us another valid ground to do so). You can obtain further information about how we assess our legitimate interests against any potential impact on you in respect of specific activities by contacting us.
+      When we rely on <strong>legitimate interests</strong> to process personal data, we consider and balance those interests against any potential impact on you (both positive and negative) and your rights and interests. If we consider that our interests are overridden by the impact on you, we will not use your personal data in this way (unless the law gives us another valid ground to do so). You can obtain further information about how we assess our legitimate interests against any potential impact on you in respect of specific activities by contacting us.
     </Typography>
   </>
 );
