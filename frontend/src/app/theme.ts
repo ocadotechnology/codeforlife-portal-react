@@ -1,6 +1,7 @@
 import {
   createTheme,
-  ThemeOptions
+  ThemeOptions,
+  tabClasses
 } from '@mui/material';
 
 import { theme as cflTheme } from 'codeforlife';
@@ -79,16 +80,38 @@ const components: ThemeOptions['components'] = {
       }
     }
   },
+  MuiTabs: {
+    styleOverrides: {
+      root: ({ ownerState }) => ({
+        ...([undefined, 'horizontal'].includes(ownerState.orientation) && {
+          [`.${tabClasses.root}:not(:last-of-type)`]: {
+            marginRight: '30px'
+          }
+        })
+      }),
+      indicator: {
+        display: 'none'
+      }
+    }
+  },
   MuiTab: {
     styleOverrides: {
-      root: {
+      root: ({ ownerState }) => ({
+        textTransform: 'none',
+        fontSize: typography.body2?.fontSize,
         color: 'white',
         border: '2px solid white',
-        '&.Mui-selected': {
+        [`&.${tabClasses.selected}`]: {
           color: cflTheme.palette.primary.light,
-          backgroundColor: 'white'
+          backgroundColor: 'white',
+          cursor: 'default'
+        },
+        [`:not(.${tabClasses.selected})`]: {
+          ':hover': {
+            textDecoration: 'underline'
+          }
         }
-      }
+      })
     }
   },
   MuiFormControlLabel: {

@@ -38,7 +38,7 @@ const MenuDrawer: React.FC<{
     { children: 'About us', href: paths.aboutUs },
     { children: 'Help and support', href: '' },
     { children: 'Cookie settings', href: '' },
-    { children: 'Privacy notice', href: paths.privacyNotice },
+    { children: 'Privacy notice', href: paths.privacyNotice._ },
     { children: 'Terms of use', href: paths.termsOfUse },
     { children: 'Get involved', href: paths.getInvolved }
   ];

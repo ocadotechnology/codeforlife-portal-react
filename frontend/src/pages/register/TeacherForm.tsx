@@ -87,7 +87,7 @@ const TeacherForm: React.FC = () => {
               </Link>
               &nbsp;and the&nbsp;
               <Link
-                href={paths.privacyNotice}
+                href={paths.privacyNotice._}
                 target='_blank'
                 color='inherit'
                 className='body'
