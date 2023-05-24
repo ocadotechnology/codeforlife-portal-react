@@ -5,7 +5,7 @@ import {
 
 const ExtraHelp: React.FC = () => <>
   <Typography>
-    TODO
+    If you would like this Privacy Notice in another format (for example, audio, large print, braille), please contact us (see the “How to contact us” section above).
   </Typography>
 </>;
 
