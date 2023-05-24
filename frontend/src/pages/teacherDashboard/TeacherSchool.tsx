@@ -170,9 +170,6 @@ const TeachersTableActions: React.FC<{
   isTeacherAdmin,
   twoFactorAuthentication
 }): JSX.Element => {
-  const twoFactorAuthenticationButton = (
-  );
-
   if (teacherEmail === userEmail) {
     return (
       <>
@@ -200,9 +197,9 @@ const TeachersTableActions: React.FC<{
     return (
       <>
         <Button endIcon={<Add />}>Make admin </Button>
-  <Button endIcon={<StopCircleOutlined />} color="error">
-    Disable 2FA
-  </Button>
+        <Button endIcon={<StopCircleOutlined />} color="error">
+          Disable 2FA
+        </Button>
       </>
     );
   }
