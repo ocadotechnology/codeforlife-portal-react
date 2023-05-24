@@ -15,6 +15,7 @@ import {
   Create,
   DeleteOutline,
   DoNotDisturb,
+  DoNotDisturbAltOutlined,
   Email,
   EmailOutlined,
   PersonOutlined,
@@ -197,7 +198,7 @@ const TeachersTableActions: React.FC<{
     return (
       <>
         <Button endIcon={<Add />}>Make admin </Button>
-        <Button endIcon={<StopCircleOutlined />} color="error">
+        <Button endIcon={<DoNotDisturbAltOutlined />} color="error">
           Disable 2FA
         </Button>
       </>
