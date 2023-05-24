@@ -48,8 +48,8 @@ const EmailVerification: React.FC = () => {
   return (
     <BasePage>
       <PageSection maxWidth="md" className="flex-center">
-        {params.success
-          ? <Status
+        {params.success ? (
+          <Status
             userType={params.userType}
             header="We need to verify your email address"
             body={[
@@ -62,7 +62,8 @@ const EmailVerification: React.FC = () => {
               src: PaperPlaneImg
             }}
           />
-          : <Status
+        ) : (
+          <Status
             userType={params.userType}
             header="Your email address verification failed"
             body={[
@@ -73,7 +74,8 @@ const EmailVerification: React.FC = () => {
               alt: 'SadFace',
               src: SadFaceImg
             }}
-          />}
+          />
+        )}
       </PageSection>
     </BasePage>
   );
