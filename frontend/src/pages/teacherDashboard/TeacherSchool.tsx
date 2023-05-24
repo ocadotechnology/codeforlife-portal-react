@@ -14,12 +14,10 @@ import {
   Business,
   Create,
   DeleteOutline,
+  DoDisturbOnOutlined,
   DoNotDisturb,
-  DoNotDisturbAltOutlined,
-  Email,
   EmailOutlined,
-  PersonOutlined,
-  StopCircleOutlined
+  PersonOutlined
 } from '@mui/icons-material';
 import { INVITE_TEACHER_SCHEMA, SCHOOL_DETAILS_UPDATE_SCHEMA } from './schemas';
 import { INVITE_TEACHER_INITIAL_VALUES } from './constants';
@@ -198,7 +196,7 @@ const TeachersTableActions: React.FC<{
     return (
       <>
         <Button endIcon={<Add />}>Make admin </Button>
-        <Button endIcon={<DoNotDisturbAltOutlined />} color="error">
+        <Button endIcon={<DoDisturbOnOutlined />} color="error">
           Disable 2FA
         </Button>
       </>
