@@ -5,7 +5,8 @@ import {
   Typography
 } from '@mui/material';
 import {
-  ChevronRight as ChevronRightIcon
+  ChevronRight as ChevronRightIcon,
+  OpenInNew as OpenInNewIcon
 } from '@mui/icons-material';
 
 import { paths } from '../../app/router';
@@ -16,7 +17,7 @@ const Kurono: React.FC = () => {
     <TeacherSection
       videoSource={process.env.REACT_APP_KURONO_FOR_TEACHER_YOUTUBE_VIDEO_SRC as string}
     >
-      <Typography variant='h5'>
+      <Typography variant='h4'>
         Kurono
       </Typography>
       <Typography>
@@ -30,6 +31,7 @@ const Kurono: React.FC = () => {
           target="_blank"
         >
           See how Kurono relates to Key Stages 3 & 4 of the computer science strand here.
+          <OpenInNewIcon fontSize='small' />
         </Link>
       </Typography>
       <Button

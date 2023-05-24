@@ -15,7 +15,7 @@ const Resources: React.FC = () => {
     <TeacherSection
       videoSource={process.env.REACT_APP_TEACHER_RESOURCES_YOUTUBE_VIDEO_SRC as string}
     >
-      <Typography variant='h5'>
+      <Typography variant='h4'>
         Resources and progress tracking
       </Typography>
       <Typography>

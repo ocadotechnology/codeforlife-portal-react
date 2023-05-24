@@ -5,9 +5,9 @@ import {
   Typography
 } from '@mui/material';
 import {
-  ChevronRight as ChevronRightIcon
+  ChevronRight as ChevronRightIcon,
+  OpenInNew as OpenInNewIcon
 } from '@mui/icons-material';
-
 import { paths } from '../../app/router';
 import TeacherSection from './TeacherSection';
 
@@ -17,7 +17,7 @@ const RapidRouter: React.FC = () => {
       videoSource={process.env.REACT_APP_RR_FOR_TEACHER_YOUTUBE_VIDEO_SRC as string}
       direction='row-reverse'
     >
-      <Typography variant='h5'>
+      <Typography variant='h4'>
         Rapid router
       </Typography>
       <Typography>
@@ -35,6 +35,7 @@ const RapidRouter: React.FC = () => {
           target="_blank"
         >
           English national curriculum — the computer science strand
+          <OpenInNewIcon fontSize='small' />
         </Link>
         &nbsp;and&nbsp;
         <Link
@@ -44,6 +45,7 @@ const RapidRouter: React.FC = () => {
           target="_blank"
         >
           the Scottish curriculum.
+          <OpenInNewIcon fontSize='small' />
         </Link>
       </Typography>
       <Button
