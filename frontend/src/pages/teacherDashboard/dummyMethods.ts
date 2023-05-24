@@ -37,25 +37,6 @@ export interface TeacherData {
   twoFactorAuthEnabled: boolean;
 }
 
-export interface TeacherInvitesProps {
-  teacherName: string;
-  teacherEmail: string;
-  isTeacherAdmin: boolean;
-  teacherClass: string;
-}
-
-export const getTeachersInvitesData = (): TeacherInvitesProps[] => {
-  // TODO: implement get teachers invites data from the backend
-  return [
-    {
-      teacherName: 'Johnny Depp',
-      teacherEmail: 'jj@jj.jj',
-      isTeacherAdmin: true,
-      teacherClass: 'Class 1'
-    }
-  ];
-};
-
 export const getTeachersData = (): TeacherData[] => {
   // TODO: implement get teachers data from the backend
   return [
