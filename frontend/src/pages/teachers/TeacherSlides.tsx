@@ -17,7 +17,8 @@ interface ItemProps {
 };
 
 const SlideHeight = '500px';
-const ImageHeight = '400px';
+const ImageGridHeight = '400px';
+const ImageWidth = '250px';
 
 function Item(props: ItemProps): any {
   const theme = useTheme();
@@ -25,8 +26,8 @@ function Item(props: ItemProps): any {
   return (
     <Grid container margin={0} spacing={3} bgcolor={theme.palette.info.main} className='flex-center' height={SlideHeight}>
       <Grid xs={6} padding={0}>
-        <Grid bgcolor='White' margin={3} className='flex-center' height={ImageHeight}>
-          <Image src={props.img.src} alt={props.img.alt} maxWidth={ImageHeight} />
+        <Grid bgcolor='White' margin={3} className='flex-center' height={ImageGridHeight}>
+          <Image src={props.img.src} alt={props.img.alt} maxWidth={ImageWidth} />
         </Grid>
       </Grid>
       <Grid xs={6} padding={0} className='flex-center'>
@@ -62,7 +63,19 @@ const TeacherSlides: React.FC = () => {
   ];
 
   return (
-    <Carousel height={SlideHeight}>
+    <Carousel
+      height={SlideHeight}
+      indicatorIconButtonProps={{
+        style: {
+          padding: '2px'
+        }
+      }}
+      activeIndicatorIconButtonProps={{
+        style: {
+          color: '#F6BE00'
+        }
+      }}
+    >
       {
         items.map((item, i) => <Item key={i} img={item.image} description={item.description} />)
       }
