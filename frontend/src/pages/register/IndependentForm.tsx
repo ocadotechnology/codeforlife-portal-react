@@ -1,11 +1,6 @@
 import React from 'react';
-import {
-  Link,
-  FormHelperText
-} from '@mui/material';
-import {
-  ChevronRight as ChevronRightIcon
-} from '@mui/icons-material';
+import { Link, FormHelperText } from '@mui/material';
+import { ChevronRight as ChevronRightIcon } from '@mui/icons-material';
 
 import { paths } from '../../app/router';
 import BaseForm from './BaseForm';
@@ -45,28 +40,28 @@ const IndependentForm: React.FC = () => {
   const ReceiveUpdateAge = 18;
 
   function onDateOfBirthChange(dob: Date | undefined): void {
-    setYearsOfAge((dob === undefined)
-      ? undefined
-      : Math.floor(
-        (new Date().getTime() - dob.getTime()) /
-        (1000 * 60 * 60 * 24 * 365)
-      )
+    setYearsOfAge(
+      dob === undefined
+        ? undefined
+        : Math.floor(
+            (new Date().getTime() - dob.getTime()) / (1000 * 60 * 60 * 24 * 365)
+          )
     );
   }
 
   return (
     <BaseForm
-      header='Independent learner'
-      subheader='Register below if you are not part of a school or club and wish to set up a home learning account.'
-      description='You will have access to learning resources for Rapid Router.'
-      bgcolor='#ffc709' // TODO: use theme.palette
-      color='black'
+      header="Independent learner"
+      subheader="Register below if you are not part of a school or club and wish to set up a home learning account."
+      description="You will have access to learning resources for Rapid Router."
+      bgcolor="#ffc709" // TODO: use theme.palette
+      color="black"
     >
       <DatePicker
-        helperText='Please enter your date of birth (we do not store this information).'
+        helperText="Please enter your date of birth (we do not store this information)."
         onChange={onDateOfBirthChange}
       />
-      {yearsOfAge !== undefined &&
+      {yearsOfAge !== undefined && (
         <Form
           initialValues={initialValues}
           onSubmit={(values, { setSubmitting }) => {
@@ -76,60 +71,66 @@ const IndependentForm: React.FC = () => {
         >
           <TextField
             required
-            name='fullName'
-            placeholder='Full name'
-            helperText='Enter your full name'
+            name="fullName"
+            placeholder="Full name"
+            helperText="Enter your full name"
           />
           <EmailField
             required
-            placeholder='Email address'
-            helperText={(yearsOfAge >= EmailApplicableAge)
-              ? 'Enter your email address'
-              : 'Please enter your parent\'s email address'
+            placeholder="Email address"
+            helperText={
+              yearsOfAge >= EmailApplicableAge
+                ? 'Enter your email address'
+                : "Please enter your parent's email address"
             }
           />
-          {yearsOfAge < EmailApplicableAge &&
+          {yearsOfAge < EmailApplicableAge && (
             <FormHelperText style={{ fontWeight: 'bold' }}>
-              We will send your parent/guardian an email to ask them to activate the account for you. Once they&apos;ve done this you&apos;ll be able to log in using your name and password.
+              We will send your parent/guardian an email to ask them to activate
+              the account for you. Once they&apos;ve done this you&apos;ll be
+              able to log in using your name and password.
             </FormHelperText>
-          }
-          {yearsOfAge >= EmailApplicableAge &&
+          )}
+          {yearsOfAge >= EmailApplicableAge && (
             <CheckboxField
               required
-              name='termsOfUse'
+              name="termsOfUse"
               formControlLabelProps={{
-                label: <>
-                  I have read and understood the &nbsp;
-                  <Link
-                    href={paths.termsOfUse}
-                    target='_blank'
-                    color='inherit'
-                    className='body'
-                  >
-                    Terms of use
-                  </Link>
-                  &nbsp;and the&nbsp;
-                  <Link
-                    href={paths.privacyNotice}
-                    target='_blank'
-                    color='inherit'
-                    className='body'
-                  >
-                    Privacy notice
-                  </Link>
-                  .
-                </>
+                label: (
+                  <>
+                    I have read and understood the &nbsp;
+                    <Link
+                      href={paths.termsOfUse}
+                      target="_blank"
+                      color="inherit"
+                      className="body"
+                    >
+                      Terms of use
+                    </Link>
+                    &nbsp;and the&nbsp;
+                    <Link
+                      href={paths.privacyNotice}
+                      target="_blank"
+                      color="inherit"
+                      className="body"
+                    >
+                      Privacy notice
+                    </Link>
+                    .
+                  </>
+                )
               }}
             />
-          }
-          {yearsOfAge >= ReceiveUpdateAge &&
+          )}
+          {yearsOfAge >= ReceiveUpdateAge && (
             <CheckboxField
-              name='receiveUpdates'
+              name="receiveUpdates"
               formControlLabelProps={{
-                label: 'Sign up to receive updates about Code for Life games and teaching resources.'
+                label:
+                  'Sign up to receive updates about Code for Life games and teaching resources.'
               }}
             />
-          }
+          )}
           <CflPasswordFields forTeacher={false} />
           <SubmitButton
             stackProps={{ alignItems: 'end' }}
@@ -138,7 +139,7 @@ const IndependentForm: React.FC = () => {
             Register
           </SubmitButton>
         </Form>
-      }
+      )}
     </BaseForm>
   );
 };
