@@ -1,10 +1,6 @@
 import React from 'react';
-import {
-  Link
-} from '@mui/material';
-import {
-  ChevronRight as ChevronRightIcon
-} from '@mui/icons-material';
+import { Link } from '@mui/material';
+import { ChevronRight as ChevronRightIcon } from '@mui/icons-material';
 
 import { paths } from '../../app/router';
 import BaseForm from './BaseForm';
@@ -41,11 +37,11 @@ const initialValues: TeacherFormValues = {
 const TeacherForm: React.FC = () => {
   return (
     <BaseForm
-      header='Teacher/Tutor'
-      subheader='Register below to create your school or club.'
-      description='You will have access to teaching resources, progress tracking and lesson plans for both Rapid Router and Kurono.'
-      bgcolor='#ee0857' // TODO: use theme.palette
-      color='white'
+      header="Teacher/Tutor"
+      subheader="Register below to create your school or club."
+      description="You will have access to teaching resources, progress tracking and lesson plans for both Rapid Router and Kurono."
+      bgcolor="#ee0857" // TODO: use theme.palette
+      color="white"
     >
       <Form
         initialValues={initialValues}
@@ -56,24 +52,24 @@ const TeacherForm: React.FC = () => {
       >
         <TextField
           required
-          name='firstName'
-          placeholder='First name'
-          helperText='Enter your first name'
+          name="firstName"
+          placeholder="First name"
+          helperText="Enter your first name"
         />
         <TextField
           required
-          name='lastName'
-          placeholder='Last name'
-          helperText='Enter your last name'
+          name="lastName"
+          placeholder="Last name"
+          helperText="Enter your last name"
         />
         <EmailField
           required
-          placeholder='Email address'
-          helperText='Enter your email address'
+          placeholder="Email address"
+          helperText="Enter your email address"
         />
         <CheckboxField
           required
-          name='termsOfUse'
+          name="termsOfUse"
           formControlLabelProps={{
             label: <>
               I am over 18 years old have read and understood the&nbsp;
@@ -99,9 +95,10 @@ const TeacherForm: React.FC = () => {
           }}
         />
         <CheckboxField
-          name='receiveUpdates'
+          name="receiveUpdates"
           formControlLabelProps={{
-            label: 'Sign up to receive updates about Code for Life games and teaching resources.'
+            label:
+              'Sign up to receive updates about Code for Life games and teaching resources.'
           }}
         />
         <CflPasswordFields forTeacher={true} />

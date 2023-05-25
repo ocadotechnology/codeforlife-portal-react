@@ -16,6 +16,9 @@ import Newsletter from '../pages/newsletter/Newsletter';
 import Forbidden from '../pages/forbidden/Forbidden';
 import PageNotFound from '../pages/pageNotFound/PageNotFound';
 import InternalServerError from '../pages/internalServerError/InternalServerError';
+import TeacherSchool from '../pages/teacherDashboard/TeacherSchool';
+import TeacherClasses from '../pages/teacherDashboard/TeacherClasses';
+import TeacherAccount from '../pages/teacherDashboard/TeacherAccount';
 import EmailVerification from '../pages/emailVerification/EmailVerification';
 import ResetPassword from '../pages/resetPassword/ResetPassword';
 import StudentsDashboard from '../pages/studentsDashboard/StudentsDashboard';
@@ -59,6 +62,9 @@ export const paths = {
   pageNotFound: '/error/page-not-found',
   internalServerError: '/error/internal-server-error',
   rapidRouter: '/rapid-router',
+  teacherSchool: '/teacher/school',
+  teacherClasses: '/teacher/classes',
+  teacherAccount: '/teacher/account',
   kurono: '/kurono'
 };
 
@@ -127,6 +133,12 @@ const router = createBrowserRouter([
     path: paths.internalServerError,
     element: <InternalServerError />
   },
+  {
+    path: paths.teacherSchool,
+    element: <TeacherSchool />
+  },
+  { path: paths.teacherClasses, element: <TeacherClasses /> },
+  { path: paths.teacherAccount, element: <TeacherAccount /> },
   {
     path: paths.emailVerification,
     element: <EmailVerification />
