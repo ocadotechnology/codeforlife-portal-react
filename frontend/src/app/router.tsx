@@ -23,6 +23,7 @@ import EmailVerification from '../pages/emailVerification/EmailVerification';
 import StudentManagment from '../pages/studentManagment/StudentManagment';
 import ResetPassword from '../pages/resetPassword/ResetPassword';
 import StudentsDashboard from '../pages/studentsDashboard/StudentsDashboard';
+import AdditionalClassSettings from '../pages/additionalClassSettings/AdditionalClassSettings';
 
 export const paths = {
   home: '/',
@@ -63,7 +64,8 @@ export const paths = {
   teacherClasses: '/teacher/classes',
   teacherAccount: '/teacher/account',
   kurono: '/kurono',
-  teacherClass: '/teacher/class/?accessCode='
+  teacherClass: '/teacher/class',
+  teacherClassEdit: '/teacher/class/edit'
 };
 
 const router = createBrowserRouter([
@@ -148,6 +150,10 @@ const router = createBrowserRouter([
   {
     path: paths.teacherClass,
     element: <StudentManagment />
+  },
+  {
+    path: paths.teacherClassEdit,
+    element: <AdditionalClassSettings />
   }
 ]);
 

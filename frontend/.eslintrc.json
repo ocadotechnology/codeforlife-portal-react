@@ -1,6 +1,6 @@
 {
   "env": {
-    "browser": true,
+    "browser": false, // disable new browser session on yarn start
     "es2021": true
   },
   "extends": [
