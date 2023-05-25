@@ -33,7 +33,7 @@ const Links: React.FC = () => (
       </Grid>
       <Grid xs={12} sm={4}>
         <Stack>
-          <Link href={paths.privacyNotice}>
+          <Link href={paths.privacyNotice._}>
             Privacy Notice
           </Link>
           <Link href={paths.termsOfUse}>

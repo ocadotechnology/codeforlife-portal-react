@@ -22,31 +22,29 @@ const ForChildren: React.FC = () => {
       >
         Terms of Use
       </Typography>
-      <TableOfContents
-        description={<ChildrenIntro />}
-        contents={[
-          {
-            header: 'Misuse of Code for Life site',
-            element: <Misuse />
-          },
-          {
-            header: 'Other limits of use',
-            element: <OtherLimitsOfUse />
-          },
-          {
-            header: 'Alerting Code for Life',
-            element: <Alerting />
-          },
-          {
-            header: 'Intellectual Property',
-            element: <IP />
-          },
-          {
-            header: 'Our Responsibilities',
-            element: <OurResponsibilities />
-          }
-        ]}
-      />
+      <ChildrenIntro />
+      <TableOfContents contents={[
+        {
+          header: 'Misuse of Code for Life site',
+          element: <Misuse />
+        },
+        {
+          header: 'Other limits of use',
+          element: <OtherLimitsOfUse />
+        },
+        {
+          header: 'Alerting Code for Life',
+          element: <Alerting />
+        },
+        {
+          header: 'Intellectual Property',
+          element: <IP />
+        },
+        {
+          header: 'Our Responsibilities',
+          element: <OurResponsibilities />
+        }
+      ]} />
     </Stack>
   );
 };

@@ -44,7 +44,6 @@ const PageBanner: React.FC<PageBannerProps> = ({
       <Stack
         direction='row'
         alignItems='center'
-        justifyContent='center'
         gap={2}
       >
         <Stack
@@ -74,6 +73,7 @@ const PageBanner: React.FC<PageBannerProps> = ({
             {...img}
             display={{ xs: 'none', md: 'block' }}
             maxWidth='320px'
+            marginLeft='auto'
           />
         }
       </Stack>
