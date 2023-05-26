@@ -70,7 +70,10 @@ const TeacherForm: React.FC = (): JSX.Element => {
           .
         </Typography>
       </Stack>
-      <SubmitButton stackProps={{ alignItems: 'end' }} href={paths.login2fa}>
+      <SubmitButton
+        stackProps={{ alignItems: 'end' }}
+        // TODO: Remove href and replace with submit functionality
+        href={paths.login2fa}>
         Log in
       </SubmitButton>
     </BaseForm>

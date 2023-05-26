@@ -4,6 +4,7 @@ import { createBrowserRouter } from 'react-router-dom';
 import Home from '../pages/home/Home';
 import Login from '../pages/login/Login';
 import Login2fa from '../pages/login/Login2fa';
+import Login2faBackup from '../pages/login/Login2faBackup';
 import Teachers from '../pages/teachers/Teachers';
 import Students from '../pages/students/Students';
 import Register from '../pages/register/Register';
@@ -36,7 +37,8 @@ export const paths = {
     student: '/login?userType=student',
     independent: '/login?userType=independent'
   },
-  login2fa: 'login/2fa',
+  login2fa: '/login2fa',
+  login2faBackup: '/login2faBackup',
   resetPassword: {
     _: '/reset-password',
     teacher: '/reset-password?userType=teacher',
@@ -86,6 +88,10 @@ const router = createBrowserRouter([
   {
     path: paths.login2fa,
     element: <Login2fa />
+  },
+  {
+    path: paths.login2faBackup,
+    element: <Login2faBackup />
   },
   {
     path: paths.teachers,
