@@ -5,3 +5,7 @@ export const OpenContactUsWidget = (): void => {
 export const HideContactUsWidget = (): void => {
   window.FreshworksWidget('hide');
 };
+
+export const ShowCookiesDrawer = (): void => {
+  window.Optanon.ToggleInfoDisplay();
+};

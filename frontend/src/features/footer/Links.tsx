@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 
 import { paths } from '../../app/router';
-import { OpenContactUsWidget } from '../thirdParty';
+import { OpenContactUsWidget, ShowCookiesDrawer } from '../thirdParty';
 
 const Links: React.FC = () => (
   <ThemeProvider theme={createTheme(useTheme(), {
@@ -40,7 +40,7 @@ const Links: React.FC = () => (
           <Link href={paths.termsOfUse}>
             Terms of use
           </Link>
-          <Link>
+          <Link onClick={ShowCookiesDrawer}>
             Cookie settings
           </Link>
         </Stack>

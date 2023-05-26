@@ -9,6 +9,7 @@ import {
   Link,
   Button
 } from '@mui/material';
+import { ShowCookiesDrawer } from '../../../features/thirdParty';
 
 const CustomTableRow: React.FC<{
   withoutUnderline?: boolean,
@@ -131,9 +132,8 @@ const Cookies: React.FC = () => <>
   <Typography>
     You can switch the functional and analytics cookies on and off at any time by clicking this button below.
   </Typography>
-  {/* TODO: open cookie settings on click */}
   {/* TODO: set padding bottom via theme */}
-  <Button>
+  <Button onClick={ShowCookiesDrawer}>
     Cookie Settings
   </Button>
   <Typography>
