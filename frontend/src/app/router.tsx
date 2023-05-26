@@ -59,7 +59,11 @@ export const paths = {
   codingClubs: '/coding-clubs',
   getInvolved: '/get-involved',
   homeLearning: '/home-learning',
-  privacyNotice: '/privacy-notice',
+  privacyNotice: {
+    _: '/privacy-notice',
+    privacyNotice: '/privacy-notice?tab=Privacy+notice',
+    childFriendly: '/privacy-notice?tab=Child-friendly'
+  },
   termsOfUse: '/terms-of-use',
   newsletter: '/newsletter',
   forbidden: '/error/forbidden',
@@ -126,7 +130,7 @@ const router = createBrowserRouter([
     element: <HomeLearning />
   },
   {
-    path: paths.privacyNotice,
+    path: paths.privacyNotice._,
     element: <PrivacyNotice />
   },
   {

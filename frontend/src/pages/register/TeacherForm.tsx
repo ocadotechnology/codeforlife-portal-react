@@ -71,29 +71,27 @@ const TeacherForm: React.FC = () => {
           required
           name="termsOfUse"
           formControlLabelProps={{
-            label: (
-              <>
-                I am over 18 years old have read and understood the&nbsp;
-                <Link
-                  href={paths.termsOfUse}
-                  target="_blank"
-                  color="inherit"
-                  className="body"
-                >
-                  Terms of use
-                </Link>
-                &nbsp;and the&nbsp;
-                <Link
-                  href={paths.privacyNotice}
-                  target="_blank"
-                  color="inherit"
-                  className="body"
-                >
-                  Privacy notice
-                </Link>
-                .
-              </>
-            )
+            label: <>
+              I am over 18 years old have read and understood the&nbsp;
+              <Link
+                href={paths.termsOfUse}
+                target='_blank'
+                color='inherit'
+                className='body'
+              >
+                Terms of use
+              </Link>
+              &nbsp;and the&nbsp;
+              <Link
+                href={paths.privacyNotice._}
+                target='_blank'
+                color='inherit'
+                className='body'
+              >
+                Privacy notice
+              </Link>
+              .
+            </>
           }}
         />
         <CheckboxField
