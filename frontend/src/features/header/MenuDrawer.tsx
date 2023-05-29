@@ -27,7 +27,7 @@ const MenuDrawer: React.FC<{
   const links: LinkProps[] = [
     {
       children: 'Teachers',
-      href: paths.teachers,
+      href: paths.teachers._,
       color: theme.palette.primary.main
     },
     {

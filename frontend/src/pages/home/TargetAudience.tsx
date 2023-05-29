@@ -28,7 +28,7 @@ const TargetAudience: React.FC = () => {
     'Anyone can learn how to code. We will help you learn how. It\'s fun, free and easy.'
   ];
   const buttons: ButtonProps[] = [
-    { children: 'Learn more', href: paths.teachers },
+    { children: 'Learn more', href: paths.teachers._ },
     { children: 'Get started', href: paths.students._ }
   ];
 

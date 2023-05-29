@@ -44,7 +44,7 @@ const Header: React.FC = () => {
         href={process.env.REACT_APP_OCADO_GROUP_HREF}
         hrefInNewTab
       />
-      <Link sx={{ display, mr }} href={paths.teachers}>
+      <Link sx={{ display, mr }} href={paths.teachers._}>
         Teachers
       </Link>
       <Link sx={{ display, mr }} href={paths.students._} color='secondary'>

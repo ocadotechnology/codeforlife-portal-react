@@ -22,6 +22,7 @@ import TeacherAccount from '../pages/teacherDashboard/TeacherAccount';
 import EmailVerification from '../pages/emailVerification/EmailVerification';
 import ResetPassword from '../pages/resetPassword/ResetPassword';
 import StudentsDashboard from '../pages/studentsDashboard/StudentsDashboard';
+import TeacherOnboarding from '../pages/teacherOnboarding/TeacherOnboarding';
 
 export const paths = {
   home: '/',
@@ -36,7 +37,10 @@ export const paths = {
     teacher: '/reset-password?userType=teacher',
     independent: '/reset-password?userType=independent'
   },
-  teachers: '/teachers',
+  teachers: {
+    _: '/teachers',
+    onboarding: '/teachers/onboarding'
+  },
   students: {
     _: '/students',
     dashboard: {
@@ -78,8 +82,12 @@ const router = createBrowserRouter([
     element: <Login />
   },
   {
-    path: paths.teachers,
+    path: paths.teachers._,
     element: <Teachers />
+  },
+  {
+    path: paths.teachers.onboarding,
+    element: <TeacherOnboarding />
   },
   {
     path: paths.students._,
