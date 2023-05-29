@@ -46,8 +46,10 @@ const TeacherOnboarding: React.FC = () => {
             backButton={undefined}
             sx={{
               padding: 0,
+              marginBottom: 3,
               [`.${mobileStepperClasses.progress}`]: {
-                width: '100%'
+                width: '100%',
+                height: '7px'
               }
             }}
           />
