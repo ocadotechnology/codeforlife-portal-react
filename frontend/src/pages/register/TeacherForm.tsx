@@ -101,7 +101,7 @@ const TeacherForm: React.FC = () => {
               'Sign up to receive updates about Code for Life games and teaching resources.'
           }}
         />
-        <CflPasswordFields forTeacher={true} />
+        <CflPasswordFields userType='teacher' />
         <SubmitButton
           stackProps={{ alignItems: 'end' }}
           endIcon={<ChevronRightIcon />}
