@@ -6,10 +6,7 @@ import {
   Button
 } from '@mui/material';
 
-import {
-  getSearchParams,
-  stringToProperty
-} from 'codeforlife/lib/esm/helpers';
+import { SearchParams } from 'codeforlife/lib/esm/helpers';
 
 import { paths } from '../../app/router';
 import BasePage from '../../pages/BasePage';
@@ -20,15 +17,6 @@ import {
   EmailField,
   SubmitButton
 } from 'codeforlife/lib/esm/components/form';
-
-enum UserType {
-  teacher = 'teacher',
-  independent = 'independent'
-}
-
-interface ResetPasswordParams {
-  userType: UserType
-}
 
 interface ResetPasswordForm {
   email: string;
@@ -41,9 +29,12 @@ const initialValues: ResetPasswordForm = {
 const ResetPassword: React.FC = () => {
   const navigate = useNavigate();
 
-  let params = getSearchParams({
-    userType: { cast: stringToProperty(UserType) }
-  }) as ResetPasswordParams | null;
+  const userTypes = ['teacher', 'independent'] as const;
+  const params = SearchParams.get<{
+    userType: typeof userTypes[number]
+  }>({
+    userType: { validate: SearchParams.validate.inOptions(userTypes) }
+  });
 
   React.useEffect(() => {
     if (params === null) {
@@ -52,10 +43,6 @@ const ResetPassword: React.FC = () => {
   }, []);
 
   if (params === null) return <></>;
-  else if (params.userType === undefined) {
-    params = null;
-    return <></>;
-  }
 
   return (
     <BasePage>

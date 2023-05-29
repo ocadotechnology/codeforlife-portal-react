@@ -1,11 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import {
-  getSearchParams,
-  stringToBoolean,
-  stringToProperty
-} from 'codeforlife/lib/esm/helpers';
+import { SearchParams } from 'codeforlife/lib/esm/helpers';
 
 import SadFaceImg from '../../images/sadface.png';
 import PaperPlaneImg from '../../images/paper_plane.png';
@@ -14,24 +10,17 @@ import BasePage from '../../pages/BasePage';
 import PageSection from '../../components/PageSection';
 import Status from './Status';
 
-enum UserType {
-  teacher = 'teacher',
-  student = 'student',
-  independent = 'independent'
-}
-
-interface EmailVerificationParams {
-  success: boolean;
-  userType: UserType;
-}
-
 const EmailVerification: React.FC = () => {
   const navigate = useNavigate();
 
-  let params = getSearchParams({
-    success: { cast: stringToBoolean },
-    userType: { cast: stringToProperty(UserType) }
-  }) as EmailVerificationParams | null;
+  const userTypes = ['teacher', 'student', 'independent'] as const;
+  const params = SearchParams.get<{
+    success: boolean;
+    userType: typeof userTypes[number];
+  }>({
+    success: { cast: SearchParams.cast.toBoolean },
+    userType: { validate: SearchParams.validate.inOptions(userTypes) }
+  });
 
   React.useEffect(() => {
     if (params === null) {
@@ -40,16 +29,12 @@ const EmailVerification: React.FC = () => {
   }, []);
 
   if (params === null) return <></>;
-  else if (params.userType === undefined) {
-    params = null;
-    return <></>;
-  }
 
   return (
     <BasePage>
       <PageSection maxWidth="md" className="flex-center">
-        {params.success ? (
-          <Status
+        {params.success
+          ? <Status
             userType={params.userType}
             header="We need to verify your email address"
             body={[
@@ -62,8 +47,7 @@ const EmailVerification: React.FC = () => {
               src: PaperPlaneImg
             }}
           />
-        ) : (
-          <Status
+          : <Status
             userType={params.userType}
             header="Your email address verification failed"
             body={[
@@ -75,7 +59,7 @@ const EmailVerification: React.FC = () => {
               src: SadFaceImg
             }}
           />
-        )}
+        }
       </PageSection>
     </BasePage>
   );
