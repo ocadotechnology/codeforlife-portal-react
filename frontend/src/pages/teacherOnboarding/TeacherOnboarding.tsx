@@ -35,7 +35,7 @@ const TeacherOnboarding: React.FC = () => {
             ][activeStep]}
           </Typography>
           <Typography>
-            Progress &lt; {activeStep} of {steps} &gt;
+            Progress &lt; {activeStep + 1} of {steps} &gt;
           </Typography>
           <MobileStepper
             variant='progress'
