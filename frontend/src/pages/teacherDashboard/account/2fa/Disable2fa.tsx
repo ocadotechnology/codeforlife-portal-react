@@ -24,7 +24,7 @@ const Disable2fa: React.FC = (): JSX.Element => {
         <Button
           variant="contained"
           color="error"
-          // TODO: to call backend
+          // TODO: to call backend and show confirmation popup
           type="submit">
           Disable 2FA
         </Button>
