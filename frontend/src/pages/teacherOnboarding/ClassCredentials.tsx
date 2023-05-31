@@ -38,7 +38,10 @@ const WhiteTableCell: React.FC<TableCellProps> = ({
 
 const HeadRowTableCell: React.FC<TableRowProps> = (props) => (
   <TableCell padding='none'>
-    <Table style={{ marginBottom: 0 }}>
+    <Table style={{
+      marginBottom: 0,
+      tableLayout: 'fixed'
+    }}>
       <TableHead className='light'>
         <TableRow {...props} />
       </TableHead>
@@ -48,7 +51,10 @@ const HeadRowTableCell: React.FC<TableRowProps> = (props) => (
 
 const BodyRowTableCell: React.FC<TableRowProps> = (props) => (
   <TableCell padding='none'>
-    <Table style={{ marginBottom: 0 }}>
+    <Table style={{
+      marginBottom: 0,
+      tableLayout: 'fixed'
+    }}>
       <TableBody>
         <TableRow {...props} />
       </TableBody>
@@ -85,19 +91,20 @@ const ClassCredentials: React.FC = () => {
       You will not be shown this page again, so please make sure you retain a copy of the passwords for your records. You can print the reminder cards from the button below. Please ensure you share student passwords securely.
     </Typography>
     <Table sx={{
+      tableLayout: 'fixed',
       [`.${typographyClasses.root}`]: {
         marginBottom: 0
       }
     }}>
       <TableHead>
         <TableRow>
-          <TableCell width='50%'>
+          <TableCell width='45%'>
             <Typography>
               Option 1 Login details
             </Typography>
           </TableCell>
-          <WhiteTableCell />
-          <TableCell width='50%'>
+          <WhiteTableCell width='10%' />
+          <TableCell width='45%'>
             <Typography>
               Option 2 Login links
             </Typography>
@@ -129,7 +136,9 @@ const ClassCredentials: React.FC = () => {
               color: 'white',
               backgroundColor: primary[500],
               borderRadius: '50%',
-              padding: 10
+              padding: 10,
+              width: 'fit-content',
+              margin: 'auto'
             }}>
               OR
             </Typography>
