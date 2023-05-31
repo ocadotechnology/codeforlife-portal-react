@@ -40,7 +40,8 @@ const HeadRowTableCell: React.FC<TableRowProps> = (props) => (
   <TableCell padding='none'>
     <Table style={{
       marginBottom: 0,
-      tableLayout: 'fixed'
+      tableLayout: 'fixed',
+      height: '100%'
     }}>
       <TableHead className='light'>
         <TableRow {...props} />
@@ -53,7 +54,8 @@ const BodyRowTableCell: React.FC<TableRowProps> = (props) => (
   <TableCell padding='none'>
     <Table style={{
       marginBottom: 0,
-      tableLayout: 'fixed'
+      tableLayout: 'fixed',
+      height: '100%'
     }}>
       <TableBody>
         <TableRow {...props} />
@@ -91,6 +93,7 @@ const ClassCredentials: React.FC = () => {
       You will not be shown this page again, so please make sure you retain a copy of the passwords for your records. You can print the reminder cards from the button below. Please ensure you share student passwords securely.
     </Typography>
     <Table sx={{
+      height: '100%',
       tableLayout: 'fixed',
       [`.${typographyClasses.root}`]: {
         marginBottom: 0
