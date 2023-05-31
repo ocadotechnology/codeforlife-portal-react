@@ -15,7 +15,7 @@ const MessageBanner: React.FC = () => {
   const theme = useTheme();
   const messageTag = 'info';
   const message = 'message';
-  const [showBanner, setShowBanner] = useState(false);
+  const [showBanner, setShowBanner] = useState(true);
 
   const handleClose = (): void => {
     setShowBanner(false);
@@ -30,7 +30,7 @@ const MessageBanner: React.FC = () => {
               ? <ErrorOutlineOutlinedIcon />
               : <InfoOutlinedIcon />
             }
-            <Typography variant="h6" marginX={2} marginY={0} sx={{ flexGrow: 1 }}>
+            <Typography marginX={2} marginY={0} sx={{ flexGrow: 1 }}>
               {message}
             </Typography>
             <CloseIcon onClick={handleClose} />
