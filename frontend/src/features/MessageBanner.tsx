@@ -15,7 +15,7 @@ const MessageBanner: React.FC = () => {
   const theme = useTheme();
   const messageTag = 'info';
   const message = 'message';
-  const [showBanner, setShowBanner] = useState(true);
+  const [showBanner, setShowBanner] = useState(false);
 
   const handleClose = (): void => {
     setShowBanner(false);
