@@ -58,6 +58,7 @@ const ClassForm: React.FC<{
             )
           }}
         />
+        {/* TODO: fix checkbox styling */}
         <CheckboxField
           name='seeClassmates'
           formControlLabelProps={{
