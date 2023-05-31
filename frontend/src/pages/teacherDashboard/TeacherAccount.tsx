@@ -25,7 +25,7 @@ import {
 } from '@mui/icons-material';
 import { getUser } from './dummyMethods';
 import { TextField, CheckboxField } from 'codeforlife/lib/esm/components/form';
-import { CflHorizontalForm } from '../../components/formik/CflForm';
+import { CflHorizontalForm } from '../../components/form/CflForm';
 import PageSection from '../../components/PageSection';
 
 const TwoFactorAuthentication: React.FC = (): JSX.Element => {

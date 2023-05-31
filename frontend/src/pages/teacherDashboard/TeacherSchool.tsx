@@ -32,7 +32,7 @@ import {
   AutocompleteField
 } from 'codeforlife/lib/esm/components/form';
 import { getNames } from 'country-list';
-import { CflHorizontalForm } from '../../components/formik/CflForm';
+import { CflHorizontalForm } from '../../components/form/CflForm';
 import PageSection from '../../components/PageSection';
 
 const InviteTeacherForm: React.FC = (): JSX.Element => {
