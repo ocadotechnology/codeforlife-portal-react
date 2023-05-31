@@ -7,7 +7,9 @@ import {
   TableHead,
   TableBody,
   TableRow,
-  TableCell
+  TableRowProps,
+  TableCell,
+  TableCellProps
 } from '@mui/material';
 import {
   Print as PrintIcon,
@@ -20,84 +22,37 @@ import { primary } from 'codeforlife/lib/esm/theme/colors';
 
 import { paths } from '../../app/router';
 
-const NamePasswordTable: React.FC<{
-  students: Array<{
-    name: string;
-    password: string;
-  }>;
-}> = ({ students }) => (
-  <Table style={{ marginBottom: 0 }}>
-    <TableHead className='light'>
-      <TableRow>
-        <TableCell width='40%'>
-          <Typography>
-            Name
-          </Typography>
-        </TableCell>
-        <TableCell width='60%'>
-          <Typography>
-            Password
-          </Typography>
-        </TableCell>
-      </TableRow>
-    </TableHead>
-    <TableBody>
-      {students.map((student) => (
-        <TableRow key={student.name}>
-          <TableCell>
-            <Typography>
-              {student.name}
-            </Typography>
-          </TableCell>
-          <TableCell>
-            <Typography>
-              {student.password}
-            </Typography>
-          </TableCell>
-        </TableRow>
-      ))}
-    </TableBody>
-  </Table>
+const WhiteTableCell: React.FC<TableCellProps> = ({
+  style,
+  ...otherTableCellProps
+}) => (
+  <TableCell
+    style={{
+      ...style,
+      backgroundColor: 'white'
+    }}
+    {...otherTableCellProps}
+  />
 );
 
-const LinkTable: React.FC<{
-  students: Array<{
-    name: string;
-    link: string;
-  }>;
-}> = ({ students }) => (
-  <Table style={{ marginBottom: 0 }}>
-    <TableHead className='light'>
-      <TableRow>
-        <TableCell>
-          <Typography>
-            Copy the links below and share with the student
-          </Typography>
-        </TableCell>
-      </TableRow>
-    </TableHead>
-    <TableBody>
-      {students.map((student) => (
-        <TableRow key={student.name}>
-          <TableCell>
-            <Stack
-              direction='row'
-              width='100%'
-              alignItems='center'
-            >
-              <Typography className='nowrap-ellipsis'>
-                {student.link}
-              </Typography>
-              <CopyIconButton
-                content={student.link}
-                style={{ marginLeft: 'auto' }}
-              />
-            </Stack>
-          </TableCell>
-        </TableRow>
-      ))}
-    </TableBody>
-  </Table>
+const HeadRowTableCell: React.FC<TableRowProps> = (props) => (
+  <TableCell padding='none'>
+    <Table style={{ marginBottom: 0 }}>
+      <TableHead className='light'>
+        <TableRow {...props} />
+      </TableHead>
+    </Table>
+  </TableCell>
+);
+
+const BodyRowTableCell: React.FC<TableRowProps> = (props) => (
+  <TableCell padding='none'>
+    <Table style={{ marginBottom: 0 }}>
+      <TableBody>
+        <TableRow {...props} />
+      </TableBody>
+    </Table>
+  </TableCell>
 );
 
 const ClassCredentials: React.FC = () => {
@@ -109,7 +64,7 @@ const ClassCredentials: React.FC = () => {
     link: string;
   }> = ([
     {
-      name: 'John ds fj jer gjre gjr gktr htrjk hjt hkjt hkty hytkj hytkj hytkh ty',
+      name: 'John',
       password: 'ioykms',
       link: 'https://www.codeforlife.education/'
     }
@@ -133,9 +88,7 @@ const ClassCredentials: React.FC = () => {
               Option 1 Login details
             </Typography>
           </TableCell>
-          <TableCell style={{
-            backgroundColor: 'white'
-          }} />
+          <WhiteTableCell />
           <TableCell width='50%'>
             <Typography>
               Option 2 Login links
@@ -163,9 +116,7 @@ const ClassCredentials: React.FC = () => {
               />
             </Stack>
           </TableCell>
-          <TableCell style={{
-            backgroundColor: 'white'
-          }}>
+          <WhiteTableCell>
             <Typography style={{
               color: 'white',
               backgroundColor: primary[500],
@@ -174,7 +125,7 @@ const ClassCredentials: React.FC = () => {
             }}>
               OR
             </Typography>
-          </TableCell>
+          </WhiteTableCell>
           <TableCell>
             <Typography fontWeight='bold'>
               No class code or password required
@@ -182,16 +133,61 @@ const ClassCredentials: React.FC = () => {
           </TableCell>
         </TableRow>
         <TableRow>
-          <TableCell padding='none'>
-            <NamePasswordTable students={students} />
-          </TableCell>
-          <TableCell style={{
-            backgroundColor: 'white'
-          }} />
-          <TableCell padding='none'>
-            <LinkTable students={students} />
-          </TableCell>
+          <HeadRowTableCell>
+            <TableCell width='40%'>
+              <Typography>
+                Name
+              </Typography>
+            </TableCell>
+            <TableCell width='60%'>
+              <Typography>
+                Password
+              </Typography>
+            </TableCell>
+          </HeadRowTableCell>
+          <WhiteTableCell />
+          <HeadRowTableCell>
+            <TableCell>
+              <Typography>
+                Copy the links below and share with the student
+              </Typography>
+            </TableCell>
+          </HeadRowTableCell>
         </TableRow>
+        {students.map((student) => (
+          <TableRow key={student.name}>
+            <BodyRowTableCell>
+              <TableCell width='40%'>
+                <Typography>
+                  {student.name}
+                </Typography>
+              </TableCell>
+              <TableCell width='60%'>
+                <Typography>
+                  {student.password}
+                </Typography>
+              </TableCell>
+            </BodyRowTableCell>
+            <WhiteTableCell />
+            <BodyRowTableCell>
+              <TableCell>
+                <Stack
+                  direction='row'
+                  width='100%'
+                  alignItems='center'
+                >
+                  <Typography className='nowrap-ellipsis'>
+                    {student.link}
+                  </Typography>
+                  <CopyIconButton
+                    content={student.link}
+                    style={{ marginLeft: 'auto' }}
+                  />
+                </Stack>
+              </TableCell>
+            </BodyRowTableCell>
+          </TableRow>
+        ))}
       </TableBody>
     </Table>
     {/* TODO: fix margin bottom */}
