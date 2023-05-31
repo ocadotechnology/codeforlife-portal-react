@@ -1,9 +1,13 @@
 import React from 'react';
 import {
-  Unstable_Grid2 as Grid,
   Stack,
   Typography,
-  Button
+  Button,
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell
 } from '@mui/material';
 import {
   Print as PrintIcon,
@@ -11,44 +15,90 @@ import {
   Check as CheckIcon
 } from '@mui/icons-material';
 
-import {
-  CopyIconButton
-} from 'codeforlife/lib/esm/components';
+import { CopyIconButton } from 'codeforlife/lib/esm/components';
+import { primary } from 'codeforlife/lib/esm/theme/colors';
 
-const GridRow: React.FC<{
-  left: React.ReactElement;
-  leftBgcolor?: string;
-  middle?: React.ReactElement;
-  right: React.ReactElement;
-  rightBgcolor?: string;
-}> = ({
-  left,
-  leftBgcolor = 'lightgrey',
-  middle,
-  right,
-  rightBgcolor = 'lightgrey'
-}) => (<>
-  <Grid
-    xs={5.5}
-    container
-    bgcolor={leftBgcolor}
-  >
-    {left}
-  </Grid>
-  <Grid
-    xs={1}
-    className='flex-center'
-  >
-    {middle}
-  </Grid>
-  <Grid
-    xs={5.5}
-    bgcolor={rightBgcolor}
-    className='flex-center-y'
-  >
-    {right}
-  </Grid>
-</>);
+import { paths } from '../../app/router';
+
+const NamePasswordTable: React.FC<{
+  students: Array<{
+    name: string;
+    password: string;
+  }>;
+}> = ({ students }) => (
+  <Table style={{ marginBottom: 0 }}>
+    <TableHead className='light'>
+      <TableRow>
+        <TableCell width='40%'>
+          <Typography>
+            Name
+          </Typography>
+        </TableCell>
+        <TableCell width='60%'>
+          <Typography>
+            Password
+          </Typography>
+        </TableCell>
+      </TableRow>
+    </TableHead>
+    <TableBody>
+      {students.map((student) => (
+        <TableRow key={student.name}>
+          <TableCell>
+            <Typography>
+              {student.name}
+            </Typography>
+          </TableCell>
+          <TableCell>
+            <Typography>
+              {student.password}
+            </Typography>
+          </TableCell>
+        </TableRow>
+      ))}
+    </TableBody>
+  </Table>
+);
+
+const LinkTable: React.FC<{
+  students: Array<{
+    name: string;
+    link: string;
+  }>;
+}> = ({ students }) => (
+  <Table style={{ marginBottom: 0 }}>
+    <TableHead className='light'>
+      <TableRow>
+        <TableCell>
+          <Typography>
+            Copy the links below and share with the student
+          </Typography>
+        </TableCell>
+      </TableRow>
+    </TableHead>
+    <TableBody>
+      {students.map((student) => (
+        <TableRow key={student.name}>
+          <TableCell>
+            <Stack
+              direction='row'
+              width='100%'
+              alignItems='center'
+            >
+              <Typography className='nowrap-ellipsis'>
+                {student.link}
+              </Typography>
+              <CopyIconButton
+                content={student.link}
+                style={{ marginLeft: 'auto' }}
+              />
+            </Stack>
+          </TableCell>
+        </TableRow>
+      ))}
+    </TableBody>
+  </Table>
+);
 
 const ClassCredentials: React.FC = () => {
   // TODO: get from API.
@@ -59,7 +109,7 @@ const ClassCredentials: React.FC = () => {
     link: string;
   }> = ([
     {
-      name: 'John',
+      name: 'John ds fj jer gjre gjr gktr htrjk hjt hkjt hkty hytkj hytkj hytkh ty',
       password: 'ioykms',
       link: 'https://www.codeforlife.education/'
     }
@@ -75,115 +125,99 @@ const ClassCredentials: React.FC = () => {
     <Typography color='red' fontWeight='bold'>
       You will not be shown this page again, so please make sure you retain a copy of the passwords for your records. You can print the reminder cards from the button below. Please ensure you share student passwords securely.
     </Typography>
-    <Grid container>
-      <GridRow
-        left={
-          <Typography>
-            Option 1 Login details
-          </Typography>
-        }
-        right={
-          <Typography>
-            Option 2 Login links
-          </Typography>
-        }
-      />
-      <GridRow
-        left={
-          <Stack
-            direction='row'
-            width='100%'
-            alignItems='center'
-
-          >
-            <Typography marginRight={2}>
-              Class link:
-            </Typography>
-            <Typography className='nowrap-ellipsis'>
-              {classLink}
-            </Typography>
-            <CopyIconButton
-              content={classLink}
-              style={{ marginLeft: 'auto' }}
-            />
-          </Stack>
-        }
-        middle={
-          <Typography>
-            OR
-          </Typography>
-        }
-        right={
-          <Typography fontWeight='bold'>
-            No class code or password required
-          </Typography>
-        }
-      />
-      <GridRow
-        left={<>
-          <Grid xs={5}>
+    <Table>
+      <TableHead>
+        <TableRow>
+          <TableCell width='50%'>
             <Typography>
-              Name
+              Option 1 Login details
             </Typography>
-          </Grid>
-          <Grid xs={7}>
+          </TableCell>
+          <TableCell style={{
+            backgroundColor: 'white'
+          }} />
+          <TableCell width='50%'>
             <Typography>
-              Password
+              Option 2 Login links
             </Typography>
-          </Grid>
-        </>}
-        right={
-          <Typography>
-            Copy the links below and share with the student
-          </Typography>
-        }
-      />
-      {students.map((student) => (
-        <GridRow
-          key={student.name}
-          left={<>
-            <Grid xs={5}>
-              <Typography>
-                {student.name}
-              </Typography>
-            </Grid>
-            <Grid xs={7}>
-              <Typography>
-                {student.password}
-              </Typography>
-            </Grid>
-          </>}
-          right={
+          </TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        <TableRow>
+          <TableCell>
             <Stack
               direction='row'
               width='100%'
               alignItems='center'
             >
+              <Typography marginRight={2}>
+                Class link:
+              </Typography>
               <Typography className='nowrap-ellipsis'>
-                {student.link}
+                {classLink}
               </Typography>
               <CopyIconButton
-                content={student.link}
+                content={classLink}
                 style={{ marginLeft: 'auto' }}
               />
             </Stack>
-          }
-        />
-      ))}
-    </Grid>
+          </TableCell>
+          <TableCell style={{
+            backgroundColor: 'white'
+          }}>
+            <Typography style={{
+              color: 'white',
+              backgroundColor: primary[500],
+              borderRadius: '50%',
+              padding: 10
+            }}>
+              OR
+            </Typography>
+          </TableCell>
+          <TableCell>
+            <Typography fontWeight='bold'>
+              No class code or password required
+            </Typography>
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell padding='none'>
+            <NamePasswordTable students={students} />
+          </TableCell>
+          <TableCell style={{
+            backgroundColor: 'white'
+          }} />
+          <TableCell padding='none'>
+            <LinkTable students={students} />
+          </TableCell>
+        </TableRow>
+      </TableBody>
+    </Table>
+    {/* TODO: fix margin bottom */}
     <Stack
       direction='row'
       justifyContent='space-between'
     >
-      <Button endIcon={<PrintIcon />}>
+      <Button
+        endIcon={<PrintIcon />}
+        onClick={() => { alert('TODO: call api'); }}
+      >
         Print password reminder cards
       </Button>
-      <Button endIcon={<SaveAltIcon />}>
+      <Button
+        endIcon={<SaveAltIcon />}
+        onClick={() => { alert('TODO: call api'); }}
+      >
         Download CSV
       </Button>
     </Stack>
     <Stack alignItems='end'>
-      <Button endIcon={<CheckIcon />}>
+      {/* TODO: fix button style variant */}
+      <Button
+        endIcon={<CheckIcon />}
+        href={paths.teacherSchool}
+      >
         Complete setup
       </Button>
     </Stack>
