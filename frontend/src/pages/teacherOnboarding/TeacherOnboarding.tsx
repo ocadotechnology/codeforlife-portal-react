@@ -16,6 +16,8 @@ import ClassCredentials from './ClassCredentials';
 const TeacherOnboarding: React.FC = () => {
   const [activeStep, setActiveStep] = React.useState(0);
 
+  // TODO: check if user has completed onboarding.
+
   function generateKey(step: number): string {
     return `teacher-onboarding-step-${step}`;
   }
