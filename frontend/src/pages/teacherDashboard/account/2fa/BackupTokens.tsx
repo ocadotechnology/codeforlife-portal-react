@@ -8,6 +8,8 @@ import { paths } from '../../../../app/router';
 import { ItemizedList } from 'codeforlife/lib/esm/components';
 
 const BackupTokens: React.FC = (): JSX.Element => {
+  const backupTokens = ['token1', 'token2', 'token3', 'token4', 'token5', 'token6', 'token7', 'token8', 'token9', 'token10'];
+
   return (
     <BasePage>
       <DashboardBanner />
@@ -28,26 +30,16 @@ const BackupTokens: React.FC = (): JSX.Element => {
           You don&apos;t have any backup codes yet.
         </Typography>
         <ItemizedList styleType='disc'>
-          <ListItemText>token 1</ListItemText>
-          <ListItemText>token 2</ListItemText>
-          <ListItemText>token 3</ListItemText>
-          <ListItemText>token 4</ListItemText>
-          <ListItemText>token 5</ListItemText>
-          <ListItemText>token 6</ListItemText>
-          <ListItemText>token 7</ListItemText>
-          <ListItemText>token 8</ListItemText>
-          <ListItemText>token 9</ListItemText>
-          <ListItemText>token 10</ListItemText>
+          {backupTokens.map((backupToken, index) => (
+            <ListItemText key={index}>{backupToken}</ListItemText>
+          ))}
         </ItemizedList>
         <Typography color="error">
           When you generate new recovery codes, you must download or print the new codes. Your old codes won&apos;t work
           anymore.
         </Typography>
-        <Button
-          variant="contained"
-          color="tertiary"
-          // TODO: Connect backend so it generates backup tokens and show corresponding text from text above
-          type="submit">
+        {/* TODO: Connect backend so it generates backup tokens and show corresponding text from text above */}
+        <Button>
           Generate tokens
         </Button>
       </PageSection>

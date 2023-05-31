@@ -3,7 +3,8 @@ import BasePage from '../../BasePage';
 import DashboardBanner from '../DashboardBanner';
 import DashboardHeader from '../DashboardHeader';
 import {
-  Button, Grid,
+  Button,
+  Unstable_Grid2 as Grid,
   InputAdornment,
   Stack,
   Typography,
@@ -38,30 +39,33 @@ const TwoFactorAuthentication: React.FC = (): JSX.Element => {
         Use your smartphone or tablet to enhance your account&apos;s security by
         using an authenticator app.
       </Typography>
-      <Button variant="contained" color="tertiary" href={paths.setup2fa}>
+      <Button href={paths.setup2fa}>
         Setup two factor authentication
       </Button>
       <Grid container>
-        <Grid item sm={6}>
+        <Grid sm={6}>
           <Typography variant="h6">Backup tokens</Typography>
           <Typography>
             If you don&apos;t have your smartphone or tablet with you, you can access your account using backup tokens.
             You have 0 backup tokens remaining.
           </Typography>
           <Typography>View and create backup tokens for your account.</Typography>
-          <Button variant="contained" color="tertiary" href={paths.backupTokens}>
+          <Button href={paths.backupTokens}>
             Manage backup tokens
           </Button>
           <Typography variant="body2" fontWeight="bold" color="error">
             Note: Please make sure that you store any login details in a secure place.
           </Typography>
         </Grid>
-        <Grid item sm={6}>
+        <Grid sm={6}>
           <Typography variant="h6">Disable two factor authentication (2FA)</Typography>
           <Typography>
             We recommend you to continue using 2FA, however you can disable 2FA for your account using the button below.
           </Typography>
-          <Button variant="contained" color="error" href={paths.disable2fa} endIcon={<ErrorOutlineOutlined />}>
+          <Button
+            // TODO: call backend and show confirmation popup
+            color="error"
+            endIcon={<ErrorOutlineOutlined />}>
             Disable 2FA
           </Button>
         </Grid>
@@ -83,7 +87,7 @@ const YourAccountForm: React.FC = () => {
       onSubmit={(values) => {
         alert(JSON.stringify(values, null, 2));
       }}
-      submitButton={<Button variant="contained">Update details</Button>}
+      submitButton={<Button>Update details</Button>}
     >
       <TextField
         name="firstName"
@@ -158,7 +162,6 @@ const DeleteAccountForm: React.FC = (): JSX.Element => {
       }}
       submitButton={
         <Button
-          variant="contained"
           color="error"
           type="submit"
           endIcon={<DeleteOutline />}
