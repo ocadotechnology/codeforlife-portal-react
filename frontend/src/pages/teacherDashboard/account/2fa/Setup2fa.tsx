@@ -71,7 +71,7 @@ const Setup2fa: React.FC = (): JSX.Element => {
               .string()
               .matches(/^[0-9]{6}$/, 'Invalid token')
             }
-            sx={{ width: {sm: '1 / 5' }}}
+            sx={{ maxWidth: '230px' }}
           />
           <Stack direction="row" spacing={2} justifyContent="flex-end">
             <Button href={paths.teacherSchool}>
