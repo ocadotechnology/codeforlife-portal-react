@@ -9,7 +9,8 @@ import {
   TableRow,
   TableRowProps,
   TableCell,
-  TableCellProps
+  TableCellProps,
+  typographyClasses
 } from '@mui/material';
 import {
   Print as PrintIcon,
@@ -70,6 +71,9 @@ const ClassCredentials: React.FC = () => {
     }
   ]);
 
+  const nameCellWidth = '40%';
+  const passwordCellWidth = '60%';
+
   return <>
     <Typography>
       The following credentials have been created for your class. When they log in for the first time, you may want students to change their passwords to something more memorable. You can reset these details for them at any time.
@@ -80,7 +84,11 @@ const ClassCredentials: React.FC = () => {
     <Typography color='red' fontWeight='bold'>
       You will not be shown this page again, so please make sure you retain a copy of the passwords for your records. You can print the reminder cards from the button below. Please ensure you share student passwords securely.
     </Typography>
-    <Table>
+    <Table sx={{
+      [`.${typographyClasses.root}`]: {
+        marginBottom: 0
+      }
+    }}>
       <TableHead>
         <TableRow>
           <TableCell width='50%'>
@@ -134,12 +142,12 @@ const ClassCredentials: React.FC = () => {
         </TableRow>
         <TableRow>
           <HeadRowTableCell>
-            <TableCell width='40%'>
+            <TableCell width={nameCellWidth}>
               <Typography>
                 Name
               </Typography>
             </TableCell>
-            <TableCell width='60%'>
+            <TableCell width={passwordCellWidth}>
               <Typography>
                 Password
               </Typography>
@@ -157,12 +165,12 @@ const ClassCredentials: React.FC = () => {
         {students.map((student) => (
           <TableRow key={student.name}>
             <BodyRowTableCell>
-              <TableCell width='40%'>
+              <TableCell width={nameCellWidth}>
                 <Typography>
                   {student.name}
                 </Typography>
               </TableCell>
-              <TableCell width='60%'>
+              <TableCell width={passwordCellWidth}>
                 <Typography>
                   {student.password}
                 </Typography>
