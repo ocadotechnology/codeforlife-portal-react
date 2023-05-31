@@ -12,7 +12,7 @@ import * as Yup from 'yup';
 
 import {
   Form,
-  TextField,
+  MultiValueTextField,
   SubmitButton
 } from 'codeforlife/lib/esm/components/form';
 
@@ -60,7 +60,7 @@ const StudentsForm: React.FC<{
           width: { xs: '100%', md: '75%' }
         }}
       >
-        <TextField
+        <MultiValueTextField
           required
           multiline
           rows={5}
