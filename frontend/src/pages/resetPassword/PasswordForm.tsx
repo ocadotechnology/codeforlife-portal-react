@@ -45,7 +45,7 @@ const PasswordForm: React.FC<{
       </Typography>
       <Button href={
         userType === 'teacher'
-          ? paths.login.teacher
+          ? paths.login.teacher._
           : paths.login.independent
       }>
         OK
