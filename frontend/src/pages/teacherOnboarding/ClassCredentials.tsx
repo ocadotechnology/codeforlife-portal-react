@@ -34,7 +34,7 @@ const ClassCredentials: React.FC = () => {
       {/* TODO: fix button style variant */}
       <Button
         endIcon={<CheckIcon />}
-        href={paths.teacherSchool}
+        href={paths.teacher.dashboard.school}
       >
         Complete setup
       </Button>
