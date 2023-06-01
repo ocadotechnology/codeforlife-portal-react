@@ -43,16 +43,29 @@ export const paths = {
     teacher: '/reset-password?userType=teacher',
     independent: '/reset-password?userType=independent'
   },
-  teachers: {
-    _: '/teachers',
-    onboarding: '/teachers/onboarding'
-  },
-  students: {
-    _: '/students',
+  teacher: {
+    _: '/teacher',
+    onboarding: '/teacher/onboarding',
     dashboard: {
-      _: '/students/dashboard',
-      dependent: '/students/dashboard?userType=dependent',
-      independent: '/students/dashboard?userType=independent'
+      _: '/teacher/dashboard',
+      school: '/teacher/dashboard/school',
+      classes: '/teacher/dashboard/classes',
+      account: {
+        _: '/teacher/dashboard/account',
+        twoFA: {
+          _: '/teacher/dashboard/account/2fa',
+          setup: '/teacher/dashboard/account/2fa/setup',
+          backupTokens: '/teacher/dashboard/account/2fa/backup-tokens'
+        }
+      }
+    }
+  },
+  student: {
+    _: '/student',
+    dashboard: {
+      _: '/student/dashboard',
+      dependent: '/student/dashboard?userType=dependent',
+      independent: '/student/dashboard?userType=independent'
     }
   },
   register: '/register',
@@ -72,11 +85,6 @@ export const paths = {
   pageNotFound: '/error/page-not-found',
   internalServerError: '/error/internal-server-error',
   rapidRouter: '/rapid-router',
-  teacherSchool: '/teacher/school',
-  teacherClasses: '/teacher/classes',
-  teacherAccount: '/teacher/account',
-  setup2fa: '/teacher/account/2fa/setup',
-  backupTokens: '/teacher/account/2fa/backup-tokens',
   kurono: '/kurono'
 };
 
@@ -90,19 +98,19 @@ const router = createBrowserRouter([
     element: <Login />
   },
   {
-    path: paths.teachers._,
+    path: paths.teacher._,
     element: <Teachers />
   },
   {
-    path: paths.teachers.onboarding,
+    path: paths.teacher.onboarding,
     element: <TeacherOnboarding />
   },
   {
-    path: paths.students._,
+    path: paths.student._,
     element: <Students />
   },
   {
-    path: paths.students.dashboard._,
+    path: paths.student.dashboard._,
     element: <StudentsDashboard />
   },
   {
@@ -150,23 +158,23 @@ const router = createBrowserRouter([
     element: <InternalServerError />
   },
   {
-    path: paths.teacherSchool,
+    path: paths.teacher.dashboard.school,
     element: <TeacherSchool />
   },
   {
-    path: paths.teacherClasses,
+    path: paths.teacher.dashboard.classes,
     element: <TeacherClasses />
   },
   {
-    path: paths.teacherAccount,
+    path: paths.teacher.dashboard.account._,
     element: <TeacherAccount />
   },
   {
-    path: paths.setup2fa,
+    path: paths.teacher.dashboard.account.twoFA.setup,
     element: <Setup2fa />
   },
   {
-    path: paths.backupTokens,
+    path: paths.teacher.dashboard.account.twoFA.backupTokens,
     element: <BackupTokens />
   },
   {
