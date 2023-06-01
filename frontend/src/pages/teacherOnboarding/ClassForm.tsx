@@ -1,23 +1,20 @@
 import React from 'react';
 import {
-  Typography,
-  InputAdornment
+  Typography
 } from '@mui/material';
-import {
-  PeopleAlt as PeopleAltIcon
-} from '@mui/icons-material';
 
 import {
   Form,
-  TextField,
-  CheckboxField,
   SubmitButton
 } from 'codeforlife/lib/esm/components/form';
 
+import ClassNameField from '../../components/form/ClassNameField';
+import SeeClassmatesProgressField from '../../components/form/SeeClassmatesProgressField';
+
 const ClassForm: React.FC<{
-  nextStep: () => void
+  onSubmit: () => void
 }> = ({
-  nextStep
+  onSubmit
 }) => {
     interface Values {
       class: string;
@@ -39,32 +36,14 @@ const ClassForm: React.FC<{
           // TODO: call backend
           console.log(values);
           setSubmitting(false);
-          nextStep();
+          onSubmit();
         }}
         stackProps={{
           width: { xs: '100%', md: '50%' }
         }}
       >
-        <TextField
-          required
-          name='class'
-          placeholder='Class name'
-          helperText='Enter a class name'
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position='end'>
-                <PeopleAltIcon />
-              </InputAdornment>
-            )
-          }}
-        />
-        {/* TODO: fix checkbox styling */}
-        <CheckboxField
-          name='seeClassmates'
-          formControlLabelProps={{
-            label: 'Allow students to see their classmates\' progress?'
-          }}
-        />
+        <ClassNameField />
+        <SeeClassmatesProgressField />
         <SubmitButton>
           Create class
         </SubmitButton>

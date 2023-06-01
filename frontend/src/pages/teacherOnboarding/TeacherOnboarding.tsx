@@ -8,9 +8,9 @@ import {
 
 import BasePage from '../BasePage';
 import PageSection from '../../components/PageSection';
+import AddStudentsForm from '../../features/addStudentsForm/AddStudentsForm';
 import SchoolForm from './SchoolForm';
 import ClassForm from './ClassForm';
-import StudentsForm from './StudentsForm';
 import ClassCredentials from './ClassCredentials';
 
 const TeacherOnboarding: React.FC = () => {
@@ -20,6 +20,10 @@ const TeacherOnboarding: React.FC = () => {
 
   function generateKey(step: number): string {
     return `teacher-onboarding-step-${step}`;
+  }
+
+  function onSubmit(): void {
+    setActiveStep(activeStep + 1);
   }
 
   const steps = 4;
@@ -58,15 +62,15 @@ const TeacherOnboarding: React.FC = () => {
           {[
             <SchoolForm
               key={generateKey(0)}
-              nextStep={() => { setActiveStep(1); }}
+              onSubmit={onSubmit}
             />,
             <ClassForm
               key={generateKey(1)}
-              nextStep={() => { setActiveStep(2); }}
+              onSubmit={onSubmit}
             />,
-            <StudentsForm
+            <AddStudentsForm
               key={generateKey(2)}
-              nextStep={() => { setActiveStep(3); }}
+              onSubmit={onSubmit}
             />,
             <ClassCredentials
               key={generateKey(3)}

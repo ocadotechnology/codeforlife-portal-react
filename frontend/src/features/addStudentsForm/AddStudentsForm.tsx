@@ -12,21 +12,21 @@ import * as Yup from 'yup';
 
 import {
   Form,
-  MultiValueTextField,
+  TextField,
   SubmitButton
 } from 'codeforlife/lib/esm/components/form';
 
-const StudentsForm: React.FC<{
-  nextStep: () => void
+const AddStudentsForm: React.FC<{
+  onSubmit: () => void
 }> = ({
-  nextStep
+  onSubmit
 }) => {
     interface Values {
-      students: string
+      students: string[]
     }
 
     const initialValues: Values = {
-      students: ''
+      students: []
     };
 
     return <>
@@ -37,9 +37,7 @@ const StudentsForm: React.FC<{
         Student names and the class access code are required to sign in.
       </Typography>
       {/* TODO: call API */}
-      <Button endIcon={
-        <UploadIcon />
-      }>
+      <Button endIcon={<UploadIcon />}>
         Import CSV file
       </Button>
       <FormHelperText>
@@ -51,7 +49,7 @@ const StudentsForm: React.FC<{
           // TODO: call backend
           console.log(values);
           setSubmitting(false);
-          nextStep();
+          onSubmit();
         }}
         stackProps={{
           gap: 3,
@@ -60,7 +58,8 @@ const StudentsForm: React.FC<{
           width: { xs: '100%', md: '75%' }
         }}
       >
-        <MultiValueTextField
+        <TextField
+          split={/\r\n|\n|\r|,/}
           required
           multiline
           rows={5}
@@ -68,17 +67,18 @@ const StudentsForm: React.FC<{
           className='resize-vertical'
           placeholder='You can import names from a .CSV file, or copy and paste them from a spreadsheet directly into this text box'
           validate={Yup
-            .string()
-            .matches(/^[a-zA-Z0-9-_ ]{1,150}$/gm, 'Names may only contain letters, numbers, dashes, underscores, and spaces.')
+            .array()
+            .of(Yup
+              .string()
+              .matches(/^[a-zA-Z0-9-_ ]{1,150}$/gm, 'Names may only contain letters, numbers, dashes, underscores, and spaces.')
+            )
           }
         />
-        <SubmitButton endIcon={
-          <AddIcon />
-        }>
+        <SubmitButton endIcon={<AddIcon />}>
           Add students
         </SubmitButton>
       </Form>
     </>;
   };
 
-export default StudentsForm;
+export default AddStudentsForm;
