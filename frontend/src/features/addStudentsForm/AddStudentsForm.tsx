@@ -70,7 +70,7 @@ const AddStudentsForm: React.FC<{
             .array()
             .of(Yup
               .string()
-              .matches(/^[a-zA-Z0-9-_ ]{1,150}$/gm, 'Names may only contain letters, numbers, dashes, underscores, and spaces.')
+              .matches(/^.*?\b[a-zA-Z0-9-_ ]{1,150}$/gm, 'Names may only contain letters, numbers, dashes, underscores, and spaces.')
             )
           }
         />
