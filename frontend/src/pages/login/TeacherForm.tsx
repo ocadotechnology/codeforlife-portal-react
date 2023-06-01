@@ -14,18 +14,9 @@ import {
   TextField,
   SubmitButton
 } from 'codeforlife/lib/esm/components/form';
-import { getSearchParams } from 'codeforlife/lib/esm/helpers';
+import { SearchParams } from 'codeforlife/lib/esm/helpers';
 import Teacher2faBackupForm from './Teacher2faBackupForm';
 import Teacher2faForm from './Teacher2faForm';
-
-enum LoginStep {
-  Login2fa = 'login2fa',
-  Login2faBackup = 'backupToken'
-}
-
-interface TeacherFormParams {
-  loginStep?: LoginStep
-}
 
 interface TeacherFormValues {
   email: string;
@@ -38,23 +29,25 @@ const initialValues: TeacherFormValues = {
 };
 
 const TeacherForm: React.FC = () => {
-  let params = getSearchParams({
-    loginStep: { cast: String, isRequired: false }
-  }) as TeacherFormParams | null;
+  const loginSteps = ['login2fa', 'backupToken'] as const;
+  const params = SearchParams.get<{
+    loginStep?: typeof loginSteps[number]
+  }>({
+    loginStep: {
+      validate: SearchParams.validate.inOptions(loginSteps),
+      isRequired: false
+    }
+  });
 
   let form = <BaseTeacherForm />;
-
-  if (params !== null) {
+  if (params?.loginStep !== undefined) {
     switch (params.loginStep) {
-      case LoginStep.Login2fa:
+      case 'login2fa':
         form = <Teacher2faForm />;
         break;
-      case LoginStep.Login2faBackup:
+      case 'backupToken':
         form = <Teacher2faBackupForm />;
         break;
-      default:
-        params = null;
-        return <></>;
     }
   }
 
