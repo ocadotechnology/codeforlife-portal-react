@@ -61,7 +61,7 @@ const ClassTable = (): JSX.Element => {
             {teacher === `${firstName} ${lastName}` ? 'You' : teacher}
           </CflTableCellElement>
           <CflTableCellElement justifyContent="center">
-            <Button color="tertiary" endIcon={<Create />}>
+            <Button endIcon={<Create />}>
               Update details
             </Button>
           </CflTableCellElement>
@@ -138,7 +138,7 @@ const CreateNewClassForm: React.FC = (): JSX.Element => {
         setSubmitting(false);
       }}
       submitButton={
-        <Button type="submit" variant="contained" color="tertiary">
+        <Button type="submit">
           Create class
         </Button>
       }
