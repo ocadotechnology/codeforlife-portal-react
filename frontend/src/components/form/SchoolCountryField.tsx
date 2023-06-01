@@ -13,7 +13,7 @@ const SchoolCountryField: React.FC = () => {
         required: true,
         name: 'country',
         helperText: 'Country',
-        placeholder: 'Country'
+        placeholder: '(select country)'
       }}
     />
   );

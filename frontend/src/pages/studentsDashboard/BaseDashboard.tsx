@@ -30,6 +30,7 @@ const BaseDashboard: React.FC<BaseDashboardProps> = ({
         title: `Welcome, ${name}`,
         content: 'This is where you can access your games'
       }}
+      textAlign='center'
       bgcolor={isDependent ? 'secondary' : 'tertiary'}
       notification={isDependent
         ? <>You are logged in to class: {classCode}</>

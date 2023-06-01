@@ -53,7 +53,7 @@ const PasswordForm: React.FC<{
     </Stack>
     : <Stack gap={1}>
       <Typography textAlign='center' variant='h4'>
-        Reset password
+        Password Reset
       </Typography>
       <Typography>
         Please enter a new password and confirm it in the box below to reset your account’s password.

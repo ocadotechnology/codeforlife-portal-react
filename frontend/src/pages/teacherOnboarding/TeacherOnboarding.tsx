@@ -8,6 +8,7 @@ import {
 
 import BasePage from '../BasePage';
 import PageSection from '../../components/PageSection';
+import PageBanner from '../../components/PageBanner';
 import AddStudentsForm from '../../features/addStudentsForm/AddStudentsForm';
 import SchoolForm from './SchoolForm';
 import ClassForm from './ClassForm';
@@ -17,6 +18,7 @@ const TeacherOnboarding: React.FC = () => {
   const [activeStep, setActiveStep] = React.useState(0);
 
   // TODO: check if user has completed onboarding.
+  const userName = 'Stefan Kairinos';
 
   function generateKey(step: number): string {
     return `teacher-onboarding-step-${step}`;
@@ -30,9 +32,13 @@ const TeacherOnboarding: React.FC = () => {
 
   return (
     <BasePage>
+      <PageBanner text={{
+        title: `Welcome, ${userName}`,
+        content: 'Everything you need to start coding with your class is here. Let\'s set you up.'
+      }} />
       <PageSection>
         <Stack>
-          <Typography variant='h5'>
+          <Typography variant='h4'>
             {[
               'Create a school or club',
               'Create a class',
@@ -46,8 +52,8 @@ const TeacherOnboarding: React.FC = () => {
           <MobileStepper
             variant='progress'
             position='static'
-            steps={steps}
-            activeStep={activeStep}
+            steps={steps + 1}
+            activeStep={activeStep + 1}
             nextButton={undefined}
             backButton={undefined}
             sx={{
