@@ -18,7 +18,9 @@ import PageNotFound from '../pages/pageNotFound/PageNotFound';
 import InternalServerError from '../pages/internalServerError/InternalServerError';
 import TeacherSchool from '../pages/teacherDashboard/TeacherSchool';
 import TeacherClasses from '../pages/teacherDashboard/TeacherClasses';
-import TeacherAccount from '../pages/teacherDashboard/TeacherAccount';
+import TeacherAccount from '../pages/teacherDashboard/account/TeacherAccount';
+import Setup2fa from '../pages/teacherDashboard/account/2fa/Setup2fa';
+import BackupTokens from '../pages/teacherDashboard/account/2fa/BackupTokens';
 import EmailVerification from '../pages/emailVerification/EmailVerification';
 import ResetPassword from '../pages/resetPassword/ResetPassword';
 import StudentsDashboard from '../pages/studentsDashboard/StudentsDashboard';
@@ -27,7 +29,11 @@ export const paths = {
   home: '/',
   login: {
     _: '/login',
-    teacher: '/login?userType=teacher',
+    teacher: {
+      _: '/login?userType=teacher',
+      login2fa: '/login/?userType=teacher&loginStep=login2fa',
+      backupToken: '/login/?userType=teacher&loginStep=backupToken'
+    },
     student: '/login?userType=student',
     independent: '/login?userType=independent'
   },
@@ -65,6 +71,8 @@ export const paths = {
   teacherSchool: '/teacher/school',
   teacherClasses: '/teacher/classes',
   teacherAccount: '/teacher/account',
+  setup2fa: '/teacher/account/2fa/setup',
+  backupTokens: '/teacher/account/2fa/backup-tokens',
   kurono: '/kurono'
 };
 
@@ -137,8 +145,22 @@ const router = createBrowserRouter([
     path: paths.teacherSchool,
     element: <TeacherSchool />
   },
-  { path: paths.teacherClasses, element: <TeacherClasses /> },
-  { path: paths.teacherAccount, element: <TeacherAccount /> },
+  {
+    path: paths.teacherClasses,
+    element: <TeacherClasses />
+  },
+  {
+    path: paths.teacherAccount,
+    element: <TeacherAccount />
+  },
+  {
+    path: paths.setup2fa,
+    element: <Setup2fa />
+  },
+  {
+    path: paths.backupTokens,
+    element: <BackupTokens />
+  },
   {
     path: paths.emailVerification,
     element: <EmailVerification />

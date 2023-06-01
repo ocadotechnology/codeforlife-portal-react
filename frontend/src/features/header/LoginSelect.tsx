@@ -33,7 +33,7 @@ const LoginSelect: React.FC<{
   )> =
     [
       { children: 'Student', onClick: onClick(paths.login.student) },
-      { children: 'Teacher', onClick: onClick(paths.login.teacher) },
+      { children: 'Teacher', onClick: onClick(paths.login.teacher._) },
       { children: 'Independent', onClick: onClick(paths.login.independent) }
     ];
 

@@ -1,9 +1,10 @@
 import React from 'react';
-import BasePage from '../BasePage';
-import DashboardBanner from './DashboardBanner';
-import DashboardHeader from './DashboardHeader';
+import BasePage from '../../BasePage';
+import DashboardBanner from '../DashboardBanner';
+import DashboardHeader from '../DashboardHeader';
 import {
   Button,
+  Unstable_Grid2 as Grid,
   InputAdornment,
   Stack,
   Typography,
@@ -12,33 +13,63 @@ import {
 import {
   DELETE_ACCOUNT_INITIAL_VALUES,
   UPDATE_TEACHER_ACCOUNT_INITIAL_VALUES
-} from './constants';
+} from '../constants';
 import {
   DELETE_ACCOUNT_SCHEMA,
   UPDATE_TEACHER_ACCOUNT_SCHEMA
-} from './schemas';
+} from '../schemas';
 import {
   DeleteOutline,
   EmailOutlined,
   LockOutlined,
-  SecurityOutlined
+  SecurityOutlined,
+  ErrorOutlineOutlined
 } from '@mui/icons-material';
-import { getUser } from './dummyMethods';
+import { getUser } from '../dummyMethods';
 import { TextField, CheckboxField } from 'codeforlife/lib/esm/components/form';
-import { CflHorizontalForm } from '../../components/formik/CflForm';
-import PageSection from '../../components/PageSection';
+import { CflHorizontalForm } from '../../../components/formik/CflForm';
+import PageSection from '../../../components/PageSection';
+import { paths } from '../../../app/router';
 
 const TwoFactorAuthentication: React.FC = (): JSX.Element => {
   return (
     <Stack>
       <Typography variant="h5">Two factor authentication</Typography>
       <Typography>
-        Use your smartphone or tablet to enhance your accont&apos;s security by
+        Use your smartphone or tablet to enhance your account&apos;s security by
         using an authenticator app.
       </Typography>
-      <Button variant="contained" color="tertiary">
+      <Button href={paths.setup2fa}>
         Setup two factor authentication
       </Button>
+      <Grid container>
+        <Grid sm={6}>
+          <Typography variant="h6">Backup tokens</Typography>
+          <Typography>
+            If you don&apos;t have your smartphone or tablet with you, you can access your account using backup tokens.
+            You have 0 backup tokens remaining.
+          </Typography>
+          <Typography>View and create backup tokens for your account.</Typography>
+          <Button href={paths.backupTokens}>
+            Manage backup tokens
+          </Button>
+          <Typography variant="body2" fontWeight="bold" color="error">
+            Note: Please make sure that you store any login details in a secure place.
+          </Typography>
+        </Grid>
+        <Grid sm={6}>
+          <Typography variant="h6">Disable two factor authentication (2FA)</Typography>
+          <Typography>
+            We recommend you to continue using 2FA, however you can disable 2FA for your account using the button below.
+          </Typography>
+          <Button
+            // TODO: call backend and show confirmation popup
+            color="error"
+            endIcon={<ErrorOutlineOutlined />}>
+            Disable 2FA
+          </Button>
+        </Grid>
+      </Grid>
     </Stack>
   );
 };
@@ -56,7 +87,7 @@ const YourAccountForm: React.FC = () => {
       onSubmit={(values) => {
         alert(JSON.stringify(values, null, 2));
       }}
-      submitButton={<Button variant="contained">Update details</Button>}
+      submitButton={<Button>Update details</Button>}
     >
       <TextField
         name="firstName"
@@ -131,7 +162,6 @@ const DeleteAccountForm: React.FC = (): JSX.Element => {
       }}
       submitButton={
         <Button
-          variant="contained"
           color="error"
           type="submit"
           endIcon={<DeleteOutline />}
