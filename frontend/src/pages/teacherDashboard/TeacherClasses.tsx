@@ -25,6 +25,7 @@ import {
 import { CflHorizontalForm } from '../../components/formik/CflForm';
 import CopyToClipboardIcon from '../../components/CopyToClipboardIcon';
 import PageSection from '../../components/PageSection';
+import { paths } from '../../app/router';
 
 const YourClasses: React.FC = (): JSX.Element => {
   return (
@@ -61,7 +62,11 @@ const ClassTable = (): JSX.Element => {
             {teacher === `${firstName} ${lastName}` ? 'You' : teacher}
           </CflTableCellElement>
           <CflTableCellElement justifyContent="center">
-            <Button color="tertiary" endIcon={<Create />}>
+            <Button
+              href={`${paths.teacherClass}?accessCode=${accessCode}`}
+              color="tertiary"
+              endIcon={<Create />}
+            >
               Update details
             </Button>
           </CflTableCellElement>
