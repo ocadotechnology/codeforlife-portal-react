@@ -7,21 +7,12 @@ import { paths } from '../../app/router';
 import {
   useTheme,
   Typography,
-  FormControl,
-  Select,
-  MenuItem,
-  FormHelperText,
   InputAdornment,
   Grid,
   Stack,
-  Button,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Checkbox,
-  Box
+  Button
 } from '@mui/material';
-import { Formik, Form, Field, FormikProps } from 'formik';
+import { Formik, Form, Field } from 'formik';
 import { CheckboxField, TextField } from 'codeforlife/lib/esm/components/form';
 import { People } from '@mui/icons-material';
 import {
@@ -29,51 +20,9 @@ import {
   PYTHON_LEVELS,
   RapidRouterGameTabs
 } from './rapidRouterLevelsProps';
-
-const CurrentDropdown: React.FC<any> = ({ onChange }) => {
-  const currentDropdownOptions = [
-    "Don't change my current setting",
-    "Don't allow external requests to this class",
-    'Allow external requests to this class for the next hour',
-    'Allow external requests to this class for the next 4 hours',
-    'Allow external requests to this class for the next 8 hours',
-    'Allow external requests to this class for the next 12 hours',
-    'Allow external requests to this class for the next 16 hours',
-    'Allow external requests to this class for the next 20 hours',
-    'Allow external requests to this class for the next 24 hours',
-    'Allow external requests to this class for the next 2 days',
-    'Allow external requests to this class for the next 3 days',
-    'Allow external requests to this class for the next 4 days',
-    'Always allow external requests to this class (not recommended)'
-  ];
-
-  const [dropdownValue, setDropdownValue] = React.useState<string>(
-    currentDropdownOptions[0]
-  );
-
-  return (
-    <FormControl fullWidth>
-      <Select
-        size="small"
-        labelId="lel"
-        id="lelSelect"
-        name="classSettingOptions"
-        value={dropdownValue}
-        onChange={(e) => {
-          setDropdownValue(e.target.value);
-          onChange(e);
-        }}
-      >
-        {currentDropdownOptions.map((option) => (
-          <MenuItem key={option} value={option}>
-            {option}
-          </MenuItem>
-        ))}
-      </Select>
-      <FormHelperText>Choose your setting</FormHelperText>
-    </FormControl>
-  );
-};
+import CurrentDropdown from './CurrentDropDown';
+import RapidRouterTabTitles from './RapidRouterTabTitles';
+import RapidRouterTabs from './RapidRouterTabs';
 
 const ClassDetailsForm: React.FC = () => {
   return (
@@ -87,7 +36,7 @@ const ClassDetailsForm: React.FC = () => {
         alert(JSON.stringify(values, null, 2));
       }}
     >
-      {({ values, handleChange, handleSubmit }) => (
+      {() => (
         <Form>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
@@ -144,215 +93,22 @@ const ClassDetailsForm: React.FC = () => {
   );
 };
 
-const RapidRouterTabs: React.FC<{
-  name: string;
-  formik: any;
-  color: any;
-  levels: Array<{
-    level: string;
-    name: string;
-  }>;
-}> = ({ name, levels, color, formik }) => {
-  const handleCheckboxChange: (idx: number, e: any) => void = (
-    idx: number,
-    e: any
-  ) => {
-    formik.handleChange(e);
-  };
-
-  const allBoxesChecked: () => boolean = () => {
-    return levels.every((element) =>
-      formik.values.levelsSubmitted.includes(element.level)
-    );
-  };
-
-  const selectAll: (e: any) => void = (e: any) => {
-    formik.handleChange(e);
-    console.log(formik.values);
-    const l = levels.map((level) => level.level);
-    const currentLevels = formik.values.levelsSubmitted;
-
-    if (allBoxesChecked()) {
-      const filteredLevels = currentLevels.filter((level: string) => {
-        return !l.includes(level);
-      });
-      formik.setValues({
-        ...formik.values,
-        levelsSubmitted: filteredLevels
-      });
-    } else {
-      for (let i = 0; i < levels.length; i++) {
-        if (!currentLevels.includes(levels[i].level)) {
-          currentLevels.push(levels[i].level);
-        }
-      }
-      formik.setValues({
-        ...formik.values,
-        levelsSubmitted: currentLevels
-      });
-    }
-  };
-
-  const theme = useTheme();
-  return (
-    <Box>
-      <Accordion elevation={0}>
-        <AccordionSummary
-          sx={{
-            paddingRight: 0,
-            background: color,
-            color: theme.palette.success.contrastText
-          }}
-        >
-          <Stack
-            width="100%"
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Typography m={0} variant="h5">
-              {name}
-            </Typography>
-            <Field
-              as={Checkbox}
-              name="levelsSubmitted"
-              sx={{
-                color: theme.palette.common.white,
-                '&.Mui-checked': {
-                  color: theme.palette.common.white
-                },
-                '&.MuiCheckbox-indeterminate': {
-                  color: theme.palette.common.white
-                }
-              }}
-              checked={allBoxesChecked()}
-              onClick={(e: any) => {
-                e.stopPropagation();
-              }}
-              onChange={(e: any) => {
-                selectAll(e);
-              }}
-            />
-          </Stack>
-        </AccordionSummary>
-        {levels.map((element, idx) => (
-          <Stack
-            key={`${element.level}-${element.name}}`}
-            width="100%"
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-            bgcolor={theme.palette.info.light}
-            color={theme.palette.common.black}
-          >
-            <AccordionDetails key={element.level}>
-              {element.level}: {element.name}
-            </AccordionDetails>
-            <Field
-              as={Checkbox}
-              name="levelsSubmitted"
-              value={`${element.level}`} // Formik cannot handle numbers
-              sx={{
-                color,
-                '&.Mui-checked': {
-                  color
-                }
-              }}
-              checked={formik.values.levelsSubmitted.includes(
-                `${element.level}`
-              )}
-              onChange={(e: any) => {
-                handleCheckboxChange(idx, e);
-              }}
-            />
-          </Stack>
-        ))}
-      </Accordion>
-    </Box>
-  );
-};
-
-interface RapidRouterTabTitlesProps {
-  title: string;
-  levels: Array<{ level: string; name: string }>;
-  formikProps: FormikProps<any>;
-}
-const RapidRouterTabTitles: React.FC<RapidRouterTabTitlesProps> = ({
-  title,
-  levels,
-  formikProps
-}) => {
-  const allCheckboxesSelected: () => boolean = () => {
-    return levels
-      .map((level) => formikProps.values.levelsSubmitted.includes(level.level))
-      .every((el) => el === true);
-  };
-  const theme = useTheme();
-  return (
-    <Accordion elevation={0} expanded={false}>
-      <AccordionSummary sx={{ cursor: 'default !important', paddingRight: 0 }}>
-        <Stack
-          width="100%"
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-        >
-          <Typography m={0} variant="h5">
-            {title}
-          </Typography>
-          <Checkbox
-            checked={allCheckboxesSelected()}
-            sx={{
-              color: theme.palette.info.dark,
-              '&.Mui-checked': {
-                color: theme.palette.info.dark
-              }
-            }}
-            onChange={(e) => {
-              let lvls: any[] = [];
-              if (e.target.checked) {
-                const concatArr = levels
-                  .map((level) => level.level)
-                  .concat(formikProps.values.levelsSubmitted);
-                lvls = concatArr.filter(
-                  (item, idx) => concatArr.indexOf(item) === idx
-                );
-              }
-              formikProps.setValues({
-                ...formikProps.values,
-                levelsSubmitted: lvls
-              });
-            }}
-          />
-        </Stack>
-      </AccordionSummary>
-    </Accordion>
-  );
-};
-
 const RapidRouterAccessSettings: React.FC = () => {
   return (
     <Formik
       initialValues={{
-        levelsSubmitted: []
+        levelsSubmitted: Array(109).fill('')
       }}
       onSubmit={(values) => {
+        values.levelsSubmitted = values.levelsSubmitted.filter(
+          (level: string) => level !== ''
+        );
+
         alert(JSON.stringify(values, null, 2));
       }}
     >
       {(formik) => (
         <Form>
-          <pre
-            style={{
-              position: 'absolute',
-              top: 50,
-              left: 0
-            }}
-          >
-            <code>
-              {JSON.stringify(formik.values.levelsSubmitted, null, 2)}
-            </code>
-          </pre>
           <Stack gap={2}>
             <RapidRouterTabTitles
               title="Blockly levels"
