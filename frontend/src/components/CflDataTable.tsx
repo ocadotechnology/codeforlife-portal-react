@@ -10,14 +10,11 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  FormControlLabel,
-  FormGroup,
   Button,
   Stack,
   Typography
 } from '@mui/material';
 import React from 'react';
-import { paths } from '../app/router';
 
 const TableCellStyled = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -56,6 +53,7 @@ const CflDataTable: React.FC = () => {
     newChecked[idx] = !checked[idx];
     setChecked(newChecked);
   };
+  const theme = useTheme();
 
   return (
     <Box>
@@ -73,11 +71,11 @@ const CflDataTable: React.FC = () => {
             <TableCellStyled>Student details</TableCellStyled>
             <TableCellStyled padding="checkbox">
               <Checkbox
-                onChange={handleSelectAllClick}
                 checked={checked.every((el) => el)}
                 indeterminate={
                   checked.includes(true) && !checked.every((el) => el)
                 }
+                onChange={handleSelectAllClick}
               />
             </TableCellStyled>
             <TableCellStyled>Action</TableCellStyled>
@@ -85,10 +83,11 @@ const CflDataTable: React.FC = () => {
         </TableHead>
         <TableBody>
           {randomStudentNames.map((studentName, idx) => (
-            <TableRow>
+            <TableRow key={`${studentName}-${idx}`}>
               <TableCellStyled>{studentName}</TableCellStyled>
               <TableCellStyled padding="checkbox">
                 <Checkbox
+                  color="primary"
                   checked={checked[idx]}
                   onChange={() => {
                     handleChange(idx);
