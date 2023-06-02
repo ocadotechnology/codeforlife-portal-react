@@ -15,9 +15,7 @@ import HomeLearning from '../pages/homeLearning/HomeLearning';
 import PrivacyNotice from '../pages/privacyNotice/PrivacyNotice';
 import TermsOfUse from '../pages/termsOfUse/TermsOfUse';
 import Newsletter from '../pages/newsletter/Newsletter';
-import Forbidden from '../pages/forbidden/Forbidden';
-import PageNotFound from '../pages/pageNotFound/PageNotFound';
-import InternalServerError from '../pages/internalServerError/InternalServerError';
+import Error from '../pages/error/Error';
 import TeacherSchool from '../pages/teacherDashboard/TeacherSchool';
 import TeacherClasses from '../pages/teacherDashboard/TeacherClasses';
 import TeacherAccount from '../pages/teacherDashboard/account/TeacherAccount';
@@ -74,9 +72,14 @@ export const paths = _('', {
   termsOfUse: _('/terms-of-use'),
   newsletter: _('/newsletter'),
   error: _('/error', {
-    forbidden: _('/forbidden'),
-    pageNotFound: _('/page-not-found'),
-    internalServerError: _('/internal-server-error')
+    forbidden: _('/?type=forbidden'),
+    pageNotFound: _('/?type=pageNotFound'),
+    tooManyRequests: _('/?type=tooManyRequests', {
+      teacher: _('&userType=teacher'),
+      independent: _('&userType=independent'),
+      student: _('&userType=student')
+    }),
+    internalServerError: _('/?type=internalServerError')
   }),
   rapidRouter: _('/rapid-router'),
   kurono: _('/kurono')
@@ -139,18 +142,9 @@ const router = createBrowserRouter([
     path: paths.newsletter._,
     element: <Newsletter />
   },
-  // TODO: merge separate error pages into one page with multiple states.
   {
-    path: paths.error.forbidden._,
-    element: <Forbidden />
-  },
-  {
-    path: paths.error.pageNotFound._,
-    element: <PageNotFound />
-  },
-  {
-    path: paths.error.internalServerError._,
-    element: <InternalServerError />
+    path: paths.error._,
+    element: <Error />
   },
   {
     path: paths.teacher.dashboard.school._,
