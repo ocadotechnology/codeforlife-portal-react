@@ -90,7 +90,7 @@ export function internalServerError500(): ErrorProps {
     imageProps: {
       alt: 'dee',
       src: DeeImage,
-      maxWidth: '150px'
+      maxWidth: '120px'
     }
   };
 }
