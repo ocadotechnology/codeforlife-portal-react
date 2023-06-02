@@ -1,15 +1,12 @@
 import React from 'react';
 import {
-  Typography,
-  ListItem
+  Typography
 } from '@mui/material';
-
-import { ItemizedList } from 'codeforlife/lib/esm/components';
 
 const ExtraHelp: React.FC = () => (
   <>
     <Typography>
-      TODO
+      If you would like this Notice in another format (for example: audio, large print, braille) please contact us (see “How to contact us” above).
     </Typography>
   </>
 );

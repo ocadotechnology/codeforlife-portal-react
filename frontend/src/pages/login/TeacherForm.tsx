@@ -14,6 +14,9 @@ import {
   TextField,
   SubmitButton
 } from 'codeforlife/lib/esm/components/form';
+import { SearchParams } from 'codeforlife/lib/esm/helpers';
+import Teacher2faBackupForm from './Teacher2faBackupForm';
+import Teacher2faForm from './Teacher2faForm';
 
 interface TeacherFormValues {
   email: string;
@@ -25,7 +28,33 @@ const initialValues: TeacherFormValues = {
   password: ''
 };
 
-const TeacherForm: React.FC = (): JSX.Element => {
+const TeacherForm: React.FC = () => {
+  const loginSteps = ['login2fa', 'backupToken'] as const;
+  const params = SearchParams.get<{
+    loginStep?: typeof loginSteps[number]
+  }>({
+    loginStep: {
+      validate: SearchParams.validate.inOptions(loginSteps),
+      isRequired: false
+    }
+  });
+
+  let form = <BaseTeacherForm />;
+  if (params?.loginStep !== undefined) {
+    switch (params.loginStep) {
+      case 'login2fa':
+        form = <Teacher2faForm />;
+        break;
+      case 'backupToken':
+        form = <Teacher2faBackupForm />;
+        break;
+    }
+  }
+
+  return form;
+};
+
+const BaseTeacherForm: React.FC = () => {
   return (
     <BaseForm
       themedBoxProps={{ userType: 'teacher' }}
@@ -63,14 +92,17 @@ const TeacherForm: React.FC = (): JSX.Element => {
           Don&apos;t worry, you can&nbsp;
           <Link
             className='body'
-            href={paths.resetPassword.teacher}
+            href={paths.resetPassword.teacher._}
           >
             reset your password
           </Link>
           .
         </Typography>
       </Stack>
-      <SubmitButton stackProps={{ alignItems: 'end' }}>
+      <SubmitButton
+        stackProps={{ alignItems: 'end' }}
+        // TODO: Remove href and replace with submit functionality
+        href={paths.login.teacher.login2fa._}>
         Log in
       </SubmitButton>
     </BaseForm>

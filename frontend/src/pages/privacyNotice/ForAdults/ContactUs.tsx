@@ -1,15 +1,20 @@
 import React from 'react';
 import {
   Typography,
-  ListItem
+  Link
 } from '@mui/material';
-
-import { ItemizedList } from 'codeforlife/lib/esm/components';
 
 const ContactUs: React.FC = () => (
   <>
     <Typography>
-      TODO
+      Please contact our Data Protection Officer or us at&nbsp;
+      <Link
+        className='body'
+        href='mailto:individualrights@ocado.com'
+      >
+        individualrights@ocado.com
+      </Link>
+      &nbsp;if you have any questions about this Privacy Notice or the information we hold about you.
     </Typography>
   </>
 );

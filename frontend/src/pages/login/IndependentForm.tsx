@@ -60,7 +60,7 @@ const IndependentForm: React.FC = (): JSX.Element => {
           Don&apos;t worry, you can&nbsp;
           <Link
             className='body'
-            href={paths.resetPassword.independent}
+            href={paths.resetPassword.independent._}
           >
             reset your password
           </Link>
@@ -78,7 +78,7 @@ const IndependentForm: React.FC = (): JSX.Element => {
         <Link
           className='body'
           variant="body2"
-          href={paths.login.student}
+          href={paths.login.student._}
         >
           Log in here
         </Link>

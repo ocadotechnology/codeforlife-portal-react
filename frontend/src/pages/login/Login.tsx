@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { getSearchParams } from 'codeforlife/lib/esm/helpers';
+import { SearchParams } from 'codeforlife/lib/esm/helpers';
 
 import { paths } from '../../app/router';
 import BasePage from '../../pages/BasePage';
@@ -11,25 +11,19 @@ import TeacherForm from './TeacherForm';
 import StudentForm from './StudentForm';
 import IndependentForm from './IndependentForm';
 
-enum UserType {
-  Teacher = 'teacher',
-  Student = 'student',
-  Independent = 'independent'
-}
-
-interface LoginParams {
-  userType: UserType
-}
-
 const Login: React.FC = () => {
   const navigate = useNavigate();
-  let params = getSearchParams({
-    userType: { cast: String }
-  }) as LoginParams | null;
+
+  const userTypes = ['teacher', 'student', 'independent'] as const;
+  const params = SearchParams.get<{
+    userType: typeof userTypes[number];
+  }>({
+    userType: { validate: SearchParams.validate.inOptions(userTypes) }
+  });
 
   React.useEffect(() => {
     if (params === null) {
-      navigate(paths.internalServerError);
+      navigate(paths.error.internalServerError._);
     }
   }, []);
 
@@ -37,18 +31,15 @@ const Login: React.FC = () => {
 
   let form: React.ReactElement<typeof BaseForm>;
   switch (params.userType) {
-    case UserType.Teacher:
+    case 'teacher':
       form = <TeacherForm />;
       break;
-    case UserType.Student:
+    case 'student':
       form = <StudentForm />;
       break;
-    case UserType.Independent:
+    case 'independent':
       form = <IndependentForm />;
       break;
-    default:
-      params = null;
-      return <></>;
   }
 
   return (

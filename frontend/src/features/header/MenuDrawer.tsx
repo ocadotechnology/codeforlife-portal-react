@@ -27,20 +27,20 @@ const MenuDrawer: React.FC<{
   const links: LinkProps[] = [
     {
       children: 'Teachers',
-      href: paths.teachers,
+      href: paths.teacher._,
       color: theme.palette.primary.main
     },
     {
       children: 'Students',
-      href: paths.students._,
+      href: paths.student._,
       color: theme.palette.secondary.main
     },
-    { children: 'About us', href: paths.aboutUs },
+    { children: 'About us', href: paths.aboutUs._ },
     { children: 'Help and support', href: '' },
     { children: 'Cookie settings', href: '' },
-    { children: 'Privacy notice', href: paths.privacyNotice },
-    { children: 'Terms of use', href: paths.termsOfUse },
-    { children: 'Get involved', href: paths.getInvolved }
+    { children: 'Privacy notice', href: paths.privacyNotice._ },
+    { children: 'Terms of use', href: paths.termsOfUse._ },
+    { children: 'Get involved', href: paths.getInvolved._ }
   ];
 
   return (
@@ -55,7 +55,7 @@ const MenuDrawer: React.FC<{
       }}
     >
       <Stack sx={{ mx: 4, my: 2 }} spacing={5}>
-        <Button style={{ width: '100%' }} href={paths.register}>
+        <Button style={{ width: '100%' }} href={paths.register._}>
           Register
         </Button>
         <Stack

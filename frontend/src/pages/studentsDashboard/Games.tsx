@@ -38,7 +38,7 @@ const Games: React.FC<{
           }}
           buttonProps={{
             children: 'Play',
-            href: paths.rapidRouter
+            href: paths.rapidRouter._
           }}
         />
         {isDependent &&
@@ -53,7 +53,7 @@ const Games: React.FC<{
             }}
             buttonProps={{
               children: 'Play',
-              href: paths.kurono
+              href: paths.kurono._
             }}
           />
         }

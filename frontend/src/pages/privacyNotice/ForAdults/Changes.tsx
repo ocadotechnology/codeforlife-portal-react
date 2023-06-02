@@ -1,15 +1,15 @@
 import React from 'react';
 import {
-  Typography,
-  ListItem
+  Typography
 } from '@mui/material';
-
-import { ItemizedList } from 'codeforlife/lib/esm/components';
 
 const Changes: React.FC = () => (
   <>
     <Typography>
-      TODO
+      This Privacy Notice was last updated on 25th January 2023.
+    </Typography>
+    <Typography>
+      We may change this Privacy Notice from time to time and you should check it regularly. If we make any material changes to this notice we will inform via appropriate means (e.g. email).
     </Typography>
   </>
 );

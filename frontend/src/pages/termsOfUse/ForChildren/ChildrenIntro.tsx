@@ -9,7 +9,7 @@ import { ItemizedList } from 'codeforlife/lib/esm/components';
 
 const ChildrenIntro: React.FC = () => {
   return (
-    <Grid container columnSpacing={3}>
+    <Grid container columnSpacing={3} mb={5}>
       <Grid xs={12} md={6}>
         <Typography fontWeight='bold'>
           We ask that you take the time to read and understand our Terms of Use and the Privacy Notice before registering for Code for Life. These Terms were last updated on 11th July 2022.

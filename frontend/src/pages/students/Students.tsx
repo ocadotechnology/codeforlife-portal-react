@@ -33,7 +33,7 @@ const Students: React.FC = () => {
         btn={{
           children: 'Play Rapid Router',
           endIcon: <ChevronRightIcon />,
-          href: paths.rapidRouter
+          href: paths.rapidRouter._
         }}
       />
       <PageSection>

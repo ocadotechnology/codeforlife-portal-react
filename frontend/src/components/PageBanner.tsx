@@ -18,6 +18,7 @@ import PageSection from './PageSection';
 
 export interface PageBannerProps {
   text: { title: string, content: string };
+  textAlign?: 'start' | 'center'
   notification?: React.ReactElement;
   img?: ImageProps;
   btn?: ButtonProps;
@@ -26,6 +27,7 @@ export interface PageBannerProps {
 
 const PageBanner: React.FC<PageBannerProps> = ({
   text,
+  textAlign = 'start',
   notification,
   img,
   btn,
@@ -44,7 +46,7 @@ const PageBanner: React.FC<PageBannerProps> = ({
       <Stack
         direction='row'
         alignItems='center'
-        justifyContent='center'
+        justifyContent={textAlign}
         gap={2}
       >
         <Stack
@@ -52,7 +54,7 @@ const PageBanner: React.FC<PageBannerProps> = ({
             xs: 8,
             md: img !== undefined ? 0 : 10
           }}
-          textAlign={img !== undefined ? 'start' : 'center'}
+          textAlign={textAlign}
         >
           <Typography
             variant='h2'
@@ -74,6 +76,7 @@ const PageBanner: React.FC<PageBannerProps> = ({
             {...img}
             display={{ xs: 'none', md: 'block' }}
             maxWidth='320px'
+            marginLeft='auto'
           />
         }
       </Stack>

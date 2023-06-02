@@ -8,12 +8,22 @@ import {
 
 import PageSection from './PageSection';
 
+import { SearchParams } from 'codeforlife/lib/esm/helpers';
+
 const PageTabBar: React.FC<{
   title: string
   tabs: Array<{ label: string, element: React.ReactElement }>
 }> = ({ title, tabs }) => {
   const theme = useTheme();
-  const [value, setValue] = React.useState(0);
+
+  const labels = tabs.map(tab => tab.label);
+  const params = SearchParams.get<{ tab: string }>({
+    tab: { validate: SearchParams.validate.inOptions(labels) }
+  });
+
+  const [value, setValue] = React.useState(
+    params === null ? 0 : labels.indexOf(params.tab)
+  );
 
   return <>
     <PageSection
@@ -39,20 +49,9 @@ const PageTabBar: React.FC<{
       <Tabs
         value={value}
         onChange={(_, value) => { setValue(value); }}
-        TabIndicatorProps={{
-          style: { display: 'none' }
-        }}
       >
         {tabs.map((tab, index) => (
-          <Tab
-            key={index}
-            label={tab.label}
-            style={{
-              marginRight: index !== tabs.length - 1 ? 30 : 0,
-              textTransform: 'none',
-              fontSize: theme.typography.body2.fontSize
-            }}
-          />
+          <Tab key={index} label={tab.label} />
         ))}
       </Tabs>
     </PageSection>
