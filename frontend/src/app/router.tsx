@@ -141,7 +141,6 @@ const router = createBrowserRouter([
     path: paths.newsletter._,
     element: <Newsletter />
   },
-  // TODO: merge separate error pages into one page with multiple states.
   {
     path: paths.error._,
     element: <Error />
