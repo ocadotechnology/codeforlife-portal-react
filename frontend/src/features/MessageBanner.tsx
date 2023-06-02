@@ -3,7 +3,7 @@ import {
   Unstable_Grid2 as Grid,
   Typography,
   Breakpoint,
-  Toolbar,
+  Stack,
   Container,
   useTheme
 } from '@mui/material';
@@ -25,16 +25,16 @@ const MessageBanner: React.FC = () => {
     showBanner
       ? <Grid container xs={12} style={{ backgroundColor: theme.palette.tertiary.main }} alignItems='center'>
         <Container maxWidth={process.env.REACT_APP_CONTAINER_MAX_WIDTH as Breakpoint}>
-          <Toolbar>
+          <Stack direction='row' alignItems='center'>
             {(messageTag.includes('error') || messageTag.includes('warning'))
               ? <ErrorOutlineOutlinedIcon />
               : <InfoOutlinedIcon />
             }
-            <Typography marginX={2} marginY={0} sx={{ flexGrow: 1 }}>
+            <Typography marginX={2} marginY={2} sx={{ flexGrow: 1 }}>
               {message}
             </Typography>
             <CloseIcon onClick={handleClose} />
-          </Toolbar>
+          </Stack>
         </Container>
       </Grid>
       : null
