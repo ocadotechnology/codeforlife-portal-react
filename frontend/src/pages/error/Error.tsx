@@ -29,7 +29,8 @@ const Error: React.FC = () => {
 
   const userTypes = [
     'teacher',
-    'independent'
+    'independent',
+    'student'
   ] as const;
 
   let params = SearchParams.get<{
@@ -106,10 +107,7 @@ const Error: React.FC = () => {
             order={{ xs: 1, sm: 2 }}
             className='flex-center'
           >
-            <Image
-              {...errorProps.imageProps}
-              maxWidth='200px'
-            />
+            <Image {...errorProps.imageProps} />
           </Grid>
         </Grid>
       </PageSection>

@@ -76,7 +76,8 @@ export const paths = _('', {
     pageNotFound: _('/?type=pageNotFound'),
     tooManyRequests: _('/?type=tooManyRequests', {
       teacher: _('&userType=teacher'),
-      independent: _('&userType=independent')
+      independent: _('&userType=independent'),
+      student: _('&userType=student')
     }),
     internalServerError: _('/?type=internalServerError')
   }),
