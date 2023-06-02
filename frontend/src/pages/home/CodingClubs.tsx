@@ -25,7 +25,7 @@ const CodingClubs: React.FC = () => {
       </Grid>
       <Grid xs={12} display='flex' justifyContent='end'>
         <Button
-          href={paths.codingClubs}
+          href={paths.codingClubs._}
           endIcon={<ChevronRightIcon />}
         >
           Find out more

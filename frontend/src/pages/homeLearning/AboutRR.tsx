@@ -35,7 +35,7 @@ const AboutRR: React.FC = () => (
     <Grid xs={12} className='flex-end-x'>
       <Button
         sx={{ mb: { xs: 1, md: 0 } }}
-        href={paths.register}
+        href={paths.register._}
       >
         Register now
       </Button>

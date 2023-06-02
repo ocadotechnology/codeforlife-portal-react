@@ -39,7 +39,7 @@ const TwoFactorAuthentication: React.FC = (): JSX.Element => {
         Use your smartphone or tablet to enhance your account&apos;s security by
         using an authenticator app.
       </Typography>
-      <Button href={paths.teacher.dashboard.account.twoFA.setup}>
+      <Button href={paths.teacher.dashboard.account.twoFA.setup._}>
         Setup two factor authentication
       </Button>
       <Grid container>
@@ -50,7 +50,7 @@ const TwoFactorAuthentication: React.FC = (): JSX.Element => {
             You have 0 backup tokens remaining.
           </Typography>
           <Typography>View and create backup tokens for your account.</Typography>
-          <Button href={paths.teacher.dashboard.account.twoFA.backupTokens}>
+          <Button href={paths.teacher.dashboard.account.twoFA.backupTokens._}>
             Manage backup tokens
           </Button>
           <Typography variant="body2" fontWeight="bold" color="error">

@@ -74,7 +74,7 @@ const TeacherForm: React.FC = () => {
             label: <>
               I am over 18 years old have read and understood the&nbsp;
               <Link
-                href={paths.termsOfUse}
+                href={paths.termsOfUse._}
                 target='_blank'
                 color='inherit'
                 className='body'

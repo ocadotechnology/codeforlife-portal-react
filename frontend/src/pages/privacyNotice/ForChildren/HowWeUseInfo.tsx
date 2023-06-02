@@ -30,7 +30,7 @@ const HowWeUseInfo: React.FC = () => <>
       Help make sure that our portal is safe and secure and that users are following our&nbsp;
       <Link
         className='body'
-        href={paths.termsOfUse}
+        href={paths.termsOfUse._}
       >
         Terms of Use
       </Link>

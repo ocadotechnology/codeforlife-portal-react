@@ -1,6 +1,8 @@
 import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 
+import { path as _ } from 'codeforlife/lib/esm/helpers';
+
 import Home from '../pages/home/Home';
 import Login from '../pages/login/Login';
 import Teachers from '../pages/teachers/Teachers';
@@ -26,71 +28,63 @@ import ResetPassword from '../pages/resetPassword/ResetPassword';
 import StudentsDashboard from '../pages/studentsDashboard/StudentsDashboard';
 import TeacherOnboarding from '../pages/teacherOnboarding/TeacherOnboarding';
 
-export const paths = {
-  home: '/',
-  login: {
-    _: '/login',
-    teacher: {
-      _: '/login?userType=teacher',
-      login2fa: '/login/?userType=teacher&loginStep=login2fa',
-      backupToken: '/login/?userType=teacher&loginStep=backupToken'
-    },
-    student: '/login?userType=student',
-    independent: '/login?userType=independent'
-  },
-  resetPassword: {
-    _: '/reset-password',
-    teacher: '/reset-password?userType=teacher',
-    independent: '/reset-password?userType=independent'
-  },
-  teacher: {
-    _: '/teacher',
-    onboarding: '/teacher/onboarding',
-    dashboard: {
-      _: '/teacher/dashboard',
-      school: '/teacher/dashboard/school',
-      classes: '/teacher/dashboard/classes',
-      account: {
-        _: '/teacher/dashboard/account',
-        twoFA: {
-          _: '/teacher/dashboard/account/2fa',
-          setup: '/teacher/dashboard/account/2fa/setup',
-          backupTokens: '/teacher/dashboard/account/2fa/backup-tokens'
-        }
-      }
-    }
-  },
-  student: {
-    _: '/student',
-    dashboard: {
-      _: '/student/dashboard',
-      dependent: '/student/dashboard?userType=dependent',
-      independent: '/student/dashboard?userType=independent'
-    }
-  },
-  register: '/register',
-  emailVerification: '/register/email-verification',
-  aboutUs: '/about-us',
-  codingClubs: '/coding-clubs',
-  getInvolved: '/get-involved',
-  homeLearning: '/home-learning',
-  privacyNotice: {
-    _: '/privacy-notice',
-    privacyNotice: '/privacy-notice?tab=Privacy+notice',
-    childFriendly: '/privacy-notice?tab=Child-friendly'
-  },
-  termsOfUse: '/terms-of-use',
-  newsletter: '/newsletter',
-  forbidden: '/error/forbidden',
-  pageNotFound: '/error/page-not-found',
-  internalServerError: '/error/internal-server-error',
-  rapidRouter: '/rapid-router',
-  kurono: '/kurono'
-};
+export const paths = _('', {
+  login: _('/login', {
+    teacher: _('/?userType=teacher', {
+      login2fa: _('&loginStep=login2fa'),
+      backupToken: _('&loginStep=backupToken')
+    }),
+    student: _('/?userType=student'),
+    independent: _('/?userType=independent')
+  }),
+  resetPassword: _('/reset-password', {
+    teacher: _('/?userType=teacher'),
+    independent: _('/?userType=independent')
+  }),
+  teacher: _('/teacher', {
+    onboarding: _('/onboarding'),
+    dashboard: _('/dashboard', {
+      school: _('/school'),
+      classes: _('/classes'),
+      account: _('/account', {
+        twoFA: _('/2fa', {
+          setup: _('/setup'),
+          backupTokens: _('/backup-tokens')
+        })
+      })
+    })
+  }),
+  student: _('/student', {
+    dashboard: _('/dashboard', {
+      dependent: _('/?userType=dependent'),
+      independent: _('/?userType=independent')
+    })
+  }),
+  register: _('/register', {
+    emailVerification: _('/email-verification')
+  }),
+  aboutUs: _('/about-us'),
+  codingClubs: _('/coding-clubs'),
+  getInvolved: _('/get-involved'),
+  homeLearning: _('/home-learning'),
+  privacyNotice: _('/privacy-notice', {
+    privacyNotice: _('/?tab=Privacy+notice'),
+    childFriendly: _('/?tab=Child-friendly')
+  }),
+  termsOfUse: _('/terms-of-use'),
+  newsletter: _('/newsletter'),
+  error: _('/error', {
+    forbidden: _('/forbidden'),
+    pageNotFound: _('/page-not-found'),
+    internalServerError: _('/internal-server-error')
+  }),
+  rapidRouter: _('/rapid-router'),
+  kurono: _('/kurono')
+});
 
 const router = createBrowserRouter([
   {
-    path: paths.home,
+    path: paths._,
     element: <Home />
   },
   {
@@ -102,7 +96,7 @@ const router = createBrowserRouter([
     element: <Teachers />
   },
   {
-    path: paths.teacher.onboarding,
+    path: paths.teacher.onboarding._,
     element: <TeacherOnboarding />
   },
   {
@@ -114,23 +108,23 @@ const router = createBrowserRouter([
     element: <StudentsDashboard />
   },
   {
-    path: paths.register,
+    path: paths.register._,
     element: <Register />
   },
   {
-    path: paths.aboutUs,
+    path: paths.aboutUs._,
     element: <AboutUs />
   },
   {
-    path: paths.codingClubs,
+    path: paths.codingClubs._,
     element: <CodingClubs />
   },
   {
-    path: paths.getInvolved,
+    path: paths.getInvolved._,
     element: <GetInvolved />
   },
   {
-    path: paths.homeLearning,
+    path: paths.homeLearning._,
     element: <HomeLearning />
   },
   {
@@ -138,31 +132,32 @@ const router = createBrowserRouter([
     element: <PrivacyNotice />
   },
   {
-    path: paths.termsOfUse,
+    path: paths.termsOfUse._,
     element: <TermsOfUse />
   },
   {
-    path: paths.newsletter,
+    path: paths.newsletter._,
     element: <Newsletter />
   },
+  // TODO: merge separate error pages into one page with multiple states.
   {
-    path: paths.forbidden,
+    path: paths.error.forbidden._,
     element: <Forbidden />
   },
   {
-    path: paths.pageNotFound,
+    path: paths.error.pageNotFound._,
     element: <PageNotFound />
   },
   {
-    path: paths.internalServerError,
+    path: paths.error.internalServerError._,
     element: <InternalServerError />
   },
   {
-    path: paths.teacher.dashboard.school,
+    path: paths.teacher.dashboard.school._,
     element: <TeacherSchool />
   },
   {
-    path: paths.teacher.dashboard.classes,
+    path: paths.teacher.dashboard.classes._,
     element: <TeacherClasses />
   },
   {
@@ -170,15 +165,15 @@ const router = createBrowserRouter([
     element: <TeacherAccount />
   },
   {
-    path: paths.teacher.dashboard.account.twoFA.setup,
+    path: paths.teacher.dashboard.account.twoFA.setup._,
     element: <Setup2fa />
   },
   {
-    path: paths.teacher.dashboard.account.twoFA.backupTokens,
+    path: paths.teacher.dashboard.account.twoFA.backupTokens._,
     element: <BackupTokens />
   },
   {
-    path: paths.emailVerification,
+    path: paths.register.emailVerification._,
     element: <EmailVerification />
   },
   {
