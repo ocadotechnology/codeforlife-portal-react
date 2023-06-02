@@ -1,6 +1,8 @@
 import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 
+import { path as _ } from 'codeforlife/lib/esm/helpers';
+
 import Home from '../pages/home/Home';
 import Login from '../pages/login/Login';
 import Teachers from '../pages/teachers/Teachers';
@@ -13,64 +15,81 @@ import HomeLearning from '../pages/homeLearning/HomeLearning';
 import PrivacyNotice from '../pages/privacyNotice/PrivacyNotice';
 import TermsOfUse from '../pages/termsOfUse/TermsOfUse';
 import Newsletter from '../pages/newsletter/Newsletter';
-import Forbidden from '../pages/forbidden/Forbidden';
-import PageNotFound from '../pages/pageNotFound/PageNotFound';
-import InternalServerError from '../pages/internalServerError/InternalServerError';
+import Error from '../pages/error/Error';
 import TeacherSchool from '../pages/teacherDashboard/TeacherSchool';
 import TeacherClasses from '../pages/teacherDashboard/TeacherClasses';
-import TeacherAccount from '../pages/teacherDashboard/TeacherAccount';
+import TeacherAccount from '../pages/teacherDashboard/account/TeacherAccount';
+import Setup2fa from '../pages/teacherDashboard/account/2fa/Setup2fa';
+import BackupTokens from '../pages/teacherDashboard/account/2fa/BackupTokens';
 import EmailVerification from '../pages/emailVerification/EmailVerification';
 import StudentManagment from '../pages/studentManagment/StudentManagment';
 import ResetPassword from '../pages/resetPassword/ResetPassword';
 import StudentsDashboard from '../pages/studentsDashboard/StudentsDashboard';
+import TeacherOnboarding from '../pages/teacherOnboarding/TeacherOnboarding';
 import AdditionalClassSettings from '../pages/additionalClassSettings/AdditionalClassSettings';
 
-export const paths = {
-  home: '/',
-  login: {
-    _: '/login',
-    teacher: '/login?userType=teacher',
-    student: '/login?userType=student',
-    independent: '/login?userType=independent'
-  },
-  resetPassword: {
-    _: '/reset-password',
-    teacher: '/reset-password?userType=teacher',
-    independent: '/reset-password?userType=independent'
-  },
-  teachers: '/teachers',
-  students: {
-    _: '/students',
-    dashboard: {
-      _: '/students/dashboard',
-      dependent: '/students/dashboard?userType=dependent',
-      independent: '/students/dashboard?userType=independent'
-    }
-  },
-  register: '/register',
-  emailVerification: '/register/email-verification',
-  aboutUs: '/about-us',
-  codingClubs: '/coding-clubs',
-  getInvolved: '/get-involved',
-  homeLearning: '/home-learning',
-  privacyNotice: '/privacy-notice',
-  termsOfUse: '/terms-of-use',
-  newsletter: '/newsletter',
-  forbidden: '/error/forbidden',
-  pageNotFound: '/error/page-not-found',
-  internalServerError: '/error/internal-server-error',
-  rapidRouter: '/rapid-router',
-  teacherSchool: '/teacher/school',
-  teacherClasses: '/teacher/classes',
-  teacherAccount: '/teacher/account',
-  kurono: '/kurono',
-  teacherClass: '/teacher/class',
-  teacherClassEdit: '/teacher/class/edit'
-};
+export const paths = _('', {
+  login: _('/login', {
+    teacher: _('/?userType=teacher', {
+      login2fa: _('&loginStep=login2fa'),
+      backupToken: _('&loginStep=backupToken')
+    }),
+    student: _('/?userType=student'),
+    independent: _('/?userType=independent')
+  }),
+  resetPassword: _('/reset-password', {
+    teacher: _('/?userType=teacher'),
+    independent: _('/?userType=independent')
+  }),
+  teacher: _('/teacher', {
+    onboarding: _('/onboarding'),
+    dashboard: _('/dashboard', {
+      school: _('/school'),
+      classes: _('/classes'),
+      account: _('/account', {
+        twoFA: _('/2fa', {
+          setup: _('/setup'),
+          backupTokens: _('/backup-tokens')
+        })
+      })
+    })
+  }),
+  student: _('/student', {
+    dashboard: _('/dashboard', {
+      dependent: _('/?userType=dependent'),
+      independent: _('/?userType=independent')
+    })
+  }),
+  register: _('/register', {
+    emailVerification: _('/email-verification')
+  }),
+  aboutUs: _('/about-us'),
+  codingClubs: _('/coding-clubs'),
+  getInvolved: _('/get-involved'),
+  homeLearning: _('/home-learning'),
+  privacyNotice: _('/privacy-notice', {
+    privacyNotice: _('/?tab=Privacy+notice'),
+    childFriendly: _('/?tab=Child-friendly')
+  }),
+  termsOfUse: _('/terms-of-use'),
+  newsletter: _('/newsletter'),
+  error: _('/error', {
+    forbidden: _('/?type=forbidden'),
+    pageNotFound: _('/?type=pageNotFound'),
+    tooManyRequests: _('/?type=tooManyRequests', {
+      teacher: _('&userType=teacher'),
+      independent: _('&userType=independent'),
+      student: _('&userType=student')
+    }),
+    internalServerError: _('/?type=internalServerError')
+  }),
+  rapidRouter: _('/rapid-router'),
+  kurono: _('/kurono')
+});
 
 const router = createBrowserRouter([
   {
-    path: paths.home,
+    path: paths._,
     element: <Home />
   },
   {
@@ -78,69 +97,79 @@ const router = createBrowserRouter([
     element: <Login />
   },
   {
-    path: paths.teachers,
+    path: paths.teacher._,
     element: <Teachers />
   },
   {
-    path: paths.students._,
+    path: paths.teacher.onboarding._,
+    element: <TeacherOnboarding />
+  },
+  {
+    path: paths.student._,
     element: <Students />
   },
   {
-    path: paths.students.dashboard._,
+    path: paths.student.dashboard._,
     element: <StudentsDashboard />
   },
   {
-    path: paths.register,
+    path: paths.register._,
     element: <Register />
   },
   {
-    path: paths.aboutUs,
+    path: paths.aboutUs._,
     element: <AboutUs />
   },
   {
-    path: paths.codingClubs,
+    path: paths.codingClubs._,
     element: <CodingClubs />
   },
   {
-    path: paths.getInvolved,
+    path: paths.getInvolved._,
     element: <GetInvolved />
   },
   {
-    path: paths.homeLearning,
+    path: paths.homeLearning._,
     element: <HomeLearning />
   },
   {
-    path: paths.privacyNotice,
+    path: paths.privacyNotice._,
     element: <PrivacyNotice />
   },
   {
-    path: paths.termsOfUse,
+    path: paths.termsOfUse._,
     element: <TermsOfUse />
   },
   {
-    path: paths.newsletter,
+    path: paths.newsletter._,
     element: <Newsletter />
   },
   {
-    path: paths.forbidden,
-    element: <Forbidden />
+    path: paths.error._,
+    element: <Error />
   },
   {
-    path: paths.pageNotFound,
-    element: <PageNotFound />
-  },
-  {
-    path: paths.internalServerError,
-    element: <InternalServerError />
-  },
-  {
-    path: paths.teacherSchool,
+    path: paths.teacher.dashboard.school._,
     element: <TeacherSchool />
   },
-  { path: paths.teacherClasses, element: <TeacherClasses /> },
-  { path: paths.teacherAccount, element: <TeacherAccount /> },
   {
-    path: paths.emailVerification,
+    path: paths.teacher.dashboard.classes._,
+    element: <TeacherClasses />
+  },
+  {
+    path: paths.teacher.dashboard.account._,
+    element: <TeacherAccount />
+  },
+  {
+    path: paths.teacher.dashboard.account.twoFA.setup._,
+    element: <Setup2fa />
+  },
+  {
+    path: paths.teacher.dashboard.account.twoFA.backupTokens._,
+    element: <BackupTokens />
+  },
+  {
+    path: paths.register.emailVerification._,
     element: <EmailVerification />
   },
   {

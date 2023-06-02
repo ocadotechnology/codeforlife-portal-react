@@ -12,44 +12,41 @@ import {
   NewPasswordField
 } from 'codeforlife/lib/esm/components/form';
 
-function isStrongPassword(
-  password: string,
-  { forTeacher }: { forTeacher: boolean }
-): boolean {
-  return (forTeacher)
-    ? (password.length >= 10 &&
-      !(
-        password.search(/[A-Z]/) === -1 ||
-        password.search(/[a-z]/) === -1 ||
-        password.search(/[0-9]/) === -1 ||
-        password.search(/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/) === -1
-      ))
-    : (password.length >= 8 &&
-      !(
-        password.search(/[A-Z]/) === -1 ||
-        password.search(/[a-z]/) === -1 ||
-        password.search(/[0-9]/) === -1
-      ));
-}
-
 export interface CflPasswordFieldsProps {
-  forTeacher: boolean
+  userType: 'teacher' | 'independent'
 }
 
 const CflPasswordFields: React.FC<CflPasswordFieldsProps> = ({
-  forTeacher
+  userType
 }) => {
   const [password, setPassword] = React.useState('');
 
   // TODO: Load from central storage.
   const mostUsed = ['Abcd1234', 'Password1', 'Qwerty123'];
 
+  function isStrongPassword(password: string): boolean {
+    return (userType === 'teacher')
+      ? (password.length >= 10 &&
+        !(
+          password.search(/[A-Z]/) === -1 ||
+          password.search(/[a-z]/) === -1 ||
+          password.search(/[0-9]/) === -1 ||
+          password.search(/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/) === -1
+        ))
+      : (password.length >= 8 &&
+        !(
+          password.search(/[A-Z]/) === -1 ||
+          password.search(/[a-z]/) === -1 ||
+          password.search(/[0-9]/) === -1
+        ));
+  }
+
   let status: { name: string, color: string };
   if (password === '') {
     status = { name: 'No password!', color: '#FF0000' };
   } else if (mostUsed.includes(password)) {
     status = { name: 'Password too common!', color: '#DBA901' };
-  } else if (isStrongPassword(password, { forTeacher })) {
+  } else if (isStrongPassword(password)) {
     status = { name: 'Strong password!', color: '#088A08' };
   } else {
     status = { name: 'Password too weak!', color: '#DBA901' };
@@ -68,7 +65,7 @@ const CflPasswordFields: React.FC<CflPasswordFieldsProps> = ({
             'Invalid password',
             (password) => {
               setPassword(password);
-              return isStrongPassword(password, { forTeacher });
+              return isStrongPassword(password);
             }
           )
       }}

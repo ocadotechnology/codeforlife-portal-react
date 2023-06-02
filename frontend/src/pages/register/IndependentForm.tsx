@@ -44,8 +44,8 @@ const IndependentForm: React.FC = () => {
       dob === undefined
         ? undefined
         : Math.floor(
-            (new Date().getTime() - dob.getTime()) / (1000 * 60 * 60 * 24 * 365)
-          )
+          (new Date().getTime() - dob.getTime()) / (1000 * 60 * 60 * 24 * 365)
+        )
     );
   }
 
@@ -96,29 +96,27 @@ const IndependentForm: React.FC = () => {
               required
               name="termsOfUse"
               formControlLabelProps={{
-                label: (
-                  <>
-                    I have read and understood the &nbsp;
-                    <Link
-                      href={paths.termsOfUse}
-                      target="_blank"
-                      color="inherit"
-                      className="body"
-                    >
-                      Terms of use
-                    </Link>
-                    &nbsp;and the&nbsp;
-                    <Link
-                      href={paths.privacyNotice}
-                      target="_blank"
-                      color="inherit"
-                      className="body"
-                    >
-                      Privacy notice
-                    </Link>
-                    .
-                  </>
-                )
+                label: <>
+                  I have read and understood the &nbsp;
+                  <Link
+                    href={paths.termsOfUse._}
+                    target='_blank'
+                    color='inherit'
+                    className='body'
+                  >
+                    Terms of use
+                  </Link>
+                  &nbsp;and the&nbsp;
+                  <Link
+                    href={paths.privacyNotice._}
+                    target='_blank'
+                    color='inherit'
+                    className='body'
+                  >
+                    Privacy notice
+                  </Link>
+                  .
+                </>
               }}
             />
           )}
@@ -131,7 +129,7 @@ const IndependentForm: React.FC = () => {
               }}
             />
           )}
-          <CflPasswordFields forTeacher={false} />
+          <CflPasswordFields userType='independent' />
           <SubmitButton
             stackProps={{ alignItems: 'end' }}
             endIcon={<ChevronRightIcon />}

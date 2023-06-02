@@ -30,6 +30,7 @@ const BaseDashboard: React.FC<BaseDashboardProps> = ({
         title: `Welcome, ${name}`,
         content: 'This is where you can access your games'
       }}
+      textAlign='center'
       bgcolor={isDependent ? 'secondary' : 'tertiary'}
       notification={isDependent
         ? <>You are logged in to class: {classCode}</>
@@ -37,7 +38,7 @@ const BaseDashboard: React.FC<BaseDashboardProps> = ({
           You are logged in as an independent student.
           If you want to join a school, you need to&nbsp;
           <Link
-            href={paths.home}
+            href={paths._}
             color="inherit"
             underline="always"
           >

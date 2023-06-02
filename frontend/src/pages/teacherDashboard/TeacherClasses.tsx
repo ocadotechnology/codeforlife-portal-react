@@ -22,10 +22,9 @@ import {
   CheckboxField,
   AutocompleteField
 } from 'codeforlife/lib/esm/components/form';
-import { CflHorizontalForm } from '../../components/formik/CflForm';
+import { CflHorizontalForm } from '../../components/form/CflForm';
 import CopyToClipboardIcon from '../../components/CopyToClipboardIcon';
 import PageSection from '../../components/PageSection';
-import { paths } from '../../app/router';
 
 const YourClasses: React.FC = (): JSX.Element => {
   return (
@@ -62,13 +61,7 @@ const ClassTable = (): JSX.Element => {
             {teacher === `${firstName} ${lastName}` ? 'You' : teacher}
           </CflTableCellElement>
           <CflTableCellElement justifyContent="center">
-            <Button
-              href={`${paths.teacherClass}?accessCode=${accessCode}`}
-              color="tertiary"
-              endIcon={<Create />}
-            >
-              Update details
-            </Button>
+            <Button endIcon={<Create />}>Update details</Button>
           </CflTableCellElement>
         </CflTableBody>
       ))}
@@ -142,11 +135,7 @@ const CreateNewClassForm: React.FC = (): JSX.Element => {
         alert(JSON.stringify(values, null, 2));
         setSubmitting(false);
       }}
-      submitButton={
-        <Button type="submit" variant="contained" color="tertiary">
-          Create class
-        </Button>
-      }
+      submitButton={<Button type="submit">Create class</Button>}
     >
       <TextField
         name="className"

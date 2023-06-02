@@ -32,7 +32,7 @@ import {
   AutocompleteField
 } from 'codeforlife/lib/esm/components/form';
 import { getNames } from 'country-list';
-import { CflHorizontalForm } from '../../components/formik/CflForm';
+import { CflHorizontalForm } from '../../components/form/CflForm';
 import PageSection from '../../components/PageSection';
 
 const InviteTeacherForm: React.FC = (): JSX.Element => {
@@ -46,7 +46,7 @@ const InviteTeacherForm: React.FC = (): JSX.Element => {
         alert(JSON.stringify(values, null, 2));
       }}
       submitButton={
-        <Button variant="contained" color="tertiary" type="submit">
+        <Button type="submit">
           Invite teacher
         </Button>
       }
@@ -117,7 +117,7 @@ const UpdateSchoolDetailsForm: React.FC = (): JSX.Element => {
         alert(JSON.stringify(values, null, 2));
       }}
       submitButton={
-        <Button type="submit" color="tertiary">
+        <Button type="submit">
           Update details
         </Button>
       }
@@ -172,11 +172,11 @@ const TeachersTableActions: React.FC<{
   if (teacherEmail === userEmail) {
     return (
       <>
-        <Button endIcon={<Create />} color="tertiary">
+        <Button endIcon={<Create />}>
           Update details
         </Button>
         {/* This button below will be used for pending invites  */}
-        <Button endIcon={<EmailOutlined />} color="tertiary">
+        <Button endIcon={<EmailOutlined />}>
           Resend invite
         </Button>
       </>

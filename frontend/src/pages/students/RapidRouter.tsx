@@ -58,7 +58,7 @@ const RapidRouter: React.FC = () => {
           </Typography>
           <Typography>
             If you are not part of a school, you can&nbsp;
-            <Link className='body' href={paths.register}>register here</Link>.
+            <Link className='body' href={paths.register._}>register here</Link>.
           </Typography>
           <Button
             endIcon={<LaunchIcon />}
@@ -72,7 +72,7 @@ const RapidRouter: React.FC = () => {
           </Button>
           <Button
             endIcon={<ChevronRightIcon />}
-            href={paths.rapidRouter}
+            href={paths.rapidRouter._}
             sx={{ mb: { xs: 1, md: 0 } }}
           >
             Play Rapid Router
