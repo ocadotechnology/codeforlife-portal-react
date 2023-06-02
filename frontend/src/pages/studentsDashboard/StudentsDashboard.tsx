@@ -8,23 +8,18 @@ import Characters from '../../features/characters/Characters';
 import BasePage from '../BasePage';
 import BaseDashboard from './BaseDashboard';
 
-import { getSearchParams } from 'codeforlife/lib/esm/helpers';
-
-enum UserType {
-  dependent = 'dependent',
-  independent = 'independent'
-}
-
-interface StudentsDashboardSearchParams {
-  userType: UserType
-}
+import { SearchParams } from 'codeforlife/lib/esm/helpers';
 
 const StudentsDashboard: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
-  let params = getSearchParams({
-    userType: { cast: String }
-  }) as StudentsDashboardSearchParams | null;
+
+  const userTypes = ['dependent', 'independent'] as const;
+  const params = SearchParams.get<{
+    userType: typeof userTypes[number];
+  }>({
+    userType: { validate: SearchParams.validate.inOptions(userTypes) }
+  });
 
   React.useEffect(() => {
     if (params === null) {
@@ -36,10 +31,10 @@ const StudentsDashboard: React.FC = () => {
 
   let dashboard: React.ReactElement;
   switch (params.userType) {
-    case UserType.dependent:
+    case 'dependent':
       dashboard = <BaseDashboard isDependent={true} />;
       break;
-    case UserType.independent:
+    case 'independent':
       dashboard = <>
         <BaseDashboard isDependent={false} />
         <PageSection bgcolor={theme.palette.info.main} >
@@ -47,9 +42,6 @@ const StudentsDashboard: React.FC = () => {
         </PageSection>
       </>;
       break;
-    default:
-      params = null;
-      return <></>;
   }
 
   return (

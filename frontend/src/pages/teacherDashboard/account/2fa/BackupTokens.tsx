@@ -18,7 +18,7 @@ const BackupTokens: React.FC = (): JSX.Element => {
         <Typography align="center" variant="h4">
           Backup tokens
         </Typography>
-        <Link href={paths.teacherAccount} color="inherit" className="body">
+        <Link href={paths.teacher.dashboard.account._} color="inherit" className="body">
           &lt; Back to Your account
         </Link>
         <Typography>

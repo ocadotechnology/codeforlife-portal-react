@@ -7,7 +7,7 @@ import {
 } from '@mui/icons-material';
 import * as Yup from 'yup';
 
-import { getSearchParams } from 'codeforlife/lib/esm/helpers';
+import { SearchParams } from 'codeforlife/lib/esm/helpers';
 
 import BaseForm from './BaseForm';
 
@@ -16,6 +16,11 @@ import {
   TextField,
   EmailField
 } from 'codeforlife/lib/esm/components/form';
+
+const validateAccessCode = Yup
+  .string()
+  .required()
+  .matches(/^[A-Z]{2}[0-9]{3}$/, 'Invalid access code');
 
 const AccessCodeForm: React.FC<{
   setAccessCode: (accessCode: string) => void
@@ -42,11 +47,7 @@ const AccessCodeForm: React.FC<{
         name="accessCode"
         placeholder='Access code'
         helperText="Enter your access code"
-        validate={Yup
-          .string()
-          .required()
-          .matches(/^[A-Z]{2}[0-9]{3}$/, 'Invalid access code')
-        }
+        validate={validateAccessCode}
       />
       <Typography
         variant="body2"
@@ -111,16 +112,17 @@ const CredentialsForm: React.FC<{
   );
 };
 
-interface StudentFormParams {
-  accessCode?: string
-}
-
 const StudentForm: React.FC = () => {
-  const params = getSearchParams({
-    accessCode: { cast: String, isRequired: false }
-  }) as StudentFormParams;
+  const params = SearchParams.get<{
+    accessCode?: string
+  }>({
+    accessCode: {
+      isRequired: false,
+      validate: SearchParams.validate.matchesSchema(validateAccessCode)
+    }
+  });
 
-  const [accessCode, setAccessCode] = React.useState(params.accessCode);
+  const [accessCode, setAccessCode] = React.useState(params?.accessCode);
 
   return (accessCode === undefined)
     ? <AccessCodeForm setAccessCode={setAccessCode} />

@@ -44,8 +44,8 @@ const IndependentForm: React.FC = () => {
       dob === undefined
         ? undefined
         : Math.floor(
-            (new Date().getTime() - dob.getTime()) / (1000 * 60 * 60 * 24 * 365)
-          )
+          (new Date().getTime() - dob.getTime()) / (1000 * 60 * 60 * 24 * 365)
+        )
     );
   }
 
@@ -129,7 +129,7 @@ const IndependentForm: React.FC = () => {
               }}
             />
           )}
-          <CflPasswordFields forTeacher={false} />
+          <CflPasswordFields userType='independent' />
           <SubmitButton
             stackProps={{ alignItems: 'end' }}
             endIcon={<ChevronRightIcon />}

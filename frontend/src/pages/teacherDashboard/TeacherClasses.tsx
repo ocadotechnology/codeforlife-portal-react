@@ -22,7 +22,7 @@ import {
   CheckboxField,
   AutocompleteField
 } from 'codeforlife/lib/esm/components/form';
-import { CflHorizontalForm } from '../../components/formik/CflForm';
+import { CflHorizontalForm } from '../../components/form/CflForm';
 import CopyToClipboardIcon from '../../components/CopyToClipboardIcon';
 import PageSection from '../../components/PageSection';
 

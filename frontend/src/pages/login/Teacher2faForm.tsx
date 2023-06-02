@@ -44,7 +44,7 @@ const Teacher2faForm: React.FC = () => {
         </Button>
         <SubmitButton
           // TODO: Remove href and replace with submit functionality
-          href={paths.teacherSchool}/>
+          href={paths.teacher.dashboard.school}/>
       </Stack>
     </BaseForm>
   );

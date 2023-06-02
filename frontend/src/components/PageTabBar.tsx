@@ -8,10 +8,7 @@ import {
 
 import PageSection from './PageSection';
 
-import {
-  getSearchParams,
-  valueInOptions
-} from 'codeforlife/lib/esm/helpers';
+import { SearchParams } from 'codeforlife/lib/esm/helpers';
 
 const PageTabBar: React.FC<{
   title: string
@@ -20,8 +17,8 @@ const PageTabBar: React.FC<{
   const theme = useTheme();
 
   const labels = tabs.map(tab => tab.label);
-  const params = getSearchParams<{ tab: string }>({
-    tab: { validate: valueInOptions(labels) }
+  const params = SearchParams.get<{ tab: string }>({
+    tab: { validate: SearchParams.validate.inOptions(labels) }
   });
 
   const [value, setValue] = React.useState(

@@ -27,7 +27,7 @@ import {
 } from '@mui/icons-material';
 import { getUser } from '../dummyMethods';
 import { TextField, CheckboxField } from 'codeforlife/lib/esm/components/form';
-import { CflHorizontalForm } from '../../../components/formik/CflForm';
+import { CflHorizontalForm } from '../../../components/form/CflForm';
 import PageSection from '../../../components/PageSection';
 import { paths } from '../../../app/router';
 
@@ -39,7 +39,7 @@ const TwoFactorAuthentication: React.FC = (): JSX.Element => {
         Use your smartphone or tablet to enhance your account&apos;s security by
         using an authenticator app.
       </Typography>
-      <Button href={paths.setup2fa}>
+      <Button href={paths.teacher.dashboard.account.twoFA.setup}>
         Setup two factor authentication
       </Button>
       <Grid container>
@@ -50,7 +50,7 @@ const TwoFactorAuthentication: React.FC = (): JSX.Element => {
             You have 0 backup tokens remaining.
           </Typography>
           <Typography>View and create backup tokens for your account.</Typography>
-          <Button href={paths.backupTokens}>
+          <Button href={paths.teacher.dashboard.account.twoFA.backupTokens}>
             Manage backup tokens
           </Button>
           <Typography variant="body2" fontWeight="bold" color="error">
