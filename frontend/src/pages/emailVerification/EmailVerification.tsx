@@ -24,7 +24,7 @@ const EmailVerification: React.FC = () => {
 
   React.useEffect(() => {
     if (params === null) {
-      navigate(paths.internalServerError);
+      navigate(paths.error.internalServerError._);
     }
   }, []);
 

@@ -43,7 +43,7 @@ const RapidRouterProgress: React.FC<{
         <Button
           style={{ marginTop: 20 }}
           endIcon={<ChevronRightIcon />}
-          href={paths.rapidRouter}
+          href={paths.rapidRouter._}
         >
           Check scoreboard
         </Button>

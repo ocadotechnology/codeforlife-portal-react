@@ -46,7 +46,7 @@ const PasswordForm: React.FC<{
       <Button href={
         userType === 'teacher'
           ? paths.login.teacher._
-          : paths.login.independent
+          : paths.login.independent._
       }>
         OK
       </Button>
@@ -76,7 +76,7 @@ const PasswordForm: React.FC<{
         >
           <Button
             className='cancel'
-            href={paths.home}
+            href={paths._}
           >
             Cancel
           </Button>

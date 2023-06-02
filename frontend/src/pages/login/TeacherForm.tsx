@@ -92,7 +92,7 @@ const BaseTeacherForm: React.FC = () => {
           Don&apos;t worry, you can&nbsp;
           <Link
             className='body'
-            href={paths.resetPassword.teacher}
+            href={paths.resetPassword.teacher._}
           >
             reset your password
           </Link>
@@ -102,7 +102,7 @@ const BaseTeacherForm: React.FC = () => {
       <SubmitButton
         stackProps={{ alignItems: 'end' }}
         // TODO: Remove href and replace with submit functionality
-        href={paths.login.teacher.login2fa}>
+        href={paths.login.teacher.login2fa._}>
         Log in
       </SubmitButton>
     </BaseForm>

@@ -34,7 +34,7 @@ const Header: React.FC = () => {
         alt='Code for Life'
         src={CflLogo}
         maxWidth='60px'
-        href={paths.home}
+        href={paths._}
       />
       <Image
         alt='Ocado Group'
@@ -50,7 +50,7 @@ const Header: React.FC = () => {
       <Link sx={{ display, mr }} href={paths.student._} color='secondary'>
         Students
       </Link>
-      <Button sx={{ display, mr, ml: 'auto' }} href={paths.register}>
+      <Button sx={{ display, mr, ml: 'auto' }} href={paths.register._}>
         Register
       </Button>
       <LoginSelect sx={{ display, width: '200px' }} />

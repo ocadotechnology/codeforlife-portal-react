@@ -99,7 +99,7 @@ const IndependentForm: React.FC = () => {
                 label: <>
                   I have read and understood the &nbsp;
                   <Link
-                    href={paths.termsOfUse}
+                    href={paths.termsOfUse._}
                     target='_blank'
                     color='inherit'
                     className='body'

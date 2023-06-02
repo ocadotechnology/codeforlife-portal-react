@@ -29,7 +29,7 @@ const Resources: React.FC = () => {
         style={{
           marginTop: 'auto'
         }}
-        href={paths.register}
+        href={paths.register._}
       >
         Register now
       </Button>

@@ -29,7 +29,7 @@ const ForChildren: React.FC = () => <>
   </Typography>
   <Typography>
     This is the version of the Privacy Notice without all the legal jargon (we understand how overly complicated some privacy policies can be!) A full version of the Privacy Notice can be found by clicking&nbsp;
-    <Link className='body' href={paths.privacyNotice.privacyNotice}>
+    <Link className='body' href={paths.privacyNotice.privacyNotice._}>
       here
     </Link>
     .

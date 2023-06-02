@@ -35,7 +35,7 @@ const Setup2fa: React.FC = (): JSX.Element => {
         <Typography>
           You will now need to use your code generator the next time you log in.
         </Typography>
-        <Button href={paths.teacher.dashboard.school}>
+        <Button href={paths.teacher.dashboard.school._}>
           OK
         </Button>
       </PageSection>
@@ -74,7 +74,7 @@ const Setup2fa: React.FC = (): JSX.Element => {
             sx={{ maxWidth: '230px' }}
           />
           <Stack direction="row" spacing={2} justifyContent="flex-end">
-            <Button href={paths.teacher.dashboard.school}>
+            <Button href={paths.teacher.dashboard.school._}>
               Cancel
             </Button>
             <SubmitButton

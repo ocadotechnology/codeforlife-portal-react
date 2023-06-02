@@ -46,14 +46,14 @@ const DashboardHeader: React.FC<{ page: string }> = ({ page }): JSX.Element => {
         <DashboardHeaderButton
           active={page === 'Your school'}
           text="Your school"
-          href={paths.teacher.dashboard.school}
+          href={paths.teacher.dashboard.school._}
         />
       </Grid>
       <Grid item>
         <DashboardHeaderButton
           active={page === 'Your classes'}
           text="Your classes"
-          href={paths.teacher.dashboard.classes}
+          href={paths.teacher.dashboard.classes._}
         />
       </Grid>
       <Grid item>

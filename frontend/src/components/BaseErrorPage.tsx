@@ -43,7 +43,7 @@ const BaseErrorPage: React.FC<ErrorTemplateProps> = ({
               </Typography>
               <Button
                 sx={{ mb: { xs: 1, sm: 0 } }}
-                href={paths.home}
+                href={paths._}
               >
                 Back to homepage
               </Button>
