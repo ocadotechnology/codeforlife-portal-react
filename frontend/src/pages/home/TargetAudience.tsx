@@ -68,7 +68,7 @@ const TargetAudience: React.FC = () => {
         buttons.map((button) => ({
           element: (
             <Button
-              color='white'
+              style={{ backgroundColor: 'white' }}
               endIcon={<ChevronRightIcon />}
               sx={{ mb: { xs: 2, sm: 0 } }}
               {...button}
