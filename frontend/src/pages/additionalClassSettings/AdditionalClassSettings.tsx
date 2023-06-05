@@ -20,7 +20,7 @@ import {
   PYTHON_LEVELS,
   RapidRouterGameTabs
 } from './rapidRouterLevelsProps';
-import { DropDownField, currentDropdownOptions } from './CurrentDropDown';
+import { DropDownField, currentDropdownOptions } from './DropDownField';
 import RapidRouterTabTitles from './RapidRouterTabTitles';
 import RapidRouterTabs from './RapidRouterTabs';
 import { validateAccessCode } from '../login/StudentForm';
