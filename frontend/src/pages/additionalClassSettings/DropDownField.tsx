@@ -47,7 +47,5 @@ export const currentDropdownOptions = [
   'Allow external requests to this class for the next 4 days',
   'Always allow external requests to this class (not recommended)'
 ];
-const CurrentDropDown = () => {
-  return <div></div>;
-};
-export default CurrentDropDown;
+
+export default DropDownField;
