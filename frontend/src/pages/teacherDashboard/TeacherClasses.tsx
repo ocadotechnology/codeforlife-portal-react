@@ -25,6 +25,7 @@ import {
 import { CflHorizontalForm } from '../../components/form/CflForm';
 import CopyToClipboardIcon from '../../components/CopyToClipboardIcon';
 import PageSection from '../../components/PageSection';
+import { paths } from '../../app/router';
 
 const YourClasses: React.FC = (): JSX.Element => {
   return (
@@ -62,6 +63,13 @@ const ClassTable = (): JSX.Element => {
           </CflTableCellElement>
           <CflTableCellElement justifyContent="center">
             <Button endIcon={<Create />}>Update details</Button>
+
+            <Button
+              href={`${paths.teacherClass._}?accessCode=${accessCode}`}
+              endIcon={<Create />}
+            >
+              Update details
+            </Button>
           </CflTableCellElement>
         </CflTableBody>
       ))}

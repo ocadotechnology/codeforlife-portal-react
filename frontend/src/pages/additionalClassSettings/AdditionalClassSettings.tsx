@@ -1,7 +1,7 @@
 import React from 'react';
 import PageSection from '../../components/PageSection';
 import BasePage from '../BasePage';
-import { getSearchParams } from 'codeforlife/lib/esm/helpers';
+import { SearchParams } from 'codeforlife/lib/esm/helpers';
 import BackToLinkTextButton from '../../components/BackToLinkTextButton';
 import { paths } from '../../app/router';
 import {
@@ -20,9 +20,10 @@ import {
   PYTHON_LEVELS,
   RapidRouterGameTabs
 } from './rapidRouterLevelsProps';
-import CurrentDropdown from './CurrentDropDown';
+import { DropDownField, currentDropdownOptions } from './CurrentDropDown';
 import RapidRouterTabTitles from './RapidRouterTabTitles';
 import RapidRouterTabs from './RapidRouterTabs';
+import { validateAccessCode } from '../login/StudentForm';
 
 const ClassDetailsForm: React.FC = () => {
   return (
@@ -36,8 +37,9 @@ const ClassDetailsForm: React.FC = () => {
         alert(JSON.stringify(values, null, 2));
       }}
     >
-      {() => (
+      {(formik) => (
         <Form>
+          <pre>{JSON.stringify(formik.values, null, 2)}</pre>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -75,7 +77,13 @@ const ClassDetailsForm: React.FC = () => {
                 <Typography variant="subtitle1">
                   Set up external requests to this class
                 </Typography>
-                <Field as={CurrentDropdown} />
+                <Field
+                  as={DropDownField}
+                  name="classSettingsOptions"
+                  options={currentDropdownOptions}
+                  formikProps={formik}
+                  helperText="Choose your setting"
+                />
                 <Stack gap={3} direction="row" justifyContent="flex-start">
                   <Button variant="outlined" color="tertiary">
                     Cancel
@@ -194,20 +202,76 @@ const RapidRouterAccessSettings: React.FC = () => {
   );
 };
 
+const TransferClassToAnotherTeacher: React.FC = () => {
+  const options = ['Teacher 1', 'Teacher 2', 'Teacher 3'];
+  return (
+    <Formik
+      initialValues={{
+        transferClassToAnotherTeacher: options[0]
+      }}
+      onSubmit={(values) => {
+        alert(JSON.stringify(values, null, 2));
+      }}
+    >
+      {(formik) => (
+        <Form>
+          <pre>{JSON.stringify(formik.values, null, 2)}</pre>
+          <Stack>
+            <Typography variant="h5">
+              Transfer class to another teacher
+            </Typography>
+            <Typography>
+              Select a new teacher from your school or club to take over the
+              above class from the list below.
+            </Typography>
+            <Typography color="error" fontWeight="bold">
+              Warning: The class will move immediately to the new teacher.
+              Should you wish to undo this action, please contact that teacher.
+            </Typography>
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <Field
+                  as={DropDownField}
+                  name="transferClassToAnotherTeacher"
+                  formikProps={formik}
+                  options={options}
+                  helperText="Choose a teacher"
+                />
+              </Grid>
+              <Grid item xs={6}></Grid>
+            </Grid>
+            <Stack direction="row" columnGap={3}>
+              <Button variant="contained" color="tertiary" type="submit">
+                Transfer class
+              </Button>
+            </Stack>
+          </Stack>
+        </Form>
+      )}
+    </Formik>
+  );
+};
+
 const AdditionalClassSettings: React.FC = () => {
-  const params = getSearchParams({
-    accessCode: { cast: String }
-  }) as { accessCode: string };
+  const params = SearchParams.get<{ accessCode: string }>({
+    accessCode: {
+      isRequired: true,
+      validate: SearchParams.validate.matchesSchema(validateAccessCode),
+      cast: SearchParams.cast.toString
+    }
+  });
+  const accessCode = params?.accessCode ?? '';
+
   const theme = useTheme();
   return (
     <BasePage>
       <PageSection>
         <Typography variant="h4">
-          Additional class settings class {'<CLASS NAME>'} ({params.accessCode}
+          Additional class settings class {'<CLASS NAME>'} ({accessCode}
           ))
         </Typography>
         <BackToLinkTextButton
-          href={`${paths.teacherClass}?accessCode=${params.accessCode}`}
+          href={`${paths.teacherClass._}?accessCode=${accessCode}`}
           text="Back to Edit Class"
         />
         <Typography variant="body2">
@@ -223,6 +287,9 @@ const AdditionalClassSettings: React.FC = () => {
       </PageSection>
       <PageSection>
         <RapidRouterAccessSettings />
+      </PageSection>
+      <PageSection bgcolor={theme.palette.info.light}>
+        <TransferClassToAnotherTeacher />
       </PageSection>
     </BasePage>
   );

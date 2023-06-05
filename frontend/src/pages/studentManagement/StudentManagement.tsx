@@ -1,35 +1,30 @@
-import {
-  Add,
-  Check,
-  Delete,
-  DeleteOutlined,
-  Edit,
-  UploadFile
-} from '@mui/icons-material';
-import { Box, Checkbox, Button, Stack, Typography } from '@mui/material';
+import { Add, Delete, Edit, UploadFile } from '@mui/icons-material';
+import { Box, Button, Stack, Typography, useTheme } from '@mui/material';
 import { TextareaAutosize } from '@mui/base';
 import { paths } from '../../app/router';
 import BackToLinkTextButton from '../../components/BackToLinkTextButton';
 import { isValidAccessCode } from '../../helpers/validAccessCode';
-import PageNotFound from '../pageNotFound/PageNotFound';
 import React from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import BasePage from '../BasePage';
-import { getSearchParams } from 'codeforlife/lib/esm/helpers';
+import { SearchParams } from 'codeforlife/lib/esm/helpers';
 import PageSection from '../../components/PageSection';
-import { useTheme } from '@mui/material';
 import DashboardHeader from '../teacherDashboard/DashboardHeader';
 import DashboardBanner from '../teacherDashboard/DashboardBanner';
 import CflDataTable from '../../components/CflDataTable';
-// import BasePage from 'pages/BasePage';
+import { validateAccessCode } from '../login/StudentForm';
 
-interface AdditionalClassDetailsParamsProps {
-  accessCode: string;
-}
 const AdditionalClassDetails: React.FC = () => {
-  const params = getSearchParams({
-    accessCode: { cast: String }
-  }) as AdditionalClassDetailsParamsProps;
+  const params = SearchParams.get<{
+    accessCode: string;
+  }>({
+    accessCode: {
+      isRequired: true,
+      validate: SearchParams.validate.matchesSchema(validateAccessCode)
+    }
+  });
+  const accessCode = params?.accessCode ?? '';
+
   return (
     <Stack>
       <Typography variant="h5">Additional class details</Typography>
@@ -43,7 +38,7 @@ const AdditionalClassDetails: React.FC = () => {
           variant="contained"
           color="tertiary"
           endIcon={<Edit />}
-          href={`${paths.teacherClassEdit}?accessCode=${params?.accessCode}`}
+          href={`${paths.teacherClassEdit._}?accessCode=${accessCode}`}
         >
           Edit details
         </Button>
@@ -95,7 +90,6 @@ const AddStudents: React.FC = () => {
 };
 
 const CurrentStudents: React.FC = () => {
-  const randomStudentNames: string[] = ['Student 1', 'Student 2', 'Student 3'];
   return (
     <Box>
       <Typography variant="h5">Current students</Typography>
@@ -111,18 +105,19 @@ const CurrentStudents: React.FC = () => {
   );
 };
 
-interface StudentManagmentProps {
-  accessCode: string;
-}
-
-const StudentManagment: React.FC = (): JSX.Element => {
+const StudentManagement: React.FC = (): JSX.Element => {
   const navigate = useNavigate();
-  const params = getSearchParams({
-    accessCode: { cast: String }
-  }) as StudentManagmentProps | null;
+  const params = SearchParams.get<{
+    accessCode: string;
+  }>({
+    accessCode: {
+      isRequired: true,
+      validate: SearchParams.validate.matchesSchema(validateAccessCode)
+    }
+  });
   React.useEffect(() => {
     if (params === null || !isValidAccessCode(params.accessCode)) {
-      navigate(paths.internalServerError);
+      navigate(paths.error.internalServerError._);
     }
   }, []);
   const theme = useTheme();
@@ -134,7 +129,7 @@ const StudentManagment: React.FC = (): JSX.Element => {
         <Typography variant="h5" align="center">
           Update details for ({params?.accessCode} )
         </Typography>
-        <BackToLinkTextButton text="Classes" href={paths.teacherClass} />
+        <BackToLinkTextButton text="Classes" href={paths.teacherClass._} />
         <Typography>
           Here you can view and manage all of your students within this class.
           You can add new students, transfer existing students to another one of
@@ -155,4 +150,4 @@ const StudentManagment: React.FC = (): JSX.Element => {
   );
 };
 
-export default StudentManagment;
+export default StudentManagement;

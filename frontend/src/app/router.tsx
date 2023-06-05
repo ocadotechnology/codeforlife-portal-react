@@ -22,11 +22,12 @@ import TeacherAccount from '../pages/teacherDashboard/account/TeacherAccount';
 import Setup2fa from '../pages/teacherDashboard/account/2fa/Setup2fa';
 import BackupTokens from '../pages/teacherDashboard/account/2fa/BackupTokens';
 import EmailVerification from '../pages/emailVerification/EmailVerification';
-import StudentManagment from '../pages/studentManagment/StudentManagment';
+import StudentManagement from '../pages/studentManagement/StudentManagement';
 import ResetPassword from '../pages/resetPassword/ResetPassword';
 import StudentsDashboard from '../pages/studentsDashboard/StudentsDashboard';
-import TeacherOnboarding from '../pages/teacherOnboarding/TeacherOnboarding';
 import AdditionalClassSettings from '../pages/additionalClassSettings/AdditionalClassSettings';
+
+import TeacherOnboarding from '../pages/teacherOnboarding/TeacherOnboarding';
 
 export const paths = _('', {
   login: _('/login', {
@@ -84,7 +85,9 @@ export const paths = _('', {
     internalServerError: _('/?type=internalServerError')
   }),
   rapidRouter: _('/rapid-router'),
-  kurono: _('/kurono')
+  kurono: _('/kurono'),
+  teacherClass: _('/teacher/class'),
+  teacherClassEdit: _('/teacher/class/edit')
 });
 
 const router = createBrowserRouter([
@@ -177,11 +180,11 @@ const router = createBrowserRouter([
     element: <ResetPassword />
   },
   {
-    path: paths.teacherClass,
-    element: <StudentManagment />
+    path: paths.teacherClass._,
+    element: <StudentManagement />
   },
   {
-    path: paths.teacherClassEdit,
+    path: paths.teacherClassEdit._,
     element: <AdditionalClassSettings />
   }
 ]);
