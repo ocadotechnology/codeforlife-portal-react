@@ -19,7 +19,7 @@ const Home: React.FC = () => {
       <PageSection background={`linear-gradient(
         to ${useMediaQuery(theme.breakpoints.down('sm')) ? 'bottom' : 'right'},
         ${theme.palette.primary.main} 50%,
-        ${theme.palette.secondary.main} 0
+        ${theme.palette.tertiary.main} 0
       )`}>
         <TargetAudience />
       </PageSection>
