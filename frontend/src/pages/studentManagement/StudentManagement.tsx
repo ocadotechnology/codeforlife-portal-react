@@ -127,9 +127,12 @@ const StudentManagement: React.FC = (): JSX.Element => {
       <DashboardHeader page="Your classes" />
       <PageSection>
         <Typography variant="h5" align="center">
-          Update details for ({params?.accessCode} )
+          Update details for ({params?.accessCode})
         </Typography>
-        <BackToLinkTextButton text="Classes" href={paths.teacherClass._} />
+        <BackToLinkTextButton
+          text="Classes"
+          href={paths.teacher.dashboard.class._}
+        />
         <Typography>
           Here you can view and manage all of your students within this class.
           You can add new students, transfer existing students to another one of

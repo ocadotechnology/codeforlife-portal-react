@@ -63,7 +63,7 @@ const ClassTable = (): JSX.Element => {
           </CflTableCellElement>
           <CflTableCellElement justifyContent="center">
             <Button
-              href={`${paths.teacherClass._}?accessCode=${accessCode}`}
+              href={`${paths.teacher.dashboard.class.edit._}?accessCode=${accessCode}`}
               endIcon={<Create />}
             >
               Update details

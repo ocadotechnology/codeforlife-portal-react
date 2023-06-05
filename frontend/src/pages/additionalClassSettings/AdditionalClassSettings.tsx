@@ -254,8 +254,7 @@ const AdditionalClassSettings: React.FC = () => {
   const params = SearchParams.get<{ accessCode: string }>({
     accessCode: {
       isRequired: true,
-      validate: SearchParams.validate.matchesSchema(validateAccessCode),
-      cast: SearchParams.cast.toString
+      validate: SearchParams.validate.matchesSchema(validateAccessCode)
     }
   });
   const accessCode = params?.accessCode ?? '';
@@ -269,7 +268,7 @@ const AdditionalClassSettings: React.FC = () => {
           ))
         </Typography>
         <BackToLinkTextButton
-          href={`${paths.teacherClass._}?accessCode=${accessCode}`}
+          href={`${paths.teacher.dashboard.class._}?accessCode=${accessCode}`}
           text="Back to Edit Class"
         />
         <Typography variant="body2">

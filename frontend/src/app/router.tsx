@@ -47,6 +47,10 @@ export const paths = _('', {
     dashboard: _('/dashboard', {
       school: _('/school'),
       classes: _('/classes'),
+      class: _('/class', {
+        _: _('/'),
+        edit: _('/edit')
+      }),
       account: _('/account', {
         twoFA: _('/2fa', {
           setup: _('/setup'),
@@ -180,11 +184,11 @@ const router = createBrowserRouter([
     element: <ResetPassword />
   },
   {
-    path: paths.teacherClass._,
+    path: paths.teacher.dashboard.class._,
     element: <StudentManagement />
   },
   {
-    path: paths.teacherClassEdit._,
+    path: paths.teacher.dashboard.class.edit._,
     element: <AdditionalClassSettings />
   }
 ]);
