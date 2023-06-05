@@ -31,7 +31,7 @@ const ClassDetailsForm: React.FC = () => {
       initialValues={{
         className: '',
         classSettingOptions: '',
-        allowStudnetsToSeeEachOthersProgress: false
+        allowStudentsToSeeEachOthersProgress: false
       }}
       onSubmit={(values) => {
         alert(JSON.stringify(values, null, 2));
@@ -56,7 +56,7 @@ const ClassDetailsForm: React.FC = () => {
             </Grid>
             <Grid item xs={12} sm={6}>
               <CheckboxField
-                name="allowStudnetsToSeeEachOthersProgress"
+                name="allowStudentsToSeeEachOthersProgress"
                 formControlLabelProps={{
                   label: "Allow students to see their classmates' progress."
                 }}
@@ -65,12 +65,12 @@ const ClassDetailsForm: React.FC = () => {
             <Grid item xs={12}>
               <Stack gap={1}>
                 <Typography variant="h5">External requests setting</Typography>
-                <Typography variant="body2">
+                <Typography>
                   You can set up permissions for this class allowing students to
                   send requests asking to join your class from outside of your
                   school or club.
                 </Typography>
-                <Typography variant="body2" fontWeight="bold">
+                <Typography fontWeight="bold">
                   This class is not current accepting external requests.
                 </Typography>
                 <Typography variant="subtitle1">
@@ -84,12 +84,8 @@ const ClassDetailsForm: React.FC = () => {
                   helperText="Choose your setting"
                 />
                 <Stack gap={3} direction="row" justifyContent="flex-start">
-                  <Button variant="outlined" color="tertiary">
-                    Cancel
-                  </Button>
-                  <Button variant="contained" color="tertiary" type="submit">
-                    Update
-                  </Button>
+                  <Button variant="outlined">Cancel</Button>
+                  <Button type="submit">Update</Button>
                 </Stack>
               </Stack>
             </Grid>
@@ -271,7 +267,7 @@ const AdditionalClassSettings: React.FC = () => {
           href={`${paths.teacher.dashboard.class._}?accessCode=${accessCode}`}
           text="Back to Edit Class"
         />
-        <Typography variant="body2">
+        <Typography>
           You may change the name of the class, or change permissions to allow
           external requests from independent students to join this class. You
           may also transfer the class to another teacher, or change permissions

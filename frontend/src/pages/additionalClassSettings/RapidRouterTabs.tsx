@@ -100,7 +100,7 @@ const RapidRouterTabs: React.FC<RapidRouterTabsProps> = ({
             color={theme.palette.common.black}
           >
             <AccordionDetails key={element.level}>
-              {element.level}: {element.name} {[idx]}
+              {element.level}: {element.name}
             </AccordionDetails>
             <Field
               as={Checkbox}

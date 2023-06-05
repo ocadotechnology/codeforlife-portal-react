@@ -1,7 +1,6 @@
-
 export const allBoxesChecked: (
-  levels: Array<{ level: string; name: string }>,
+  levels: Array<{ levelNumber: string; name: string }>,
   formikLevels: string[]
 ) => boolean = (levels, formikLevels) => {
-  return levels.every(level => formikLevels[parseInt(level.level) - 1] !== '');
+  return levels.every(level => formikLevels[parseInt(level.levelNumber) - 1] !== '');
 };
