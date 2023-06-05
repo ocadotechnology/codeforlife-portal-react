@@ -5,13 +5,12 @@ import {
   Dialog,
   Typography
 } from '@mui/material';
+import Timer from './Timer';
 
 const SessionPopUp: React.FC<{
   open: boolean,
   setOpen: React.Dispatch<React.SetStateAction<boolean>>,
 }> = ({ open, setOpen }) => {
-  const minute = '2';
-  const second = '00';
   const handleClose = (): void => {
     setOpen(false);
     // TODO: close the popup after 2 mins and call the logout endpoint
@@ -31,9 +30,7 @@ const SessionPopUp: React.FC<{
           We noticed that you have been inactive for a while. Are you still there? For your
           online safety we will log you out in:
         </Typography>
-        <Typography variant='h5' textAlign='center'>
-          {minute} min {second} secs
-        </Typography>
+        <Timer delaySecond={120} />
         <Typography textAlign='center'>
           You may lose progress unless you continue or save.
         </Typography>
