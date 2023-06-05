@@ -53,18 +53,8 @@ const CflDataTable: React.FC = () => {
     newChecked[idx] = !checked[idx];
     setChecked(newChecked);
   };
-  const theme = useTheme();
-
   return (
     <Box>
-      <pre>{JSON.stringify(checked, null, 2)}</pre>
-      <pre>
-        checked.includes(true): {checked.includes(true) ? 'true' : 'false'}
-      </pre>
-      <pre>
-        {'checked.every(() => true)'}:
-        {checked.every((el) => el) ? 'true' : 'false'}
-      </pre>
       <Table>
         <TableHead>
           <TableRow>

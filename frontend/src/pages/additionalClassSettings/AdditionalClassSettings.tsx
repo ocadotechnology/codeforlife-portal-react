@@ -39,7 +39,6 @@ const ClassDetailsForm: React.FC = () => {
     >
       {(formik) => (
         <Form>
-          <pre>{JSON.stringify(formik.values, null, 2)}</pre>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -215,7 +214,6 @@ const TransferClassToAnotherTeacher: React.FC = () => {
     >
       {(formik) => (
         <Form>
-          <pre>{JSON.stringify(formik.values, null, 2)}</pre>
           <Stack>
             <Typography variant="h5">
               Transfer class to another teacher

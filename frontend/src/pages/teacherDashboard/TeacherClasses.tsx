@@ -62,8 +62,6 @@ const ClassTable = (): JSX.Element => {
             {teacher === `${firstName} ${lastName}` ? 'You' : teacher}
           </CflTableCellElement>
           <CflTableCellElement justifyContent="center">
-            <Button endIcon={<Create />}>Update details</Button>
-
             <Button
               href={`${paths.teacherClass._}?accessCode=${accessCode}`}
               endIcon={<Create />}
