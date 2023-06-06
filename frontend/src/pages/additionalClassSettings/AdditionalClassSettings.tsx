@@ -264,7 +264,7 @@ const AdditionalClassSettings: React.FC = () => {
           ))
         </Typography>
         <BackToLinkTextButton
-          href={`${paths.teacher.dashboard.class._}?accessCode=${accessCode}`}
+          href={`${paths.teacher.dashboard.class._}?acceeCode=${accessCode}`}
           text="Back to Edit Class"
         />
         <Typography>

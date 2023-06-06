@@ -26,6 +26,7 @@ import { CflHorizontalForm } from '../../components/form/CflForm';
 import CopyToClipboardIcon from '../../components/CopyToClipboardIcon';
 import PageSection from '../../components/PageSection';
 import { paths } from '../../app/router';
+import { createSearchParams, useNavigate } from 'react-router-dom';
 
 const YourClasses: React.FC = (): JSX.Element => {
   return (
@@ -46,6 +47,8 @@ const YourClasses: React.FC = (): JSX.Element => {
 const ClassTable = (): JSX.Element => {
   const classData = getClassesData();
   const { firstName, lastName } = getUser();
+  const navigate = useNavigate();
+  console.log('helo');
   return (
     <CflTable titles={['Class name', 'Access code', 'Teacher', 'Action']}>
       {classData.map(({ className, accessCode, teacher }, keyIdx: number) => (
@@ -62,8 +65,13 @@ const ClassTable = (): JSX.Element => {
             {teacher === `${firstName} ${lastName}` ? 'You' : teacher}
           </CflTableCellElement>
           <CflTableCellElement justifyContent="center">
+            {`${paths.teacher.dashboard.class._}?accessCode=${accessCode}`}
             <Button
-              href={`${paths.teacher.dashboard.class.edit._}?accessCode=${accessCode}`}
+              onClick={() => {
+                navigate(
+                  `${paths.teacher.dashboard.class._}?accessCode=${accessCode}`
+                );
+              }}
               endIcon={<Create />}
             >
               Update details

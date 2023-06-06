@@ -1,11 +1,11 @@
 import { Add, Delete, Edit, UploadFile } from '@mui/icons-material';
-import { Box, Button, Stack, Typography, useTheme } from '@mui/material';
+import { Box, Button, Link, Stack, Typography, useTheme } from '@mui/material';
 import { TextareaAutosize } from '@mui/base';
 import { paths } from '../../app/router';
 import BackToLinkTextButton from '../../components/BackToLinkTextButton';
 import { isValidAccessCode } from '../../helpers/validAccessCode';
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { createSearchParams, useNavigate } from 'react-router-dom';
 import BasePage from '../BasePage';
 import { SearchParams } from 'codeforlife/lib/esm/helpers';
 import PageSection from '../../components/PageSection';
@@ -24,7 +24,7 @@ const AdditionalClassDetails: React.FC = () => {
     }
   });
   const accessCode = params?.accessCode ?? '';
-
+  const navigate = useNavigate();
   return (
     <Stack>
       <Typography variant="h5">Additional class details</Typography>
@@ -38,7 +38,7 @@ const AdditionalClassDetails: React.FC = () => {
           variant="contained"
           color="tertiary"
           endIcon={<Edit />}
-          href={`${paths.teacherClassEdit._}?accessCode=${accessCode}`}
+          href={`${paths.teacher.dashboard.class.edit._}${accessCode}`}
         >
           Edit details
         </Button>
@@ -115,6 +115,7 @@ const StudentManagement: React.FC = (): JSX.Element => {
       validate: SearchParams.validate.matchesSchema(validateAccessCode)
     }
   });
+  const accessCode = params?.accessCode ?? '';
   React.useEffect(() => {
     if (params === null || !isValidAccessCode(params.accessCode)) {
       navigate(paths.error.internalServerError._);
@@ -131,7 +132,7 @@ const StudentManagement: React.FC = (): JSX.Element => {
         </Typography>
         <BackToLinkTextButton
           text="Classes"
-          href={paths.teacher.dashboard.class._}
+          href={`${paths.teacher.dashboard.classes._}`}
         />
         <Typography>
           Here you can view and manage all of your students within this class.

@@ -12,7 +12,7 @@ import { allBoxesChecked } from '../../helpers/arrayHelpers';
 
 interface RapidRouterTabTitlesProps {
   title: string;
-  levels: Array<{ level: string; name: string }>;
+  levels: Array<{ levelNumber: string; name: string }>;
   formikProps: FormikProps<any>;
 }
 const RapidRouterTabTitles: React.FC<RapidRouterTabTitlesProps> = ({
@@ -45,10 +45,10 @@ const RapidRouterTabTitles: React.FC<RapidRouterTabTitlesProps> = ({
               }
             }}
             onChange={(e: any) => {
-              const startingValue = parseInt(levels[0].level) - 1;
+              const startingValue = parseInt(levels[0].levelNumber) - 1;
               const currentLevels = formikProps.values.levelsSubmitted;
               for (
-                let i = parseInt(levels[0].level) - 1;
+                let i = parseInt(levels[0].levelNumber) - 1;
                 i < levels.length + startingValue;
                 i++
               ) {

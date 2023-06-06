@@ -59,7 +59,7 @@ const CflDataTable: React.FC = () => {
         <TableHead>
           <TableRow>
             <TableCellStyled>Student details</TableCellStyled>
-            <TableCellStyled padding="checkbox">
+            <TableCellStyled align="center">
               <Checkbox
                 checked={checked.every((el) => el)}
                 indeterminate={
@@ -75,7 +75,7 @@ const CflDataTable: React.FC = () => {
           {randomStudentNames.map((studentName, idx) => (
             <TableRow key={`${studentName}-${idx}`}>
               <TableCellStyled>{studentName}</TableCellStyled>
-              <TableCellStyled padding="checkbox">
+              <TableCellStyled align="center">
                 <Checkbox
                   color="primary"
                   checked={checked[idx]}

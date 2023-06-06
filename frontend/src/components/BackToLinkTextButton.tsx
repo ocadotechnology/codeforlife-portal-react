@@ -12,7 +12,7 @@ const BackToLinkTextButton: React.FC<BackToLinkTextButtonProps> = ({
 }) => {
   const theme = useTheme();
   return (
-    <Link href={href} color={theme.palette.common.black} underline="hover">
+    <Link color={theme.palette.common.black} underline="hover" href={href}>
       {'<'} Back to {text}
     </Link>
   );

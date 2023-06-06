@@ -17,7 +17,7 @@ interface RapidRouterTabsProps {
   formik: any;
   color: any;
   levels: Array<{
-    level: string;
+    levelNumber: string;
     name: string;
   }>;
 }
@@ -37,7 +37,7 @@ const RapidRouterTabs: React.FC<RapidRouterTabsProps> = ({
   const selectAll: (e: any) => void = (e: any) => {
     const currentLevels = formik.values.levelsSubmitted;
 
-    const startingValue = parseInt(levels[0].level) - 1;
+    const startingValue = parseInt(levels[0].levelNumber) - 1;
     for (let i = startingValue; i < levels.length + startingValue; i++) {
       currentLevels[i] = e.target.checked ? `${i + 1}` : '';
     }
@@ -91,7 +91,7 @@ const RapidRouterTabs: React.FC<RapidRouterTabsProps> = ({
         </AccordionSummary>
         {levels.map((element, idx) => (
           <Stack
-            key={`${element.level}-${element.name}}`}
+            key={`${element.levelNumber}-${element.name}}`}
             width="100%"
             direction="row"
             justifyContent="space-between"
@@ -99,13 +99,13 @@ const RapidRouterTabs: React.FC<RapidRouterTabsProps> = ({
             bgcolor={theme.palette.info.light}
             color={theme.palette.common.black}
           >
-            <AccordionDetails key={element.level}>
-              {element.level}: {element.name}
+            <AccordionDetails key={element.levelNumber}>
+              {element.levelNumber}: {element.name}
             </AccordionDetails>
             <Field
               as={Checkbox}
               name="levelsSubmitted"
-              value={`${element.level}`} // Formik cannot handle numbers
+              value={`${element.levelNumber}`} // Formik cannot handle numbers
               sx={{
                 color,
                 '&.Mui-checked': {
@@ -113,11 +113,12 @@ const RapidRouterTabs: React.FC<RapidRouterTabsProps> = ({
                 }
               }}
               checked={
-                formik.values.levelsSubmitted[parseInt(element.level) - 1] !==
-                ''
+                formik.values.levelsSubmitted[
+                  parseInt(element.levelNumber) - 1
+                ] !== ''
               }
               onChange={(e: any) => {
-                handleCheckboxChange(element.level, e);
+                handleCheckboxChange(element.levelNumber, e);
               }}
             />
           </Stack>
