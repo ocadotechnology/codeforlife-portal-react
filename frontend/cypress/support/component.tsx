@@ -20,8 +20,12 @@ import React from 'react';
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
-import { mount } from 'cypress/react18'
-import App from '../../src/app/App';
+import { mount } from 'cypress/react18';
+
+import { App } from 'codeforlife/lib/esm/components';
+
+import theme from '../../src/app/theme';
+import store from '../../src/app/store';
 
 // Augment the Cypress namespace to include type definitions for
 // your custom command.
@@ -36,5 +40,10 @@ declare global {
 }
 
 Cypress.Commands.add('mount', (component, options) => {
-  return mount(<App>{component}</App>, options);
+  return mount(
+    <App theme={theme} store={store}>
+      {component}
+    </App>,
+    options
+  );
 });

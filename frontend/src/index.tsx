@@ -2,8 +2,11 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';
 
-import App from './app/App';
+import { App } from 'codeforlife/lib/esm/components';
+
 import router from './app/router';
+import theme from './app/theme';
+import store from './app/store';
 import reportWebVitals from './reportWebVitals';
 
 const container = document.getElementById('root');
@@ -14,7 +17,7 @@ const root = createRoot(container);
 
 root.render(
   <React.StrictMode>
-    <App>
+    <App theme={theme} store={store}>
       <RouterProvider router={router} />
     </App>
   </React.StrictMode>
