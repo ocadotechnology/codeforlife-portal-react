@@ -24,7 +24,7 @@ const Links: React.FC = () => (
     <Grid container spacing={{ xs: 0, sm: 1 }}>
       <Grid xs={12} sm={4}>
         <Stack>
-          <Link href={paths.aboutUs}>
+          <Link href={paths.aboutUs._}>
             About us
           </Link>
           <Link onClick={OpenContactUsWidget}>
@@ -37,7 +37,7 @@ const Links: React.FC = () => (
           <Link href={paths.privacyNotice._}>
             Privacy Notice
           </Link>
-          <Link href={paths.termsOfUse}>
+          <Link href={paths.termsOfUse._}>
             Terms of use
           </Link>
           <Link onClick={ShowCookiesDrawer}>
@@ -47,13 +47,13 @@ const Links: React.FC = () => (
       </Grid>
       <Grid xs={12} sm={4}>
         <Stack>
-          <Link href={paths.homeLearning}>
+          <Link href={paths.homeLearning._}>
             Home learning
           </Link>
-          <Link href={paths.getInvolved}>
+          <Link href={paths.getInvolved._}>
             Get involved
           </Link>
-          <Link href={paths.codingClubs}>
+          <Link href={paths.codingClubs._}>
             Coding clubs
           </Link>
         </Stack>

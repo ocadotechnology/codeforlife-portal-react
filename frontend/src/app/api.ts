@@ -24,15 +24,15 @@ const baseQueryWrapper: BaseQueryFn<
   if (result.error) {
     switch (result.error.status) {
       case 403:
-        navigate(paths.forbidden);
+        navigate(paths.error.forbidden._);
         break;
 
       case 404:
-        navigate(paths.pageNotFound);
+        navigate(paths.error.pageNotFound._);
         break;
 
       default:
-        navigate(paths.internalServerError);
+        navigate(paths.error.internalServerError._);
         break;
     }
   }

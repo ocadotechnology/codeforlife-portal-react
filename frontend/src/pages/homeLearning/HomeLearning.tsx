@@ -33,7 +33,7 @@ const HomeLearning: React.FC = () => {
       </PageSection>
       <Levels />
       <PageSection className='flex-end-x'>
-        <Button href={paths.register}>
+        <Button href={paths.register._}>
           Register now
         </Button>
       </PageSection>

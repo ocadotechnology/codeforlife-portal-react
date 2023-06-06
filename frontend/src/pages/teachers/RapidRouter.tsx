@@ -54,7 +54,7 @@ const RapidRouter: React.FC = () => {
           marginTop: 'auto',
           marginLeft: 'auto'
         }}
-        href={paths.rapidRouter}
+        href={paths.rapidRouter._}
       >
         Try out Rapid Router
       </Button>

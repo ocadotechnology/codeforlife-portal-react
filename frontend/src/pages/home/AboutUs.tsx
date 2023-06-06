@@ -62,7 +62,7 @@ const AboutUs: React.FC = () => {
       />
       <Grid xs={12} display='flex' justifyContent='end'>
         <Button
-          href={paths.aboutUs}
+          href={paths.aboutUs._}
           endIcon={<ChevronRightIcon />}
         >
           About us

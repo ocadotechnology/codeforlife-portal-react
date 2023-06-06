@@ -32,9 +32,9 @@ const LoginSelect: React.FC<{
     MenuItemProps & React.AnchorHTMLAttributes<HTMLAnchorElement>
   )> =
     [
-      { children: 'Student', onClick: onClick(paths.login.student) },
-      { children: 'Teacher', onClick: onClick(paths.login.teacher) },
-      { children: 'Independent', onClick: onClick(paths.login.independent) }
+      { children: 'Student', onClick: onClick(paths.login.student._) },
+      { children: 'Teacher', onClick: onClick(paths.login.teacher._) },
+      { children: 'Independent', onClick: onClick(paths.login.independent._) }
     ];
 
   return (

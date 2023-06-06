@@ -38,7 +38,7 @@ const Status: React.FC<{
           </Typography>
         )}
         <Button
-          href={paths.home}
+          href={paths._}
           style={{ marginTop: 30 }}
         >
           Back to homepage

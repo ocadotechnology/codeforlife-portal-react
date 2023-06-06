@@ -74,7 +74,7 @@ const TeacherForm: React.FC = () => {
             label: <>
               I am over 18 years old have read and understood the&nbsp;
               <Link
-                href={paths.termsOfUse}
+                href={paths.termsOfUse._}
                 target='_blank'
                 color='inherit'
                 className='body'
@@ -101,7 +101,7 @@ const TeacherForm: React.FC = () => {
               'Sign up to receive updates about Code for Life games and teaching resources.'
           }}
         />
-        <CflPasswordFields forTeacher={true} />
+        <CflPasswordFields userType='teacher' />
         <SubmitButton
           stackProps={{ alignItems: 'end' }}
           endIcon={<ChevronRightIcon />}

@@ -5,6 +5,7 @@ import {
 } from '@mui/material';
 
 import { theme as cflTheme } from 'codeforlife';
+import { getStyleOverrides } from 'codeforlife/lib/esm/helpers';
 
 const typography: ThemeOptions['typography'] = {
   h1: {
@@ -69,7 +70,8 @@ const components: ThemeOptions['components'] = {
       color: 'tertiary'
     },
     styleOverrides: {
-      root: {
+      root: ({ ownerState }) => ({
+        ...getStyleOverrides(ownerState, 'MuiButton'),
         textTransform: 'none',
         color: 'black',
         padding: '5px 20px',
@@ -77,12 +79,13 @@ const components: ThemeOptions['components'] = {
         '&:hover': {
           backgroundColor: 'inherit'
         }
-      }
+      })
     }
   },
   MuiTabs: {
     styleOverrides: {
       root: ({ ownerState }) => ({
+        ...getStyleOverrides(ownerState, 'MuiTabs'),
         ...([undefined, 'horizontal'].includes(ownerState.orientation) && {
           [`.${tabClasses.root}:not(:last-of-type)`]: {
             marginRight: '30px'
@@ -97,6 +100,7 @@ const components: ThemeOptions['components'] = {
   MuiTab: {
     styleOverrides: {
       root: ({ ownerState }) => ({
+        ...getStyleOverrides(ownerState, 'MuiTab'),
         textTransform: 'none',
         fontSize: typography.body2?.fontSize,
         color: 'white',
@@ -126,17 +130,18 @@ const components: ThemeOptions['components'] = {
   },
   MuiInputBase: {
     styleOverrides: {
-      root: {
+      root: ({ ownerState }) => ({
+        ...getStyleOverrides(ownerState, 'MuiInputBase'),
         background: 'white',
         margin: 0
-      }
+      })
     }
   },
   MuiLink: {
     styleOverrides: {
       root: ({ ownerState }) => ({
+        ...getStyleOverrides(ownerState, 'MuiLink'),
         ...(ownerState.className === 'body' && {
-          ...(cflTheme.components?.MuiLink?.styleOverrides?.root as object),
           color: 'black',
           textDecorationColor: 'black',
           textDecoration: 'underline',
@@ -150,26 +155,27 @@ const components: ThemeOptions['components'] = {
   MuiContainer: {
     styleOverrides: {
       root: ({ ownerState }) => ({
-        // @ts-expect-error root is defined in the CFL package.
-        ...cflTheme.components?.MuiContainer?.styleOverrides?.root({ ownerState }),
+        ...getStyleOverrides(ownerState, 'MuiContainer'),
         padding: 0
       })
     }
   },
   MuiFormHelperText: {
     styleOverrides: {
-      root: {
+      root: ({ ownerState }) => ({
+        ...getStyleOverrides(ownerState, 'MuiFormHelperText'),
         ...formStyleOverrides,
         marginTop: 4,
         marginLeft: 4
-      }
+      })
     }
   },
   MuiCheckbox: {
     styleOverrides: {
-      root: {
+      root: ({ ownerState }) => ({
+        ...getStyleOverrides(ownerState, 'MuiCheckbox'),
         color: 'white'
-      }
+      })
     }
   },
   MuiTextField: {
@@ -177,20 +183,19 @@ const components: ThemeOptions['components'] = {
       size: 'small'
     },
     styleOverrides: {
-      root: {
-        ...(cflTheme.components?.MuiTextField?.styleOverrides?.root as object),
+      root: ({ ownerState }) => ({
+        ...getStyleOverrides(ownerState, 'MuiTextField'),
         backgroundColor: 'transparent',
         '& .MuiOutlinedInput-root.Mui-focused > fieldset': {
           borderColor: '#000'
         }
-      }
+      })
     }
   },
   MuiTable: {
     styleOverrides: {
       root: ({ ownerState }) => ({
-        // @ts-expect-error root is defined in the CFL package.
-        ...cflTheme.components?.MuiTable?.styleOverrides?.root({ ownerState }),
+        ...getStyleOverrides(ownerState, 'MuiTable'),
         marginBottom: typography.body1?.marginBottom
       })
     }
