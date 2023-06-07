@@ -2,7 +2,9 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material';
 
-import Page from 'codeforlife/lib/esm/components/page';
+import Page, {
+  SectionProps as PageSectionProps
+} from 'codeforlife/lib/esm/components/page';
 
 import { paths } from '../../app/router';
 import Characters from '../../features/characters/Characters';
@@ -29,7 +31,7 @@ const StudentsDashboard: React.FC = () => {
 
   if (params === null) return <></>;
 
-  let dashboard: React.ReactElement;
+  let dashboard: React.ReactElement<PageSectionProps, typeof Page.Section>;
   switch (params.userType) {
     case 'dependent':
       dashboard = <BaseDashboard isDependent={true} />;
