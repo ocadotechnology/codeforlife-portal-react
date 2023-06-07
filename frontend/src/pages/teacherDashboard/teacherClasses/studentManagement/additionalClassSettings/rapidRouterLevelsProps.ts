@@ -1,4 +1,4 @@
-import theme from '../../app/theme';
+import theme from '../../../../../app/theme';
 
 // TODO: Once we have developed the backend to fetch
 // the levels from our API, we can remove this file

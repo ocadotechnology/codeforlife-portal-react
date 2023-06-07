@@ -17,15 +17,15 @@ import TermsOfUse from '../pages/termsOfUse/TermsOfUse';
 import Newsletter from '../pages/newsletter/Newsletter';
 import Error from '../pages/error/Error';
 import TeacherSchool from '../pages/teacherDashboard/TeacherSchool';
-import TeacherClasses from '../pages/teacherDashboard/TeacherClasses';
+import TeacherClasses from '../pages/teacherDashboard/teacherClasses/TeacherClasses';
 import TeacherAccount from '../pages/teacherDashboard/account/TeacherAccount';
 import Setup2fa from '../pages/teacherDashboard/account/2fa/Setup2fa';
 import BackupTokens from '../pages/teacherDashboard/account/2fa/BackupTokens';
 import EmailVerification from '../pages/emailVerification/EmailVerification';
-import StudentManagement from '../pages/studentManagement/StudentManagement';
+import StudentManagement from '../pages/teacherDashboard/teacherClasses/studentManagement/StudentManagement';
 import ResetPassword from '../pages/resetPassword/ResetPassword';
 import StudentsDashboard from '../pages/studentsDashboard/StudentsDashboard';
-import AdditionalClassSettings from '../pages/additionalClassSettings/AdditionalClassSettings';
+import AdditionalClassSettings from '../pages/teacherDashboard/teacherClasses/studentManagement/additionalClassSettings/AdditionalClassSettings';
 
 import TeacherOnboarding from '../pages/teacherOnboarding/TeacherOnboarding';
 

@@ -1,9 +1,9 @@
 import React from 'react';
-import PageSection from '../../components/PageSection';
-import BasePage from '../BasePage';
+import BasePage from '../../../../BasePage';
+import PageSection from '../../../../../components/PageSection';
 import { SearchParams } from 'codeforlife/lib/esm/helpers';
-import BackToLinkTextButton from '../../components/BackToLinkTextButton';
-import { paths } from '../../app/router';
+import BackToLinkTextButton from '../../../../../components/BackToLinkTextButton';
+import { paths } from '../../../../../app/router';
 import {
   useTheme,
   Typography,
@@ -12,18 +12,22 @@ import {
   Stack,
   Button
 } from '@mui/material';
-import { Formik, Form, Field } from 'formik';
-import { CheckboxField, TextField } from 'codeforlife/lib/esm/components/form';
+import { Formik, Form } from 'formik';
+import {
+  AutocompleteField,
+  CheckboxField,
+  TextField
+} from 'codeforlife/lib/esm/components/form';
 import { People } from '@mui/icons-material';
 import {
   BLOCKLY_LEVELS,
   PYTHON_LEVELS,
   RapidRouterGameTabs
 } from './rapidRouterLevelsProps';
-import { DropDownField, currentDropdownOptions } from './DropDownField';
+import { currentDropdownOptions } from './DropDownField';
 import RapidRouterTabTitles from './RapidRouterTabTitles';
 import RapidRouterTabs from './RapidRouterTabs';
-import { validateAccessCode } from '../login/StudentForm';
+import { validateAccessCode } from '../../../../login/StudentForm';
 
 const ClassDetailsForm: React.FC = () => {
   return (
@@ -78,12 +82,14 @@ const ClassDetailsForm: React.FC = () => {
                 </Typography>
                 <Grid container>
                   <Grid item xs={6}>
-                    <Field
-                      as={DropDownField}
-                      name="classSettingsOptions"
+                    <AutocompleteField
                       options={currentDropdownOptions}
-                      formikProps={formik}
-                      helperText="Choose your setting"
+                      textFieldProps={{
+                        required: true,
+                        name: 'classSettingsOptions',
+                        helperText: 'Choose your setting',
+                        placeholder: currentDropdownOptions[0]
+                      }}
                     />
                   </Grid>
                   <Grid item xs={6}></Grid>
@@ -210,12 +216,14 @@ const TransferClassToAnotherTeacher: React.FC = () => {
                 <Typography fontWeight="bold">
                   New teacher to take over class
                 </Typography>
-                <Field
-                  as={DropDownField}
-                  name="transferClassToAnotherTeacher"
-                  formikProps={formik}
+                <AutocompleteField
                   options={options}
-                  helperText="Choose a teacher"
+                  textFieldProps={{
+                    required: true,
+                    name: 'transferClassToAnotherTeacher',
+                    helperText: 'Choose a teacher',
+                    placeholder: options[0]
+                  }}
                 />
               </Grid>
               <Grid item xs={6}></Grid>

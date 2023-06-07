@@ -1,32 +1,19 @@
 import React from 'react';
-import BasePage from '../BasePage';
-import DashboardBanner from './DashboardBanner';
-import DashboardHeader from './DashboardHeader';
+import BasePage from '../../BasePage';
+import DashboardBanner from '../DashboardBanner';
+import DashboardHeader from '../DashboardHeader';
 import CflTable, {
   CflTableBody,
   CflTableCellElement
-} from '../../components/CflTable';
-import {
-  Box,
-  Button,
-  InputAdornment,
-  Typography,
-  useTheme
-} from '@mui/material';
-import { Add, Create, DoNotDisturb, GroupOutlined } from '@mui/icons-material';
-import { getClassesData, getTeachersData, getUser } from './dummyMethods';
-import { CREATE_CLASS_INITIAL_VALUES } from './constants';
-import { CREATE_CLASS_SCHEMA } from './schemas';
-import {
-  TextField,
-  CheckboxField,
-  AutocompleteField
-} from 'codeforlife/lib/esm/components/form';
-import { CflHorizontalForm } from '../../components/form/CflForm';
-import CopyToClipboardIcon from '../../components/CopyToClipboardIcon';
-import PageSection from '../../components/PageSection';
-import { paths } from '../../app/router';
-import { createSearchParams, useNavigate } from 'react-router-dom';
+} from '../../../components/CflTable';
+import { Button, Typography, useTheme } from '@mui/material';
+import { Add, Create, DoNotDisturb } from '@mui/icons-material';
+import { getClassesData, getTeachersData, getUser } from '../dummyMethods';
+import {} from 'codeforlife/lib/esm/components/form';
+import CopyToClipboardIcon from '../../../components/CopyToClipboardIcon';
+import PageSection from '../../../components/PageSection';
+import { paths } from '../../../app/router';
+import ClassForm from '../../teacherOnboarding/ClassForm';
 
 const YourClasses: React.FC = (): JSX.Element => {
   return (
@@ -130,52 +117,12 @@ const ExternalStudentsJoiningRequests: React.FC = (): JSX.Element => {
 };
 
 const CreateNewClassForm: React.FC = (): JSX.Element => {
-  const theme = useTheme();
-  const teachersData = getTeachersData();
   return (
-    <CflHorizontalForm
-      header="Create a new class"
-      subheader="When you set up a new class, a unique class access code will automatically be generated for the teacher assigned to the class."
-      initialValues={CREATE_CLASS_INITIAL_VALUES}
-      validationSchema={CREATE_CLASS_SCHEMA}
-      onSubmit={(values, { setSubmitting }) => {
-        alert(JSON.stringify(values, null, 2));
-        setSubmitting(false);
+    <ClassForm
+      onSubmit={() => {
+        alert('submitted');
       }}
-      submitButton={<Button type="submit">Create class</Button>}
-    >
-      <TextField
-        name="className"
-        placeholder="Class name"
-        helperText="Enter a class name"
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <GroupOutlined />
-            </InputAdornment>
-          )
-        }}
-      />
-      <AutocompleteField
-        options={teachersData.map(({ teacherName }) => teacherName)}
-        textFieldProps={{
-          name: 'teacherName',
-          placeholder: "Teacher's name",
-          helperText: 'Select a teacher'
-        }}
-      />
-      <Box>{/* Blank component to fill the grid */}</Box>
-      <CheckboxField
-        name="isStudentProgressVisibleToOthers"
-        stackProps={{
-          justifyContent: 'flex-start'
-        }}
-        sx={{ color: theme.palette.info.dark }}
-        formControlLabelProps={{
-          label: "Allow students to see their classmates' progress?"
-        }}
-      />
-    </CflHorizontalForm>
+    />
   );
 };
 

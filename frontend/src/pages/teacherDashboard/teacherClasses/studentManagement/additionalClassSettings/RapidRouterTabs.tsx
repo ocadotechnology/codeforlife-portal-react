@@ -10,7 +10,7 @@ import {
   Box,
   useTheme
 } from '@mui/material';
-import { allBoxesChecked } from '../../helpers/arrayHelpers';
+import { allBoxesChecked } from '../../../../../helpers/arrayHelpers';
 import { ExpandMore } from '@mui/icons-material';
 
 interface RapidRouterTabsProps {

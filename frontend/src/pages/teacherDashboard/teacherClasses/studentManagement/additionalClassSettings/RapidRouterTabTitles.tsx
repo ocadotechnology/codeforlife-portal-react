@@ -8,7 +8,7 @@ import {
   AccordionSummary
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { allBoxesChecked } from '../../helpers/arrayHelpers';
+import { allBoxesChecked } from '../../../../../helpers/arrayHelpers';
 
 interface RapidRouterTabTitlesProps {
   title: string;
