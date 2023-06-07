@@ -1,11 +1,15 @@
-import { Add, Delete, Edit, UploadFile } from '@mui/icons-material';
-import { Box, Button, Link, Stack, Typography, useTheme } from '@mui/material';
+import {
+  Add,
+  DeleteOutlineOutlined,
+  Edit,
+  UploadFile
+} from '@mui/icons-material';
+import { Box, Button, Stack, Typography, useTheme } from '@mui/material';
 import { TextareaAutosize } from '@mui/base';
 import { paths } from '../../app/router';
 import BackToLinkTextButton from '../../components/BackToLinkTextButton';
 import { isValidAccessCode } from '../../helpers/validAccessCode';
 import React from 'react';
-import { createSearchParams, useNavigate } from 'react-router-dom';
 import BasePage from '../BasePage';
 import { SearchParams } from 'codeforlife/lib/esm/helpers';
 import PageSection from '../../components/PageSection';
@@ -13,6 +17,7 @@ import DashboardHeader from '../teacherDashboard/DashboardHeader';
 import DashboardBanner from '../teacherDashboard/DashboardBanner';
 import CflDataTable from '../../components/CflDataTable';
 import { validateAccessCode } from '../login/StudentForm';
+import { useNavigate } from 'react-router-dom';
 
 const AdditionalClassDetails: React.FC = () => {
   const params = SearchParams.get<{
@@ -24,7 +29,6 @@ const AdditionalClassDetails: React.FC = () => {
     }
   });
   const accessCode = params?.accessCode ?? '';
-  const navigate = useNavigate();
   return (
     <Stack>
       <Typography variant="h5">Additional class details</Typography>
@@ -38,11 +42,15 @@ const AdditionalClassDetails: React.FC = () => {
           variant="contained"
           color="tertiary"
           endIcon={<Edit />}
-          href={`${paths.teacher.dashboard.class.edit._}${accessCode}`}
+          href={`${paths.teacher.dashboard.class.edit._}?accessCode=${accessCode}`}
         >
           Edit details
         </Button>
-        <Button variant="contained" color="error" endIcon={<Delete />}>
+        <Button
+          variant="contained"
+          color="error"
+          endIcon={<DeleteOutlineOutlined />}
+        >
           Delete class
         </Button>
       </Stack>
@@ -127,7 +135,7 @@ const StudentManagement: React.FC = (): JSX.Element => {
       <DashboardBanner />
       <DashboardHeader page="Your classes" />
       <PageSection>
-        <Typography variant="h5" align="center">
+        <Typography variant="h4" align="center">
           Update details for ({params?.accessCode})
         </Typography>
         <BackToLinkTextButton

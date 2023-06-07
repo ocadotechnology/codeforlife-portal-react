@@ -48,8 +48,7 @@ export const paths = _('', {
       school: _('/school'),
       classes: _('/classes'),
       class: _('/class', {
-        accessCode: _('/?accessCode={accessCode}'),
-        edit: _('/edit/?accessCode=')
+        edit: _('/edit')
       }),
       account: _('/account', {
         twoFA: _('/2fa', {

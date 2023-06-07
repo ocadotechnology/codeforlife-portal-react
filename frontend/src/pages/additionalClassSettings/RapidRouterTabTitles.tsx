@@ -23,14 +23,20 @@ const RapidRouterTabTitles: React.FC<RapidRouterTabTitlesProps> = ({
   const theme = useTheme();
   return (
     <Accordion elevation={0} expanded={false}>
-      <AccordionSummary sx={{ cursor: 'default !important', paddingRight: 0 }}>
+      <AccordionSummary
+        sx={{
+          cursor: 'default !important',
+          paddingRight: '1.5rem',
+          paddingLeft: 0
+        }}
+      >
         <Stack
           width="100%"
           direction="row"
           justifyContent="space-between"
           alignItems="center"
         >
-          <Typography m={0} variant="h5">
+          <Typography m={0} variant="h6">
             {title}
           </Typography>
           <Checkbox
@@ -48,7 +54,7 @@ const RapidRouterTabTitles: React.FC<RapidRouterTabTitlesProps> = ({
               const startingValue = parseInt(levels[0].levelNumber) - 1;
               const currentLevels = formikProps.values.levelsSubmitted;
               for (
-                let i = parseInt(levels[0].levelNumber) - 1;
+                let i = startingValue;
                 i < levels.length + startingValue;
                 i++
               ) {

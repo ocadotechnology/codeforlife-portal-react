@@ -1,5 +1,11 @@
 import React from 'react';
-import { FormControl, Select, MenuItem, FormHelperText } from '@mui/material';
+import {
+  FormControl,
+  Select,
+  MenuItem,
+  FormHelperText,
+  Typography
+} from '@mui/material';
 
 export const DropDownField: React.FC<any> = ({
   name,
@@ -13,8 +19,6 @@ export const DropDownField: React.FC<any> = ({
     <FormControl fullWidth>
       <Select
         size="small"
-        labelId="lel"
-        id="lelSelect"
         name={name}
         value={dropdownValue}
         onChange={(e) => {
@@ -28,7 +32,7 @@ export const DropDownField: React.FC<any> = ({
           </MenuItem>
         ))}
       </Select>
-      {helperText ?? <FormHelperText>Choose your setting</FormHelperText>}
+      {helperText ?? <FormHelperText>{helperText}</FormHelperText>}
     </FormControl>
   );
 };

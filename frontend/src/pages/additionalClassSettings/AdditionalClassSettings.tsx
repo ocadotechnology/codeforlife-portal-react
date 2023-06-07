@@ -76,13 +76,18 @@ const ClassDetailsForm: React.FC = () => {
                 <Typography variant="subtitle1">
                   Set up external requests to this class
                 </Typography>
-                <Field
-                  as={DropDownField}
-                  name="classSettingsOptions"
-                  options={currentDropdownOptions}
-                  formikProps={formik}
-                  helperText="Choose your setting"
-                />
+                <Grid container>
+                  <Grid item xs={6}>
+                    <Field
+                      as={DropDownField}
+                      name="classSettingsOptions"
+                      options={currentDropdownOptions}
+                      formikProps={formik}
+                      helperText="Choose your setting"
+                    />
+                  </Grid>
+                  <Grid item xs={6}></Grid>
+                </Grid>
                 <Stack gap={3} direction="row" justifyContent="flex-start">
                   <Button variant="outlined">Cancel</Button>
                   <Button type="submit">Update</Button>
@@ -119,57 +124,39 @@ const RapidRouterAccessSettings: React.FC = () => {
               formikProps={formik}
             />
             <RapidRouterTabs
-              name={RapidRouterGameTabs.gettingStarted.name}
-              levels={RapidRouterGameTabs.gettingStarted.levels}
-              color={RapidRouterGameTabs.gettingStarted.color}
+              episode={RapidRouterGameTabs.gettingStarted}
               formik={formik}
             />
             <RapidRouterTabs
-              name={RapidRouterGameTabs.shortestRoute.name}
-              levels={RapidRouterGameTabs.shortestRoute.levels}
-              color={RapidRouterGameTabs.shortestRoute.color}
+              episode={RapidRouterGameTabs.shortestRoute}
               formik={formik}
             />
             <RapidRouterTabs
-              name={RapidRouterGameTabs.loopsAndRepetitions.name}
-              levels={RapidRouterGameTabs.loopsAndRepetitions.levels}
-              color={RapidRouterGameTabs.loopsAndRepetitions.color}
+              episode={RapidRouterGameTabs.loopsAndRepetitions}
               formik={formik}
             />
             <RapidRouterTabs
-              name={RapidRouterGameTabs.loopsAndConditions.name}
-              levels={RapidRouterGameTabs.loopsAndConditions.levels}
-              color={RapidRouterGameTabs.loopsAndConditions.color}
+              episode={RapidRouterGameTabs.loopsAndConditions}
               formik={formik}
             />
             <RapidRouterTabs
-              name={RapidRouterGameTabs.ifOnly.name}
-              levels={RapidRouterGameTabs.ifOnly.levels}
-              color={RapidRouterGameTabs.ifOnly.color}
+              episode={RapidRouterGameTabs.ifOnly}
               formik={formik}
             />
             <RapidRouterTabs
-              name={RapidRouterGameTabs.trafficLights.name}
-              levels={RapidRouterGameTabs.trafficLights.levels}
-              color={RapidRouterGameTabs.trafficLights.color}
+              episode={RapidRouterGameTabs.trafficLights}
               formik={formik}
             />
             <RapidRouterTabs
-              name={RapidRouterGameTabs.limitedBlocks.name}
-              levels={RapidRouterGameTabs.limitedBlocks.levels}
-              color={RapidRouterGameTabs.limitedBlocks.color}
+              episode={RapidRouterGameTabs.limitedBlocks}
               formik={formik}
             />
             <RapidRouterTabs
-              name={RapidRouterGameTabs.procedures.name}
-              levels={RapidRouterGameTabs.procedures.levels}
-              color={RapidRouterGameTabs.procedures.color}
+              episode={RapidRouterGameTabs.procedures}
               formik={formik}
             />
             <RapidRouterTabs
-              name={RapidRouterGameTabs.blocklyBrainTeasers.name}
-              levels={RapidRouterGameTabs.blocklyBrainTeasers.levels}
-              color={RapidRouterGameTabs.blocklyBrainTeasers.color}
+              episode={RapidRouterGameTabs.blocklyBrainTeasers}
               formik={formik}
             />
             <RapidRouterTabTitles
@@ -178,15 +165,11 @@ const RapidRouterAccessSettings: React.FC = () => {
               formikProps={formik}
             />
             <RapidRouterTabs
-              name={RapidRouterGameTabs.introdutionToPython.name}
-              levels={RapidRouterGameTabs.introdutionToPython.levels}
-              color={RapidRouterGameTabs.introdutionToPython.color}
+              episode={RapidRouterGameTabs.introdutionToPython}
               formik={formik}
             />
             <RapidRouterTabs
-              name={RapidRouterGameTabs.python.name}
-              levels={RapidRouterGameTabs.python.levels}
-              color={RapidRouterGameTabs.python.color}
+              episode={RapidRouterGameTabs.python}
               formik={formik}
             />
             <Button type="submit">Save level settings</Button>
@@ -224,6 +207,9 @@ const TransferClassToAnotherTeacher: React.FC = () => {
             </Typography>
             <Grid container spacing={2}>
               <Grid item xs={6}>
+                <Typography fontWeight="bold">
+                  New teacher to take over class
+                </Typography>
                 <Field
                   as={DropDownField}
                   name="transferClassToAnotherTeacher"
@@ -235,9 +221,7 @@ const TransferClassToAnotherTeacher: React.FC = () => {
               <Grid item xs={6}></Grid>
             </Grid>
             <Stack direction="row" columnGap={3}>
-              <Button variant="contained" color="tertiary" type="submit">
-                Transfer class
-              </Button>
+              <Button type="submit">Transfer class</Button>
             </Stack>
           </Stack>
         </Form>
@@ -254,19 +238,17 @@ const AdditionalClassSettings: React.FC = () => {
     }
   });
   const accessCode = params?.accessCode ?? '';
-
+  const backToEditClassUrl = `${String(
+    paths.teacher.dashboard.class._
+  )}?accessCode=${accessCode}`;
   const theme = useTheme();
   return (
     <BasePage>
       <PageSection>
-        <Typography variant="h4">
-          Additional class settings class {'<CLASS NAME>'} ({accessCode}
-          ))
+        <Typography variant="h4" align="center">
+          Additional class settings class {'<CLASS NAME>'} ({accessCode})
         </Typography>
-        <BackToLinkTextButton
-          href={`${paths.teacher.dashboard.class._}?acceeCode=${accessCode}`}
-          text="Back to Edit Class"
-        />
+        <BackToLinkTextButton href={backToEditClassUrl} text="Edit Class" />
         <Typography>
           You may change the name of the class, or change permissions to allow
           external requests from independent students to join this class. You
@@ -279,6 +261,11 @@ const AdditionalClassSettings: React.FC = () => {
         <ClassDetailsForm />
       </PageSection>
       <PageSection>
+        <Typography variant="h5">Rapid Router access settings</Typography>
+        <Typography>
+          You may control access to levels here by selecting what you wish to
+          display to the students.
+        </Typography>
         <RapidRouterAccessSettings />
       </PageSection>
       <PageSection bgcolor={theme.palette.info.light}>

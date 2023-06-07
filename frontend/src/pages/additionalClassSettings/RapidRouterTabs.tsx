@@ -11,21 +11,23 @@ import {
   useTheme
 } from '@mui/material';
 import { allBoxesChecked } from '../../helpers/arrayHelpers';
+import { ExpandMore } from '@mui/icons-material';
 
 interface RapidRouterTabsProps {
-  name: string;
-  formik: any;
-  color: any;
-  levels: Array<{
-    levelNumber: string;
+  episode: {
     name: string;
-  }>;
+    levelRange: string;
+    color: any;
+    levels: Array<{
+      levelNumber: string;
+      name: string;
+    }>;
+  };
+  formik: any;
 }
 
 const RapidRouterTabs: React.FC<RapidRouterTabsProps> = ({
-  name,
-  levels,
-  color,
+  episode,
   formik
 }) => {
   const handleCheckboxChange: (idx: string, e: any) => void = (idx, e) => {
@@ -37,8 +39,12 @@ const RapidRouterTabs: React.FC<RapidRouterTabsProps> = ({
   const selectAll: (e: any) => void = (e: any) => {
     const currentLevels = formik.values.levelsSubmitted;
 
-    const startingValue = parseInt(levels[0].levelNumber) - 1;
-    for (let i = startingValue; i < levels.length + startingValue; i++) {
+    const startingValue = parseInt(episode.levels[0].levelNumber) - 1;
+    for (
+      let i = startingValue;
+      i < episode.levels.length + startingValue;
+      i++
+    ) {
       currentLevels[i] = e.target.checked ? `${i + 1}` : '';
     }
     formik.setValues({
@@ -52,9 +58,10 @@ const RapidRouterTabs: React.FC<RapidRouterTabsProps> = ({
     <Box>
       <Accordion elevation={0}>
         <AccordionSummary
+          expandIcon={<ExpandMore />}
           sx={{
             paddingRight: 0,
-            background: color,
+            background: episode.color,
             color: theme.palette.success.contrastText
           }}
         >
@@ -64,9 +71,18 @@ const RapidRouterTabs: React.FC<RapidRouterTabsProps> = ({
             justifyContent="space-between"
             alignItems="center"
           >
-            <Typography m={0} variant="h5">
-              {name}
-            </Typography>
+            <Stack
+              direction="row"
+              alignItems="center"
+              justifyContent="space-between"
+              pr={15}
+              width="100%"
+            >
+              <Typography m={0} variant="h6">
+                {episode.name}
+              </Typography>
+              <Typography m={0}>Levels {episode.levelRange}</Typography>
+            </Stack>
             <Field
               as={Checkbox}
               name="levelsSubmitted"
@@ -79,7 +95,10 @@ const RapidRouterTabs: React.FC<RapidRouterTabsProps> = ({
                   color: theme.palette.common.white
                 }
               }}
-              checked={allBoxesChecked(levels, formik.values.levelsSubmitted)}
+              checked={allBoxesChecked(
+                episode.levels,
+                formik.values.levelsSubmitted
+              )}
               onClick={(e: any) => {
                 e.stopPropagation();
               }}
@@ -89,7 +108,7 @@ const RapidRouterTabs: React.FC<RapidRouterTabsProps> = ({
             />
           </Stack>
         </AccordionSummary>
-        {levels.map((element, idx) => (
+        {episode.levels.map((element, idx) => (
           <Stack
             key={`${element.levelNumber}-${element.name}}`}
             width="100%"
@@ -107,9 +126,10 @@ const RapidRouterTabs: React.FC<RapidRouterTabsProps> = ({
               name="levelsSubmitted"
               value={`${element.levelNumber}`} // Formik cannot handle numbers
               sx={{
-                color,
+                marginRight: '1.5rem',
+                color: episode.color,
                 '&.Mui-checked': {
-                  color
+                  color: episode.color
                 }
               }}
               checked={

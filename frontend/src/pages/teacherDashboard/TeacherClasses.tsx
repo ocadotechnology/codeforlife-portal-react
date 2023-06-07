@@ -47,8 +47,6 @@ const YourClasses: React.FC = (): JSX.Element => {
 const ClassTable = (): JSX.Element => {
   const classData = getClassesData();
   const { firstName, lastName } = getUser();
-  const navigate = useNavigate();
-  console.log('helo');
   return (
     <CflTable titles={['Class name', 'Access code', 'Teacher', 'Action']}>
       {classData.map(({ className, accessCode, teacher }, keyIdx: number) => (
@@ -65,16 +63,11 @@ const ClassTable = (): JSX.Element => {
             {teacher === `${firstName} ${lastName}` ? 'You' : teacher}
           </CflTableCellElement>
           <CflTableCellElement justifyContent="center">
-            {`${paths.teacher.dashboard.class._}?accessCode=${accessCode}`}
             <Button
-              onClick={() => {
-                navigate(
-                  `${paths.teacher.dashboard.class._}?accessCode=${accessCode}`
-                );
-              }}
+              href={`${paths.teacher.dashboard.class._}?accessCode=${accessCode}`}
               endIcon={<Create />}
             >
-              Update details
+              Edit details
             </Button>
           </CflTableCellElement>
         </CflTableBody>
