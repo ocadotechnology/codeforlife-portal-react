@@ -1,10 +1,9 @@
 import React from 'react';
 import { useTheme } from '@mui/material';
 
+import Page from 'codeforlife/lib/esm/components/page';
+
 import HomeEducateHeroImage from '../../images/home_educate_hero_hexagon.png';
-import BasePage from '../../pages/BasePage';
-import PageBanner from '../../components/PageBanner';
-import PageSection from '../../components/PageSection';
 import Kurono from './Kurono';
 import RapidRouter from './RapidRouter';
 import Resources from './Resources';
@@ -14,32 +13,26 @@ const Teachers: React.FC = () => {
   const theme = useTheme();
 
   return (
-    <BasePage>
-      <PageBanner
-        img={{ alt: 'homeEducateHero', src: HomeEducateHeroImage }}
-        text={{
-          title: 'Educate',
-          content: 'Get ready to teach the next generation of computer scientists'
-        }}
+    <Page.Container>
+      <Page.Banner
+        imageProps={{ alt: 'homeEducateHero', src: HomeEducateHeroImage }}
+        header='Educate'
+        subheader='Get ready to teach the next generation of computer scientists'
       />
-
-      <PageSection>
+      <Page.Section>
         <TeacherSlides />
-      </PageSection>
-
-      <PageSection bgcolor={theme.palette.info.main}>
+      </Page.Section>
+      <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
         <Resources />
-      </PageSection>
-
-      <PageSection>
+      </Page.Section>
+      <Page.Section>
         <RapidRouter />
-      </PageSection>
-
-      <PageSection bgcolor={theme.palette.info.main}>
+      </Page.Section>
+      <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
         <Kurono />
-      </PageSection>
+      </Page.Section>
 
-    </BasePage>
+    </Page.Container>
   );
 };
 

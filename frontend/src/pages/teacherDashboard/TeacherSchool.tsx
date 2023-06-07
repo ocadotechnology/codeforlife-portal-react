@@ -7,7 +7,6 @@ import {
 } from '@mui/material';
 import DashboardBanner from './DashboardBanner';
 import DashboardHeader from './DashboardHeader';
-import BasePage from '../BasePage';
 import React from 'react';
 import {
   Add,
@@ -33,7 +32,7 @@ import {
 } from 'codeforlife/lib/esm/components/form';
 import { getNames } from 'country-list';
 import { CflHorizontalForm } from '../../components/form/CflForm';
-import PageSection from '../../components/PageSection';
+import Page from 'codeforlife/lib/esm/components/page';
 
 const InviteTeacherForm: React.FC = (): JSX.Element => {
   const theme = useTheme();
@@ -169,40 +168,40 @@ const TeachersTableActions: React.FC<{
   isTeacherAdmin,
   twoFactorAuthentication
 }): JSX.Element => {
-  if (teacherEmail === userEmail) {
-    return (
-      <>
-        <Button endIcon={<Create />}>
-          Update details
-        </Button>
-        {/* This button below will be used for pending invites  */}
-        <Button endIcon={<EmailOutlined />}>
-          Resend invite
-        </Button>
-      </>
-    );
-  } else if (isTeacherAdmin) {
-    return (
-      <>
-        <Button color="error" endIcon={<DoNotDisturb />}>
-          Revoke admin
-        </Button>
-        <Button color="error" endIcon={<DeleteOutline />}>
-          Delete
-        </Button>
-      </>
-    );
-  } else {
-    return (
-      <>
-        <Button endIcon={<Add />}>Make admin </Button>
-        <Button endIcon={<DoDisturbOnOutlined />} color="error">
-          Disable 2FA
-        </Button>
-      </>
-    );
-  }
-};
+    if (teacherEmail === userEmail) {
+      return (
+        <>
+          <Button endIcon={<Create />}>
+            Update details
+          </Button>
+          {/* This button below will be used for pending invites  */}
+          <Button endIcon={<EmailOutlined />}>
+            Resend invite
+          </Button>
+        </>
+      );
+    } else if (isTeacherAdmin) {
+      return (
+        <>
+          <Button color="error" endIcon={<DoNotDisturb />}>
+            Revoke admin
+          </Button>
+          <Button color="error" endIcon={<DeleteOutline />}>
+            Delete
+          </Button>
+        </>
+      );
+    } else {
+      return (
+        <>
+          <Button endIcon={<Add />}>Make admin </Button>
+          <Button endIcon={<DoDisturbOnOutlined />} color="error">
+            Disable 2FA
+          </Button>
+        </>
+      );
+    }
+  };
 
 const TeachersTable: React.FC = (): JSX.Element => {
   const { email } = getUser();
@@ -252,10 +251,10 @@ const TeacherSchool: React.FC = (): JSX.Element => {
   const { schoolName, accessCode } = getSchool();
   const theme = useTheme();
   return (
-    <BasePage>
+    <Page.Container>
       <DashboardBanner />
       <DashboardHeader page="Your school" />
-      <PageSection>
+      <Page.Section>
         <Typography align="center" variant="h4">
           Your school: {schoolName} ({accessCode})
         </Typography>
@@ -267,17 +266,17 @@ const TeacherSchool: React.FC = (): JSX.Element => {
           teachers&apos; classes. Please bear this in mind when assigning admin
           rights to other teachers.
         </Typography>
-      </PageSection>
-      <PageSection>
+      </Page.Section>
+      <Page.Section>
         <InviteTeacherForm />
-      </PageSection>
-      <PageSection>
+      </Page.Section>
+      <Page.Section>
         <Typography variant="h5">
           These teachers are already part of your school or club
         </Typography>
         <TeachersTable />
-      </PageSection>
-      <PageSection>
+      </Page.Section>
+      <Page.Section>
         <Grid container>
           <Grid item sm={6}>
             <Typography>
@@ -294,11 +293,11 @@ const TeacherSchool: React.FC = (): JSX.Element => {
             </Typography>
           </Grid>
         </Grid>
-      </PageSection>
-      <PageSection bgcolor={theme.palette.info.main}>
+      </Page.Section>
+      <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
         <UpdateSchoolDetailsForm />
-      </PageSection>
-    </BasePage>
+      </Page.Section>
+    </Page.Container>
   );
 };
 

@@ -1,20 +1,19 @@
 import React from 'react';
-import BasePage from '../../../BasePage';
 import DashboardBanner from '../../DashboardBanner';
 import DashboardHeader from '../../DashboardHeader';
 import { Button, Link, ListItemText, Typography } from '@mui/material';
-import PageSection from '../../../../components/PageSection';
 import { paths } from '../../../../app/router';
 import { ItemizedList } from 'codeforlife/lib/esm/components';
+import Page from 'codeforlife/lib/esm/components/page';
 
 const BackupTokens: React.FC = (): JSX.Element => {
   const backupTokens = ['token1', 'token2', 'token3', 'token4', 'token5', 'token6', 'token7', 'token8', 'token9', 'token10'];
 
   return (
-    <BasePage>
+    <Page.Container>
       <DashboardBanner />
       <DashboardHeader page="Your account" />
-      <PageSection>
+      <Page.Section>
         <Typography align="center" variant="h4">
           Backup tokens
         </Typography>
@@ -42,8 +41,8 @@ const BackupTokens: React.FC = (): JSX.Element => {
         <Button>
           Generate tokens
         </Button>
-      </PageSection>
-    </BasePage>
+      </Page.Section>
+    </Page.Container>
   );
 };
 

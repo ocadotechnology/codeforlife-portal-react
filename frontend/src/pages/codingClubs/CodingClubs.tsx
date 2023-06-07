@@ -9,12 +9,11 @@ import {
   Download as DownloadIcon
 } from '@mui/icons-material';
 
-import BasePage from '../../pages/BasePage';
+import Page from 'codeforlife/lib/esm/components/page';
+
 import CodeClubHeroImage from '../../images/coding_club_hero_hexagon.jpg';
 import AboutUsCFLImage from '../../images/about_us_cfl.jpg';
 import PythonClubImage from '../../images/coding_club_python_pack.png';
-import PageBanner from '../../components/PageBanner';
-import PageSection from '../../components/PageSection';
 import Introduction from '../../components/Introduction';
 
 import ClubAim from './ClubAim';
@@ -34,20 +33,16 @@ const CodingClubs: React.FC = () => {
   const theme = useTheme();
 
   return (
-    <BasePage>
-      <PageBanner
-        img={{ alt: 'codeClubHero', src: CodeClubHeroImage }}
-        text={{
-          title: 'Coding clubs',
-          content: 'A FREE set of slides and guides to run your own coding clubs'
-        }}
+    <Page.Container>
+      <Page.Banner
+        imageProps={{ alt: 'codeClubHero', src: CodeClubHeroImage }}
+        header='Coding clubs'
+        subheader='A FREE set of slides and guides to run your own coding clubs'
       />
-
-      <PageSection>
+      <Page.Section>
         <ClubAim />
-      </PageSection>
-
-      <PageSection bgcolor={theme.palette.info.main}>
+      </Page.Section>
+      <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
         <Introduction
           header='Primary coding club'
           img={{ alt: 'aboutUsCFL', src: AboutUsCFLImage }}
@@ -62,9 +57,8 @@ const CodingClubs: React.FC = () => {
             Download the Primary coding club pack
           </DownloadButton>
         </Introduction>
-      </PageSection>
-
-      <PageSection>
+      </Page.Section>
+      <Page.Section>
         <Introduction
           header='Python coding club'
           img={{ alt: 'pythonCodingClub', src: PythonClubImage }}
@@ -80,8 +74,8 @@ const CodingClubs: React.FC = () => {
             Download the Python coding club pack
           </DownloadButton>
         </Introduction>
-      </PageSection>
-    </BasePage >
+      </Page.Section>
+    </Page.Container>
   );
 };
 

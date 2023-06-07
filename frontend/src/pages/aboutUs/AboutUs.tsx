@@ -5,9 +5,8 @@ import {
   Link
 } from '@mui/material';
 
-import BasePage from '../../pages/BasePage';
-import PageBanner from '../../components/PageBanner';
-import PageSection from '../../components/PageSection';
+import Page from 'codeforlife/lib/esm/components/page';
+
 import Introduction from '../../components/Introduction';
 import AboutUsHeroImage from '../../images/about_us_hero_hexagon.png';
 import AboutUsCFLImage from '../../images/about_us_cfl.jpg';
@@ -22,20 +21,16 @@ const AboutUs: React.FC = () => {
   const theme = useTheme();
 
   return (
-    <BasePage>
-      <PageBanner
-        img={{ alt: 'aboutUsHero', src: AboutUsHeroImage }}
-        text={{
-          title: 'About Code for Life',
-          content: 'Code For Life gives everyone the ability to shape technology\'s future'
-        }}
+    <Page.Container>
+      <Page.Banner
+        imageProps={{ alt: 'aboutUsHero', src: AboutUsHeroImage }}
+        header='About Code for Life'
+        subheader={'Code For Life gives everyone the ability to shape technology\'s future'}
       />
-
-      <PageSection>
+      <Page.Section>
         <Statistics />
-      </PageSection>
-
-      <PageSection bgcolor={theme.palette.info.main}>
+      </Page.Section>
+      <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
         <Introduction
           header='What is Code for Life?'
           img={{ alt: 'aboutUsCFL', src: AboutUsCFLImage }}
@@ -50,9 +45,8 @@ const AboutUs: React.FC = () => {
             Anyone looking to get into coding can also do so using the games and resources. We opened CFL resources to parents and the general public during the 2020 Covid-19 pandemic so that people don&apos;t need to be part of a school to have access.
           </Typography>
         </Introduction>
-      </PageSection>
-
-      <PageSection>
+      </Page.Section>
+      <Page.Section>
         <Introduction
           header='Who is Ocado Group?'
           img={{ alt: 'aboutUsOcado', src: AboutUsOcadoImage }}
@@ -68,20 +62,17 @@ const AboutUs: React.FC = () => {
             <Link href={process.env.REACT_APP_OCADO_GROUP_HREF} color="inherit" underline="always" target="_blank">Skills for the Future</Link> is one of Ocado Group&apos;s core Corporate Responsibility pillars, which is part of the Ocado Unlimited strategy (alongside Natural Resources and Responsible Sourcing). For Ocado Group, Skills for the Future means championing digital literacy. We want to inspire the next generation of STEM leaders, so that everyone can fully participate in society.
           </Typography>
         </Introduction>
-      </PageSection>
-
-      <PageSection bgcolor={theme.palette.info.main}>
+      </Page.Section>
+      <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
         <Quotes />
-      </PageSection>
-
-      <PageSection>
+      </Page.Section>
+      <Page.Section>
         <Supporters />
-      </PageSection>
-
-      <PageSection bgcolor={theme.palette.info.main}>
+      </Page.Section>
+      <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
         <Dedication />
-      </PageSection>
-    </BasePage>
+      </Page.Section>
+    </Page.Container>
   );
 };
 

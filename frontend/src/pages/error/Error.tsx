@@ -6,12 +6,11 @@ import {
   Button
 } from '@mui/material';
 
+import Page from 'codeforlife/lib/esm/components/page';
 import { Image } from 'codeforlife/lib/esm/components';
 import { SearchParams } from 'codeforlife/lib/esm/helpers';
 
 import { paths } from '../../app/router';
-import PageSection from '../../components/PageSection';
-import BasePage from '../BasePage';
 import ErrorProps, {
   forbidden403,
   pageNotFound404,
@@ -76,8 +75,8 @@ const Error: React.FC = () => {
   }
 
   return (
-    <BasePage>
-      <PageSection>
+    <Page.Container>
+      <Page.Section>
         <Grid container>
           <Grid
             xs={12} sm={8}
@@ -110,8 +109,8 @@ const Error: React.FC = () => {
             <Image {...errorProps.imageProps} />
           </Grid>
         </Grid>
-      </PageSection>
-    </BasePage>
+      </Page.Section>
+    </Page.Container>
   );
 };
 

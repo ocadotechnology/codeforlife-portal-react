@@ -4,11 +4,9 @@ import {
 } from '@mui/material';
 import { ChevronRightRounded as ChevronRightRoundedIcon } from '@mui/icons-material';
 
-import BasePage from '../../pages/BasePage';
-import PageBanner from '../../components/PageBanner';
-import PageSection from '../../components/PageSection';
-import CflCard from '../../components/CflCard';
+import Page from 'codeforlife/lib/esm/components/page';
 
+import CflCard from '../../components/CflCard';
 import GithubImg from '../../images/github.png';
 import ClubsImg from '../../images/clubs.png';
 import UniversitiesImg from '../../images/universities.png';
@@ -16,16 +14,13 @@ import GetInvolvedHero from '../../images/get_involved_hero_cut.png';
 
 const GetInvolved: React.FC = () => {
   return (
-    <BasePage>
-      <PageBanner
-        text={{
-          title: 'Get involved',
-          content:
-            'How you can get involved with the creation of Code for Life products and resources'
-        }}
-        img={{ alt: 'Get involved', src: GetInvolvedHero }}
+    <Page.Container>
+      <Page.Banner
+        header='Get involved'
+        subheader='How you can get involved with the creation of Code for Life products and resources'
+        imageProps={{ alt: 'Get involved', src: GetInvolvedHero }}
       />
-      <PageSection>
+      <Page.Section>
         <Grid container spacing={4}>
           <Grid xs={12} md={6} lg={4}>
             <CflCard
@@ -61,8 +56,8 @@ const GetInvolved: React.FC = () => {
             />
           </Grid>
         </Grid>
-      </PageSection>
-    </BasePage>
+      </Page.Section>
+    </Page.Container>
   );
 };
 

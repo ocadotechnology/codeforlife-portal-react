@@ -3,15 +3,15 @@ import {
   Unstable_Grid2 as Grid
 } from '@mui/material';
 
-import BasePage from '../../pages/BasePage';
-import PageSection from '../../components/PageSection';
+import Page from 'codeforlife/lib/esm/components/page';
+
 import TeacherForm from './TeacherForm';
 import IndependentForm from './IndependentForm';
 
 const Register: React.FC = () => {
   return (
-    <BasePage>
-      <PageSection>
+    <Page.Container>
+      <Page.Section>
         <Grid container spacing={2}>
           <Grid xs={12} md={6}>
             <TeacherForm />
@@ -20,8 +20,8 @@ const Register: React.FC = () => {
             <IndependentForm />
           </Grid>
         </Grid>
-      </PageSection>
-    </BasePage>
+      </Page.Section>
+    </Page.Container>
   );
 };
 

@@ -3,11 +3,11 @@ import { useNavigate } from 'react-router-dom';
 
 import { SearchParams } from 'codeforlife/lib/esm/helpers';
 
+import Page from 'codeforlife/lib/esm/components/page';
+
 import SadFaceImg from '../../images/sadface.png';
 import PaperPlaneImg from '../../images/paper_plane.png';
 import { paths } from '../../app/router';
-import BasePage from '../../pages/BasePage';
-import PageSection from '../../components/PageSection';
 import Status from './Status';
 
 const EmailVerification: React.FC = () => {
@@ -31,8 +31,8 @@ const EmailVerification: React.FC = () => {
   if (params === null) return <></>;
 
   return (
-    <BasePage>
-      <PageSection maxWidth="md" className="flex-center">
+    <Page.Container>
+      <Page.Section maxWidth="md" className="flex-center">
         {params.success
           ? <Status
             userType={params.userType}
@@ -60,8 +60,8 @@ const EmailVerification: React.FC = () => {
             }}
           />
         }
-      </PageSection>
-    </BasePage>
+      </Page.Section>
+    </Page.Container>
   );
 };
 

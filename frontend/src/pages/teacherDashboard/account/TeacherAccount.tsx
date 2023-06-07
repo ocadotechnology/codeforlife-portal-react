@@ -1,5 +1,4 @@
 import React from 'react';
-import BasePage from '../../BasePage';
 import DashboardBanner from '../DashboardBanner';
 import DashboardHeader from '../DashboardHeader';
 import {
@@ -28,8 +27,8 @@ import {
 import { getUser } from '../dummyMethods';
 import { TextField, CheckboxField } from 'codeforlife/lib/esm/components/form';
 import { CflHorizontalForm } from '../../../components/form/CflForm';
-import PageSection from '../../../components/PageSection';
 import { paths } from '../../../app/router';
+import Page from 'codeforlife/lib/esm/components/page';
 
 const TwoFactorAuthentication: React.FC = (): JSX.Element => {
   return (
@@ -201,25 +200,25 @@ const DeleteAccountForm: React.FC = (): JSX.Element => {
 const TeacherAccount: React.FC = (): JSX.Element => {
   const theme = useTheme();
   return (
-    <BasePage>
+    <Page.Container>
       <DashboardBanner />
       <DashboardHeader page="Your account" />
-      <PageSection>
+      <Page.Section>
         <Typography align="center" variant="h4">
           Your account
         </Typography>
         <Typography>You can update your account details below.</Typography>
-      </PageSection>
-      <PageSection>
+      </Page.Section>
+      <Page.Section>
         <YourAccountForm />
-      </PageSection>
-      <PageSection bgcolor={theme.palette.info.main}>
+      </Page.Section>
+      <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
         <TwoFactorAuthentication />
-      </PageSection>
-      <PageSection>
+      </Page.Section>
+      <Page.Section>
         <DeleteAccountForm />
-      </PageSection>
-    </BasePage>
+      </Page.Section>
+    </Page.Container >
   );
 };
 

@@ -7,10 +7,9 @@ import {
   Send as SendIcon
 } from '@mui/icons-material';
 
+import Page from 'codeforlife/lib/esm/components/page';
+
 import { paths } from '../../app/router';
-import BasePage from '../../pages/BasePage';
-import PageBanner from '../../components/PageBanner';
-import PageSection from '../../components/PageSection';
 import AboutRR from './AboutRR';
 import Levels from './Levels';
 
@@ -20,25 +19,23 @@ const HomeLearning: React.FC = () => {
   const theme = useTheme();
 
   return (
-    <BasePage>
-      <PageBanner
-        img={{ alt: 'homeLearningHero', src: HomeLearningHeroImage }}
-        text={{
-          title: 'Home learning',
-          content: 'Whether you\'re a parent, a caregiver, or a curious student — our Rapid Router game is easy to use and free - forever.'
-        }}
+    <Page.Container>
+      <Page.Banner
+        imageProps={{ alt: 'homeLearningHero', src: HomeLearningHeroImage }}
+        header='Home learning'
+        subheader={'Whether you\'re a parent, a caregiver, or a curious student — our Rapid Router game is easy to use and free - forever.'}
       />
-      <PageSection>
+      <Page.Section>
         <AboutRR />
-      </PageSection>
+      </Page.Section>
       <Levels />
-      <PageSection className='flex-end-x'>
+      <Page.Section className='flex-end-x'>
         <Button href={paths.register._}>
           Register now
         </Button>
-      </PageSection>
-      <PageSection
-        bgcolor={theme.palette.secondary.main}
+      </Page.Section>
+      <Page.Section
+        gridProps={{ bgcolor: theme.palette.secondary.main }}
         className='flex-center-x'
       >
         <Button
@@ -48,8 +45,8 @@ const HomeLearning: React.FC = () => {
         >
           Let us know your feedback
         </Button>
-      </PageSection>
-    </BasePage>
+      </Page.Section>
+    </Page.Container>
   );
 };
 

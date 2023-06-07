@@ -6,9 +6,8 @@ import {
   Typography
 } from '@mui/material';
 
-import BasePage from '../BasePage';
-import PageSection from '../../components/PageSection';
-import PageBanner from '../../components/PageBanner';
+import Page from 'codeforlife/lib/esm/components/page';
+
 import AddStudentsForm from '../../features/addStudentsForm/AddStudentsForm';
 import SchoolForm from './SchoolForm';
 import ClassForm from './ClassForm';
@@ -31,12 +30,12 @@ const TeacherOnboarding: React.FC = () => {
   const steps = 4;
 
   return (
-    <BasePage>
-      <PageBanner text={{
-        title: `Welcome, ${userName}`,
-        content: 'Everything you need to start coding with your class is here. Let\'s set you up.'
-      }} />
-      <PageSection>
+    <Page.Container>
+      <Page.Banner
+        header={`Welcome, ${userName}`}
+        subheader={'Everything you need to start coding with your class is here. Let\'s set you up.'}
+      />
+      <Page.Section>
         <Stack>
           <Typography variant='h4'>
             {[
@@ -83,8 +82,8 @@ const TeacherOnboarding: React.FC = () => {
             />
           ][activeStep]}
         </Stack>
-      </PageSection>
-    </BasePage>
+      </Page.Section>
+    </Page.Container>
   );
 };
 
