@@ -13,7 +13,7 @@ import {
 } from 'codeforlife/lib/esm/components/form';
 
 export interface CflPasswordFieldsProps {
-  userType: 'teacher' | 'independent'
+  userType: 'teacher' | 'independent' | 'student'
 }
 
 const CflPasswordFields: React.FC<CflPasswordFieldsProps> = ({
@@ -25,20 +25,24 @@ const CflPasswordFields: React.FC<CflPasswordFieldsProps> = ({
   const mostUsed = ['Abcd1234', 'Password1', 'Qwerty123'];
 
   function isStrongPassword(password: string): boolean {
-    return (userType === 'teacher')
-      ? (password.length >= 10 &&
+    if (userType === 'teacher') {
+      return (password.length >= 10 &&
         !(
           password.search(/[A-Z]/) === -1 ||
           password.search(/[a-z]/) === -1 ||
           password.search(/[0-9]/) === -1 ||
           password.search(/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/) === -1
-        ))
-      : (password.length >= 8 &&
+        ));
+    } else if (userType === 'independent') {
+      return (password.length >= 8 &&
         !(
           password.search(/[A-Z]/) === -1 ||
           password.search(/[a-z]/) === -1 ||
           password.search(/[0-9]/) === -1
         ));
+    } else {
+      return password.length >= 6;
+    }
   }
 
   let status: { name: string, color: string };

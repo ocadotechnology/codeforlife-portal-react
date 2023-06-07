@@ -13,9 +13,10 @@ export interface CflHorizontalFormProps<Values> extends FormikConfig<Values> {
   header?: string;
   subheader?: string;
   subheaderBold?: string;
-  children?: JSX.Element[];
+  children?: JSX.Element[] | JSX.Element;
   gridProps?: GridProps;
   submitButton: React.ReactElement<ButtonProps>;
+  cancelButton?: React.ReactElement<ButtonProps>;
 }
 
 export const CflHorizontalForm = <Values extends FormikValues = FormikValues>({
@@ -25,6 +26,7 @@ export const CflHorizontalForm = <Values extends FormikValues = FormikValues>({
   subheader,
   subheaderBold,
   submitButton,
+  cancelButton,
   ...formikProps
 }: CflHorizontalFormProps<Values>): JSX.Element => {
   return (
@@ -43,19 +45,40 @@ export const CflHorizontalForm = <Values extends FormikValues = FormikValues>({
           <Form>
             <Grid {...gridProps}>
               {React.Children.map(children, (child, index) => {
-                // Allow last child components such as checkboxes to take up the full width
-                const isLastChild = children && index === children?.length - 1;
-                return (
-                  <Grid xs={12} sm={isLastChild ? true : 4} item>
-                    {child}
-                  </Grid>
-                );
+                if (Array.isArray(children)) {
+                  // Allow last child components such as checkboxes to take up the full width
+                  const isLastChild = children && index === children?.length - 1;
+                  return (
+                    <Grid xs={12} sm={isLastChild ? true : 4} item>
+                      {child}
+                    </Grid>
+                  );
+                } else {
+                  return (
+                    <React.Fragment>
+                      <Grid xs={12} sm={6} item>
+                        {child}
+                      </Grid>
+                      <Grid item xs={0} sm={6}></Grid>
+                    </React.Fragment>
+                  );
+                }
               })}
-              <Grid item xs={12}>
+              {cancelButton
+                ? <Grid xs={12} sm={4} item>
+                  <Stack direction="row" spacing={2}>
+                    {React.cloneElement(cancelButton)}
+                    {React.cloneElement(submitButton, {
+                      disabled: !formik.isValid
+                    })}
+                  </Stack>
+                </Grid>
+                : <Grid item xs={12}>
                 {React.cloneElement(submitButton, {
                   disabled: !formik.isValid
                 })}
               </Grid>
+              }
             </Grid>
           </Form>
         </React.Fragment>

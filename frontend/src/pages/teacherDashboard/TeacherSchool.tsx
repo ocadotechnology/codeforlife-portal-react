@@ -11,7 +11,6 @@ import BasePage from '../BasePage';
 import React from 'react';
 import {
   Add,
-  Business,
   Create,
   DeleteOutline,
   DoDisturbOnOutlined,
@@ -28,12 +27,13 @@ import CflTable, {
 import { getSchool, getTeachersData, getUser } from './dummyMethods';
 import {
   TextField,
-  CheckboxField,
-  AutocompleteField
+  CheckboxField
 } from 'codeforlife/lib/esm/components/form';
-import { getNames } from 'country-list';
 import { CflHorizontalForm } from '../../components/form/CflForm';
 import PageSection from '../../components/PageSection';
+import SchoolNameField from '../../components/form/SchoolNameField';
+import SchoolPostcodeField from '../../components/form/SchoolPostcodeField';
+import SchoolCountryField from '../../components/form/SchoolCountryField';
 
 const InviteTeacherForm: React.FC = (): JSX.Element => {
   const theme = useTheme();
@@ -122,38 +122,9 @@ const UpdateSchoolDetailsForm: React.FC = (): JSX.Element => {
         </Button>
       }
     >
-      <TextField
-        placeholder="Name of school or club"
-        helperText="Enter your school's name"
-        name="schoolName"
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <Business />
-            </InputAdornment>
-          )
-        }}
-      />
-      <TextField
-        placeholder="Postcode / Zipcode"
-        helperText="Enter your school's postcode"
-        name="schoolPostcode"
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <Business />
-            </InputAdornment>
-          )
-        }}
-      />
-      <AutocompleteField
-        options={getNames()}
-        textFieldProps={{
-          name: 'schoolCountry',
-          helperText: "Enter your school's country",
-          placeholder: 'Country'
-        }}
-      />
+      <SchoolNameField />
+      <SchoolPostcodeField />
+      <SchoolCountryField />
     </CflHorizontalForm>
   );
 };

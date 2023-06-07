@@ -9,22 +9,19 @@ import CflTable, {
 import {
   Box,
   Button,
-  InputAdornment,
   Typography,
   useTheme
 } from '@mui/material';
-import { Add, Create, DoNotDisturb, GroupOutlined } from '@mui/icons-material';
+import { Add, Create, DoNotDisturb } from '@mui/icons-material';
 import { getClassesData, getTeachersData, getUser } from './dummyMethods';
 import { CREATE_CLASS_INITIAL_VALUES } from './constants';
 import { CREATE_CLASS_SCHEMA } from './schemas';
-import {
-  TextField,
-  CheckboxField,
-  AutocompleteField
-} from 'codeforlife/lib/esm/components/form';
+import { AutocompleteField } from 'codeforlife/lib/esm/components/form';
 import { CflHorizontalForm } from '../../components/form/CflForm';
 import CopyToClipboardIcon from '../../components/CopyToClipboardIcon';
 import PageSection from '../../components/PageSection';
+import ClassNameField from '../../components/form/ClassNameField';
+import SeeClassmatesProgressField from '../../components/form/SeeClassmatesProgressField';
 
 const YourClasses: React.FC = (): JSX.Element => {
   return (
@@ -125,7 +122,6 @@ const ExternalStudentsJoiningRequests: React.FC = (): JSX.Element => {
 };
 
 const CreateNewClassForm: React.FC = (): JSX.Element => {
-  const theme = useTheme();
   const teachersData = getTeachersData();
   return (
     <CflHorizontalForm
@@ -143,18 +139,7 @@ const CreateNewClassForm: React.FC = (): JSX.Element => {
         </Button>
       }
     >
-      <TextField
-        name="className"
-        placeholder="Class name"
-        helperText="Enter a class name"
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <GroupOutlined />
-            </InputAdornment>
-          )
-        }}
-      />
+      <ClassNameField />
       <AutocompleteField
         options={teachersData.map(({ teacherName }) => teacherName)}
         textFieldProps={{
@@ -164,16 +149,7 @@ const CreateNewClassForm: React.FC = (): JSX.Element => {
         }}
       />
       <Box>{/* Blank component to fill the grid */}</Box>
-      <CheckboxField
-        name="isStudentProgressVisibleToOthers"
-        stackProps={{
-          justifyContent: 'flex-start'
-        }}
-        sx={{ color: theme.palette.info.dark }}
-        formControlLabelProps={{
-          label: "Allow students to see their classmates' progress?"
-        }}
-      />
+      <SeeClassmatesProgressField />
     </CflHorizontalForm>
   );
 };

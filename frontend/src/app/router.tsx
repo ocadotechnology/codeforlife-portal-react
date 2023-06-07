@@ -18,6 +18,10 @@ import Newsletter from '../pages/newsletter/Newsletter';
 import Error from '../pages/error/Error';
 import TeacherSchool from '../pages/teacherDashboard/TeacherSchool';
 import TeacherClasses from '../pages/teacherDashboard/TeacherClasses';
+import Edit from '../pages/teacherDashboard/classes/student/Edit';
+import Reset from '../pages/teacherDashboard/classes/student/Reset';
+import Move from '../pages/teacherDashboard/classes/student/Move';
+import Release from '../pages/teacherDashboard/classes/student/Release';
 import TeacherAccount from '../pages/teacherDashboard/account/TeacherAccount';
 import Setup2fa from '../pages/teacherDashboard/account/2fa/Setup2fa';
 import BackupTokens from '../pages/teacherDashboard/account/2fa/BackupTokens';
@@ -43,7 +47,14 @@ export const paths = _('', {
     onboarding: _('/onboarding'),
     dashboard: _('/dashboard', {
       school: _('/school'),
-      classes: _('/classes'),
+      classes: _('/classes', {
+        student: _('/student', {
+          edit: _('/edit'),
+          reset: _('/reset'),
+          move: _('/move'),
+          release: _('/release')
+        }),
+      }),
       account: _('/account', {
         twoFA: _('/2fa', {
           setup: _('/setup'),
@@ -153,6 +164,22 @@ const router = createBrowserRouter([
   {
     path: paths.teacher.dashboard.classes._,
     element: <TeacherClasses />
+  },
+  {
+    path: paths.teacher.dashboard.classes.student.edit._,
+    element: <Edit />
+  },
+  {
+    path: paths.teacher.dashboard.classes.student.reset._,
+    element: <Reset />
+  },
+  {
+    path: paths.teacher.dashboard.classes.student.move._,
+    element: <Move />
+  },
+  {
+    path: paths.teacher.dashboard.classes.student.release._,
+    element: <Release />
   },
   {
     path: paths.teacher.dashboard.account._,
