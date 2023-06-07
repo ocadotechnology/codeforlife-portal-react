@@ -38,15 +38,12 @@ const Header: React.FC = () => {
       backgroundColor: 'white',
       position: 'sticky',
       top: 0,
-      zIndex: 1
+      zIndex: 2
     }}>
-      <Container
-        maxWidth='lg'
-        sx={{
-          height: { xs: '80px', md: '100px' },
-          padding: '15px'
-        }}
-      >
+      <Container sx={{
+        height: { xs: '80px', md: '100px' },
+        paddingY: '15px'
+      }}>
         <Stack
           direction='row'
           alignItems='center'

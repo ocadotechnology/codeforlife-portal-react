@@ -152,14 +152,6 @@ const components: ThemeOptions['components'] = {
       })
     }
   },
-  MuiContainer: {
-    styleOverrides: {
-      root: ({ ownerState }) => ({
-        ...getStyleOverrides(ownerState, 'MuiContainer'),
-        padding: 0
-      })
-    }
-  },
   MuiFormHelperText: {
     styleOverrides: {
       root: ({ ownerState }) => ({
