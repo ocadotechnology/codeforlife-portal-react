@@ -30,5 +30,8 @@
     "@typescript-eslint/consistent-type-imports": "off",
     "@typescript-eslint/strict-boolean-expressions": "off",
     "@typescript-eslint/indent": "off"
-  }
+  },
+  "ignorePatterns": [
+    "src/scripts/*.js"
+  ]
 }
