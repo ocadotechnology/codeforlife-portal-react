@@ -7,6 +7,8 @@ import { App } from 'codeforlife/lib/esm/components';
 import router from './app/router';
 import theme from './app/theme';
 import store from './app/store';
+import Header from './features/header/Header';
+import Footer from './features/footer/Footer';
 import reportWebVitals from './reportWebVitals';
 
 const container = document.getElementById('root');
@@ -18,7 +20,9 @@ const root = createRoot(container);
 root.render(
   <React.StrictMode>
     <App theme={theme} store={store}>
+      <Header />
       <RouterProvider router={router} />
+      <Footer />
     </App>
   </React.StrictMode>
 );

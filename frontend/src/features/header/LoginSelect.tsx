@@ -1,74 +1,122 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
   Select,
-  SxProps,
   MenuItem,
-  MenuItemProps,
-  useTheme
+  useTheme,
+  inputClasses,
+  outlinedInputClasses,
+  menuClasses
 } from '@mui/material';
+import {
+  ChevronRight as ChevronRightIcon
+} from '@mui/icons-material';
 
-import { insertDividerBetweenElements } from 'codeforlife/lib/esm/helpers';
 import { paths } from '../../app/router';
 
-const LoginSelect: React.FC<{
-  sx: SxProps;
-}> = ({ sx }) => {
-  const theme = useTheme();
-  const navigate = useNavigate();
+const LoginMenuItem: React.FC<{
+  setOpen: (open: boolean) => void;
+  href: string;
+  children: string;
+}> = ({
+  setOpen,
+  href,
+  children
+}) => {
+    const theme = useTheme();
+
+    const border = `2px solid ${theme.palette.secondary.main}`;
+
+    return (
+      <MenuItem
+        onClick={() => {
+          setOpen(false);
+          window.location.href = href;
+        }}
+        sx={{
+          borderLeft: border,
+          borderRight: border,
+          borderBottom: border,
+          margin: 0,
+          fontSize: '14px !important',
+          ':hover': {
+            textDecoration: 'underline',
+            backgroundColor: 'transparent'
+          }
+        }}
+      >
+        {children}
+        <ChevronRightIcon style={{
+          marginLeft: 'auto'
+        }} />
+      </MenuItem>
+    );
+  };
+
+const LoginSelect: React.FC = () => {
   const [open, setOpen] = React.useState(false);
-
-  const paletteColor = 'tertiary';
-  const borderColor = theme.palette[paletteColor].main;
-
-  function onClick(navigateTo: string): () => void {
-    return () => {
-      setOpen(false);
-      navigate(navigateTo);
-    };
-  }
-
-  const menuItems: Array<(
-    MenuItemProps & React.AnchorHTMLAttributes<HTMLAnchorElement>
-  )> =
-    [
-      { children: 'Student', onClick: onClick(paths.login.student._) },
-      { children: 'Teacher', onClick: onClick(paths.login.teacher._) },
-      { children: 'Independent', onClick: onClick(paths.login.independent._) }
-    ];
 
   return (
     <Select
       open={open}
       onOpen={() => { setOpen(true); }}
       onClose={() => { setOpen(false); }}
-      SelectDisplayProps={{ style: { width: 'auto' } }}
       displayEmpty
-      value=""
-      color={paletteColor}
-      className="Mui-focused"
+      value=''
+      color='secondary'
+      className={inputClasses.focused}
       inputProps={{
         MenuProps: {
-          sx: { mt: 0.5 },
+          sx: {
+            [`.${menuClasses.paper}`]: {
+              borderRadius: '0px'
+            }
+          },
           MenuListProps: {
-            sx: {
-              border: `2px solid ${borderColor}`
+            style: {
+              padding: 0,
+              borderRadius: '0px'
             }
           }
         }
       }}
-      sx={sx}
+      SelectDisplayProps={{
+        style: {
+          padding: '6px 16px',
+          fontSize: '14px',
+          fontWeight: 'bold'
+        }
+      }}
+      sx={{
+        minWidth: '150px',
+        height: '42px',
+        display: { xs: 'none', md: 'inline-flex' },
+        [`.${outlinedInputClasses.notchedOutline}`]: {
+          borderRadius: '0px'
+        }
+      }}
     >
-      <MenuItem value="" sx={{ display: 'none' }}>
+      <MenuItem value='' sx={{ display: 'none' }}>
         Log in
       </MenuItem>
-      {insertDividerBetweenElements({
-        elements: menuItems.map((menuItem, index) => (
-          <MenuItem key={index} {...menuItem} />
-        )),
-        dividerProps: { sx: { borderColor } }
-      })}
-    </Select>
+      <LoginMenuItem
+        setOpen={setOpen}
+        href={paths.login.student._}
+      >
+        Student
+      </LoginMenuItem>
+      <LoginMenuItem
+        setOpen={setOpen}
+        href={paths.login.teacher._}
+      >
+        Teacher
+      </LoginMenuItem>
+      <LoginMenuItem
+        setOpen={setOpen}
+        href={paths.login.independent._}
+      >
+        Independent
+      </LoginMenuItem>
+    </Select >
   );
 };
 
