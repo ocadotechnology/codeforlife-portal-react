@@ -6,7 +6,9 @@ import {
   Button,
   Box,
   Stack,
-  Container
+  Container,
+  useTheme,
+  useMediaQuery
 } from '@mui/material';
 import {
   Menu as MenuIcon
@@ -21,14 +23,16 @@ import LoginSelect from './LoginSelect';
 import MenuDrawer from './MenuDrawer';
 
 const Header: React.FC = () => {
+  const theme = useTheme();
   const [menuIsOpen, setMenuIsOpen] = React.useState(false);
 
   const extraMargin = '10px';
   const linkProps: LinkProps = {
     display: { xs: 'none', md: 'inline' },
     color: '#383b3b',
-    fontSize: '27.5px',
-    marginLeft: extraMargin
+    className: useMediaQuery(theme.breakpoints.up('lg')) ? 'h4' : 'h5',
+    marginLeft: extraMargin,
+    marginBottom: '0px !important'
   };
 
   return <>
