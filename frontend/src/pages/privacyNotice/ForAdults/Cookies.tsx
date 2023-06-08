@@ -9,6 +9,7 @@ import {
   Link,
   Button
 } from '@mui/material';
+import { ShowCookiesDrawer } from '../../../features/thirdParty';
 
 const CustomTableRow: React.FC<{
   withoutUnderline?: boolean,
@@ -139,8 +140,7 @@ const Cookies: React.FC = () => (
     <Typography>
       You can change your cookie preferences or withdraw consent by clicking on the following button:
     </Typography>
-    {/* TODO: set cookie settings button */}
-    <Button href=''>
+    <Button onClick={ShowCookiesDrawer}>
       Cookie Settings
     </Button>
   </>
