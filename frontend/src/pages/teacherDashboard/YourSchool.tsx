@@ -181,10 +181,10 @@ const TeachersTableActions: React.FC<{
     } else if (isTeacherAdmin) {
       return (
         <>
-          <Button color="error" endIcon={<DoNotDisturb />}>
+          <Button className='alert' endIcon={<DoNotDisturb />}>
             Revoke admin
           </Button>
-          <Button color="error" endIcon={<DeleteOutline />}>
+          <Button className='alert' endIcon={<DeleteOutline />}>
             Delete
           </Button>
         </>
@@ -193,7 +193,7 @@ const TeachersTableActions: React.FC<{
       return (
         <>
           <Button endIcon={<Add />}>Make admin </Button>
-          <Button endIcon={<DoDisturbOnOutlined />} color="error">
+          <Button endIcon={<DoDisturbOnOutlined />} className='alert'>
             Disable 2FA
           </Button>
         </>

@@ -64,7 +64,7 @@ const TwoFactorAuthentication: React.FC = (): JSX.Element => {
           </Typography>
           <Button
             // TODO: call backend and show confirmation popup
-            color="error"
+            className='alert'
             endIcon={<ErrorOutlineOutlined />}>
             Disable 2FA
           </Button>
@@ -162,7 +162,7 @@ const DeleteAccountForm: React.FC = (): JSX.Element => {
       }}
       submitButton={
         <Button
-          color="error"
+          className='alert'
           type="submit"
           endIcon={<DeleteOutline />}
         >
