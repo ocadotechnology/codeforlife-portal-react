@@ -6,6 +6,8 @@ import App from './app/App';
 import router from './app/router';
 import reportWebVitals from './reportWebVitals';
 
+import './scripts/freshDesk';
+
 const container = document.getElementById('root');
 
 if (container === null) throw new Error('root element is null');

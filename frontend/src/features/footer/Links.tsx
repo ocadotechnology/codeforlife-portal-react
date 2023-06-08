@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 
 import { paths } from '../../app/router';
+import { OpenContactUsWidget, ShowCookiesDrawer } from '../thirdParty';
 
 const Links: React.FC = () => (
   <ThemeProvider theme={createTheme(useTheme(), {
@@ -26,7 +27,7 @@ const Links: React.FC = () => (
           <Link href={paths.aboutUs._}>
             About us
           </Link>
-          <Link>
+          <Link onClick={OpenContactUsWidget}>
             Help and support
           </Link>
         </Stack>
@@ -39,7 +40,7 @@ const Links: React.FC = () => (
           <Link href={paths.termsOfUse._}>
             Terms of use
           </Link>
-          <Link>
+          <Link onClick={ShowCookiesDrawer}>
             Cookie settings
           </Link>
         </Stack>
