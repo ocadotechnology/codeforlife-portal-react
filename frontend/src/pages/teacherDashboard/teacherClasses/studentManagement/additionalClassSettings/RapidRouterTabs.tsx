@@ -61,7 +61,7 @@ const RapidRouterTabs: React.FC<RapidRouterTabsProps> = ({
           expandIcon={<ArrowDropDown color="white" />}
           sx={{
             padding: '0rem 1.5rem',
-            maxHeight: '43px',
+            height: '44px',
             background: episode.color,
             color: theme.palette.success.contrastText
           }}
