@@ -91,7 +91,7 @@ const Levels: React.FC = () => {
       banner={{
         difficulty: 'Beginner',
         color: 'White',
-        bgcolor: theme.palette.secondary.main
+        bgcolor: theme.palette.tertiary.main
       }}
       cardProps={{
         mediaProps: { title: 'RR beginner image', image: RRBeginnerImage },
@@ -130,7 +130,7 @@ const Levels: React.FC = () => {
       banner={{
         difficulty: 'Intermediate',
         color: 'Black',
-        bgcolor: theme.palette.tertiary.main
+        bgcolor: theme.palette.secondary.main
       }}
       cardProps={{
         mediaProps: { title: 'RR intermediate image', image: RRIntermediateImage },

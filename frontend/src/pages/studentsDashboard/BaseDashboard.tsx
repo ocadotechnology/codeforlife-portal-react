@@ -29,9 +29,9 @@ const BaseDashboard: React.FC<BaseDashboardProps> = ({
       header={`Welcome, ${name}`}
       subheader='This is where you can access your games'
       textAlign='center'
-      bgcolor={isDependent ? 'secondary' : 'tertiary'}
+      bgcolor={isDependent ? 'tertiary' : 'secondary'}
     />
-    <Page.Notification>
+    <Page.Notification bgcolor={isDependent ? 'tertiary' : 'secondary'}>
       {isDependent
         ? <>You are logged in to class: {classCode}</>
         : <>

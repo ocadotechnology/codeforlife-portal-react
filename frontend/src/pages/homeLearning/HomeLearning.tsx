@@ -35,8 +35,9 @@ const HomeLearning: React.FC = () => {
         </Button>
       </Page.Section>
       <Page.Section
-        gridProps={{ bgcolor: theme.palette.secondary.main }}
+        gridProps={{ bgcolor: theme.palette.tertiary.main }}
         className='flex-center-x'
+        sx={{ paddingY: '15px' }}
       >
         <Button
           endIcon={<SendIcon />}
