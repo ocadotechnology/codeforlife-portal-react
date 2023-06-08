@@ -100,15 +100,15 @@ const LoginSelect: React.FC = () => {
       </MenuItem>
       <LoginMenuItem
         setOpen={setOpen}
-        href={paths.login.student._}
-      >
-        Student
-      </LoginMenuItem>
-      <LoginMenuItem
-        setOpen={setOpen}
         href={paths.login.teacher._}
       >
         Teacher
+      </LoginMenuItem>
+      <LoginMenuItem
+        setOpen={setOpen}
+        href={paths.login.student._}
+      >
+        Student
       </LoginMenuItem>
       <LoginMenuItem
         setOpen={setOpen}
