@@ -11,6 +11,8 @@ import Header from './features/header/Header';
 import Footer from './features/footer/Footer';
 import reportWebVitals from './reportWebVitals';
 
+import './scripts/freshDesk';
+
 const container = document.getElementById('root');
 
 if (container === null) throw new Error('root element is null');
