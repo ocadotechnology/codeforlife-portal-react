@@ -1,30 +1,22 @@
 import React from 'react';
-import BasePage from '../BasePage';
-import DashboardBanner from './DashboardBanner';
-import DashboardHeader from './DashboardHeader';
+import BasePage from '../../BasePage';
+import DashboardBanner from '../DashboardBanner';
+import DashboardHeader from '../DashboardHeader';
 import CflTable, {
   CflTableBody,
   CflTableCellElement
-} from '../../components/CflTable';
-import {
-  Box,
-  Button,
-  InputAdornment,
-  Typography,
-  useTheme
-} from '@mui/material';
-import { Add, Create, DoNotDisturb, GroupOutlined } from '@mui/icons-material';
-import { getClassesData, getTeachersData, getUser } from './dummyMethods';
-import { CREATE_CLASS_INITIAL_VALUES } from './constants';
-import { CREATE_CLASS_SCHEMA } from './schemas';
-import {
-  TextField,
-  CheckboxField,
-  AutocompleteField
-} from 'codeforlife/lib/esm/components/form';
-import { CflHorizontalForm } from '../../components/form/CflForm';
-import CopyToClipboardIcon from '../../components/CopyToClipboardIcon';
-import PageSection from '../../components/PageSection';
+} from '../../../components/CflTable';
+import { Button, Typography, useTheme } from '@mui/material';
+import { Add, Create, DoNotDisturb } from '@mui/icons-material';
+import { getClassesData, getTeachersData, getUser } from '../dummyMethods';
+import { AutocompleteField } from 'codeforlife/lib/esm/components/form';
+import CopyToClipboardIcon from '../../../components/CopyToClipboardIcon';
+import PageSection from '../../../components/PageSection';
+import { paths } from '../../../app/router';
+import { CflHorizontalForm } from '../../../components/form/CflForm';
+import * as Yup from 'yup';
+import ClassNameField from '../../../components/form/ClassNameField';
+import SeeClassmatesProgressField from '../../../components/form/SeeClassmatesProgressField';
 
 const YourClasses: React.FC = (): JSX.Element => {
   return (
@@ -61,8 +53,11 @@ const ClassTable = (): JSX.Element => {
             {teacher === `${firstName} ${lastName}` ? 'You' : teacher}
           </CflTableCellElement>
           <CflTableCellElement justifyContent="center">
-            <Button endIcon={<Create />}>
-              Update details
+            <Button
+              href={`${paths.teacher.dashboard.class._}?accessCode=${accessCode}`}
+              endIcon={<Create />}
+            >
+              Edit details
             </Button>
           </CflTableCellElement>
         </CflTableBody>
@@ -124,56 +119,42 @@ const ExternalStudentsJoiningRequests: React.FC = (): JSX.Element => {
   );
 };
 
+const CREATE_CLASS_SCHEMA = Yup.object().shape({
+  class: Yup.string().required('Required'),
+  teacherName: Yup.string().required('Required'),
+  seeClassmates: Yup.boolean()
+});
+
 const CreateNewClassForm: React.FC = (): JSX.Element => {
-  const theme = useTheme();
   const teachersData = getTeachersData();
+  const teacherNames = teachersData.map((teacher) => teacher.teacherName);
   return (
     <CflHorizontalForm
       header="Create a new class"
       subheader="When you set up a new class, a unique class access code will automatically be generated for the teacher assigned to the class."
-      initialValues={CREATE_CLASS_INITIAL_VALUES}
+      initialValues={{
+        class: '',
+        teacherName: teacherNames[0],
+        seeClassmates: false
+      }}
       validationSchema={CREATE_CLASS_SCHEMA}
       onSubmit={(values, { setSubmitting }) => {
         alert(JSON.stringify(values, null, 2));
         setSubmitting(false);
       }}
-      submitButton={
-        <Button type="submit">
-          Create class
-        </Button>
-      }
+      submitButton={<Button type="submit">Create class</Button>}
     >
-      <TextField
-        name="className"
-        placeholder="Class name"
-        helperText="Enter a class name"
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <GroupOutlined />
-            </InputAdornment>
-          )
-        }}
-      />
+      <ClassNameField />
       <AutocompleteField
-        options={teachersData.map(({ teacherName }) => teacherName)}
+        options={teacherNames}
         textFieldProps={{
+          required: true,
           name: 'teacherName',
-          placeholder: "Teacher's name",
-          helperText: 'Select a teacher'
+          helperText: 'Select teacher'
         }}
       />
-      <Box>{/* Blank component to fill the grid */}</Box>
-      <CheckboxField
-        name="isStudentProgressVisibleToOthers"
-        stackProps={{
-          justifyContent: 'flex-start'
-        }}
-        sx={{ color: theme.palette.info.dark }}
-        formControlLabelProps={{
-          label: "Allow students to see their classmates' progress?"
-        }}
-      />
+      <>{/* Leaving an empty gap */}</>
+      <SeeClassmatesProgressField />
     </CflHorizontalForm>
   );
 };

@@ -11,36 +11,28 @@ import {
 } from '@mui/material';
 
 export interface CflCardProps {
-  text: { title: string; content: string },
+  text: { title: string; content: string };
   mediaProps: {
-    image: NonNullable<CardMediaProps['image']>,
-    title: NonNullable<CardMediaProps['title']>
-  },
-  buttonProps: ButtonProps & React.AnchorHTMLAttributes<HTMLAnchorElement>
+    image: NonNullable<CardMediaProps['image']>;
+    title: NonNullable<CardMediaProps['title']>;
+  };
+  buttonProps: ButtonProps & React.AnchorHTMLAttributes<HTMLAnchorElement>;
 }
 
-const CflCard: React.FC<CflCardProps> = ({
-  text, mediaProps, buttonProps
-}) => {
+const CflCard: React.FC<CflCardProps> = ({ text, mediaProps, buttonProps }) => {
   return (
-    <Card style={{
-      display: 'flex',
-      flexDirection: 'column',
-      minHeight: '100%',
-      maxWidth: '400px'
-    }}>
-      <CardMedia
-        component='img'
-        height={242}
-        {...mediaProps}
-      />
+    <Card
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: '100%',
+        maxWidth: '400px'
+      }}
+    >
+      <CardMedia component="img" height={242} {...mediaProps} />
       <CardContent sx={{ flexGrow: 1 }}>
-        <Typography variant='h5'>
-          {text.title}
-        </Typography>
-        <Typography>
-          {text.content}
-        </Typography>
+        <Typography variant="h5">{text.title}</Typography>
+        <Typography>{text.content}</Typography>
       </CardContent>
       <CardActions>
         <Button {...buttonProps} />
