@@ -1,3 +1,4 @@
+import * as Yup from 'yup';
 import React from 'react';
 import BasePage from '../../../../BasePage';
 import PageSection from '../../../../../components/PageSection';
@@ -29,6 +30,8 @@ import RapidRouterTabs from './RapidRouterTabs';
 import { validateAccessCode } from '../../../../login/StudentForm';
 import DashboardHeader from '../../../DashboardHeader';
 import DashboardBanner from '../../../DashboardBanner';
+import ClassNameField from '../../../../../components/form/ClassNameField';
+import { allowedNodeEnvironmentFlags } from 'process';
 
 const currentDropdownOptions = [
   "Don't change my current setting",
@@ -50,10 +53,15 @@ const ClassDetailsForm: React.FC = () => {
   return (
     <Formik
       initialValues={{
-        className: '',
-        classSettingOptions: '',
+        class: '',
+        classSettingOptions: currentDropdownOptions[0],
         allowStudentsToSeeEachOthersProgress: false
       }}
+      validationSchema={Yup.object().shape({
+        class: Yup.string().required('Required'),
+        classSettingOptions: Yup.string().required('Required'),
+        allowStudentsToSeeEachOthersProgress: Yup.boolean().required('Required')
+      })}
       onSubmit={(values) => {
         alert(JSON.stringify(values, null, 2));
       }}
@@ -62,18 +70,7 @@ const ClassDetailsForm: React.FC = () => {
         <Form>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
-              <TextField
-                name="className"
-                placeholder="Enter class name"
-                helperText="Enter class name"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <People />
-                    </InputAdornment>
-                  )
-                }}
-              />
+              <ClassNameField />
             </Grid>
             <Grid item xs={12} sm={6}>
               <CheckboxField
@@ -94,18 +91,15 @@ const ClassDetailsForm: React.FC = () => {
                 <Typography fontWeight="bold">
                   This class is not current accepting external requests.
                 </Typography>
-                <Typography variant="h6">
-                  Set up external requests to this class
-                </Typography>
+                <Typography>Set up external requests to this class</Typography>
                 <Grid container>
                   <Grid item xs={6}>
                     <AutocompleteField
                       options={currentDropdownOptions}
                       textFieldProps={{
                         required: true,
-                        name: 'classSettingsOptions',
-                        helperText: 'Choose your setting',
-                        placeholder: currentDropdownOptions[0]
+                        name: 'classSettingOptions',
+                        helperText: 'Choose your setting'
                       }}
                     />
                   </Grid>
@@ -113,7 +107,12 @@ const ClassDetailsForm: React.FC = () => {
                 </Grid>
                 <Stack gap={3} direction="row" justifyContent="flex-start">
                   <Button variant="outlined">Cancel</Button>
-                  <Button type="submit">Update</Button>
+                  <Button
+                    disabled={!(formik.isValid && formik.dirty)}
+                    type="submit"
+                  >
+                    Update
+                  </Button>
                 </Stack>
               </Stack>
             </Grid>
