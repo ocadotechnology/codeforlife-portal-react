@@ -58,10 +58,10 @@ const RapidRouterTabs: React.FC<RapidRouterTabsProps> = ({
     <Box>
       <Accordion elevation={0}>
         <AccordionSummary
-          expandIcon={<ArrowDropDown sx={{ color: 'white' }} />}
+          expandIcon={<ArrowDropDown color="white" />}
           sx={{
             padding: '0rem 1.5rem',
-            height: '2rem',
+            maxHeight: '43px',
             background: episode.color,
             color: theme.palette.success.contrastText
           }}
@@ -76,7 +76,7 @@ const RapidRouterTabs: React.FC<RapidRouterTabsProps> = ({
               direction="row"
               alignItems="center"
               justifyContent="space-between"
-              pr={15}
+              pr={10}
               width="100%"
             >
               <Typography m={0}>{episode.name}</Typography>

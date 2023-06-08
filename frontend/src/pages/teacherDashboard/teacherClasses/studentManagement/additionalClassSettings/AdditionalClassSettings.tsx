@@ -139,7 +139,7 @@ const RapidRouterAccessSettings: React.FC = () => {
     >
       {(formik) => (
         <Form>
-          <Stack gap={2}>
+          <Stack gap={0.75}>
             <RapidRouterTabTitles
               title="Blockly levels"
               levels={BLOCKLY_LEVELS}
