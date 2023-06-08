@@ -5,10 +5,13 @@ import {
   useTheme,
   inputClasses,
   outlinedInputClasses,
-  menuClasses
+  menuClasses,
+  selectClasses
 } from '@mui/material';
 import {
-  ChevronRight as ChevronRightIcon
+  ChevronRight as ChevronRightIcon,
+  ExpandMore as ExpandMoreIcon,
+  ExpandLess as ExpandLessIcon
 } from '@mui/icons-material';
 
 import { paths } from '../../app/router';
@@ -60,6 +63,11 @@ const LoginSelect: React.FC = () => {
       open={open}
       onOpen={() => { setOpen(true); }}
       onClose={() => { setOpen(false); }}
+      IconComponent={({ className }: { className: string }) => {
+        return className.includes(selectClasses.iconOpen)
+          ? <ExpandLessIcon />
+          : <ExpandMoreIcon />;
+      }}
       displayEmpty
       value=''
       color='secondary'
@@ -81,7 +89,7 @@ const LoginSelect: React.FC = () => {
       }}
       SelectDisplayProps={{
         style: {
-          padding: '6px 16px',
+          padding: '0px',
           fontSize: '14px',
           fontWeight: 'bold'
         }
@@ -89,6 +97,7 @@ const LoginSelect: React.FC = () => {
       sx={{
         minWidth: '150px',
         height: '42px',
+        padding: '6px 16px',
         display: { xs: 'none', md: 'inline-flex' },
         [`.${outlinedInputClasses.notchedOutline}`]: {
           borderRadius: '0px'

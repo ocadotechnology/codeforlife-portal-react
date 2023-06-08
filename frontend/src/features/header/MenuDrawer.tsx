@@ -25,16 +25,8 @@ const MenuDrawer: React.FC<{
     { children: 'Independent' }
   ];
   const links: LinkProps[] = [
-    {
-      children: 'Teachers',
-      href: paths.teacher._,
-      color: theme.palette.primary.main
-    },
-    {
-      children: 'Students',
-      href: paths.student._,
-      color: theme.palette.secondary.main
-    },
+    { children: 'Teachers', href: paths.teacher._ },
+    { children: 'Students', href: paths.student._ },
     { children: 'About us', href: paths.aboutUs._ },
     { children: 'Help and support', href: '' },
     { children: 'Cookie settings', href: '' },
@@ -61,10 +53,10 @@ const MenuDrawer: React.FC<{
         <Stack
           spacing={1}
           padding={1}
-          border={`2px solid ${theme.palette.tertiary.main}`}
+          border={`2px solid ${theme.palette.secondary.main}`}
         >
           <Typography
-            color={theme.palette.tertiary.main}
+            color={theme.palette.secondary.main}
             style={{ textShadow: '1px 1px 1px rgba(0, 0, 0, 0.5)' }}
             fontWeight="bold"
             variant="body2"
@@ -77,7 +69,7 @@ const MenuDrawer: React.FC<{
             )),
             dividerProps: {
               sx: {
-                borderColor: theme.palette.tertiary.main
+                borderColor: theme.palette.secondary.main
               }
             }
           })}
