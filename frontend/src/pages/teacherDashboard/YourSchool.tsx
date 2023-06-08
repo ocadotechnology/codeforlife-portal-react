@@ -5,8 +5,6 @@ import {
   useTheme,
   InputAdornment
 } from '@mui/material';
-import DashboardBanner from './DashboardBanner';
-import DashboardHeader from './DashboardHeader';
 import React from 'react';
 import {
   Add,
@@ -247,58 +245,56 @@ const TeachersTable: React.FC = (): JSX.Element => {
     </CflTable>
   );
 };
-const TeacherSchool: React.FC = (): JSX.Element => {
+
+const YourSchool: React.FC = () => {
   const { schoolName, accessCode } = getSchool();
   const theme = useTheme();
-  return (
-    <Page.Container>
-      <DashboardBanner />
-      <DashboardHeader page="Your school" />
-      <Page.Section>
-        <Typography align="center" variant="h4">
-          Your school: {schoolName} ({accessCode})
-        </Typography>
-        <Typography align="left">
-          As an administrator of your school or club, you can select other
-          teachers to whom you can provide or revoke administrative rights. You
-          can also add and remove teachers from your school or club. As
-          administrator, you have the ability to see and amend other
-          teachers&apos; classes. Please bear this in mind when assigning admin
-          rights to other teachers.
-        </Typography>
-      </Page.Section>
-      <Page.Section>
-        <InviteTeacherForm />
-      </Page.Section>
-      <Page.Section>
-        <Typography variant="h5">
-          These teachers are already part of your school or club
-        </Typography>
-        <TeachersTable />
-      </Page.Section>
-      <Page.Section>
-        <Grid container>
-          <Grid item sm={6}>
-            <Typography>
-              Select &apos;Delete&apos; to delete a teacher from your school or
-              club. You will be able to move any existing classes assigned to
-              that teacher to other teachers in your school or club.
-            </Typography>
-          </Grid>
-          <Grid item sm={6}>
-            <Typography fontWeight="bold" color="error">
-              We strongly recommend that administrators who are using 2FA ensure
-              there is another administrator who will be able to disable their
-              2FA should they have problems with their smartphone or tablet.
-            </Typography>
-          </Grid>
+
+  return <>
+    <Page.Section>
+      <Typography align="center" variant="h4">
+        Your school: {schoolName} ({accessCode})
+      </Typography>
+      <Typography align="left">
+        As an administrator of your school or club, you can select other
+        teachers to whom you can provide or revoke administrative rights. You
+        can also add and remove teachers from your school or club. As
+        administrator, you have the ability to see and amend other
+        teachers&apos; classes. Please bear this in mind when assigning admin
+        rights to other teachers.
+      </Typography>
+    </Page.Section>
+    <Page.Section>
+      <InviteTeacherForm />
+    </Page.Section>
+    <Page.Section>
+      <Typography variant="h5">
+        These teachers are already part of your school or club
+      </Typography>
+      <TeachersTable />
+    </Page.Section>
+    <Page.Section>
+      <Grid container>
+        <Grid item sm={6}>
+          <Typography>
+            Select &apos;Delete&apos; to delete a teacher from your school or
+            club. You will be able to move any existing classes assigned to
+            that teacher to other teachers in your school or club.
+          </Typography>
         </Grid>
-      </Page.Section>
-      <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
-        <UpdateSchoolDetailsForm />
-      </Page.Section>
-    </Page.Container>
-  );
+        <Grid item sm={6}>
+          <Typography fontWeight="bold" color="error">
+            We strongly recommend that administrators who are using 2FA ensure
+            there is another administrator who will be able to disable their
+            2FA should they have problems with their smartphone or tablet.
+          </Typography>
+        </Grid>
+      </Grid>
+    </Page.Section>
+    <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
+      <UpdateSchoolDetailsForm />
+    </Page.Section>
+  </>;
 };
 
-export default TeacherSchool;
+export default YourSchool;

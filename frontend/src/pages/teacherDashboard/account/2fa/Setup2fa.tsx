@@ -1,6 +1,4 @@
 import React from 'react';
-import DashboardBanner from '../../DashboardBanner';
-import DashboardHeader from '../../DashboardHeader';
 import { Button, Stack, Typography } from '@mui/material';
 import { Form, SubmitButton, TextField } from 'codeforlife/lib/esm/components/form';
 import { paths } from '../../../../app/router';
@@ -20,11 +18,9 @@ const initialValues: Setup2faFormValues = {
 const Setup2fa: React.FC = (): JSX.Element => {
   const [setupComplete, setSetupComplete] = React.useState<boolean>(false);
   return (
-    <Page.Container>
-      <DashboardBanner />
-      <DashboardHeader page="Your account" />
+    <Page.Section>
       {setupComplete
-        ? <Page.Section>
+        ? <>
           <Typography align="center" variant="h4">
             Two-factor authentication set up complete
           </Typography>
@@ -34,11 +30,11 @@ const Setup2fa: React.FC = (): JSX.Element => {
           <Typography>
             You will now need to use your code generator the next time you log in.
           </Typography>
-          <Button href={paths.teacher.dashboard.school._}>
+          <Button href={paths.teacher.dashboard.account._}>
             OK
           </Button>
-        </Page.Section>
-        : <Page.Section>
+        </>
+        : <>
           <Typography align="center" variant="h4">
             Two-factor authentication
           </Typography>
@@ -73,7 +69,7 @@ const Setup2fa: React.FC = (): JSX.Element => {
               sx={{ maxWidth: '230px' }}
             />
             <Stack direction="row" spacing={2} justifyContent="flex-end">
-              <Button href={paths.teacher.dashboard.school._}>
+              <Button href={paths.teacher.dashboard.account._}>
                 Cancel
               </Button>
               <SubmitButton
@@ -83,9 +79,9 @@ const Setup2fa: React.FC = (): JSX.Element => {
               </SubmitButton>
             </Stack>
           </Form>
-        </Page.Section>
+        </>
       }
-    </Page.Container>
+    </Page.Section>
   );
 };
 

@@ -1,6 +1,4 @@
 import React from 'react';
-import DashboardBanner from './DashboardBanner';
-import DashboardHeader from './DashboardHeader';
 import CflTable, {
   CflTableBody,
   CflTableCellElement
@@ -25,7 +23,7 @@ import Page from 'codeforlife/lib/esm/components/page';
 import { CflHorizontalForm } from '../../components/form/CflForm';
 import CopyToClipboardIcon from '../../components/CopyToClipboardIcon';
 
-const YourClasses: React.FC = (): JSX.Element => {
+const _YourClasses: React.FC = (): JSX.Element => {
   return (
     <>
       <Typography align="center" variant="h4">
@@ -177,22 +175,18 @@ const CreateNewClassForm: React.FC = (): JSX.Element => {
   );
 };
 
-const TeacherClasses: React.FC = (): JSX.Element => {
+const YourClasses: React.FC = () => {
   const theme = useTheme();
-  return (
-    <Page.Container>
-      <DashboardBanner />
-      <DashboardHeader page="Your classes" />
-      <Page.Section>
-        <YourClasses />
-        <ClassTable />
-        <ExternalStudentsJoiningRequests />
-      </Page.Section>
-      <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
-        <CreateNewClassForm />
-      </Page.Section>
-    </Page.Container>
-  );
+  return <>
+    <Page.Section>
+      <_YourClasses />
+      <ClassTable />
+      <ExternalStudentsJoiningRequests />
+    </Page.Section>
+    <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
+      <CreateNewClassForm />
+    </Page.Section>
+  </>;
 };
 
-export default TeacherClasses;
+export default YourClasses;
