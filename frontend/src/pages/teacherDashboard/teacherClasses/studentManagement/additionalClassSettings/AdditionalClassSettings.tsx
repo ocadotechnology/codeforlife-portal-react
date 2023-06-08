@@ -24,10 +24,27 @@ import {
   PYTHON_LEVELS,
   RapidRouterGameTabs
 } from './rapidRouterLevelsProps';
-import { currentDropdownOptions } from './DropDownField';
 import RapidRouterTabTitles from './RapidRouterTabTitles';
 import RapidRouterTabs from './RapidRouterTabs';
 import { validateAccessCode } from '../../../../login/StudentForm';
+import DashboardHeader from '../../../DashboardHeader';
+import DashboardBanner from '../../../DashboardBanner';
+
+const currentDropdownOptions = [
+  "Don't change my current setting",
+  "Don't allow external requests to this class",
+  'Allow external requests to this class for the next hour',
+  'Allow external requests to this class for the next 4 hours',
+  'Allow external requests to this class for the next 8 hours',
+  'Allow external requests to this class for the next 12 hours',
+  'Allow external requests to this class for the next 16 hours',
+  'Allow external requests to this class for the next 20 hours',
+  'Allow external requests to this class for the next 24 hours',
+  'Allow external requests to this class for the next 2 days',
+  'Allow external requests to this class for the next 3 days',
+  'Allow external requests to this class for the next 4 days',
+  'Always allow external requests to this class (not recommended)'
+];
 
 const ClassDetailsForm: React.FC = () => {
   return (
@@ -77,7 +94,7 @@ const ClassDetailsForm: React.FC = () => {
                 <Typography fontWeight="bold">
                   This class is not current accepting external requests.
                 </Typography>
-                <Typography variant="subtitle1">
+                <Typography variant="h6">
                   Set up external requests to this class
                 </Typography>
                 <Grid container>
@@ -221,7 +238,7 @@ const TransferClassToAnotherTeacher: React.FC = () => {
                   textFieldProps={{
                     required: true,
                     name: 'transferClassToAnotherTeacher',
-                    helperText: 'Choose a teacher',
+                    helperText: 'Select teacher',
                     placeholder: options[0]
                   }}
                 />
@@ -252,6 +269,8 @@ const AdditionalClassSettings: React.FC = () => {
   const theme = useTheme();
   return (
     <BasePage>
+      <DashboardBanner />
+      <DashboardHeader page="Your classes" />
       <PageSection>
         <Typography variant="h4" align="center">
           Additional class settings class {'<CLASS NAME>'} ({accessCode})

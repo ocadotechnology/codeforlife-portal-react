@@ -26,7 +26,7 @@ const RapidRouterTabTitles: React.FC<RapidRouterTabTitlesProps> = ({
       <AccordionSummary
         sx={{
           cursor: 'default !important',
-          paddingRight: '1.5rem',
+          paddingRight: '3rem',
           paddingLeft: 0
         }}
       >

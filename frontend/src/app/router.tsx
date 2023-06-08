@@ -88,9 +88,7 @@ export const paths = _('', {
     internalServerError: _('/?type=internalServerError')
   }),
   rapidRouter: _('/rapid-router'),
-  kurono: _('/kurono'),
-  teacherClass: _('/teacher/class'),
-  teacherClassEdit: _('/teacher/class/edit')
+  kurono: _('/kurono')
 });
 
 const router = createBrowserRouter([

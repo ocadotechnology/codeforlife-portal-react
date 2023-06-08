@@ -9,11 +9,14 @@ import CflTable, {
 import { Button, Typography, useTheme } from '@mui/material';
 import { Add, Create, DoNotDisturb } from '@mui/icons-material';
 import { getClassesData, getTeachersData, getUser } from '../dummyMethods';
-import {} from 'codeforlife/lib/esm/components/form';
+import { AutocompleteField } from 'codeforlife/lib/esm/components/form';
 import CopyToClipboardIcon from '../../../components/CopyToClipboardIcon';
 import PageSection from '../../../components/PageSection';
 import { paths } from '../../../app/router';
-import ClassForm from '../../teacherOnboarding/ClassForm';
+import { CflHorizontalForm } from '../../../components/form/CflForm';
+import * as Yup from 'yup';
+import ClassNameField from '../../../components/form/ClassNameField';
+import SeeClassmatesProgressField from '../../../components/form/SeeClassmatesProgressField';
 
 const YourClasses: React.FC = (): JSX.Element => {
   return (
@@ -116,13 +119,43 @@ const ExternalStudentsJoiningRequests: React.FC = (): JSX.Element => {
   );
 };
 
+const CREATE_CLASS_SCHEMA = Yup.object().shape({
+  class: Yup.string().required('Required'),
+  teacherName: Yup.string().required('Required'),
+  seeClassmates: Yup.boolean()
+});
+
 const CreateNewClassForm: React.FC = (): JSX.Element => {
+  const teachersData = getTeachersData();
+  const teacherNames = teachersData.map((teacher) => teacher.teacherName);
   return (
-    <ClassForm
-      onSubmit={() => {
-        alert('submitted');
+    <CflHorizontalForm
+      header="Create a new class"
+      subheader="When you set up a new class, a unique class access code will automatically be generated for the teacher assigned to the class."
+      initialValues={{
+        class: '',
+        teacherName: teacherNames[0],
+        seeClassmates: false
       }}
-    />
+      validationSchema={CREATE_CLASS_SCHEMA}
+      onSubmit={(values, { setSubmitting }) => {
+        alert(JSON.stringify(values, null, 2));
+        setSubmitting(false);
+      }}
+      submitButton={<Button type="submit">Create class</Button>}
+    >
+      <ClassNameField />
+      <AutocompleteField
+        options={teacherNames}
+        textFieldProps={{
+          required: true,
+          name: 'teacherName',
+          helperText: 'Select teacher'
+        }}
+      />
+      <>{/* Leaving an empty gap */}</>
+      <SeeClassmatesProgressField />
+    </CflHorizontalForm>
   );
 };
 

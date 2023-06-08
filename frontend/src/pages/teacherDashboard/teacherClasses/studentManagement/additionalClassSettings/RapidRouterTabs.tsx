@@ -11,7 +11,7 @@ import {
   useTheme
 } from '@mui/material';
 import { allBoxesChecked } from '../../../../../helpers/arrayHelpers';
-import { ExpandMore } from '@mui/icons-material';
+import { ArrowDropDown } from '@mui/icons-material';
 
 interface RapidRouterTabsProps {
   episode: {
@@ -58,9 +58,10 @@ const RapidRouterTabs: React.FC<RapidRouterTabsProps> = ({
     <Box>
       <Accordion elevation={0}>
         <AccordionSummary
-          expandIcon={<ExpandMore />}
+          expandIcon={<ArrowDropDown sx={{ color: 'white' }} />}
           sx={{
-            paddingRight: 0,
+            padding: '0rem 1.5rem',
+            height: '2rem',
             background: episode.color,
             color: theme.palette.success.contrastText
           }}
@@ -78,9 +79,7 @@ const RapidRouterTabs: React.FC<RapidRouterTabsProps> = ({
               pr={15}
               width="100%"
             >
-              <Typography m={0} variant="h6">
-                {episode.name}
-              </Typography>
+              <Typography m={0}>{episode.name}</Typography>
               <Typography m={0}>Levels {episode.levelRange}</Typography>
             </Stack>
             <Field

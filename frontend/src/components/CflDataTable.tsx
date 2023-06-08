@@ -1,4 +1,4 @@
-import { DeleteOutlined, SecurityOutlined } from '@mui/icons-material';
+import { DeleteOutlined, Edit, SecurityOutlined } from '@mui/icons-material';
 import {
   styled,
   tableCellClasses,
@@ -68,7 +68,7 @@ const CflDataTable: React.FC = () => {
                 onChange={handleSelectAllClick}
               />
             </TableCellStyled>
-            <TableCellStyled>Action</TableCellStyled>
+            <TableCellStyled align="center">Action</TableCellStyled>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -84,7 +84,9 @@ const CflDataTable: React.FC = () => {
                   }}
                 />
               </TableCellStyled>
-              <TableCellStyled>Action</TableCellStyled>
+              <TableCellStyled align="center">
+                <Button endIcon={<Edit />}>Edit details</Button>
+              </TableCellStyled>
             </TableRow>
           ))}
         </TableBody>
