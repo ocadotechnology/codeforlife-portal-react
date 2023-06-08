@@ -30,7 +30,9 @@ const DashboardHeaderButton: React.FC<{
     </Button>
   );
 };
-const DashboardHeader: React.FC<{ page: string }> = ({ page }): JSX.Element => {
+const DashboardHeader: React.FC<{
+  page: 'Your school' | 'Your classes' | 'Your account';
+}> = ({ page }): JSX.Element => {
   const theme = useTheme();
   return (
     <Grid

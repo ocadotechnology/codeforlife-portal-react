@@ -17,7 +17,7 @@ import TermsOfUse from '../pages/termsOfUse/TermsOfUse';
 import Newsletter from '../pages/newsletter/Newsletter';
 import Error from '../pages/error/Error';
 import TeacherSchool from '../pages/teacherDashboard/TeacherSchool';
-import TeacherClasses from '../pages/teacherDashboard/TeacherClasses';
+import TeacherClasses from '../pages/teacherDashboard/teacherClasses/TeacherClasses';
 import Edit from '../pages/teacherDashboard/classes/student/Edit';
 import Reset from '../pages/teacherDashboard/classes/student/Reset';
 import Move from '../pages/teacherDashboard/classes/student/Move';
@@ -26,8 +26,11 @@ import TeacherAccount from '../pages/teacherDashboard/account/TeacherAccount';
 import Setup2fa from '../pages/teacherDashboard/account/2fa/Setup2fa';
 import BackupTokens from '../pages/teacherDashboard/account/2fa/BackupTokens';
 import EmailVerification from '../pages/emailVerification/EmailVerification';
+import StudentManagement from '../pages/teacherDashboard/teacherClasses/studentManagement/StudentManagement';
 import ResetPassword from '../pages/resetPassword/ResetPassword';
 import StudentsDashboard from '../pages/studentsDashboard/StudentsDashboard';
+import AdditionalClassSettings from '../pages/teacherDashboard/teacherClasses/studentManagement/additionalClassSettings/AdditionalClassSettings';
+
 import TeacherOnboarding from '../pages/teacherOnboarding/TeacherOnboarding';
 
 export const paths = _('', {
@@ -47,13 +50,15 @@ export const paths = _('', {
     onboarding: _('/onboarding'),
     dashboard: _('/dashboard', {
       school: _('/school'),
-      classes: _('/classes', {
-        student: _('/student', {
-          edit: _('/edit'),
-          reset: _('/reset'),
-          move: _('/move'),
-          release: _('/release')
-        }),
+      classes: _('/classes'),
+      student: _('/student', {
+        edit: _('/edit'),
+        reset: _('/reset'),
+        move: _('/move'),
+        release: _('/release')
+      }),
+      class: _('/class', {
+        edit: _('/edit')
       }),
       account: _('/account', {
         twoFA: _('/2fa', {
@@ -200,6 +205,14 @@ const router = createBrowserRouter([
   {
     path: paths.resetPassword._,
     element: <ResetPassword />
+  },
+  {
+    path: paths.teacher.dashboard.class._,
+    element: <StudentManagement />
+  },
+  {
+    path: paths.teacher.dashboard.class.edit._,
+    element: <AdditionalClassSettings />
   }
 ]);
 
