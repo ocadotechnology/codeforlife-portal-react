@@ -16,17 +16,10 @@ import PrivacyNotice from '../pages/privacyNotice/PrivacyNotice';
 import TermsOfUse from '../pages/termsOfUse/TermsOfUse';
 import Newsletter from '../pages/newsletter/Newsletter';
 import Error from '../pages/error/Error';
-import TeacherSchool from '../pages/teacherDashboard/TeacherSchool';
-import TeacherClasses from '../pages/teacherDashboard/teacherClasses/TeacherClasses';
-import TeacherAccount from '../pages/teacherDashboard/account/TeacherAccount';
-import Setup2fa from '../pages/teacherDashboard/account/2fa/Setup2fa';
-import BackupTokens from '../pages/teacherDashboard/account/2fa/BackupTokens';
+import TeacherDashboard from '../pages/teacherDashboard/TeacherDashboard';
 import EmailVerification from '../pages/emailVerification/EmailVerification';
-import StudentManagement from '../pages/teacherDashboard/teacherClasses/studentManagement/StudentManagement';
 import ResetPassword from '../pages/resetPassword/ResetPassword';
 import StudentsDashboard from '../pages/studentsDashboard/StudentsDashboard';
-import AdditionalClassSettings from '../pages/teacherDashboard/teacherClasses/studentManagement/additionalClassSettings/AdditionalClassSettings';
-
 import TeacherOnboarding from '../pages/teacherOnboarding/TeacherOnboarding';
 
 export const paths = _('', {
@@ -45,16 +38,15 @@ export const paths = _('', {
   teacher: _('/teacher', {
     onboarding: _('/onboarding'),
     dashboard: _('/dashboard', {
-      school: _('/school'),
-      classes: _('/classes'),
-      class: _('/class', {
-        edit: _('/edit')
-      }),
-      account: _('/account', {
-        twoFA: _('/2fa', {
-          setup: _('/setup'),
-          backupTokens: _('/backup-tokens')
+      school: _('/?tab=Your+school'),
+      classes: _('/?tab=Your+classes', {
+        edit: _('&edit={accessCode}', {
+          additional: _('&additional=true')
         })
+      }),
+      account: _('/?tab=Your+account', {
+        setup2FA: _('&twoFA=setup'),
+        backupTokens: _('&twoFA=backupTokens')
       })
     })
   }),
@@ -153,24 +145,8 @@ const router = createBrowserRouter([
     element: <Error />
   },
   {
-    path: paths.teacher.dashboard.school._,
-    element: <TeacherSchool />
-  },
-  {
-    path: paths.teacher.dashboard.classes._,
-    element: <TeacherClasses />
-  },
-  {
-    path: paths.teacher.dashboard.account._,
-    element: <TeacherAccount />
-  },
-  {
-    path: paths.teacher.dashboard.account.twoFA.setup._,
-    element: <Setup2fa />
-  },
-  {
-    path: paths.teacher.dashboard.account.twoFA.backupTokens._,
-    element: <BackupTokens />
+    path: paths.teacher.dashboard._,
+    element: <TeacherDashboard />
   },
   {
     path: paths.register.emailVerification._,
@@ -179,14 +155,6 @@ const router = createBrowserRouter([
   {
     path: paths.resetPassword._,
     element: <ResetPassword />
-  },
-  {
-    path: paths.teacher.dashboard.class._,
-    element: <StudentManagement />
-  },
-  {
-    path: paths.teacher.dashboard.class.edit._,
-    element: <AdditionalClassSettings />
   }
 ]);
 

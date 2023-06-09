@@ -4,8 +4,8 @@ import {
   useMediaQuery
 } from '@mui/material';
 
-import BasePage from '../../pages/BasePage';
-import PageSection from '../../components/PageSection';
+import Page from 'codeforlife/lib/esm/components/page';
+
 import TargetAudience from './TargetAudience';
 import AboutUs from './AboutUs';
 import Quotes from './Quotes';
@@ -15,24 +15,28 @@ const Home: React.FC = () => {
   const theme = useTheme();
 
   return (
-    <BasePage>
-      <PageSection background={`linear-gradient(
-        to ${useMediaQuery(theme.breakpoints.down('sm')) ? 'bottom' : 'right'},
-        ${theme.palette.primary.main} 50%,
-        ${theme.palette.secondary.main} 0
-      )`}>
+    <Page.Container>
+      <Page.Section gridProps={{
+        style: {
+          background: `linear-gradient(
+            to ${useMediaQuery(theme.breakpoints.down('sm')) ? 'bottom' : 'right'},
+            ${theme.palette.primary.main} 50%,
+            ${theme.palette.tertiary.main} 0
+          )`
+        }
+      }}>
         <TargetAudience />
-      </PageSection>
-      <PageSection>
+      </Page.Section>
+      <Page.Section>
         <AboutUs />
-      </PageSection>
-      <PageSection bgcolor={theme.palette.info.main}>
+      </Page.Section>
+      <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
         <Quotes />
-      </PageSection>
-      <PageSection>
+      </Page.Section>
+      <Page.Section>
         <CodingClubs />
-      </PageSection>
-    </BasePage>
+      </Page.Section>
+    </Page.Container>
   );
 };
 

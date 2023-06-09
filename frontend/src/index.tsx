@@ -2,8 +2,13 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';
 
-import App from './app/App';
+import { App } from 'codeforlife/lib/esm/components';
+
 import router from './app/router';
+import theme from './app/theme';
+import store from './app/store';
+import Header from './features/header/Header';
+import Footer from './features/footer/Footer';
 import reportWebVitals from './reportWebVitals';
 
 import './scripts/freshDesk';
@@ -16,8 +21,10 @@ const root = createRoot(container);
 
 root.render(
   <React.StrictMode>
-    <App>
+    <App theme={theme} store={store}>
+      <Header />
       <RouterProvider router={router} />
+      <Footer />
     </App>
   </React.StrictMode>
 );

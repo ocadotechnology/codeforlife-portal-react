@@ -1,25 +1,18 @@
 import * as Yup from 'yup';
 import React from 'react';
-import BasePage from '../../../../BasePage';
-import PageSection from '../../../../../components/PageSection';
-import { SearchParams } from 'codeforlife/lib/esm/helpers';
-import BackToLinkTextButton from '../../../../../components/BackToLinkTextButton';
-import { paths } from '../../../../../app/router';
 import {
   useTheme,
   Typography,
-  InputAdornment,
   Grid,
   Stack,
-  Button
+  Button,
+  Link
 } from '@mui/material';
 import { Formik, Form } from 'formik';
 import {
   AutocompleteField,
-  CheckboxField,
-  TextField
+  CheckboxField
 } from 'codeforlife/lib/esm/components/form';
-import { People } from '@mui/icons-material';
 import {
   BLOCKLY_LEVELS,
   PYTHON_LEVELS,
@@ -27,11 +20,8 @@ import {
 } from './rapidRouterLevelsProps';
 import RapidRouterTabTitles from './RapidRouterTabTitles';
 import RapidRouterTabs from './RapidRouterTabs';
-import { validateAccessCode } from '../../../../login/StudentForm';
-import DashboardHeader from '../../../DashboardHeader';
-import DashboardBanner from '../../../DashboardBanner';
 import ClassNameField from '../../../../../components/form/ClassNameField';
-import { allowedNodeEnvironmentFlags } from 'process';
+import Page from 'codeforlife/lib/esm/components/page';
 
 const currentDropdownOptions = [
   "Don't change my current setting",
@@ -254,51 +244,46 @@ const TransferClassToAnotherTeacher: React.FC = () => {
   );
 };
 
-const AdditionalClassSettings: React.FC = () => {
-  const params = SearchParams.get<{ accessCode: string }>({
-    accessCode: {
-      isRequired: true,
-      validate: SearchParams.validate.matchesSchema(validateAccessCode)
-    }
-  });
-  const accessCode = params?.accessCode ?? '';
-  const backToEditClassUrl = `${String(
-    paths.teacher.dashboard.class._
-  )}?accessCode=${accessCode}`;
-  const theme = useTheme();
-  return (
-    <BasePage>
-      <DashboardBanner />
-      <DashboardHeader page="Your classes" />
-      <PageSection>
+const AdditionalClassSettings: React.FC<{
+  accessCode: string;
+  goBack: () => void;
+}> = ({
+  accessCode,
+  goBack
+}) => {
+    const theme = useTheme();
+
+    return <>
+      <Page.Section>
         <Typography variant="h4" align="center">
           Additional class settings class {'<CLASS NAME>'} ({accessCode})
         </Typography>
-        <BackToLinkTextButton href={backToEditClassUrl} text="Edit Class" />
+        <Link className='back-to' onClick={goBack}>
+          Edit Class
+        </Link>
         <Typography>
           You may change the name of the class, or change permissions to allow
           external requests from independent students to join this class. You
           may also transfer the class to another teacher, or change permissions
           to allow pupils to see their classmates&apos; progress.
         </Typography>
-      </PageSection>
-      <PageSection bgcolor={theme.palette.info.light}>
+      </Page.Section>
+      <Page.Section gridProps={{ bgcolor: theme.palette.info.light }}>
         <Typography variant="h5">Class details</Typography>
         <ClassDetailsForm />
-      </PageSection>
-      <PageSection>
+      </Page.Section>
+      <Page.Section>
         <Typography variant="h5">Rapid Router access settings</Typography>
         <Typography>
           You may control access to levels here by selecting what you wish to
           display to the students.
         </Typography>
         <RapidRouterAccessSettings />
-      </PageSection>
-      <PageSection bgcolor={theme.palette.info.light}>
+      </Page.Section>
+      <Page.Section gridProps={{ bgcolor: theme.palette.info.light }}>
         <TransferClassToAnotherTeacher />
-      </PageSection>
-    </BasePage>
-  );
-};
+      </Page.Section>
+    </>;
+  };
 
 export default AdditionalClassSettings;

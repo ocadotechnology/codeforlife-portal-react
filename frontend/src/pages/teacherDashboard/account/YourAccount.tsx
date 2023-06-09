@@ -1,7 +1,4 @@
 import React from 'react';
-import BasePage from '../../BasePage';
-import DashboardBanner from '../DashboardBanner';
-import DashboardHeader from '../DashboardHeader';
 import {
   Button,
   Unstable_Grid2 as Grid,
@@ -28,7 +25,10 @@ import {
 import { getUser } from '../dummyMethods';
 import { TextField, CheckboxField } from 'codeforlife/lib/esm/components/form';
 import { CflHorizontalForm } from '../../../components/form/CflForm';
-import PageSection from '../../../components/PageSection';
+import Page from 'codeforlife/lib/esm/components/page';
+import { SearchParams } from 'codeforlife/lib/esm/helpers';
+import Setup2fa from './2fa/Setup2fa';
+import BackupTokens from './2fa/BackupTokens';
 import { paths } from '../../../app/router';
 
 const TwoFactorAuthentication: React.FC = (): JSX.Element => {
@@ -39,7 +39,7 @@ const TwoFactorAuthentication: React.FC = (): JSX.Element => {
         Use your smartphone or tablet to enhance your account&apos;s security by
         using an authenticator app.
       </Typography>
-      <Button href={paths.teacher.dashboard.account.twoFA.setup._}>
+      <Button href={paths.teacher.dashboard.account.setup2FA._}>
         Setup two factor authentication
       </Button>
       <Grid container>
@@ -50,7 +50,7 @@ const TwoFactorAuthentication: React.FC = (): JSX.Element => {
             You have 0 backup tokens remaining.
           </Typography>
           <Typography>View and create backup tokens for your account.</Typography>
-          <Button href={paths.teacher.dashboard.account.twoFA.backupTokens._}>
+          <Button href={paths.teacher.dashboard.account.backupTokens._}>
             Manage backup tokens
           </Button>
           <Typography variant="body2" fontWeight="bold" color="error">
@@ -64,7 +64,7 @@ const TwoFactorAuthentication: React.FC = (): JSX.Element => {
           </Typography>
           <Button
             // TODO: call backend and show confirmation popup
-            color="error"
+            className='alert'
             endIcon={<ErrorOutlineOutlined />}>
             Disable 2FA
           </Button>
@@ -162,7 +162,7 @@ const DeleteAccountForm: React.FC = (): JSX.Element => {
       }}
       submitButton={
         <Button
-          color="error"
+          className='alert'
           type="submit"
           endIcon={<DeleteOutline />}
         >
@@ -198,29 +198,42 @@ const DeleteAccountForm: React.FC = (): JSX.Element => {
   );
 };
 
-const TeacherAccount: React.FC = (): JSX.Element => {
+const YourAccount: React.FC = () => {
   const theme = useTheme();
-  return (
-    <BasePage>
-      <DashboardBanner />
-      <DashboardHeader page="Your account" />
-      <PageSection>
+
+  const twoFAOptions = ['setup', 'backupTokens'] as const;
+  const params = SearchParams.get<{
+    twoFA: typeof twoFAOptions[number]
+  }>({
+    twoFA: { validate: SearchParams.validate.inOptions(twoFAOptions) }
+  });
+
+  if (params === null) {
+    return <>
+      <Page.Section>
         <Typography align="center" variant="h4">
           Your account
         </Typography>
         <Typography>You can update your account details below.</Typography>
-      </PageSection>
-      <PageSection>
+      </Page.Section>
+      <Page.Section>
         <YourAccountForm />
-      </PageSection>
-      <PageSection bgcolor={theme.palette.info.main}>
+      </Page.Section>
+      <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
         <TwoFactorAuthentication />
-      </PageSection>
-      <PageSection>
+      </Page.Section>
+      <Page.Section>
         <DeleteAccountForm />
-      </PageSection>
-    </BasePage>
-  );
+      </Page.Section>
+    </>;
+  }
+
+  switch (params.twoFA) {
+    case 'setup':
+      return <Setup2fa />;
+    case 'backupTokens':
+      return <BackupTokens />;
+  }
 };
 
-export default TeacherAccount;
+export default YourAccount;

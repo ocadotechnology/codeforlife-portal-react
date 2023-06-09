@@ -42,15 +42,15 @@ const ThemedBox: React.FC<ThemedBoxProps> = ({
       buttonBgcolor = theme.palette.tertiary.main;
       break;
     case 'student':
-      bgcolor = 'secondary';
-      circleColor = 'tertiary';
+      bgcolor = 'tertiary';
+      circleColor = 'secondary';
       hexagonColor = 'primary';
       buttonBgcolor = theme.palette.tertiary.main;
       break;
     case 'independent':
-      bgcolor = 'tertiary';
+      bgcolor = 'secondary';
       circleColor = 'primary';
-      hexagonColor = 'secondary';
+      hexagonColor = 'tertiary';
       buttonBgcolor = 'white';
       break;
   }
