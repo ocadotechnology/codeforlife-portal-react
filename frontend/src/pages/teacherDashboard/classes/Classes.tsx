@@ -169,7 +169,7 @@ const Classes: React.FC = () => {
   }>({
     edit: {
       isRequired: false,
-      validate: SearchParams.validate.matchesSchema(validateAccessCode),
+      validate: SearchParams.validate.matchesSchema(validateAccessCode)
     },
     additional: {
       isRequired: false,

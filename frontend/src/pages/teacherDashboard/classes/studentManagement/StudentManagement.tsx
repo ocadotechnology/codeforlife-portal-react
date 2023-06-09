@@ -9,7 +9,6 @@ import {
 } from '@mui/material';
 import React from 'react';
 import AddStudentsForm from '../../../../features/addStudentsForm/AddStudentsForm';
-import { paths } from '../../../../app/router';
 import CflDataTable from '../../../../components/CflDataTable';
 import Page from 'codeforlife/lib/esm/components/page';
 import AdditionalClassSettings from './additionalClassSettings/AdditionalClassSettings';
