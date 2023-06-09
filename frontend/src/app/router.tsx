@@ -39,7 +39,11 @@ export const paths = _('', {
     onboarding: _('/onboarding'),
     dashboard: _('/dashboard', {
       school: _('/?tab=Your+school'),
-      classes: _('/?tab=Your+classes'),
+      classes: _('/?tab=Your+classes', {
+        edit: _('&edit={accessCode}', {
+          additional: _('&additional=true')
+        })
+      }),
       account: _('/?tab=Your+account', {
         setup2FA: _('&twoFA=setup'),
         backupTokens: _('&twoFA=backupTokens')

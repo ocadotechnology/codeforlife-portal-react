@@ -1,10 +1,6 @@
 import React from 'react';
-import {
-  Typography
-} from '@mui/material';
-import {
-  ChevronRight as ChevronRightIcon
-} from '@mui/icons-material';
+import { Typography } from '@mui/material';
+import { ChevronRight as ChevronRightIcon } from '@mui/icons-material';
 import * as Yup from 'yup';
 
 import { SearchParams } from 'codeforlife/lib/esm/helpers';
@@ -17,16 +13,15 @@ import {
   EmailField
 } from 'codeforlife/lib/esm/components/form';
 
-const validateAccessCode = Yup
-  .string()
+export const validateAccessCode = Yup.string()
   .required()
   .matches(/^[A-Z]{2}[0-9]{3}$/, 'Invalid access code');
 
 const AccessCodeForm: React.FC<{
-  setAccessCode: (accessCode: string) => void
+  setAccessCode: (accessCode: string) => void;
 }> = ({ setAccessCode }) => {
   interface Values {
-    accessCode: string
+    accessCode: string;
   }
 
   const initialValues: Values = {
@@ -36,8 +31,8 @@ const AccessCodeForm: React.FC<{
   return (
     <BaseForm
       themedBoxProps={{ userType: 'student' }}
-      header='Welcome'
-      subheader='Please enter your class code.'
+      header="Welcome"
+      subheader="Please enter your class code."
       initialValues={initialValues}
       onSubmit={(values) => {
         setAccessCode(values.accessCode);
@@ -45,15 +40,11 @@ const AccessCodeForm: React.FC<{
     >
       <TextField
         name="accessCode"
-        placeholder='Access code'
+        placeholder="Access code"
         helperText="Enter your access code"
         validate={validateAccessCode}
       />
-      <Typography
-        variant="body2"
-        fontWeight="bold"
-        my={0}
-      >
+      <Typography variant="body2" fontWeight="bold" my={0}>
         Forgotten your login details? Please check with your teacher.
       </Typography>
       <SubmitButton
@@ -67,7 +58,7 @@ const AccessCodeForm: React.FC<{
 };
 
 const CredentialsForm: React.FC<{
-  accessCode: string
+  accessCode: string;
 }> = ({ accessCode }) => {
   interface Values {
     email: string;
@@ -83,7 +74,7 @@ const CredentialsForm: React.FC<{
     <BaseForm
       themedBoxProps={{ userType: 'student' }}
       header={`Welcome to class: ${accessCode}`}
-      subheader='Please enter your login details.'
+      subheader="Please enter your login details."
       initialValues={initialValues}
       onSubmit={(values, errors) => {
         alert(JSON.stringify(values));
@@ -114,7 +105,7 @@ const CredentialsForm: React.FC<{
 
 const StudentForm: React.FC = () => {
   const params = SearchParams.get<{
-    accessCode?: string
+    accessCode?: string;
   }>({
     accessCode: {
       isRequired: false,
@@ -124,7 +115,7 @@ const StudentForm: React.FC = () => {
 
   const [accessCode, setAccessCode] = React.useState(params?.accessCode);
 
-  return (accessCode === undefined)
+  return accessCode === undefined
     ? <AccessCodeForm setAccessCode={setAccessCode} />
     : <CredentialsForm accessCode={accessCode} />;
 };

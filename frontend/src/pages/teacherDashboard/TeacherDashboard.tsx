@@ -3,7 +3,7 @@ import React from 'react';
 import Page from 'codeforlife/lib/esm/components/page';
 
 import YourSchool from './YourSchool';
-import YourClasses from './YourClasses';
+import Classes from './classes/Classes';
 import YourAccount from './account/YourAccount';
 
 const TeacherDashboard: React.FC = () => {
@@ -21,7 +21,7 @@ const TeacherDashboard: React.FC = () => {
           },
           {
             label: 'Your classes',
-            children: <YourClasses />
+            children: <Classes />
           },
           {
             label: 'Your account',

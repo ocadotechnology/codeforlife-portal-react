@@ -5,7 +5,18 @@ import { ItemizedList } from 'codeforlife/lib/esm/components';
 import Page from 'codeforlife/lib/esm/components/page';
 
 const BackupTokens: React.FC = (): JSX.Element => {
-  const backupTokens = ['token1', 'token2', 'token3', 'token4', 'token5', 'token6', 'token7', 'token8', 'token9', 'token10'];
+  const backupTokens = [
+    'token1',
+    'token2',
+    'token3',
+    'token4',
+    'token5',
+    'token6',
+    'token7',
+    'token8',
+    'token9',
+    'token10'
+  ];
 
   return (
     <Page.Section>
