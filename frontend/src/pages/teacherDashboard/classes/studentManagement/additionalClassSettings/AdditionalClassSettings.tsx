@@ -253,39 +253,37 @@ const AdditionalClassSettings: React.FC<{
 }) => {
     const theme = useTheme();
 
-    return (
-      <Page.Container>
-        <Page.Section>
-          <Typography variant="h4" align="center">
-            Additional class settings class {'<CLASS NAME>'} ({accessCode})
-          </Typography>
-          <Link className='back-to' onClick={goBack}>
-            Edit Class
-          </Link>
-          <Typography>
-            You may change the name of the class, or change permissions to allow
-            external requests from independent students to join this class. You
-            may also transfer the class to another teacher, or change permissions
-            to allow pupils to see their classmates&apos; progress.
-          </Typography>
-        </Page.Section>
-        <Page.Section gridProps={{ bgcolor: theme.palette.info.light }}>
-          <Typography variant="h5">Class details</Typography>
-          <ClassDetailsForm />
-        </Page.Section>
-        <Page.Section>
-          <Typography variant="h5">Rapid Router access settings</Typography>
-          <Typography>
-            You may control access to levels here by selecting what you wish to
-            display to the students.
-          </Typography>
-          <RapidRouterAccessSettings />
-        </Page.Section>
-        <Page.Section gridProps={{ bgcolor: theme.palette.info.light }}>
-          <TransferClassToAnotherTeacher />
-        </Page.Section>
-      </Page.Container>
-    );
+    return <>
+      <Page.Section>
+        <Typography variant="h4" align="center">
+          Additional class settings class {'<CLASS NAME>'} ({accessCode})
+        </Typography>
+        <Link className='back-to' onClick={goBack}>
+          Edit Class
+        </Link>
+        <Typography>
+          You may change the name of the class, or change permissions to allow
+          external requests from independent students to join this class. You
+          may also transfer the class to another teacher, or change permissions
+          to allow pupils to see their classmates&apos; progress.
+        </Typography>
+      </Page.Section>
+      <Page.Section gridProps={{ bgcolor: theme.palette.info.light }}>
+        <Typography variant="h5">Class details</Typography>
+        <ClassDetailsForm />
+      </Page.Section>
+      <Page.Section>
+        <Typography variant="h5">Rapid Router access settings</Typography>
+        <Typography>
+          You may control access to levels here by selecting what you wish to
+          display to the students.
+        </Typography>
+        <RapidRouterAccessSettings />
+      </Page.Section>
+      <Page.Section gridProps={{ bgcolor: theme.palette.info.light }}>
+        <TransferClassToAnotherTeacher />
+      </Page.Section>
+    </>;
   };
 
 export default AdditionalClassSettings;
