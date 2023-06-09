@@ -1,4 +1,11 @@
-import theme from '../../../../../app/theme';
+const colors = {
+  green: '#86AE18',
+  lightBlue: '#00A3E0',
+  darkBlue: '#008CC1',
+  pink: '#C90548',
+  lightPurple: '#8967D3',
+  darkPurple: '#754FC8'
+};
 
 // TODO: Once we have developed the backend to fetch
 // the levels from our API, we can remove this file
@@ -6,7 +13,7 @@ export const RapidRouterGameTabs = {
   gettingStarted: {
     name: 'Getting started',
     levelRange: '1-12',
-    color: theme.palette.success.light,
+    color: colors.green,
     levels: [
       {
         levelNumber: '1',
@@ -61,7 +68,7 @@ export const RapidRouterGameTabs = {
   shortestRoute: {
     name: 'Shortest route',
     levelRange: '13-18',
-    color: theme.palette.success.light,
+    color: colors.green,
     levels: [
       {
         levelNumber: '13',
@@ -91,7 +98,7 @@ export const RapidRouterGameTabs = {
   },
   loopsAndRepetitions: {
     name: 'Loops and repetitions',
-    color: theme.palette.success.light,
+    color: colors.green,
     levelRange: '19-28',
     levels: [
       {
@@ -126,7 +133,7 @@ export const RapidRouterGameTabs = {
   },
   loopsAndConditions: {
     name: 'Loops and conditions',
-    color: theme.palette.success.light,
+    color: colors.green,
     levelRange: '29-32',
     levels: [
       { levelNumber: '29', name: 'No need for numbers' },
@@ -137,7 +144,7 @@ export const RapidRouterGameTabs = {
   },
   ifOnly: {
     name: 'If... only',
-    color: theme.palette.secondary.light,
+    color: colors.lightBlue,
     levelRange: '33-43',
     levels: [
       {
@@ -158,7 +165,7 @@ export const RapidRouterGameTabs = {
   },
   trafficLights: {
     name: 'Traffic lights',
-    color: theme.palette.secondary.light,
+    color: colors.lightBlue,
     levelRange: '44-50',
     levels: [
       { levelNumber: '44', name: 'Oh no! Traffic lights!' },
@@ -181,7 +188,7 @@ export const RapidRouterGameTabs = {
   },
   limitedBlocks: {
     name: 'Limited blocks',
-    color: theme.palette.secondary.light,
+    color: colors.darkBlue,
     levelRange: '51-60',
     levels: [
       { levelNumber: '51', name: 'Back to basics with a twist' },
@@ -198,7 +205,7 @@ export const RapidRouterGameTabs = {
   },
   procedures: {
     name: 'Procedures',
-    color: theme.palette.secondary.light,
+    color: colors.darkBlue,
     levelRange: '61-67',
     levels: [
       {
@@ -215,7 +222,7 @@ export const RapidRouterGameTabs = {
   },
   blocklyBrainTeasers: {
     name: 'Blockly Brain Teasers',
-    color: theme.palette.primary.light,
+    color: colors.pink,
     levelRange: '68-79',
     levels: [
       { levelNumber: '68', name: 'T - time' },
@@ -234,7 +241,7 @@ export const RapidRouterGameTabs = {
   },
   introdutionToPython: {
     name: 'Introduction to Python',
-    color: theme.palette.info.dark,
+    color: colors.lightPurple,
     levelRange: '80-91',
     levels: [
       { levelNumber: '80', name: "Here's Python!" },
@@ -274,7 +281,7 @@ export const RapidRouterGameTabs = {
   },
   python: {
     name: 'Python',
-    color: theme.palette.info.dark,
+    color: colors.darkPurple,
     levelRange: '92-109',
     levels: [
       {
