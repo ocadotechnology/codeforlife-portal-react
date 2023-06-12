@@ -6,6 +6,7 @@ import {
 
 import { themeOptions as cflThemeOptions } from 'codeforlife/lib/esm/theme';
 
+// Unpack the base options to extend the theme.
 export const themeOptions: ThemeOptions = {
   ...cflThemeOptions
 };
