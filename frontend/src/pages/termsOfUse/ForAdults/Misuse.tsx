@@ -7,7 +7,7 @@ import {
 } from '@mui/material';
 
 import { ItemizedList } from 'codeforlife/lib/esm/components';
-import { OpenContactUsWidget } from '../../../features/thirdParty';
+import { useFreshworksWidget } from 'codeforlife/lib/esm/hooks';
 
 const Misuse: React.FC = () => {
   return (
@@ -19,7 +19,7 @@ const Misuse: React.FC = () => {
         Any person whose access has been suspended or terminated may not re-register for, or re-access, the Code for Life portal without our prior written consent. You are responsible for everything which is done on or through the Code for Life portal through your registered email address(es) or whilst your Users account is logged on to the Code for Life site. In addition, we reserve the right to suspend or terminate any User’s access to Code for Life, or parts of it, if the relevant User is abusive, discriminatory or threatening, or harasses or communicates offensive messages or images to another User; irrespective of whether this is done through the Code for Life site.
       </Typography>
       <Typography>
-        We endeavour to ensure that the Code for Life website and access to your account and our games, platforms and other products or services are available 24 hours a day, but occasionally your access to the Code for Life website or to your account (including any old or live games or avatars) may be restricted to allow for repairs, maintenance or the introduction of new features or services. We aim to provide the best service possible, but we do not warrant that the Code for Life website, access to your account or any of the games, platforms or any of our other products or services (whether online or otherwise) will be fault, virus or error free. If you detect a problem or fault, please contact us using the <Link onClick={OpenContactUsWidget} className='body'>contact us form</Link> and we will endeavour to correct the fault as quickly as we can.
+        We endeavour to ensure that the Code for Life website and access to your account and our games, platforms and other products or services are available 24 hours a day, but occasionally your access to the Code for Life website or to your account (including any old or live games or avatars) may be restricted to allow for repairs, maintenance or the introduction of new features or services. We aim to provide the best service possible, but we do not warrant that the Code for Life website, access to your account or any of the games, platforms or any of our other products or services (whether online or otherwise) will be fault, virus or error free. If you detect a problem or fault, please contact us using the <Link onClick={() => { useFreshworksWidget('open'); }} className='body'>contact us form</Link> and we will endeavour to correct the fault as quickly as we can.
       </Typography>
       <Typography>
         Notwithstanding any of the above, we reserve the right to decline any new registrations or suspend or cancel a User’s account at any time and at our sole discretion (and without telling you beforehand), and we reserve the right to terminate your access to all or part of the games, platforms and other products or services that we make available from time to time (whether online or otherwise) which shall include any old or live games or avatar(s) you have created.

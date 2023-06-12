@@ -9,7 +9,8 @@ import {
   Link,
   Button
 } from '@mui/material';
-import { ShowCookiesDrawer } from '../../../features/thirdParty';
+
+import { useOneTrustInfoToggle } from 'codeforlife/lib/esm/hooks';
 
 const CustomTableRow: React.FC<{
   withoutUnderline?: boolean,
@@ -140,7 +141,7 @@ const Cookies: React.FC = () => (
     <Typography>
       You can change your cookie preferences or withdraw consent by clicking on the following button:
     </Typography>
-    <Button onClick={ShowCookiesDrawer}>
+    <Button onClick={useOneTrustInfoToggle}>
       Cookie Settings
     </Button>
   </>

@@ -6,6 +6,7 @@ import {
 } from '@mui/material';
 
 import { Image } from 'codeforlife/lib/esm/components';
+import { useFreshworksWidget } from 'codeforlife/lib/esm/hooks';
 
 import Logo10xImage from '../../images/10x_logo.png';
 import BcsImage from '../../images/bcs_logo.png';
@@ -15,7 +16,6 @@ import MCSaatchiImage from '../../images/mc_saatchi_logo.png';
 import HOPEImage from '../../images/hope_logo.png';
 import GLAImage from '../../images/gla_logo.png';
 import PressureCookerImage from '../../images/pressure_cooker_logo.png';
-import { OpenContactUsWidget } from '../../features/thirdParty';
 
 const ImageGrid: React.FC<{
   alt: string,
@@ -75,7 +75,7 @@ const Supporters: React.FC = () => {
             Teachers, parents, and creatives
           </Typography>
           <Typography>
-            Please get in touch through our <Link onClick={OpenContactUsWidget} className='body'>contact</Link> form and let us know how you would like to get involved.
+            Please get in touch through our <Link onClick={() => { useFreshworksWidget('open'); }} className='body'>contact</Link> form and let us know how you would like to get involved.
           </Typography>
           <Typography>
             We would like to thank our friends who have contributed to this initiative.

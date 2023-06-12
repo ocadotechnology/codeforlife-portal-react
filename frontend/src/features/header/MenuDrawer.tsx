@@ -9,9 +9,13 @@ import {
   useTheme
 } from '@mui/material';
 
-import { paths } from '../../app/router';
-
 import { insertDividerBetweenElements } from 'codeforlife/lib/esm/helpers';
+import {
+  useFreshworksWidget,
+  useOneTrustInfoToggle
+} from 'codeforlife/lib/esm/hooks';
+
+import { paths } from '../../app/router';
 
 const MenuDrawer: React.FC<{
   isOpen: boolean;
@@ -28,8 +32,8 @@ const MenuDrawer: React.FC<{
     { children: 'Teachers', href: paths.teacher._ },
     { children: 'Students', href: paths.student._ },
     { children: 'About us', href: paths.aboutUs._ },
-    { children: 'Help and support', href: '' },
-    { children: 'Cookie settings', href: '' },
+    { children: 'Help and support', onClick: () => { useFreshworksWidget('open'); } },
+    { children: 'Cookie settings', onClick: useOneTrustInfoToggle },
     { children: 'Privacy notice', href: paths.privacyNotice._ },
     { children: 'Terms of use', href: paths.termsOfUse._ },
     { children: 'Get involved', href: paths.getInvolved._ }
