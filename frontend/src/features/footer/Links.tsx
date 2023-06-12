@@ -8,8 +8,12 @@ import {
   useTheme
 } from '@mui/material';
 
+import {
+  useFreshworksWidget,
+  useOneTrustInfoToggle
+} from 'codeforlife/lib/esm/hooks';
+
 import { paths } from '../../app/router';
-import { OpenContactUsWidget, ShowCookiesDrawer } from '../thirdParty';
 
 const Links: React.FC = () => (
   <ThemeProvider theme={createTheme(useTheme(), {
@@ -27,7 +31,7 @@ const Links: React.FC = () => (
           <Link href={paths.aboutUs._}>
             About us
           </Link>
-          <Link onClick={OpenContactUsWidget}>
+          <Link onClick={() => { useFreshworksWidget('open'); }}>
             Help and support
           </Link>
         </Stack>
@@ -40,7 +44,7 @@ const Links: React.FC = () => (
           <Link href={paths.termsOfUse._}>
             Terms of use
           </Link>
-          <Link onClick={ShowCookiesDrawer}>
+          <Link onClick={useOneTrustInfoToggle}>
             Cookie settings
           </Link>
         </Stack>
