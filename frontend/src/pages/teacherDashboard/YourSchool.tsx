@@ -32,7 +32,7 @@ import SchoolNameField from '../../components/form/SchoolNameField';
 import SchoolPostcodeField from '../../components/form/SchoolPostcodeField';
 import SchoolCountryField from '../../components/form/SchoolCountryField';
 
-const InviteTeacherForm: React.FC = (): JSX.Element => {
+const InviteTeacherForm: React.FC = () => {
   const theme = useTheme();
   return (
     <CflHorizontalForm
@@ -98,7 +98,8 @@ const InviteTeacherForm: React.FC = (): JSX.Element => {
   );
 };
 
-const UpdateSchoolDetailsForm: React.FC = (): JSX.Element => {
+const UpdateSchoolDetailsForm: React.FC = () => {
+  // TODO: Prepopulate with current school data
   const { schoolName, schoolPostcode, schoolCountry } = getSchool();
   return (
     <CflHorizontalForm
@@ -136,7 +137,7 @@ const TeachersTableActions: React.FC<{
   userEmail,
   isTeacherAdmin,
   twoFactorAuthentication
-}): JSX.Element => {
+}) => {
     if (teacherEmail === userEmail) {
       return (
         <>
@@ -164,15 +165,18 @@ const TeachersTableActions: React.FC<{
       return (
         <>
           <Button endIcon={<Add />}>Make admin </Button>
-          <Button endIcon={<DoDisturbOnOutlined />} className='alert'>
-            Disable 2FA
-          </Button>
+          {twoFactorAuthentication
+            ? <Button endIcon={<DoDisturbOnOutlined />} className='alert'>
+                Disable 2FA
+              </Button>
+            : <></>
+          }
         </>
       );
     }
   };
 
-const TeachersTable: React.FC = (): JSX.Element => {
+const TeachersTable: React.FC = () => {
   const { email } = getUser();
   const teachersData = getTeachersData();
   const youText = (
@@ -218,13 +222,13 @@ const TeachersTable: React.FC = (): JSX.Element => {
 };
 
 const YourSchool: React.FC = () => {
-  const { schoolName, accessCode } = getSchool();
+  const { schoolName, schoolPostcode } = getSchool();
   const theme = useTheme();
 
   return <>
     <Page.Section>
       <Typography align="center" variant="h4">
-        Your school: {schoolName} ({accessCode})
+        Your school: {schoolName} ({schoolPostcode})
       </Typography>
       <Typography align="left">
         As an administrator of your school or club, you can select other

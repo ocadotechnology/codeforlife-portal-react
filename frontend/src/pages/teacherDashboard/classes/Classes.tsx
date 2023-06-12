@@ -17,7 +17,7 @@ import { SearchParams } from 'codeforlife/lib/esm/helpers';
 import { validateAccessCode } from '../../login/StudentForm';
 import EditClass from './editClass/EditClass';
 
-const _YourClasses: React.FC = (): JSX.Element => {
+const _YourClasses: React.FC = () => {
   return (
     <>
       <Typography align="center" variant="h4">
@@ -35,7 +35,8 @@ const _YourClasses: React.FC = (): JSX.Element => {
 
 const ClassTable: React.FC<{
   setAccessCode: (accessCode: string) => void
-}> = ({ setAccessCode }) => {
+  setClassName: (className: string) => void
+}> = ({setAccessCode, setClassName }) => {
   const classData = getClassesData();
   const { firstName, lastName } = getUser();
   return (
@@ -55,7 +56,10 @@ const ClassTable: React.FC<{
           </CflTableCellElement>
           <CflTableCellElement justifyContent="center">
             <Button
-              onClick={() => { setAccessCode(accessCode); }}
+              onClick={() => {
+                setAccessCode(accessCode);
+                setClassName(className);
+              }}
               endIcon={<Create />}
             >
               Edit details
@@ -71,14 +75,17 @@ const ExternalStudentsJoiningRequestsActions: React.FC = () => {
   return (
     <>
       <Button endIcon={<Add />}>Add to class</Button>
-      <Button color="error" endIcon={<DoNotDisturb />}>
+      <Button
+        className="alert"
+        endIcon={<DoNotDisturb />}
+      >
         Reject
       </Button>
     </>
   );
 };
 
-const ExternalStudentsJoiningRequestsTable: React.FC = (): JSX.Element => {
+const ExternalStudentsJoiningRequestsTable: React.FC = () => {
   const teacherData = getTeachersData();
   return (
     <CflTable titles={['Name', 'Email address', 'Class', 'Actions']}>
@@ -101,7 +108,7 @@ const ExternalStudentsJoiningRequestsTable: React.FC = (): JSX.Element => {
   );
 };
 
-const ExternalStudentsJoiningRequests: React.FC = (): JSX.Element => {
+const ExternalStudentsJoiningRequests: React.FC = () => {
   return (
     <>
       <Typography align="center" variant="h4">
@@ -126,7 +133,7 @@ const CREATE_CLASS_SCHEMA = Yup.object().shape({
   seeClassmates: Yup.boolean()
 });
 
-const CreateNewClassForm: React.FC = (): JSX.Element => {
+const CreateNewClassForm: React.FC = () => {
   const teachersData = getTeachersData();
   const teacherNames = teachersData.map((teacher) => teacher.teacherName);
   return (
@@ -178,10 +185,12 @@ const Classes: React.FC = () => {
   });
 
   const [accessCode, setAccessCode] = React.useState(params?.edit);
+  const [className, setClassName] = React.useState(params?.edit);
 
-  if (accessCode !== undefined) {
+  if (accessCode !== undefined && className !== undefined) {
     return <EditClass
       accessCode={accessCode}
+      className={className}
       goBack={() => { setAccessCode(undefined); }}
       additional={params?.additional}
     />;
@@ -190,7 +199,10 @@ const Classes: React.FC = () => {
   return <>
     <Page.Section>
       <_YourClasses />
-      <ClassTable setAccessCode={setAccessCode} />
+      <ClassTable
+        setAccessCode={setAccessCode}
+        setClassName={setClassName}
+      />
       <ExternalStudentsJoiningRequests />
     </Page.Section>
     <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>

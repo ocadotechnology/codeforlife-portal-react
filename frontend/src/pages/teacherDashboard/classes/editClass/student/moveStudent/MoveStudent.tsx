@@ -1,32 +1,24 @@
 import React from 'react';
 import Page from 'codeforlife/lib/esm/components/page';
-import {
-  Button,
-  Link,
-  Typography,
-  TableContainer,
-  Table,
-  TableHead, TableBody, Stack
-} from '@mui/material';
-import { paths } from '../../../../../../app/router';
+import { Button, Link, Stack, Table, TableBody, TableContainer, TableHead, Typography } from '@mui/material';
 import { CflHorizontalForm } from '../../../../../../components/form/CflForm';
 import { AutocompleteField, Form, SubmitButton } from 'codeforlife/lib/esm/components/form';
 import { CflTableCellElement, TableRowStyled } from '../../../../../../components/CflTable';
 import StudentNameField from '../../../../../../components/form/StudentNameField';
 
 const SelectClassForm: React.FC<{
-  setClassSelected: (className: string) => void
-}> = ({ setClassSelected }) => {
+  setNewClassSelected: (newClassName: string) => void
+}> = ({ setNewClassSelected }) => {
   // TODO: Get data from backend and append teacher names (but don't pass them through to the next page or it will show up in the text and break the sentence grammar.)
-  const classNames = ['Class1 (CL123)', 'Class2 (CL124)', 'Class3 (CL125)'];
+  const classNames = ['Class 2 (CL124)', 'Class 3 (CL125)'];
 
   interface Values {
-    className: string;
+    newClassName: string;
   }
 
   // TODO: Initial value should be student name
   const initialValues: Values = {
-    className: ''
+    newClassName: ''
   };
   return (
     <CflHorizontalForm
@@ -34,7 +26,7 @@ const SelectClassForm: React.FC<{
       subheader='Choose a new class from the drop down menu for the student(s).'
       initialValues={initialValues}
       onSubmit={(values) => {
-        setClassSelected(values.className);
+        setNewClassSelected(values.newClassName);
       }}
       submitButton={
         <SubmitButton>Continue</SubmitButton>
@@ -141,41 +133,46 @@ const MoveStudentsForm: React.FC<{
   );
 };
 
-const MoveStudent: React.FC = (): JSX.Element => {
+const MoveStudent: React.FC<{
+  currentClassName: string;
+  currentAccessCode: string;
+  goBack: () => void;
+}> = ({
+  currentClassName,
+  currentAccessCode,
+  goBack
+}) => {
   // TODO: Get data from backend
-  const currentClassName = 'Awesome Class (AW123)';
-  const [className, setClassSelected] = React.useState<string>('');
+  const [newClassName, setNewClassSelected] = React.useState<string | undefined>(undefined);
   const studentNames = ['Student 1', 'Student 2', 'Student 3', 'Student 4', 'Student 5'];
   return (
     <Page.Section>
       <Typography align='center' variant='h4'>
-        {/* TODO: Plugin class data */}
-        Move students from class {currentClassName}
+        Move students from class {currentClassName} ({currentAccessCode})
       </Typography>
-      {/* TODO: Update path */}
-      <Link href={paths.teacher.dashboard.classes._} color='inherit' className='body'>
-        &lt; Back to Edit class
+      <Link className='back-to' onClick={goBack}>
+        Class
       </Link>
-      {className === ''
+      {newClassName === undefined
         ? <>
             <Typography>
               Choose a class from the drop down menu below to move the student.
             </Typography>
-            <SelectClassForm setClassSelected={setClassSelected} />
+            <SelectClassForm setNewClassSelected={setNewClassSelected} />
           </>
         : <>
             <Typography variant='h5'>
               Students currently in destination class
             </Typography>
             <Typography>
-              The following students are in class {className} into which you are about to move students from class {currentClassName}.
+              The following students are in class {newClassName} into which you are about to move students from class {currentClassName}.
             </Typography>
             <StudentsTable/>
             <Typography variant='h5'>
               Students to transfer
             </Typography>
             <Typography>
-              Please confirm the names of the following students being moved to class {className} from
+              Please confirm the names of the following students being moved to class {newClassName} from
               class {currentClassName}. Their names will be used in their new login details, so please ensure
               it is different from any other existing students in the class.
             </Typography>

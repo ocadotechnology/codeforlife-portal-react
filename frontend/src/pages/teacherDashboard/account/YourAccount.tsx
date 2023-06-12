@@ -27,11 +27,11 @@ import { TextField, CheckboxField } from 'codeforlife/lib/esm/components/form';
 import { CflHorizontalForm } from '../../../components/form/CflForm';
 import Page from 'codeforlife/lib/esm/components/page';
 import { SearchParams } from 'codeforlife/lib/esm/helpers';
-import Setup2fa from './2fa/Setup2fa';
-import BackupTokens from './2fa/BackupTokens';
+import Setup2fa from './2fa/setup2fa/Setup2fa';
+import BackupTokens from './2fa/backupTokens/BackupTokens';
 import { paths } from '../../../app/router';
 
-const TwoFactorAuthentication: React.FC = (): JSX.Element => {
+const TwoFactorAuthentication: React.FC = () => {
   return (
     <Stack>
       <Typography variant="h5">Two factor authentication</Typography>
@@ -147,7 +147,7 @@ const YourAccountForm: React.FC = () => {
   );
 };
 
-const DeleteAccountForm: React.FC = (): JSX.Element => {
+const DeleteAccountForm: React.FC = () => {
   const theme = useTheme();
   return (
     <CflHorizontalForm

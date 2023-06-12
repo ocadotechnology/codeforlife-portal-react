@@ -1,19 +1,15 @@
 import React from 'react';
 import Page from 'codeforlife/lib/esm/components/page';
-import {
-  Button,
-  Link,
-  Typography,
-  Stack, Grid
-} from '@mui/material';
+import { Button, Grid, Link, Stack, Typography } from '@mui/material';
 import { paths } from '../../../../../../app/router';
 import { EmailField, Form, TextField } from 'codeforlife/lib/esm/components/form';
 import StudentNameField from '../../../../../../components/form/StudentNameField';
 import { PersonRemoveAlt1Outlined } from '@mui/icons-material';
 
 const ReleaseStudentsForm: React.FC<{
-  studentNames: string[]
-}> = ({ studentNames }) => {
+  studentNames: string[],
+  goBack: () => void
+}> = ({ studentNames, goBack }) => {
   const initialValues: Record<string, string> = Object.fromEntries(
     studentNames.map((name, index) => { return [String(index), name]; })
   );
@@ -61,10 +57,17 @@ const ReleaseStudentsForm: React.FC<{
         ))}
       </Grid>
       <Stack direction='row' spacing={2} justifyContent='end'>
-        <Button variant='outlined'>
+        <Button
+          variant='outlined'
+          onClick={goBack}
+        >
           Cancel
         </Button>
-        <Button color='error' type='submit' endIcon={<PersonRemoveAlt1Outlined />}>
+        <Button
+          className="alert"
+          type='submit'
+          endIcon={<PersonRemoveAlt1Outlined />}
+        >
           Remove student(s)
         </Button>
       </Stack>
@@ -72,19 +75,24 @@ const ReleaseStudentsForm: React.FC<{
   );
 };
 
-const ReleaseStudent: React.FC = (): JSX.Element => {
-  // TODO: Get data from backend
-  const currentClassName = 'Awesome Class (AW123)';
+const ReleaseStudent: React.FC<{
+  className: string;
+  accessCode: string;
+  goBack: () => void;
+}> = ({
+  className,
+  accessCode,
+  goBack
+}) => {
+  // TODO: Get data from backend (or from previous page state)
   const studentNames = ['Student 1', 'Student 2', 'Student 3', 'Student 4', 'Student 5'];
   return (
     <Page.Section>
       <Typography align='center' variant='h4'>
-        {/* TODO: Plugin class data */}
-        Release student from class {currentClassName}
+        Release student from class {className} ({accessCode})
       </Typography>
-      {/* TODO: Update path */}
-      <Link href={paths.teacher.dashboard.classes._} color='inherit' className='body'>
-        &lt; Back to Edit class
+      <Link className='back-to' onClick={goBack}>
+        Class
       </Link>
       <Typography>
         Convert students into independent students.
@@ -109,7 +117,10 @@ const ReleaseStudent: React.FC = (): JSX.Element => {
         The students will then log in with their email via the <a href={paths.login.independent._}>independent student login</a>. Their passwords will stay
         the same. Independent students do not need to provide a class access code.
       </Typography>
-      <ReleaseStudentsForm studentNames={studentNames}/>
+      <ReleaseStudentsForm
+        studentNames={studentNames}
+        goBack={goBack}
+      />
     </Page.Section>
   );
 };

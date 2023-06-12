@@ -1,9 +1,9 @@
 import React from 'react';
 import { Button, Stack, Typography } from '@mui/material';
 import { Form, SubmitButton, TextField } from 'codeforlife/lib/esm/components/form';
-import { paths } from '../../../../app/router';
+import { paths } from '../../../../../app/router';
 import { Image } from 'codeforlife/lib/esm/components';
-import cflLogo from '../../../../images/cfl_logo.png';
+import cflLogo from '../../../../../images/cfl_logo.png';
 import * as Yup from 'yup';
 import Page from 'codeforlife/lib/esm/components/page';
 
@@ -15,7 +15,7 @@ const initialValues: Setup2faFormValues = {
   token: ''
 };
 
-const Setup2fa: React.FC = (): JSX.Element => {
+const Setup2fa: React.FC = () => {
   const [setupComplete, setSetupComplete] = React.useState<boolean>(false);
   return (
     <Page.Section>

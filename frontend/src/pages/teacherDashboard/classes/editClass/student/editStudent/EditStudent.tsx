@@ -1,19 +1,21 @@
 import React from 'react';
 import Page from 'codeforlife/lib/esm/components/page';
 import { Button, Link, Typography } from '@mui/material';
-import { paths } from '../../../../../../app/router';
 import { CflHorizontalForm } from '../../../../../../components/form/CflForm';
 import CflPasswordFields from '../../../../../../components/CflPasswordFields';
 import StudentNameField from '../../../../../../components/form/StudentNameField';
+import { SubmitButton } from 'codeforlife/lib/esm/components/form';
 
-const UpdateNameForm: React.FC = (): JSX.Element => {
+const UpdateNameForm: React.FC<{
+  studentName: string,
+}> = ({ studentName }) => {
   interface Values {
     name: string;
   }
 
   // TODO: Initial value should be student name
   const initialValues: Values = {
-    name: ''
+    name: studentName
   };
   return (
     <CflHorizontalForm
@@ -25,10 +27,9 @@ const UpdateNameForm: React.FC = (): JSX.Element => {
         alert(JSON.stringify(values, null, 2));
         setSubmitting(false);
       }}
+      // TODO: Disable button by default
       submitButton={
-        <Button type="submit">
-          Update
-        </Button>
+        <SubmitButton>Update</SubmitButton>
       }
     >
       <StudentNameField/>
@@ -36,7 +37,7 @@ const UpdateNameForm: React.FC = (): JSX.Element => {
   );
 };
 
-const UpdatePasswordForm: React.FC = (): JSX.Element => {
+const UpdatePasswordForm: React.FC = () => {
   interface Values {
     password: string;
     confirmPassword: string;
@@ -67,21 +68,29 @@ const UpdatePasswordForm: React.FC = (): JSX.Element => {
   );
 };
 
-const EditStudent: React.FC = (): JSX.Element => {
+const EditStudent: React.FC<{
+  className: string;
+  accessCode: string;
+  studentName: string;
+  goBack: () => void;
+}> = ({
+  className,
+  accessCode,
+  studentName,
+  goBack
+}) => {
   return (
     <Page.Section>
       <Typography align="center" variant="h4">
-        {/* TODO: Plugin user data */}
-        Edit student details for Florian from class Awesome class (AW123)
+        Edit student details for {studentName} from class {className} ({accessCode})
       </Typography>
-      {/* TODO: Update path */}
-      <Link href={paths.teacher.dashboard.classes._} color="inherit" className="body">
-        &lt; Back to Edit class
+      <Link className='back-to' onClick={goBack}>
+        Class
       </Link>
       <Typography>
         Edit this student&apos;s name and manage their password and direct access link.
       </Typography>
-      <UpdateNameForm />
+      <UpdateNameForm studentName={studentName}/>
       <UpdatePasswordForm />
     </Page.Section>
   );

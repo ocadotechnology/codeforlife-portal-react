@@ -39,11 +39,14 @@ const currentDropdownOptions = [
   'Always allow external requests to this class (not recommended)'
 ];
 
-const ClassDetailsForm: React.FC = () => {
+const ClassDetailsForm: React.FC<{
+  className: string,
+  goBack: () => void
+}> = ({ className, goBack }) => {
   return (
     <Formik
       initialValues={{
-        class: '',
+        class: className,
         classSettingOptions: currentDropdownOptions[0],
         allowStudentsToSeeEachOthersProgress: false
       }}
@@ -96,7 +99,12 @@ const ClassDetailsForm: React.FC = () => {
                   <Grid item xs={6}></Grid>
                 </Grid>
                 <Stack gap={3} direction="row" justifyContent="flex-start">
-                  <Button variant="outlined">Cancel</Button>
+                  <Button
+                    variant="outlined"
+                    onClick={goBack}
+                  >
+                    Cancel
+                  </Button>
                   <Button
                     disabled={!(formik.isValid && formik.dirty)}
                     type="submit"
@@ -246,9 +254,11 @@ const TransferClassToAnotherTeacher: React.FC = () => {
 
 const AdditionalSettings: React.FC<{
   accessCode: string;
+  className: string;
   goBack: () => void;
 }> = ({
   accessCode,
+  className,
   goBack
 }) => {
     const theme = useTheme();
@@ -256,7 +266,7 @@ const AdditionalSettings: React.FC<{
     return <>
       <Page.Section>
         <Typography variant="h4" align="center">
-          Additional class settings class {'<CLASS NAME>'} ({accessCode})
+          Additional class settings class {className} ({accessCode})
         </Typography>
         <Link className='back-to' onClick={goBack}>
           Edit Class
@@ -270,7 +280,10 @@ const AdditionalSettings: React.FC<{
       </Page.Section>
       <Page.Section gridProps={{ bgcolor: theme.palette.info.light }}>
         <Typography variant="h5">Class details</Typography>
-        <ClassDetailsForm />
+        <ClassDetailsForm
+          className={className}
+          goBack={goBack}
+        />
       </Page.Section>
       <Page.Section>
         <Typography variant="h5">Rapid Router access settings</Typography>

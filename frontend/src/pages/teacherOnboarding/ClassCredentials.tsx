@@ -31,9 +31,9 @@ const ClassCredentials: React.FC = () => {
       students={students}
     />
     <Stack alignItems='end'>
-      {/* TODO: fix button style variant */}
       <Button
         endIcon={<CheckIcon />}
+        variant="outlined"
         href={paths.teacher.dashboard.school._}
       >
         Complete setup
