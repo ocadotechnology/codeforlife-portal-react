@@ -5,13 +5,11 @@ import {
   Typography
 } from '@mui/material';
 
-import {
-  Image,
-  ImageProps
-} from 'codeforlife/lib/esm/components';
+import { Image, ImageProps } from 'codeforlife/lib/esm/components';
+import { ThemedBox, ThemedBoxProps } from 'codeforlife/lib/esm/theme';
 
 import { paths } from '../../app/router';
-import ThemedBox, { ThemedBoxProps } from '../../components/ThemedBox';
+import { themeOptions } from '../../app/theme';
 
 const Status: React.FC<{
   userType: ThemedBoxProps['userType'],
@@ -20,7 +18,11 @@ const Status: React.FC<{
   imageProps: ImageProps
 }> = ({ userType, header, body, imageProps }) => {
   return (
-    <ThemedBox withIcons userType={userType}>
+    <ThemedBox
+      withIcons
+      options={themeOptions}
+      userType={userType}
+    >
       <Stack
         alignItems='center'
       >

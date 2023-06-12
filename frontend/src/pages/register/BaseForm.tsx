@@ -1,19 +1,20 @@
 import React from 'react';
 import {
-  useTheme,
-  createTheme,
-  ThemeProvider,
   Stack,
   StackProps,
   Typography,
   FormHelperText
 } from '@mui/material';
 
+import { ThemedBox, ThemedBoxProps } from 'codeforlife/lib/esm/theme';
+
+import { themeOptions } from '../../app/theme';
+
 const BaseForm: React.FC<{
   header: string,
   subheader: string,
   description: string,
-  bgcolor: StackProps['bgcolor'],
+  userType: ThemedBoxProps['userType'],
   children: StackProps['children'],
   color: string
 }> =
@@ -21,30 +22,12 @@ const BaseForm: React.FC<{
     header,
     subheader,
     description,
-    bgcolor,
+    userType,
     children,
     color
   }) => (
-    <ThemeProvider theme={createTheme(useTheme(), {
-      components: {
-        MuiTypography: {
-          styleOverrides: {
-            root: { color, fontWeight: 500 }
-          }
-        },
-        MuiTextField: {
-          styleOverrides: {
-            root: { background: 'transparent' }
-          }
-        },
-        MuiFormHelperText: {
-          styleOverrides: {
-            root: { color }
-          }
-        }
-      }
-    })}>
-      <Stack bgcolor={bgcolor} p={3} height='100%'>
+    <ThemedBox options={themeOptions} userType={userType}>
+      <Stack p={3} height='100%'>
         <Typography variant='h4' textAlign='center'>
           {header}
         </Typography>
@@ -56,7 +39,7 @@ const BaseForm: React.FC<{
         </FormHelperText>
         {children}
       </Stack>
-    </ThemeProvider>
+    </ThemedBox>
   );
 
 export default BaseForm;
