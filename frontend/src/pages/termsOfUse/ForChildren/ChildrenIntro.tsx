@@ -5,8 +5,9 @@ import {
   Link,
   ListItemText
 } from '@mui/material';
+
 import { ItemizedList } from 'codeforlife/lib/esm/components';
-import { OpenContactUsWidget } from '../../../features/thirdParty';
+import { useFreshworksWidget } from 'codeforlife/lib/esm/hooks';
 
 const ChildrenIntro: React.FC = () => {
   return (
@@ -38,7 +39,7 @@ const ChildrenIntro: React.FC = () => {
           Important: Please make sure to keep your email address up to date as we will use this to send you important messages about Code for Life. If you don’t keep it updated then it could lead to your access being restricted or your account deleted.
         </Typography>
         <Typography fontWeight='bold'>
-          You should use the <Link onClick={OpenContactUsWidget} className='body'>Contact Us form</Link> if you need help or advice on how to use the site. Please be aware that we will never ask for personal information other than what is required to identify your account and answer your questions, and we will never ask for your password.
+          You should use the <Link onClick={() => { useFreshworksWidget('open'); }} className='body'>Contact Us form</Link> if you need help or advice on how to use the site. Please be aware that we will never ask for personal information other than what is required to identify your account and answer your questions, and we will never ask for your password.
         </Typography>
       </Grid>
     </Grid >
