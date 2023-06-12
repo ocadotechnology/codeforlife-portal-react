@@ -2,65 +2,99 @@ import React from 'react';
 import {
   IconButton,
   Link,
+  LinkProps,
   Button,
-  Breakpoint
+  Box,
+  Stack,
+  Container,
+  useTheme,
+  useMediaQuery
 } from '@mui/material';
 import {
   Menu as MenuIcon
 } from '@mui/icons-material';
 
-import { ElevatedAppBar, Image } from 'codeforlife/lib/esm/components';
+import { Image } from 'codeforlife/lib/esm/components';
 
 import { paths } from '../../app/router';
-
 import CflLogo from '../../images/cfl_logo.png';
 import OgLogo from '../../images/ocado_group.svg';
-
 import LoginSelect from './LoginSelect';
 import MenuDrawer from './MenuDrawer';
 
 const Header: React.FC = () => {
+  const theme = useTheme();
   const [menuIsOpen, setMenuIsOpen] = React.useState(false);
 
-  const display = { xs: 'none', sm: 'inline' };
-  const mr = { sm: 1, md: 4 };
+  const extraMargin = '10px';
+  const linkProps: LinkProps = {
+    display: { xs: 'none', md: 'inline' },
+    color: '#383b3b',
+    className: useMediaQuery(theme.breakpoints.up('lg')) ? 'h4' : 'h5',
+    marginLeft: extraMargin,
+    marginBottom: '0px !important'
+  };
 
   return <>
-    <ElevatedAppBar
-      color='white'
-      containerProps={{ maxWidth: process.env.REACT_APP_CONTAINER_MAX_WIDTH as Breakpoint }}
-    >
-      <Image
-        alt='Code for Life'
-        src={CflLogo}
-        maxWidth='60px'
-        href={paths._}
-      />
-      <Image
-        alt='Ocado Group'
-        src={OgLogo}
-        maxWidth='100px'
-        mx={{ xs: 'auto', ...mr }}
-        href={process.env.REACT_APP_OCADO_GROUP_HREF}
-        hrefInNewTab
-      />
-      <Link sx={{ display, mr }} href={paths.teacher._}>
-        Teachers
-      </Link>
-      <Link sx={{ display, mr }} href={paths.student._} color='secondary'>
-        Students
-      </Link>
-      <Button sx={{ display, mr, ml: 'auto' }} href={paths.register._}>
-        Register
-      </Button>
-      <LoginSelect sx={{ display, width: '200px' }} />
-      <IconButton
-        onClick={() => { setMenuIsOpen(true); }}
-        sx={{ display: { sm: 'none' } }}
-      >
-        <MenuIcon />
-      </IconButton>
-    </ElevatedAppBar >
+    <Box style={{
+      width: '100%',
+      boxShadow: '0 2px 7px 1px rgba(0, 0, 0, 0.1)',
+      backgroundColor: 'white',
+      position: 'sticky',
+      top: 0,
+      zIndex: 2
+    }}>
+      <Container sx={{
+        height: { xs: '80px', md: '100px' },
+        paddingY: '15px'
+      }}>
+        <Stack
+          direction='row'
+          alignItems='center'
+          height='100%'
+          width='100%'
+          gap={3}
+        >
+          <Image
+            alt='Code for Life'
+            src={CflLogo}
+            maxWidth={{ xs: '65px', md: '80px' }}
+            href={paths._}
+            marginRight={{ xs: 0, md: extraMargin }}
+          />
+          <Image
+            alt='Ocado Group'
+            src={OgLogo}
+            maxWidth={{ xs: '115px', md: '150px' }}
+            mx={{ xs: 'auto', md: 0 }}
+            href={process.env.REACT_APP_OCADO_GROUP_HREF}
+            hrefInNewTab
+          />
+          <Link {...linkProps} href={paths.teacher._}>
+            Teachers
+          </Link>
+          <Link {...linkProps} href={paths.student._}>
+            Students
+          </Link>
+          <Button
+            sx={{
+              display: { xs: 'none', md: 'flex' },
+              ml: 'auto'
+            }}
+            href={paths.register._}
+          >
+            Register
+          </Button>
+          <LoginSelect />
+          <IconButton
+            onClick={() => { setMenuIsOpen(true); }}
+            sx={{ display: { md: 'none' } }}
+          >
+            <MenuIcon />
+          </IconButton>
+        </Stack>
+      </Container>
+    </Box>
     <MenuDrawer isOpen={menuIsOpen} setIsOpen={setMenuIsOpen} />
   </>;
 };

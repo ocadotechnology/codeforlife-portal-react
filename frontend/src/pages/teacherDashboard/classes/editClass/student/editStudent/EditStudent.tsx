@@ -1,9 +1,6 @@
 import React from 'react';
-import BasePage from '../../../../../BasePage';
-import DashboardBanner from '../../../../DashboardBanner';
-import DashboardHeader from '../../../../DashboardHeader';
+import Page from 'codeforlife/lib/esm/components/page';
 import { Button, Link, Typography } from '@mui/material';
-import PageSection from '../../../../../../components/PageSection';
 import { paths } from '../../../../../../app/router';
 import { CflHorizontalForm } from '../../../../../../components/form/CflForm';
 import CflPasswordFields from '../../../../../../components/CflPasswordFields';
@@ -72,25 +69,21 @@ const UpdatePasswordForm: React.FC = (): JSX.Element => {
 
 const EditStudent: React.FC = (): JSX.Element => {
   return (
-    <BasePage>
-      <DashboardBanner />
-      <DashboardHeader page="Your classes" />
-      <PageSection>
-        <Typography align="center" variant="h4">
-          {/* TODO: Plugin user data */}
-          Edit student details for Florian from class Awesome class (AW123)
-        </Typography>
-        {/* TODO: Update path */}
-        <Link href={paths.teacher.dashboard.classes._} color="inherit" className="body">
-          &lt; Back to Edit class
-        </Link>
-        <Typography>
-          Edit this student&apos;s name and manage their password and direct access link.
-        </Typography>
-        <UpdateNameForm />
-        <UpdatePasswordForm />
-      </PageSection>
-    </BasePage>
+    <Page.Section>
+      <Typography align="center" variant="h4">
+        {/* TODO: Plugin user data */}
+        Edit student details for Florian from class Awesome class (AW123)
+      </Typography>
+      {/* TODO: Update path */}
+      <Link href={paths.teacher.dashboard.classes._} color="inherit" className="body">
+        &lt; Back to Edit class
+      </Link>
+      <Typography>
+        Edit this student&apos;s name and manage their password and direct access link.
+      </Typography>
+      <UpdateNameForm />
+      <UpdatePasswordForm />
+    </Page.Section>
   );
 };
 

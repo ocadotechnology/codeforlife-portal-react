@@ -5,9 +5,6 @@ import {
   useTheme,
   InputAdornment
 } from '@mui/material';
-import DashboardBanner from './DashboardBanner';
-import DashboardHeader from './DashboardHeader';
-import BasePage from '../BasePage';
 import React from 'react';
 import {
   Add,
@@ -30,7 +27,7 @@ import {
   CheckboxField
 } from 'codeforlife/lib/esm/components/form';
 import { CflHorizontalForm } from '../../components/form/CflForm';
-import PageSection from '../../components/PageSection';
+import Page from 'codeforlife/lib/esm/components/page';
 import SchoolNameField from '../../components/form/SchoolNameField';
 import SchoolPostcodeField from '../../components/form/SchoolPostcodeField';
 import SchoolCountryField from '../../components/form/SchoolCountryField';
@@ -140,40 +137,40 @@ const TeachersTableActions: React.FC<{
   isTeacherAdmin,
   twoFactorAuthentication
 }): JSX.Element => {
-  if (teacherEmail === userEmail) {
-    return (
-      <>
-        <Button endIcon={<Create />}>
-          Update details
-        </Button>
-        {/* This button below will be used for pending invites  */}
-        <Button endIcon={<EmailOutlined />}>
-          Resend invite
-        </Button>
-      </>
-    );
-  } else if (isTeacherAdmin) {
-    return (
-      <>
-        <Button color="error" endIcon={<DoNotDisturb />}>
-          Revoke admin
-        </Button>
-        <Button color="error" endIcon={<DeleteOutline />}>
-          Delete
-        </Button>
-      </>
-    );
-  } else {
-    return (
-      <>
-        <Button endIcon={<Add />}>Make admin </Button>
-        <Button endIcon={<DoDisturbOnOutlined />} color="error">
-          Disable 2FA
-        </Button>
-      </>
-    );
-  }
-};
+    if (teacherEmail === userEmail) {
+      return (
+        <>
+          <Button endIcon={<Create />}>
+            Update details
+          </Button>
+          {/* This button below will be used for pending invites  */}
+          <Button endIcon={<EmailOutlined />}>
+            Resend invite
+          </Button>
+        </>
+      );
+    } else if (isTeacherAdmin) {
+      return (
+        <>
+          <Button className='alert' endIcon={<DoNotDisturb />}>
+            Revoke admin
+          </Button>
+          <Button className='alert' endIcon={<DeleteOutline />}>
+            Delete
+          </Button>
+        </>
+      );
+    } else {
+      return (
+        <>
+          <Button endIcon={<Add />}>Make admin </Button>
+          <Button endIcon={<DoDisturbOnOutlined />} className='alert'>
+            Disable 2FA
+          </Button>
+        </>
+      );
+    }
+  };
 
 const TeachersTable: React.FC = (): JSX.Element => {
   const { email } = getUser();
@@ -219,58 +216,56 @@ const TeachersTable: React.FC = (): JSX.Element => {
     </CflTable>
   );
 };
-const TeacherSchool: React.FC = (): JSX.Element => {
+
+const YourSchool: React.FC = () => {
   const { schoolName, accessCode } = getSchool();
   const theme = useTheme();
-  return (
-    <BasePage>
-      <DashboardBanner />
-      <DashboardHeader page="Your school" />
-      <PageSection>
-        <Typography align="center" variant="h4">
-          Your school: {schoolName} ({accessCode})
-        </Typography>
-        <Typography align="left">
-          As an administrator of your school or club, you can select other
-          teachers to whom you can provide or revoke administrative rights. You
-          can also add and remove teachers from your school or club. As
-          administrator, you have the ability to see and amend other
-          teachers&apos; classes. Please bear this in mind when assigning admin
-          rights to other teachers.
-        </Typography>
-      </PageSection>
-      <PageSection>
-        <InviteTeacherForm />
-      </PageSection>
-      <PageSection>
-        <Typography variant="h5">
-          These teachers are already part of your school or club
-        </Typography>
-        <TeachersTable />
-      </PageSection>
-      <PageSection>
-        <Grid container>
-          <Grid item sm={6}>
-            <Typography>
-              Select &apos;Delete&apos; to delete a teacher from your school or
-              club. You will be able to move any existing classes assigned to
-              that teacher to other teachers in your school or club.
-            </Typography>
-          </Grid>
-          <Grid item sm={6}>
-            <Typography fontWeight="bold" color="error">
-              We strongly recommend that administrators who are using 2FA ensure
-              there is another administrator who will be able to disable their
-              2FA should they have problems with their smartphone or tablet.
-            </Typography>
-          </Grid>
+
+  return <>
+    <Page.Section>
+      <Typography align="center" variant="h4">
+        Your school: {schoolName} ({accessCode})
+      </Typography>
+      <Typography align="left">
+        As an administrator of your school or club, you can select other
+        teachers to whom you can provide or revoke administrative rights. You
+        can also add and remove teachers from your school or club. As
+        administrator, you have the ability to see and amend other
+        teachers&apos; classes. Please bear this in mind when assigning admin
+        rights to other teachers.
+      </Typography>
+    </Page.Section>
+    <Page.Section>
+      <InviteTeacherForm />
+    </Page.Section>
+    <Page.Section>
+      <Typography variant="h5">
+        These teachers are already part of your school or club
+      </Typography>
+      <TeachersTable />
+    </Page.Section>
+    <Page.Section>
+      <Grid container>
+        <Grid item sm={6}>
+          <Typography>
+            Select &apos;Delete&apos; to delete a teacher from your school or
+            club. You will be able to move any existing classes assigned to
+            that teacher to other teachers in your school or club.
+          </Typography>
         </Grid>
-      </PageSection>
-      <PageSection bgcolor={theme.palette.info.main}>
-        <UpdateSchoolDetailsForm />
-      </PageSection>
-    </BasePage>
-  );
+        <Grid item sm={6}>
+          <Typography fontWeight="bold" color="error">
+            We strongly recommend that administrators who are using 2FA ensure
+            there is another administrator who will be able to disable their
+            2FA should they have problems with their smartphone or tablet.
+          </Typography>
+        </Grid>
+      </Grid>
+    </Page.Section>
+    <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
+      <UpdateSchoolDetailsForm />
+    </Page.Section>
+  </>;
 };
 
-export default TeacherSchool;
+export default YourSchool;

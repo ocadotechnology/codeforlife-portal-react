@@ -13,15 +13,14 @@ import {
   EmailOutlined as EmailIcon
 } from '@mui/icons-material';
 
-import BasePage from '../../pages/BasePage';
-import PageSection from '../../components/PageSection';
+import Page from 'codeforlife/lib/esm/components/page';
 
 const Newsletter: React.FC = () => {
   const theme = useTheme();
 
   return (
-    <BasePage containerProps={{ spacing: 0 }}>
-      <PageSection bgcolor={theme.palette.info.main}>
+    <Page.Container spacing={0}>
+      <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
         <Stack>
           <Typography variant='h3'>
             Your communication preferences
@@ -47,8 +46,8 @@ const Newsletter: React.FC = () => {
             Confirm
           </Button>
         </Stack>
-      </PageSection>
-    </BasePage>
+      </Page.Section>
+    </Page.Container>
   );
 };
 

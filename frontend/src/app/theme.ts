@@ -6,54 +6,7 @@ import {
 
 import { theme as cflTheme } from 'codeforlife';
 import { getStyleOverrides } from 'codeforlife/lib/esm/helpers';
-
-const typography: ThemeOptions['typography'] = {
-  h1: {
-    fontFamily: '"SpaceGrotesk"',
-    fontWeight: 500,
-    marginBottom: '24px'
-  },
-  h2: {
-    fontFamily: '"SpaceGrotesk"',
-    fontWeight: 500,
-    marginBottom: '22px'
-  },
-  h3: {
-    fontFamily: '"SpaceGrotesk"',
-    fontWeight: 500,
-    marginBottom: '20px'
-  },
-  h4: {
-    fontFamily: '"SpaceGrotesk"',
-    fontWeight: 500,
-    marginBottom: '18px'
-  },
-  h5: {
-    fontFamily: '"SpaceGrotesk"',
-    fontWeight: 500,
-    marginBottom: '16px'
-  },
-  h6: {
-    fontFamily: '"SpaceGrotesk"',
-    fontWeight: 500,
-    marginBottom: '14px'
-  },
-  body1: {
-    fontFamily: '"Inter"',
-    fontSize: '18px',
-    marginBottom: '16px'
-  },
-  body2: {
-    fontFamily: '"Inter"',
-    fontSize: '16px',
-    marginBottom: '14px'
-  },
-  button: {
-    fontFamily: '"Inter"',
-    fontSize: '14px',
-    fontWeight: 550
-  }
-};
+import typography from 'codeforlife/lib/esm/theme/typography';
 
 // Styles shared by all form components.
 export const formStyleOverrides = {
@@ -78,42 +31,6 @@ const components: ThemeOptions['components'] = {
         width: 'fit-content',
         '&:hover': {
           backgroundColor: 'inherit'
-        }
-      })
-    }
-  },
-  MuiTabs: {
-    styleOverrides: {
-      root: ({ ownerState }) => ({
-        ...getStyleOverrides(ownerState, 'MuiTabs'),
-        ...([undefined, 'horizontal'].includes(ownerState.orientation) && {
-          [`.${tabClasses.root}:not(:last-of-type)`]: {
-            marginRight: '30px'
-          }
-        })
-      }),
-      indicator: {
-        display: 'none'
-      }
-    }
-  },
-  MuiTab: {
-    styleOverrides: {
-      root: ({ ownerState }) => ({
-        ...getStyleOverrides(ownerState, 'MuiTab'),
-        textTransform: 'none',
-        fontSize: typography.body2?.fontSize,
-        color: 'white',
-        border: '2px solid white',
-        [`&.${tabClasses.selected}`]: {
-          color: cflTheme.palette.primary.light,
-          backgroundColor: 'white',
-          cursor: 'default'
-        },
-        [`:not(.${tabClasses.selected})`]: {
-          ':hover': {
-            textDecoration: 'underline'
-          }
         }
       })
     }
@@ -149,14 +66,6 @@ const components: ThemeOptions['components'] = {
             fontWeight: 'bold'
           }
         })
-      })
-    }
-  },
-  MuiContainer: {
-    styleOverrides: {
-      root: ({ ownerState }) => ({
-        ...getStyleOverrides(ownerState, 'MuiContainer'),
-        padding: 0
       })
     }
   },

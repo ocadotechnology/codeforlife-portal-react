@@ -1,11 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import Page from 'codeforlife/lib/esm/components/page';
 import { SearchParams } from 'codeforlife/lib/esm/helpers';
 
 import { paths } from '../../app/router';
-import BasePage from '../../pages/BasePage';
-import PageSection from '../../components/PageSection';
 import ThemedBox from '../../components/ThemedBox';
 import EmailForm from './EmailForm';
 import PasswordForm from './PasswordForm';
@@ -31,8 +30,8 @@ const ResetPassword: React.FC = () => {
   if (params === null) return <></>;
 
   return (
-    <BasePage>
-      <PageSection maxWidth='md'>
+    <Page.Container>
+      <Page.Section maxWidth='md'>
         <ThemedBox withIcons userType={params.userType}>
           {params.token === undefined
             ? <EmailForm />
@@ -42,8 +41,8 @@ const ResetPassword: React.FC = () => {
             />
           }
         </ThemedBox>
-      </PageSection>
-    </BasePage>
+      </Page.Section>
+    </Page.Container>
   );
 };
 

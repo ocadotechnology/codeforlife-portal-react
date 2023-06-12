@@ -6,12 +6,10 @@ import {
   ChevronRight as ChevronRightIcon
 } from '@mui/icons-material';
 
-import { paths } from '../../app/router';
+import Page from 'codeforlife/lib/esm/components/page';
 
-import BasePage from '../../pages/BasePage';
+import { paths } from '../../app/router';
 import Characters from '../../features/characters/Characters';
-import PageSection from '../../components/PageSection';
-import PageBanner from '../../components/PageBanner';
 import PlayImage from '../../images/home_play_hero.png';
 import RapidRouter from './RapidRouter';
 import Kurono from './Kurono';
@@ -20,35 +18,33 @@ const Students: React.FC = () => {
   const theme = useTheme();
 
   return (
-    <BasePage>
-      <PageBanner
-        text={{
-          title: 'Play',
-          content: 'Anyone can learn how to code. We will help you learn how. It\'s fun, free and easy.'
-        }}
-        img={{
+    <Page.Container>
+      <Page.Banner
+        header='Play'
+        subheader={'Anyone can learn how to code. We will help you learn how. It\'s fun, free and easy.'}
+        imageProps={{
           alt: 'Child on tablet',
           src: PlayImage
         }}
-        btn={{
+        buttonProps={{
           children: 'Play Rapid Router',
           endIcon: <ChevronRightIcon />,
           href: paths.rapidRouter._
         }}
       />
-      <PageSection>
+      <Page.Section>
         <RapidRouter />
-      </PageSection>
-      <PageSection bgcolor={theme.palette.info.main}>
+      </Page.Section>
+      <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
         <Characters game='rapid-router' />
-      </PageSection>
-      <PageSection>
+      </Page.Section>
+      <Page.Section>
         <Kurono />
-      </PageSection>
-      <PageSection bgcolor={theme.palette.info.main}>
+      </Page.Section>
+      <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
         <Characters game='kurono' />
-      </PageSection>
-    </BasePage>
+      </Page.Section>
+    </Page.Container>
   );
 };
 

@@ -115,11 +115,9 @@ const StudentForm: React.FC = () => {
 
   const [accessCode, setAccessCode] = React.useState(params?.accessCode);
 
-  return accessCode === undefined ? (
-    <AccessCodeForm setAccessCode={setAccessCode} />
-  ) : (
-    <CredentialsForm accessCode={accessCode} />
-  );
+  return accessCode === undefined
+    ? <AccessCodeForm setAccessCode={setAccessCode} />
+    : <CredentialsForm accessCode={accessCode} />;
 };
 
 export default StudentForm;

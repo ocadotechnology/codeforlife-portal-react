@@ -37,7 +37,10 @@ const AddStudentsForm: React.FC<{
         Student names and the class access code are required to sign in.
       </Typography>
       {/* TODO: call API */}
-      <Button endIcon={<UploadIcon />}>
+      <Button
+        endIcon={<UploadIcon />}
+        variant='outlined'
+      >
         Import CSV file
       </Button>
       <FormHelperText>

@@ -4,9 +4,9 @@ import {
   Link
 } from '@mui/material';
 
+import Page from 'codeforlife/lib/esm/components/page';
+
 import { paths } from '../../app/router';
-import PageSection from '../../components/PageSection';
-import PageBanner from '../../components/PageBanner';
 import Games from './Games';
 import RapidRouterProgress from './RapidRouterProgress';
 import KuronoProgress from './KuronoProgress';
@@ -25,14 +25,14 @@ const BaseDashboard: React.FC<BaseDashboardProps> = ({
   const classCode = 1;
 
   return <>
-    <PageBanner
-      text={{
-        title: `Welcome, ${name}`,
-        content: 'This is where you can access your games'
-      }}
+    <Page.Banner
+      header={`Welcome, ${name}`}
+      subheader='This is where you can access your games'
       textAlign='center'
-      bgcolor={isDependent ? 'secondary' : 'tertiary'}
-      notification={isDependent
+      bgcolor={isDependent ? 'tertiary' : 'secondary'}
+    />
+    <Page.Notification bgcolor={isDependent ? 'tertiary' : 'secondary'}>
+      {isDependent
         ? <>You are logged in to class: {classCode}</>
         : <>
           You are logged in as an independent student.
@@ -47,16 +47,16 @@ const BaseDashboard: React.FC<BaseDashboardProps> = ({
           .
         </>
       }
-    />
-    <PageSection>
+    </Page.Notification>
+    <Page.Section>
       <Games isDependent={isDependent} />
-    </PageSection>
-    <PageSection bgcolor={theme.palette.info.main}>
+    </Page.Section>
+    <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
       <RapidRouterProgress isDependent={isDependent} />
-    </PageSection>
-    <PageSection>
+    </Page.Section>
+    <Page.Section>
       <KuronoProgress isDependent={isDependent} />
-    </PageSection>
+    </Page.Section>
   </>;
 };
 

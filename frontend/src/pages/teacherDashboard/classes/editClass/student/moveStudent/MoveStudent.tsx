@@ -1,7 +1,5 @@
 import React from 'react';
-import BasePage from '../../../../../BasePage';
-import DashboardBanner from '../../../../DashboardBanner';
-import DashboardHeader from '../../../../DashboardHeader';
+import Page from 'codeforlife/lib/esm/components/page';
 import {
   Button,
   Link,
@@ -10,7 +8,6 @@ import {
   Table,
   TableHead, TableBody, Stack
 } from '@mui/material';
-import PageSection from '../../../../../../components/PageSection';
 import { paths } from '../../../../../../app/router';
 import { CflHorizontalForm } from '../../../../../../components/form/CflForm';
 import { AutocompleteField, Form, SubmitButton } from 'codeforlife/lib/esm/components/form';
@@ -150,46 +147,42 @@ const MoveStudent: React.FC = (): JSX.Element => {
   const [className, setClassSelected] = React.useState<string>('');
   const studentNames = ['Student 1', 'Student 2', 'Student 3', 'Student 4', 'Student 5'];
   return (
-    <BasePage>
-      <DashboardBanner />
-      <DashboardHeader page='Your classes' />
-      <PageSection>
-        <Typography align='center' variant='h4'>
-          {/* TODO: Plugin class data */}
-          Move students from class {currentClassName}
-        </Typography>
-        {/* TODO: Update path */}
-        <Link href={paths.teacher.dashboard.classes._} color='inherit' className='body'>
-          &lt; Back to Edit class
-        </Link>
-        {className === ''
-          ? <>
-              <Typography>
-                Choose a class from the drop down menu below to move the student.
-              </Typography>
-              <SelectClassForm setClassSelected={setClassSelected} />
-            </>
-          : <>
-              <Typography variant='h5'>
-                Students currently in destination class
-              </Typography>
-              <Typography>
-                The following students are in class {className} into which you are about to move students from class {currentClassName}.
-              </Typography>
-              <StudentsTable/>
-              <Typography variant='h5'>
-                Students to transfer
-              </Typography>
-              <Typography>
-                Please confirm the names of the following students being moved to class {className} from
-                class {currentClassName}. Their names will be used in their new login details, so please ensure
-                it is different from any other existing students in the class.
-              </Typography>
-              <MoveStudentsForm studentNames={studentNames}/>
-            </>
-          }
-      </PageSection>
-    </BasePage>
+    <Page.Section>
+      <Typography align='center' variant='h4'>
+        {/* TODO: Plugin class data */}
+        Move students from class {currentClassName}
+      </Typography>
+      {/* TODO: Update path */}
+      <Link href={paths.teacher.dashboard.classes._} color='inherit' className='body'>
+        &lt; Back to Edit class
+      </Link>
+      {className === ''
+        ? <>
+            <Typography>
+              Choose a class from the drop down menu below to move the student.
+            </Typography>
+            <SelectClassForm setClassSelected={setClassSelected} />
+          </>
+        : <>
+            <Typography variant='h5'>
+              Students currently in destination class
+            </Typography>
+            <Typography>
+              The following students are in class {className} into which you are about to move students from class {currentClassName}.
+            </Typography>
+            <StudentsTable/>
+            <Typography variant='h5'>
+              Students to transfer
+            </Typography>
+            <Typography>
+              Please confirm the names of the following students being moved to class {className} from
+              class {currentClassName}. Their names will be used in their new login details, so please ensure
+              it is different from any other existing students in the class.
+            </Typography>
+            <MoveStudentsForm studentNames={studentNames}/>
+          </>
+        }
+    </Page.Section>
   );
 };
 

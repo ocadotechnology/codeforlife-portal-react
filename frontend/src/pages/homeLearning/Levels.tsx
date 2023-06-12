@@ -7,9 +7,9 @@ import {
 } from '@mui/material';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 
-import CflCard, { CflCardProps } from '../../components/CflCard';
-import PageSection from '../../components/PageSection';
+import Page from 'codeforlife/lib/esm/components/page';
 
+import CflCard, { CflCardProps } from '../../components/CflCard';
 import RRBeginnerImage from '../../images/rr_beginner.png';
 import RRIntermediateImage from '../../images/rr_intermediate.png';
 import RRAdvancedImage from '../../images/rr_advanced.png';
@@ -34,7 +34,7 @@ const Level: React.FC<Pick<Grid2Props, 'direction'> & {
   }
 }> = ({ direction, banner, cardProps, text }) => {
   return <>
-    <PageSection bgcolor={banner.bgcolor}>
+    <Page.Section gridProps={{ bgcolor: banner.bgcolor }}>
       <Typography
         variant='h4'
         color={banner.color}
@@ -42,8 +42,8 @@ const Level: React.FC<Pick<Grid2Props, 'direction'> & {
       >
         &lt; {banner.difficulty} &gt;
       </Typography>
-    </PageSection>
-    <PageSection>
+    </Page.Section>
+    <Page.Section>
       <Grid
         container
         rowSpacing={{ xs: 2, md: 0 }}
@@ -79,7 +79,7 @@ const Level: React.FC<Pick<Grid2Props, 'direction'> & {
           </>)}
         </Grid>
       </Grid >
-    </PageSection>
+    </Page.Section>
   </>;
 };
 
@@ -91,7 +91,7 @@ const Levels: React.FC = () => {
       banner={{
         difficulty: 'Beginner',
         color: 'White',
-        bgcolor: theme.palette.secondary.main
+        bgcolor: theme.palette.tertiary.main
       }}
       cardProps={{
         mediaProps: { title: 'RR beginner image', image: RRBeginnerImage },
@@ -130,7 +130,7 @@ const Levels: React.FC = () => {
       banner={{
         difficulty: 'Intermediate',
         color: 'Black',
-        bgcolor: theme.palette.tertiary.main
+        bgcolor: theme.palette.secondary.main
       }}
       cardProps={{
         mediaProps: { title: 'RR intermediate image', image: RRIntermediateImage },

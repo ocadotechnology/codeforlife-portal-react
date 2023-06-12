@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom';
 
 import { SearchParams } from 'codeforlife/lib/esm/helpers';
 
+import Page from 'codeforlife/lib/esm/components/page';
+
 import { paths } from '../../app/router';
-import BasePage from '../../pages/BasePage';
-import PageSection from '../../components/PageSection';
 import BaseForm from './BaseForm';
 import TeacherForm from './TeacherForm';
 import StudentForm from './StudentForm';
@@ -43,11 +43,11 @@ const Login: React.FC = () => {
   }
 
   return (
-    <BasePage>
-      <PageSection maxWidth='md'>
+    <Page.Container>
+      <Page.Section maxWidth='md'>
         {form}
-      </PageSection>
-    </BasePage>
+      </Page.Section>
+    </Page.Container>
   );
 };
 

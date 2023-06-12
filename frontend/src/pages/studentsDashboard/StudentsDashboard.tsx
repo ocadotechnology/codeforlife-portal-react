@@ -2,10 +2,12 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material';
 
+import Page, {
+  SectionProps as PageSectionProps
+} from 'codeforlife/lib/esm/components/page';
+
 import { paths } from '../../app/router';
-import PageSection from '../../components/PageSection';
 import Characters from '../../features/characters/Characters';
-import BasePage from '../BasePage';
 import BaseDashboard from './BaseDashboard';
 
 import { SearchParams } from 'codeforlife/lib/esm/helpers';
@@ -29,7 +31,7 @@ const StudentsDashboard: React.FC = () => {
 
   if (params === null) return <></>;
 
-  let dashboard: React.ReactElement;
+  let dashboard: React.ReactElement<PageSectionProps, typeof Page.Section>;
   switch (params.userType) {
     case 'dependent':
       dashboard = <BaseDashboard isDependent={true} />;
@@ -37,17 +39,17 @@ const StudentsDashboard: React.FC = () => {
     case 'independent':
       dashboard = <>
         <BaseDashboard isDependent={false} />
-        <PageSection bgcolor={theme.palette.info.main} >
+        <Page.Section gridProps={{ bgcolor: theme.palette.info.main }} >
           <Characters game='kurono' />
-        </PageSection>
+        </Page.Section>
       </>;
       break;
   }
 
   return (
-    <BasePage>
+    <Page.Container>
       {dashboard}
-    </BasePage>
+    </Page.Container>
   );
 };
 

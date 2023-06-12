@@ -1,7 +1,4 @@
 import React from 'react';
-import BasePage from '../../BasePage';
-import DashboardBanner from '../DashboardBanner';
-import DashboardHeader from '../DashboardHeader';
 import CflTable, {
   CflTableBody,
   CflTableCellElement
@@ -11,14 +8,16 @@ import { Add, Create, DoNotDisturb } from '@mui/icons-material';
 import { getClassesData, getTeachersData, getUser } from '../dummyMethods';
 import { AutocompleteField } from 'codeforlife/lib/esm/components/form';
 import CopyToClipboardIcon from '../../../components/CopyToClipboardIcon';
-import PageSection from '../../../components/PageSection';
-import { paths } from '../../../app/router';
 import { CflHorizontalForm } from '../../../components/form/CflForm';
 import * as Yup from 'yup';
 import ClassNameField from '../../../components/form/ClassNameField';
 import SeeClassmatesProgressField from '../../../components/form/SeeClassmatesProgressField';
+import Page from 'codeforlife/lib/esm/components/page';
+import { SearchParams } from 'codeforlife/lib/esm/helpers';
+import { validateAccessCode } from '../../login/StudentForm';
+import EditClass from './editClass/EditClass';
 
-const YourClasses: React.FC = (): JSX.Element => {
+const _YourClasses: React.FC = (): JSX.Element => {
   return (
     <>
       <Typography align="center" variant="h4">
@@ -34,7 +33,9 @@ const YourClasses: React.FC = (): JSX.Element => {
   );
 };
 
-const ClassTable = (): JSX.Element => {
+const ClassTable: React.FC<{
+  setAccessCode: (accessCode: string) => void
+}> = ({ setAccessCode }) => {
   const classData = getClassesData();
   const { firstName, lastName } = getUser();
   return (
@@ -54,7 +55,7 @@ const ClassTable = (): JSX.Element => {
           </CflTableCellElement>
           <CflTableCellElement justifyContent="center">
             <Button
-              href={`${paths.teacher.dashboard.class._}?accessCode=${accessCode}`}
+              onClick={() => { setAccessCode(accessCode); }}
               endIcon={<Create />}
             >
               Edit details
@@ -153,28 +154,49 @@ const CreateNewClassForm: React.FC = (): JSX.Element => {
           helperText: 'Select teacher'
         }}
       />
-      <>{/* Leaving an empty gap */}</>
+      <>{/* NOTE: Leaving an empty gap */}</>
       <SeeClassmatesProgressField />
     </CflHorizontalForm>
   );
 };
 
-const TeacherClasses: React.FC = (): JSX.Element => {
+const Classes: React.FC = () => {
   const theme = useTheme();
-  return (
-    <BasePage>
-      <DashboardBanner />
-      <DashboardHeader page="Your classes" />
-      <PageSection>
-        <YourClasses />
-        <ClassTable />
-        <ExternalStudentsJoiningRequests />
-      </PageSection>
-      <PageSection bgcolor={theme.palette.info.main}>
-        <CreateNewClassForm />
-      </PageSection>
-    </BasePage>
-  );
+
+  const params = SearchParams.get<{
+    edit?: string;
+    additional?: boolean;
+  }>({
+    edit: {
+      isRequired: false,
+      validate: SearchParams.validate.matchesSchema(validateAccessCode)
+    },
+    additional: {
+      isRequired: false,
+      cast: SearchParams.cast.toBoolean
+    }
+  });
+
+  const [accessCode, setAccessCode] = React.useState(params?.edit);
+
+  if (accessCode !== undefined) {
+    return <EditClass
+      accessCode={accessCode}
+      goBack={() => { setAccessCode(undefined); }}
+      additional={params?.additional}
+    />;
+  }
+
+  return <>
+    <Page.Section>
+      <_YourClasses />
+      <ClassTable setAccessCode={setAccessCode} />
+      <ExternalStudentsJoiningRequests />
+    </Page.Section>
+    <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
+      <CreateNewClassForm />
+    </Page.Section>
+  </>;
 };
 
-export default TeacherClasses;
+export default Classes;
