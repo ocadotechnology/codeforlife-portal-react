@@ -1,14 +1,14 @@
 import React from 'react';
-import BasePage from '../../../BasePage';
-import DashboardBanner from '../../DashboardBanner';
-import DashboardHeader from '../../DashboardHeader';
+import BasePage from '../../../../../BasePage';
+import DashboardBanner from '../../../../DashboardBanner';
+import DashboardHeader from '../../../../DashboardHeader';
 import { Button, Stack, Typography } from '@mui/material';
-import PageSection from '../../../../components/PageSection';
-import { paths } from '../../../../app/router';
-import NewStudentsTable from '../../../../features/newStudentsTable/NewStudentsTable';
+import PageSection from '../../../../../../components/PageSection';
+import { paths } from '../../../../../../app/router';
+import NewStudentsTable from '../../../../../../features/newStudentsTable/NewStudentsTable';
 import { Check as CheckIcon } from '@mui/icons-material';
 
-const Reset: React.FC = (): JSX.Element => {
+const ResetStudent: React.FC = (): JSX.Element => {
   // TODO: get from API.
   const classLink = 'https://www.codeforlife.education/';
   const currentClassName = 'Awesome Class (AW123)';
@@ -50,4 +50,4 @@ const Reset: React.FC = (): JSX.Element => {
   </>;
 };
 
-export default Reset;
+export default ResetStudent;

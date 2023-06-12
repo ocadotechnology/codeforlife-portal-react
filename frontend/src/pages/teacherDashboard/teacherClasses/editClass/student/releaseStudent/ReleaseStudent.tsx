@@ -1,17 +1,17 @@
 import React from 'react';
-import BasePage from '../../../BasePage';
-import DashboardBanner from '../../DashboardBanner';
-import DashboardHeader from '../../DashboardHeader';
+import BasePage from '../../../../../BasePage';
+import DashboardBanner from '../../../../DashboardBanner';
+import DashboardHeader from '../../../../DashboardHeader';
 import {
   Button,
   Link,
   Typography,
   Stack, Grid
 } from '@mui/material';
-import PageSection from '../../../../components/PageSection';
-import { paths } from '../../../../app/router';
+import PageSection from '../../../../../../components/PageSection';
+import { paths } from '../../../../../../app/router';
 import { EmailField, Form, TextField } from 'codeforlife/lib/esm/components/form';
-import StudentNameField from '../../../../components/form/StudentNameField';
+import StudentNameField from '../../../../../../components/form/StudentNameField';
 import { PersonRemoveAlt1Outlined } from '@mui/icons-material';
 
 const ReleaseStudentsForm: React.FC<{
@@ -75,7 +75,7 @@ const ReleaseStudentsForm: React.FC<{
   );
 };
 
-const Release: React.FC = (): JSX.Element => {
+const ReleaseStudent: React.FC = (): JSX.Element => {
   // TODO: Get data from backend
   const currentClassName = 'Awesome Class (AW123)';
   const studentNames = ['Student 1', 'Student 2', 'Student 3', 'Student 4', 'Student 5'];
@@ -121,4 +121,4 @@ const Release: React.FC = (): JSX.Element => {
   );
 };
 
-export default Release;
+export default ReleaseStudent;

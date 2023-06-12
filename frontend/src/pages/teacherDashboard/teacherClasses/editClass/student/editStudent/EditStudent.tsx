@@ -1,13 +1,13 @@
 import React from 'react';
-import BasePage from '../../../BasePage';
-import DashboardBanner from '../../DashboardBanner';
-import DashboardHeader from '../../DashboardHeader';
+import BasePage from '../../../../../BasePage';
+import DashboardBanner from '../../../../DashboardBanner';
+import DashboardHeader from '../../../../DashboardHeader';
 import { Button, Link, Typography } from '@mui/material';
-import PageSection from '../../../../components/PageSection';
-import { paths } from '../../../../app/router';
-import { CflHorizontalForm } from '../../../../components/form/CflForm';
-import CflPasswordFields from '../../../../components/CflPasswordFields';
-import StudentNameField from '../../../../components/form/StudentNameField';
+import PageSection from '../../../../../../components/PageSection';
+import { paths } from '../../../../../../app/router';
+import { CflHorizontalForm } from '../../../../../../components/form/CflForm';
+import CflPasswordFields from '../../../../../../components/CflPasswordFields';
+import StudentNameField from '../../../../../../components/form/StudentNameField';
 
 const UpdateNameForm: React.FC = (): JSX.Element => {
   interface Values {
@@ -70,7 +70,7 @@ const UpdatePasswordForm: React.FC = (): JSX.Element => {
   );
 };
 
-const Edit: React.FC = (): JSX.Element => {
+const EditStudent: React.FC = (): JSX.Element => {
   return (
     <BasePage>
       <DashboardBanner />
@@ -94,4 +94,4 @@ const Edit: React.FC = (): JSX.Element => {
   );
 };
 
-export default Edit;
+export default EditStudent;

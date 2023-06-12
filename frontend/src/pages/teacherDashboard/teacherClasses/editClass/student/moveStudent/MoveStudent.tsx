@@ -1,7 +1,7 @@
 import React from 'react';
-import BasePage from '../../../BasePage';
-import DashboardBanner from '../../DashboardBanner';
-import DashboardHeader from '../../DashboardHeader';
+import BasePage from '../../../../../BasePage';
+import DashboardBanner from '../../../../DashboardBanner';
+import DashboardHeader from '../../../../DashboardHeader';
 import {
   Button,
   Link,
@@ -10,12 +10,12 @@ import {
   Table,
   TableHead, TableBody, Stack
 } from '@mui/material';
-import PageSection from '../../../../components/PageSection';
-import { paths } from '../../../../app/router';
-import { CflHorizontalForm } from '../../../../components/form/CflForm';
+import PageSection from '../../../../../../components/PageSection';
+import { paths } from '../../../../../../app/router';
+import { CflHorizontalForm } from '../../../../../../components/form/CflForm';
 import { AutocompleteField, Form, SubmitButton } from 'codeforlife/lib/esm/components/form';
-import { CflTableCellElement, TableRowStyled } from '../../../../components/CflTable';
-import StudentNameField from '../../../../components/form/StudentNameField';
+import { CflTableCellElement, TableRowStyled } from '../../../../../../components/CflTable';
+import StudentNameField from '../../../../../../components/form/StudentNameField';
 
 const SelectClassForm: React.FC<{
   setClassSelected: (className: string) => void
@@ -42,7 +42,7 @@ const SelectClassForm: React.FC<{
       submitButton={
         <SubmitButton>Continue</SubmitButton>
       }
-      // TODO: Add return to Edit class page
+      // TODO: Add return to EditStudent class page
       cancelButton={
         <Button variant='outlined'>Cancel</Button>
       }
@@ -144,7 +144,7 @@ const MoveStudentsForm: React.FC<{
   );
 };
 
-const Move: React.FC = (): JSX.Element => {
+const MoveStudent: React.FC = (): JSX.Element => {
   // TODO: Get data from backend
   const currentClassName = 'Awesome Class (AW123)';
   const [className, setClassSelected] = React.useState<string>('');
@@ -193,4 +193,4 @@ const Move: React.FC = (): JSX.Element => {
   );
 };
 
-export default Move;
+export default MoveStudent;

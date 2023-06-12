@@ -77,7 +77,7 @@ const CurrentStudents: React.FC = () => {
   );
 };
 
-const StudentManagement: React.FC = (): JSX.Element => {
+const EditClass: React.FC = (): JSX.Element => {
   const navigate = useNavigate();
   const params = SearchParams.get<{
     accessCode: string;
@@ -125,4 +125,4 @@ const StudentManagement: React.FC = (): JSX.Element => {
   );
 };
 
-export default StudentManagement;
+export default EditClass;

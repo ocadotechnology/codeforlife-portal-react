@@ -18,18 +18,18 @@ import Newsletter from '../pages/newsletter/Newsletter';
 import Error from '../pages/error/Error';
 import TeacherSchool from '../pages/teacherDashboard/TeacherSchool';
 import TeacherClasses from '../pages/teacherDashboard/teacherClasses/TeacherClasses';
-import Edit from '../pages/teacherDashboard/classes/student/Edit';
-import Reset from '../pages/teacherDashboard/classes/student/Reset';
-import Move from '../pages/teacherDashboard/classes/student/Move';
-import Release from '../pages/teacherDashboard/classes/student/Release';
+import EditStudent from '../pages/teacherDashboard/teacherClasses/editClass/student/editStudent/EditStudent';
+import ResetStudent from '../pages/teacherDashboard/teacherClasses/editClass/student/resetStudent/ResetStudent';
+import MoveStudent from '../pages/teacherDashboard/teacherClasses/editClass/student/moveStudent/MoveStudent';
+import ReleaseStudent from '../pages/teacherDashboard/teacherClasses/editClass/student/releaseStudent/ReleaseStudent';
 import TeacherAccount from '../pages/teacherDashboard/account/TeacherAccount';
 import Setup2fa from '../pages/teacherDashboard/account/2fa/Setup2fa';
 import BackupTokens from '../pages/teacherDashboard/account/2fa/BackupTokens';
 import EmailVerification from '../pages/emailVerification/EmailVerification';
-import StudentManagement from '../pages/teacherDashboard/teacherClasses/studentManagement/StudentManagement';
+import StudentManagement from '../pages/teacherDashboard/teacherClasses/editClass/EditClass';
 import ResetPassword from '../pages/resetPassword/ResetPassword';
 import StudentsDashboard from '../pages/studentsDashboard/StudentsDashboard';
-import AdditionalClassSettings from '../pages/teacherDashboard/teacherClasses/studentManagement/additionalClassSettings/AdditionalClassSettings';
+import AdditionalClassSettings from '../pages/teacherDashboard/teacherClasses/editClass/additionalClassSettings/AdditionalClassSettings';
 
 import TeacherOnboarding from '../pages/teacherOnboarding/TeacherOnboarding';
 
@@ -51,14 +51,14 @@ export const paths = _('', {
     dashboard: _('/dashboard', {
       school: _('/school'),
       classes: _('/classes'),
-      student: _('/student', {
-        edit: _('/edit'),
-        reset: _('/reset'),
-        move: _('/move'),
-        release: _('/release')
-      }),
       class: _('/class', {
-        edit: _('/edit')
+        edit: _('/edit'),
+        student: _('/student', {
+          edit: _('/edit'),
+          reset: _('/reset'),
+          move: _('/move'),
+          release: _('/release')
+        })
       }),
       account: _('/account', {
         twoFA: _('/2fa', {
@@ -171,20 +171,20 @@ const router = createBrowserRouter([
     element: <TeacherClasses />
   },
   {
-    path: paths.teacher.dashboard.classes.student.edit._,
-    element: <Edit />
+    path: paths.teacher.dashboard.class.student.edit._,
+    element: <EditStudent />
   },
   {
-    path: paths.teacher.dashboard.classes.student.reset._,
-    element: <Reset />
+    path: paths.teacher.dashboard.class.student.reset._,
+    element: <ResetStudent />
   },
   {
-    path: paths.teacher.dashboard.classes.student.move._,
-    element: <Move />
+    path: paths.teacher.dashboard.class.student.move._,
+    element: <MoveStudent />
   },
   {
-    path: paths.teacher.dashboard.classes.student.release._,
-    element: <Release />
+    path: paths.teacher.dashboard.class.student.release._,
+    element: <ReleaseStudent />
   },
   {
     path: paths.teacher.dashboard.account._,

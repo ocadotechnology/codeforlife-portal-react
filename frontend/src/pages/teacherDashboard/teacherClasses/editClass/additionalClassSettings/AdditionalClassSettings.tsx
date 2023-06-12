@@ -274,7 +274,7 @@ const AdditionalClassSettings: React.FC = () => {
         <Typography variant="h4" align="center">
           Additional class settings class {'<CLASS NAME>'} ({accessCode})
         </Typography>
-        <BackToLinkTextButton href={backToEditClassUrl} text="Edit Class" />
+        <BackToLinkTextButton href={backToEditClassUrl} text="EditStudent Class" />
         <Typography>
           You may change the name of the class, or change permissions to allow
           external requests from independent students to join this class. You
