@@ -9,7 +9,8 @@ import {
   Link,
   Button
 } from '@mui/material';
-import { ShowCookiesDrawer } from '../../../features/thirdParty';
+
+import { useOneTrustInfoToggle } from 'codeforlife/lib/esm/hooks';
 
 const CustomTableRow: React.FC<{
   withoutUnderline?: boolean,
@@ -133,7 +134,7 @@ const Cookies: React.FC = () => <>
     You can switch the functional and analytics cookies on and off at any time by clicking this button below.
   </Typography>
   {/* TODO: set padding bottom via theme */}
-  <Button onClick={ShowCookiesDrawer}>
+  <Button onClick={useOneTrustInfoToggle}>
     Cookie Settings
   </Button>
   <Typography>
