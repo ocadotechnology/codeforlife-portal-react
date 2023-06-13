@@ -35,8 +35,7 @@ const _YourClasses: React.FC = () => {
 
 const ClassTable: React.FC<{
   setAccessCode: (accessCode: string) => void
-  setClassName: (className: string) => void
-}> = ({setAccessCode, setClassName }) => {
+}> = ({ setAccessCode }) => {
   const classData = getClassesData();
   const { firstName, lastName } = getUser();
   return (
@@ -58,7 +57,6 @@ const ClassTable: React.FC<{
             <Button
               onClick={() => {
                 setAccessCode(accessCode);
-                setClassName(className);
               }}
               endIcon={<Create />}
             >
@@ -171,28 +169,20 @@ const Classes: React.FC = () => {
   const theme = useTheme();
 
   const params = SearchParams.get<{
-    edit?: string;
-    additional?: boolean;
+    accessCode?: string;
   }>({
-    edit: {
+    accessCode: {
       isRequired: false,
       validate: SearchParams.validate.matchesSchema(validateAccessCode)
-    },
-    additional: {
-      isRequired: false,
-      cast: SearchParams.cast.toBoolean
     }
   });
 
-  const [accessCode, setAccessCode] = React.useState(params?.edit);
-  const [className, setClassName] = React.useState(params?.edit);
+  const [accessCode, setAccessCode] = React.useState(params?.accessCode);
 
-  if (accessCode !== undefined && className !== undefined) {
+  if (accessCode !== undefined) {
     return <EditClass
       accessCode={accessCode}
-      className={className}
       goBack={() => { setAccessCode(undefined); }}
-      additional={params?.additional}
     />;
   }
 
@@ -201,7 +191,6 @@ const Classes: React.FC = () => {
       <_YourClasses />
       <ClassTable
         setAccessCode={setAccessCode}
-        setClassName={setClassName}
       />
       <ExternalStudentsJoiningRequests />
     </Page.Section>

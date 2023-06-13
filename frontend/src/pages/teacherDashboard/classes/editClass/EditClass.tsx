@@ -37,11 +37,11 @@ const TableCellStyled = styled(TableCell)(({ theme }) => ({
 }));
 
 const StudentsTable: React.FC<{
-  setStudentName: (className: string) => void
-  setShowRelease: (showRelease: boolean) => void
-  setShowMove: (showMove: boolean) => void
-  setShowReset: (showReset: boolean) => void
-}> = ({ setStudentName, setShowRelease, setShowMove, setShowReset }) => {
+  setStudentID: (studentID: number) => void
+  setRelease: (showRelease: boolean) => void
+  setMove: (showMove: boolean) => void
+  setReset: (showReset: boolean) => void
+}> = ({ setStudentID, setRelease, setMove, setReset }) => {
   const randomStudentNames = [
     'John Doe',
     'John Smith',
@@ -100,7 +100,8 @@ const StudentsTable: React.FC<{
               </TableCellStyled>
               <TableCellStyled align="center">
                 <Button onClick={() => {
-                  setStudentName(studentName);
+                  // TODO: Replace idx with actual student ID
+                  setStudentID(idx);
                 }}
                 endIcon={<Edit />}>Edit details</Button>
               </TableCellStyled>
@@ -116,15 +117,15 @@ const StudentsTable: React.FC<{
       <Stack direction="row" justifyContent="flex-end" spacing={2}>
         <Button
           disabled={!checked.includes(true)}
-          onClick={() => { setShowRelease(true); }}
+          onClick={() => { setRelease(true); }}
         >Release</Button>
         <Button
           disabled={!checked.includes(true)}
-          onClick={() => { setShowMove(true); }}
+          onClick={() => { setMove(true); }}
         >Move</Button>
         <Button
           disabled={!checked.includes(true)}
-          onClick={() => { setShowReset(true); }}
+          onClick={() => { setReset(true); }}
           endIcon={<SecurityOutlined />}
         >
           Reset password and login link
@@ -143,80 +144,84 @@ const StudentsTable: React.FC<{
 
 const EditClass: React.FC<{
   accessCode: string;
-  className: string;
   goBack: () => void;
-  additional?: boolean;
-  release?: boolean;
-  move?: boolean;
-  reset?: boolean;
 }> = ({
   accessCode,
-  className,
-  goBack,
-  additional,
-  release,
-  move,
-  reset
+  goBack
 }) => {
     const params = SearchParams.get<{
-      studentName?: string;
+      additional?: boolean;
+      studentID?: number;
+      release?: boolean;
+      move?: boolean;
+      reset?: boolean;
     }>({
-      studentName: {
+      additional: {
+        isRequired: false,
+        cast: SearchParams.cast.toBoolean
+      },
+      studentId: {
         isRequired: false
+      },
+      release: {
+        isRequired: false,
+        cast: SearchParams.cast.toBoolean
+      },
+      move: {
+        isRequired: false,
+        cast: SearchParams.cast.toBoolean
+      },
+      reset: {
+        isRequired: false,
+        cast: SearchParams.cast.toBoolean
       }
     });
     const theme = useTheme();
-    const [showAdditional, setShowAdditional] = React.useState(additional ?? false);
-    const [showRelease, setShowRelease] = React.useState(release ?? false);
-    const [showMove, setShowMove] = React.useState(move ?? false);
-    const [showReset, setShowReset] = React.useState(reset ?? false);
-    const [studentName, setStudentName] = React.useState(params?.studentName);
+    const [additional, setAdditional] = React.useState(params?.additional);
+    const [studentID, setStudentID] = React.useState(params?.studentID);
+    const [release, setRelease] = React.useState(params?.release);
+    const [move, setMove] = React.useState(params?.move);
+    const [reset, setReset] = React.useState(params?.reset);
 
-    if (showAdditional) {
+    if (additional) {
       return <AdditionalSettings
         accessCode={accessCode}
-        className={className}
-        goBack={() => { setShowAdditional(false); }}
+        goBack={() => { setAdditional(false); }}
       />;
     }
 
-    if (studentName !== undefined) {
+    if (studentID !== undefined) {
       return <EditStudent
-        className={className}
         accessCode={accessCode}
-        studentName={studentName}
-        goBack={() => { setStudentName(undefined); }}
+        goBack={() => { setStudentID(undefined); }}
       />;
     }
 
-    if (showRelease) {
+    if (release) {
       return <ReleaseStudent
-        className={className}
         accessCode={accessCode}
-        goBack={() => { setShowRelease(false); }}
+        goBack={() => { setRelease(false); }}
       />;
     }
 
-    if (showMove) {
+    if (move) {
       return <MoveStudent
-        currentClassName={className}
         currentAccessCode={accessCode}
-        goBack={() => { setShowMove(false); }}
+        goBack={() => { setMove(false); }}
       />;
     }
 
-    if (showReset) {
+    if (reset) {
       return <ResetStudent
-        className={className}
         accessCode={accessCode}
-        goBack={() => { setShowReset(false); }}
+        goBack={() => { setReset(false); }}
       />;
     }
 
     return <>
       <Page.Section>
         <Typography variant="h4" align="center">
-          Update details for {className} ({accessCode})
+          Update details for Class 1 ({accessCode})
         </Typography>
         <Link className='back-to' onClick={goBack}>
           Classes
@@ -239,10 +244,10 @@ const EditClass: React.FC<{
             them permanently.
           </Typography>
           <StudentsTable
-            setStudentName={setStudentName}
-            setShowRelease={setShowRelease}
-            setShowMove={setShowMove}
-            setShowReset={setShowReset}
+            setStudentID={setStudentID}
+            setRelease={setRelease}
+            setMove={setMove}
+            setReset={setReset}
           />
         </Box>
       </Page.Section>
@@ -262,7 +267,7 @@ const EditClass: React.FC<{
           <Stack direction="row" columnGap={3}>
             <Button
               endIcon={<Edit />}
-              onClick={() => { setShowAdditional(true); }}
+              onClick={() => { setAdditional(true); }}
             >
               Edit details
             </Button>

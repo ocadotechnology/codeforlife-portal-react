@@ -40,13 +40,13 @@ const currentDropdownOptions = [
 ];
 
 const ClassDetailsForm: React.FC<{
-  className: string,
   goBack: () => void
-}> = ({ className, goBack }) => {
+}> = ({ goBack }) => {
   return (
     <Formik
       initialValues={{
-        class: className,
+        // TODO: Prepopulate by getting class data instead of hardcoding
+        class: 'Class 1',
         classSettingOptions: currentDropdownOptions[0],
         allowStudentsToSeeEachOthersProgress: false
       }}
@@ -254,11 +254,9 @@ const TransferClassToAnotherTeacher: React.FC = () => {
 
 const AdditionalSettings: React.FC<{
   accessCode: string;
-  className: string;
   goBack: () => void;
 }> = ({
   accessCode,
-  className,
   goBack
 }) => {
     const theme = useTheme();
@@ -266,7 +264,7 @@ const AdditionalSettings: React.FC<{
     return <>
       <Page.Section>
         <Typography variant="h4" align="center">
-          Additional class settings class {className} ({accessCode})
+          Additional class settings class Class 1 ({accessCode})
         </Typography>
         <Link className='back-to' onClick={goBack}>
           Edit Class
@@ -281,7 +279,6 @@ const AdditionalSettings: React.FC<{
       <Page.Section gridProps={{ bgcolor: theme.palette.info.light }}>
         <Typography variant="h5">Class details</Typography>
         <ClassDetailsForm
-          className={className}
           goBack={goBack}
         />
       </Page.Section>

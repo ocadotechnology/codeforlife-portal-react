@@ -76,11 +76,9 @@ const ReleaseStudentsForm: React.FC<{
 };
 
 const ReleaseStudent: React.FC<{
-  className: string;
   accessCode: string;
   goBack: () => void;
 }> = ({
-  className,
   accessCode,
   goBack
 }) => {
@@ -89,7 +87,7 @@ const ReleaseStudent: React.FC<{
   return (
     <Page.Section>
       <Typography align='center' variant='h4'>
-        Release student from class {className} ({accessCode})
+        Release student from class Class 1 ({accessCode})
       </Typography>
       <Link className='back-to' onClick={goBack}>
         Class

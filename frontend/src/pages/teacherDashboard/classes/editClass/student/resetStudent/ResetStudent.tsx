@@ -5,11 +5,9 @@ import NewStudentsTable from '../../../../../../features/newStudentsTable/NewStu
 import { ChevronLeft } from '@mui/icons-material';
 
 const ResetStudent: React.FC<{
-  className: string;
   accessCode: string;
   goBack: () => void;
 }> = ({
-  className,
   accessCode,
   goBack
 }) => {
@@ -30,7 +28,7 @@ const ResetStudent: React.FC<{
   return <>
     <Page.Section>
       <Typography variant='h5'>
-        Students&apos; passwords reset for class {className} ({accessCode})
+        Students&apos; passwords reset for class Class 1 ({accessCode})
       </Typography>
       <NewStudentsTable
         classLink={classLink}

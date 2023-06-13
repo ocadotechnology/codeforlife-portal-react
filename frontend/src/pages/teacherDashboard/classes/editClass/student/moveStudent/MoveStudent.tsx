@@ -7,8 +7,9 @@ import { CflTableCellElement, TableRowStyled } from '../../../../../../component
 import StudentNameField from '../../../../../../components/form/StudentNameField';
 
 const SelectClassForm: React.FC<{
-  setNewClassSelected: (newClassName: string) => void
-}> = ({ setNewClassSelected }) => {
+  setNewClassSelected: (newClassName: string) => void,
+  goBack: () => void,
+}> = ({ setNewClassSelected, goBack }) => {
   // TODO: Get data from backend and append teacher names (but don't pass them through to the next page or it will show up in the text and break the sentence grammar.)
   const classNames = ['Class 2 (CL124)', 'Class 3 (CL125)'];
 
@@ -31,9 +32,13 @@ const SelectClassForm: React.FC<{
       submitButton={
         <SubmitButton>Continue</SubmitButton>
       }
-      // TODO: Add return to EditStudent class page
       cancelButton={
-        <Button variant='outlined'>Cancel</Button>
+        <Button
+          variant='outlined'
+          onClick={goBack}
+        >
+          Cancel
+        </Button>
       }
     >
       <AutocompleteField
@@ -81,8 +86,9 @@ const StudentsTable: React.FC = () => {
 };
 
 const MoveStudentsForm: React.FC<{
-  studentNames: string[]
-}> = ({ studentNames }) => {
+  studentNames: string[],
+  goBack: () => void,
+}> = ({ studentNames, goBack }) => {
   const initialValues: Record<string, string> = Object.fromEntries(
     studentNames.map((name, index) => { return [String(index), name]; })
   );
@@ -122,7 +128,10 @@ const MoveStudentsForm: React.FC<{
         </Table>
       </TableContainer>
       <Stack direction='row' spacing={2} justifyContent='end'>
-        <Button variant='outlined'>
+        <Button
+          variant='outlined'
+          onClick={goBack}
+        >
           Cancel
         </Button>
         <Button type='submit'>
@@ -134,11 +143,9 @@ const MoveStudentsForm: React.FC<{
 };
 
 const MoveStudent: React.FC<{
-  currentClassName: string;
   currentAccessCode: string;
   goBack: () => void;
 }> = ({
-  currentClassName,
   currentAccessCode,
   goBack
 }) => {
@@ -148,7 +155,7 @@ const MoveStudent: React.FC<{
   return (
     <Page.Section>
       <Typography align='center' variant='h4'>
-        Move students from class {currentClassName} ({currentAccessCode})
+        Move students from class Class 1 ({currentAccessCode})
       </Typography>
       <Link className='back-to' onClick={goBack}>
         Class
@@ -158,14 +165,14 @@ const MoveStudent: React.FC<{
             <Typography>
               Choose a class from the drop down menu below to move the student.
             </Typography>
-            <SelectClassForm setNewClassSelected={setNewClassSelected} />
+            <SelectClassForm setNewClassSelected={setNewClassSelected} goBack={goBack}/>
           </>
         : <>
             <Typography variant='h5'>
               Students currently in destination class
             </Typography>
             <Typography>
-              The following students are in class {newClassName} into which you are about to move students from class {currentClassName}.
+              The following students are in class {newClassName} into which you are about to move students from class Class 1.
             </Typography>
             <StudentsTable/>
             <Typography variant='h5'>
@@ -173,10 +180,10 @@ const MoveStudent: React.FC<{
             </Typography>
             <Typography>
               Please confirm the names of the following students being moved to class {newClassName} from
-              class {currentClassName}. Their names will be used in their new login details, so please ensure
+              class Class 1. Their names will be used in their new login details, so please ensure
               it is different from any other existing students in the class.
             </Typography>
-            <MoveStudentsForm studentNames={studentNames}/>
+            <MoveStudentsForm studentNames={studentNames} goBack={goBack}/>
           </>
         }
     </Page.Section>

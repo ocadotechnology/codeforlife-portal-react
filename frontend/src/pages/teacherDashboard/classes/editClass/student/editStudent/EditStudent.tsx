@@ -6,16 +6,14 @@ import CflPasswordFields from '../../../../../../components/CflPasswordFields';
 import StudentNameField from '../../../../../../components/form/StudentNameField';
 import { SubmitButton } from 'codeforlife/lib/esm/components/form';
 
-const UpdateNameForm: React.FC<{
-  studentName: string,
-}> = ({ studentName }) => {
+const UpdateNameForm: React.FC = () => {
   interface Values {
     name: string;
   }
 
   // TODO: Initial value should be student name
   const initialValues: Values = {
-    name: studentName
+    name: 'Florian'
   };
   return (
     <CflHorizontalForm
@@ -69,20 +67,17 @@ const UpdatePasswordForm: React.FC = () => {
 };
 
 const EditStudent: React.FC<{
-  className: string;
   accessCode: string;
-  studentName: string;
   goBack: () => void;
 }> = ({
-  className,
   accessCode,
-  studentName,
   goBack
 }) => {
   return (
+    // TODO: Use class code and student ID to populate data
     <Page.Section>
       <Typography align="center" variant="h4">
-        Edit student details for {studentName} from class {className} ({accessCode})
+        Edit student details for Florian from class Class 1 ({accessCode})
       </Typography>
       <Link className='back-to' onClick={goBack}>
         Class
@@ -90,7 +85,7 @@ const EditStudent: React.FC<{
       <Typography>
         Edit this student&apos;s name and manage their password and direct access link.
       </Typography>
-      <UpdateNameForm studentName={studentName}/>
+      <UpdateNameForm />
       <UpdatePasswordForm />
     </Page.Section>
   );
