@@ -23,7 +23,7 @@ import {
   ErrorOutlineOutlined
 } from '@mui/icons-material';
 import { getUser } from '../dummyMethods';
-import { TextField, CheckboxField } from 'codeforlife/lib/esm/components/form';
+import { TextField, CheckboxField, SubmitButton } from 'codeforlife/lib/esm/components/form';
 import { CflHorizontalForm } from '../../../components/form/CflForm';
 import Page from 'codeforlife/lib/esm/components/page';
 import { SearchParams } from 'codeforlife/lib/esm/helpers';
@@ -87,7 +87,7 @@ const YourAccountForm: React.FC = () => {
       onSubmit={(values) => {
         alert(JSON.stringify(values, null, 2));
       }}
-      submitButton={<Button>Update details</Button>}
+      submitButton={<SubmitButton>Update details</SubmitButton>}
     >
       <TextField
         name="firstName"
@@ -161,13 +161,12 @@ const DeleteAccountForm: React.FC = () => {
         setSubmitting(false);
       }}
       submitButton={
-        <Button
+        <SubmitButton
           className='alert'
-          type="submit"
           endIcon={<DeleteOutline />}
         >
           Delete account
-        </Button>
+        </SubmitButton>
       }
     >
       <TextField

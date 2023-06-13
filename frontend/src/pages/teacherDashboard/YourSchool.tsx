@@ -24,7 +24,7 @@ import CflTable, {
 import { getSchool, getTeachersData, getUser } from './dummyMethods';
 import {
   TextField,
-  CheckboxField
+  CheckboxField, SubmitButton
 } from 'codeforlife/lib/esm/components/form';
 import { CflHorizontalForm } from '../../components/form/CflForm';
 import Page from 'codeforlife/lib/esm/components/page';
@@ -43,9 +43,7 @@ const InviteTeacherForm: React.FC = () => {
         alert(JSON.stringify(values, null, 2));
       }}
       submitButton={
-        <Button type="submit">
-          Invite teacher
-        </Button>
+        <SubmitButton >Invite teacher</SubmitButton>
       }
     >
       <TextField
@@ -115,9 +113,7 @@ const UpdateSchoolDetailsForm: React.FC = () => {
         alert(JSON.stringify(values, null, 2));
       }}
       submitButton={
-        <Button type="submit">
-          Update details
-        </Button>
+        <SubmitButton>Update details</SubmitButton>
       }
     >
       <SchoolNameField />

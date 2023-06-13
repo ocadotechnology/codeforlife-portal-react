@@ -1,6 +1,6 @@
 import React from 'react';
 import Page from 'codeforlife/lib/esm/components/page';
-import { Button, Link, Typography } from '@mui/material';
+import { Link, Typography } from '@mui/material';
 import { CflHorizontalForm } from '../../../../../../components/form/CflForm';
 import CflPasswordFields from '../../../../../../components/CflPasswordFields';
 import StudentNameField from '../../../../../../components/form/StudentNameField';
@@ -56,9 +56,7 @@ const UpdatePasswordForm: React.FC = () => {
         setSubmitting(false);
       }}
       submitButton={
-        <Button type="submit">
-          Update
-        </Button>
+        <SubmitButton>Update</SubmitButton>
       }
     >
       <CflPasswordFields userType='student' />

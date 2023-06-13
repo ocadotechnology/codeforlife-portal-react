@@ -74,9 +74,7 @@ export const CflHorizontalForm = <Values extends FormikValues = FormikValues>({
                   </Stack>
                 </Grid>
                 : <Grid item xs={12}>
-                {React.cloneElement(submitButton, {
-                  disabled: !formik.isValid
-                })}
+                {submitButton}
               </Grid>
               }
             </Grid>

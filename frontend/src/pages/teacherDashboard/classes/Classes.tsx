@@ -6,7 +6,7 @@ import CflTable, {
 import { Button, Typography, useTheme } from '@mui/material';
 import { Add, Create, DoNotDisturb } from '@mui/icons-material';
 import { getClassesData, getTeachersData, getUser } from '../dummyMethods';
-import { AutocompleteField } from 'codeforlife/lib/esm/components/form';
+import { AutocompleteField, SubmitButton } from 'codeforlife/lib/esm/components/form';
 import CopyToClipboardIcon from '../../../components/CopyToClipboardIcon';
 import { CflHorizontalForm } from '../../../components/form/CflForm';
 import * as Yup from 'yup';
@@ -148,7 +148,7 @@ const CreateNewClassForm: React.FC = () => {
         alert(JSON.stringify(values, null, 2));
         setSubmitting(false);
       }}
-      submitButton={<Button type="submit">Create class</Button>}
+      submitButton={<SubmitButton>Create class</SubmitButton>}
     >
       <ClassNameField />
       <AutocompleteField

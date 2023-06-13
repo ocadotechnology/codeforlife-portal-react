@@ -101,43 +101,45 @@ const MoveStudentsForm: React.FC<{
         setSubmitting(false);
       }}
     >
-      <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRowStyled>
-              <CflTableCellElement>
-                Existing name
-              </CflTableCellElement>
-              <CflTableCellElement>
-                New student name
-              </CflTableCellElement>
-            </TableRowStyled>
-          </TableHead>
-          <TableBody>
-            {studentNames.map((studentName, index) => (
-              <TableRowStyled key={index}>
+      {(form) => <>
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRowStyled>
                 <CflTableCellElement>
-                  {studentName}
+                  Existing name
                 </CflTableCellElement>
                 <CflTableCellElement>
-                  <StudentNameField name={String(index)}/>
+                  New student name
                 </CflTableCellElement>
               </TableRowStyled>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <Stack direction='row' spacing={2} justifyContent='end'>
-        <Button
-          variant='outlined'
-          onClick={goBack}
-        >
-          Cancel
-        </Button>
-        <Button type='submit'>
-          Save
-        </Button>
-      </Stack>
+            </TableHead>
+            <TableBody>
+              {studentNames.map((studentName, index) => (
+                <TableRowStyled key={index}>
+                  <CflTableCellElement>
+                    {studentName}
+                  </CflTableCellElement>
+                  <CflTableCellElement>
+                    <StudentNameField name={String(index)}/>
+                  </CflTableCellElement>
+                </TableRowStyled>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <Stack direction='row' spacing={2} justifyContent='end'>
+          <Button
+            variant='outlined'
+            onClick={goBack}
+          >
+            Cancel
+          </Button>
+          <Button type='submit' disabled={!form.isValid}>
+            Save
+          </Button>
+        </Stack>
+      </>}
     </Form>
   );
 };

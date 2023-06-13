@@ -1,8 +1,8 @@
 import React from 'react';
 import Page from 'codeforlife/lib/esm/components/page';
-import { Button, Grid, Link, Stack, Typography } from '@mui/material';
+import { Button, Grid, Link, Stack, Typography, useTheme } from '@mui/material';
 import { paths } from '../../../../../../app/router';
-import { EmailField, Form, TextField } from 'codeforlife/lib/esm/components/form';
+import { EmailField, Form } from 'codeforlife/lib/esm/components/form';
 import StudentNameField from '../../../../../../components/form/StudentNameField';
 import { PersonRemoveAlt1Outlined } from '@mui/icons-material';
 
@@ -10,6 +10,7 @@ const ReleaseStudentsForm: React.FC<{
   studentNames: string[],
   goBack: () => void
 }> = ({ studentNames, goBack }) => {
+  const theme = useTheme();
   const initialValues: Record<string, string> = Object.fromEntries(
     studentNames.map((name, index) => { return [String(index), name]; })
   );
@@ -26,13 +27,11 @@ const ReleaseStudentsForm: React.FC<{
         {studentNames.map((studentName, index) => (
           <>
             <Grid item sm={6}>
-              {/* TODO: Check with Laura about look of read-only vs disabled - both seem not great */}
-              <TextField
+              <StudentNameField
                 name={String(index)}
-                helperText="Original student name"
-                InputProps={{
-                  readOnly: true
-                }}
+                helperText='Original student name'
+                readOnly={true}
+                style={{ backgroundColor: theme.palette.info.main }}
               />
             </Grid>
             <Grid item sm={6}>
