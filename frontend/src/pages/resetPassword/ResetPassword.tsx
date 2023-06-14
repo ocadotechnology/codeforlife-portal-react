@@ -34,7 +34,7 @@ const ResetPassword: React.FC = () => {
     <Page.Container>
       <Page.Section maxWidth='md'>
         <ThemedBox
-          withIcons
+          withShapes
           options={themeOptions}
           userType={params.userType}
         >

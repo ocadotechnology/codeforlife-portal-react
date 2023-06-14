@@ -19,7 +19,7 @@ const Status: React.FC<{
 }> = ({ userType, header, body, imageProps }) => {
   return (
     <ThemedBox
-      withIcons
+      withShapes
       options={themeOptions}
       userType={userType}
     >

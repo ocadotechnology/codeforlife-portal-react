@@ -11,7 +11,7 @@ import { Form, FormProps } from 'codeforlife/lib/esm/components/form';
 import { themeOptions } from '../../app/theme';
 
 export interface BaseFormProps<Values> extends FormProps<Values> {
-  themedBoxProps: Omit<ThemedBoxProps, 'withIcons'>;
+  themedBoxProps: Omit<ThemedBoxProps, 'withShapes'>;
   header: string;
   subheader: string;
 }
@@ -24,7 +24,7 @@ const BaseForm = <Values extends FormikValues = FormikValues>({
 }: BaseFormProps<Values>): JSX.Element => {
   return (
     <ThemedBox
-      withIcons
+      withShapes
       options={themeOptions}
       {...themedBoxProps}
     >
