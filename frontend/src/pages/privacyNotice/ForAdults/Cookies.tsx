@@ -62,7 +62,7 @@ const Cookies: React.FC = () => (
     <Typography>
       We use the following types of cookies on our portal for the following purposes:
     </Typography>
-    <Table className='text'>
+    <Table className='text body'>
       <TableHead>
         <CustomTableRow
           withoutUnderline

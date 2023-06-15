@@ -4,8 +4,7 @@ import {
   Typography,
   Button,
   Stack,
-  Link,
-  useTheme
+  Link
 } from '@mui/material';
 import {
   Launch as LaunchIcon,
@@ -20,8 +19,6 @@ import RapidRouterImage from '../../images/rapid_router_landing_hero.png';
 import RapidRouterIcon from '../../images/RR_logo.svg';
 
 const RapidRouter: React.FC = () => {
-  const theme = useTheme();
-
   return (
     <Grid container spacing={1}>
       <Grid xs={12}>
@@ -62,10 +59,8 @@ const RapidRouter: React.FC = () => {
           </Typography>
           <Button
             endIcon={<LaunchIcon />}
-            style={{
-              marginTop: 'auto',
-              marginBottom: theme.typography.body1.marginBottom
-            }}
+            style={{ marginTop: 'auto' }}
+            className='body'
             href={process.env.REACT_APP_BLOCKLY_GUIDE_SRC}
           >
             Learn more about Blockly

@@ -87,13 +87,16 @@ const NewStudentsTable: React.FC<NewStudentsTableProps> = ({
     <Typography color='red' fontWeight='bold'>
       You will not be shown this page again, so please make sure you retain a copy of the passwords for your records. You can print the reminder cards from the button below. Please ensure you share student passwords securely.
     </Typography>
-    <Table sx={{
-      height: '100%',
-      tableLayout: 'fixed',
-      [`.${typographyClasses.root}`]: {
-        marginBottom: 0
-      }
-    }}>
+    <Table
+      sx={{
+        height: '100%',
+        tableLayout: 'fixed',
+        [`.${typographyClasses.root}`]: {
+          marginBottom: 0
+        }
+      }}
+      className='body'
+    >
       <TableHead>
         <TableRow>
           <TableCell width='45%'>
@@ -213,12 +216,14 @@ const NewStudentsTable: React.FC<NewStudentsTableProps> = ({
       <Button
         endIcon={<PrintIcon />}
         onClick={() => { alert('TODO: call api'); }}
+        className='body'
       >
         Print password reminder cards
       </Button>
       <Button
         endIcon={<SaveAltIcon />}
         onClick={() => { alert('TODO: call api'); }}
+        className='body'
       >
         Download CSV
       </Button>

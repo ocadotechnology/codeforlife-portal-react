@@ -5,7 +5,6 @@ import {
 } from 'codeforlife/lib/esm/components/form';
 
 const SeeClassmatesProgressField: React.FC = () => {
-  // TODO: fix checkbox styling
   return (
     <CheckboxField
       name='seeClassmates'

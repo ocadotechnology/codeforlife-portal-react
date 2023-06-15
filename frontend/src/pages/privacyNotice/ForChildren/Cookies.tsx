@@ -67,7 +67,7 @@ const Cookies: React.FC = () => <>
   <Typography>
     You can see all the different cookies we use and what we use them for below.
   </Typography>
-  <Table className='text'>
+  <Table className='text body'>
     <TableHead>
       <CustomTableRow
         withoutUnderline
@@ -133,8 +133,10 @@ const Cookies: React.FC = () => <>
   <Typography>
     You can switch the functional and analytics cookies on and off at any time by clicking this button below.
   </Typography>
-  {/* TODO: set padding bottom via theme */}
-  <Button onClick={useOneTrustInfoToggle}>
+  <Button
+    className='body'
+    onClick={useOneTrustInfoToggle}
+  >
     Cookie Settings
   </Button>
   <Typography>
