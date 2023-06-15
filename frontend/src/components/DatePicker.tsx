@@ -8,7 +8,7 @@ import {
   FormHelperTextProps
 } from '@mui/material';
 
-import { formStyleOverrides } from '../app/theme';
+import { form } from 'codeforlife/lib/esm/theme/typography';
 
 const monthOptions = [
   'January',
@@ -95,7 +95,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
     <Grid
       container
       columnSpacing={2}
-      marginBottom={formStyleOverrides.marginBottom}
+      marginBottom={form.marginBottom}
     >
       {helperText !== undefined && helperText !== '' &&
         <Grid xs={12}>

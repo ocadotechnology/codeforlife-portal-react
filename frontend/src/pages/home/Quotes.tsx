@@ -55,7 +55,7 @@ const Quotes: React.FC = () => {
         <Typography textAlign='center'>
           Don&apos;t just take our word for it, here are some lovely quotes from our fabulous teacher friends.
           <br />
-          Interested in getting involved? <Link href={paths.getInvolved._}>Get in touch.</Link>
+          Interested in getting involved? <Link href={paths.getInvolved._} className='body'>Get in touch</Link>.
         </Typography>
       </Grid>
       <Column
