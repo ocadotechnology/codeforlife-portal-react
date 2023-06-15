@@ -50,7 +50,10 @@ const TwoFactorAuthentication: React.FC = (): JSX.Element => {
             You have 0 backup tokens remaining.
           </Typography>
           <Typography>View and create backup tokens for your account.</Typography>
-          <Button href={paths.teacher.dashboard.account.backupTokens._}>
+          <Button
+            className='body'
+            href={paths.teacher.dashboard.account.backupTokens._}
+          >
             Manage backup tokens
           </Button>
           <Typography variant="body2" fontWeight="bold" color="error">
@@ -215,8 +218,6 @@ const YourAccount: React.FC = () => {
           Your account
         </Typography>
         <Typography>You can update your account details below.</Typography>
-      </Page.Section>
-      <Page.Section>
         <YourAccountForm />
       </Page.Section>
       <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
