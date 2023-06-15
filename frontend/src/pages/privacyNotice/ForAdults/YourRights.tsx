@@ -47,10 +47,7 @@ const YourRights: React.FC = () => (
     <ItemizedList styleType='disc'>
       <ListItemText>
         email our Data Protection Officer at&nbsp;
-        <Link
-          className='body'
-          href='mailto:individualrights@ocado.com'
-        >
+        <Link href='mailto:individualrights@ocado.com'>
           individualrights@ocado.com
         </Link>
         ;

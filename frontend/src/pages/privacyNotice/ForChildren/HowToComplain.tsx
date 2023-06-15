@@ -7,10 +7,7 @@ import {
 const HowToComplain: React.FC = () => <>
   <Typography>
     If you have a complaint about how we’ve used your personal information, you can write to our Data Protection Officer at&nbsp;
-    <Link
-      className='body'
-      href='mailto:individualrights@ocado.com'
-    >
+    <Link href='mailto:individualrights@ocado.com'>
       individualrights@ocado.com
     </Link>
     .
@@ -23,10 +20,7 @@ const HowToComplain: React.FC = () => <>
   </Typography>
   <Typography>
     Website:&nbsp;
-    <Link
-      className='body'
-      href='https://ico.org.uk/concerns'
-    >
+    <Link href='https://ico.org.uk/concerns'>
       https://ico.org.uk/concerns
     </Link>
   </Typography>

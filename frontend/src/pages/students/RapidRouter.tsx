@@ -55,7 +55,7 @@ const RapidRouter: React.FC = () => {
           </Typography>
           <Typography>
             If you are not part of a school, you can&nbsp;
-            <Link className='body' href={paths.register._}>register here</Link>.
+            <Link href={paths.register._}>register here</Link>.
           </Typography>
           <Button
             endIcon={<LaunchIcon />}

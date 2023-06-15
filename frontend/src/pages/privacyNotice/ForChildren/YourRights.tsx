@@ -39,10 +39,7 @@ const YourRights: React.FC = () => <>
   </ItemizedList>
   <Typography>
     If you would like to use any of these rights listed above, please email our Data Protection Officer at&nbsp;
-    <Link
-      className='body'
-      href='mailto:individualrights@ocado.com'
-    >
+    <Link href='mailto:individualrights@ocado.com'>
       individualrights@ocado.com
     </Link>
     . Depending on where you live, you may need help from a parent or guardian to use your rights.

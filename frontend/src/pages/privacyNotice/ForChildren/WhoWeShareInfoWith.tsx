@@ -19,10 +19,7 @@ const WhoWeShareInfoWith: React.FC = () => <>
   </Typography>
   <Typography>
     We also use a survey company called UsabilityHub to help us carry out surveys. UsabilityHub records time spent on the site, country, device type, device platform alongside any questions that we may ask you in our surveys (for example, the survey may ask your age). You can find out more about UsabilityHub&nbsp;
-    <Link
-      className='body'
-      href='https://usabilityhub.com/'
-    >
+    <Link href='https://usabilityhub.com/'>
       here
     </Link>
     .

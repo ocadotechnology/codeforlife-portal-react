@@ -95,17 +95,11 @@ const Cookies: React.FC = () => <>
           </Typography>
           <Typography>
             We use other companies called (
-            <Link
-              className='body'
-              href='https://developers.google.com/analytics/devguides/collection/analyticsjs/cookie-usage'
-            >
+            <Link href='https://developers.google.com/analytics/devguides/collection/analyticsjs/cookie-usage'>
               Google Analytics
             </Link>
             &nbsp;and&nbsp;
-            <Link
-              className='body'
-              href='https://mouseflow.com/legal/gdpr/'
-            >
+            <Link href='https://mouseflow.com/legal/gdpr/'>
               Mouseflow
             </Link>
             ) to help us collect information from these cookies (see the “Third-party cookies” section below).
@@ -133,10 +127,7 @@ const Cookies: React.FC = () => <>
   <Typography>
     You can switch the functional and analytics cookies on and off at any time by clicking this button below.
   </Typography>
-  <Button
-    className='body'
-    onClick={useOneTrustInfoToggle}
-  >
+  <Button onClick={useOneTrustInfoToggle}>
     Cookie Settings
   </Button>
   <Typography>

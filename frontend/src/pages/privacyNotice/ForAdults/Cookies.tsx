@@ -90,17 +90,11 @@ const Cookies: React.FC = () => (
             </Typography>
             <Typography>
               We use third-party web analytics software on our portal (
-              <Link
-                className='body'
-                href='https://developers.google.com/analytics/devguides/collection/analyticsjs/cookie-usage'
-              >
+              <Link href='https://developers.google.com/analytics/devguides/collection/analyticsjs/cookie-usage'>
                 Google Analytics
               </Link>
               &nbsp;and&nbsp;
-              <Link
-                className='body'
-                href='https://mouseflow.com/legal/gdpr/'
-              >
+              <Link href='https://mouseflow.com/legal/gdpr/'>
                 Mouseflow
               </Link>
               ). We provide further information about these partners below.
@@ -130,10 +124,7 @@ const Cookies: React.FC = () => (
     </Typography>
     <Typography>
       We make available a cookie management platform on our portal (provided by&nbsp;
-      <Link
-        className='body'
-        href='https://www.onetrust.com/'
-      >
+      <Link href='https://www.onetrust.com/'>
         OneTrust
       </Link>
       ), through which you can turn off non-essential cookies at any time. Please note, strictly necessary cookies will always be set as they are essential for our website to operate.

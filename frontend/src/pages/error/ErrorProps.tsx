@@ -53,13 +53,10 @@ export function tooManyRequests429(
     case 'independent':
       body = <>
         If you wish to proceed, please&nbsp;
-        <Link
-          href={(userType === 'teacher')
+        <Link href={(userType === 'teacher')
             ? paths.resetPassword.teacher._
             : paths.resetPassword.independent._
-          }
-          className='body'
-        >
+          }>
           reset your password
         </Link>
         . Alternatively, you will need to wait 24 hours for your account to be unlocked again.
