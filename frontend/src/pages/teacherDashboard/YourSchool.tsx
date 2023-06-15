@@ -33,7 +33,6 @@ import { CflHorizontalForm } from '../../components/form/CflForm';
 import Page from 'codeforlife/lib/esm/components/page';
 
 const InviteTeacherForm: React.FC = (): JSX.Element => {
-  const theme = useTheme();
   return (
     <CflHorizontalForm
       header="Invite a teacher to your school"

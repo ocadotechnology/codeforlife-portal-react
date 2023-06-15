@@ -189,9 +189,6 @@ const DeleteAccountForm: React.FC = (): JSX.Element => {
       <CheckboxField
         name="removeFromNewsletter"
         sx={{ color: theme.palette.info.dark }}
-        stackProps={{
-          justifyContent: 'flex-start'
-        }}
         formControlLabelProps={{
           label:
             'Please remove me from the newsletter and marketing emails too.'
