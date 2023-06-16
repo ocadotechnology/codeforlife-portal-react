@@ -30,7 +30,8 @@ const Header: React.FC = () => {
   const linkProps: LinkProps = {
     display: { xs: 'none', md: 'inline' },
     color: '#383b3b',
-    className: useMediaQuery(theme.breakpoints.up('lg')) ? 'h4' : 'h5',
+    variant: useMediaQuery(theme.breakpoints.up('lg')) ? 'h4' : 'h5',
+    className: 'no-decor',
     marginLeft: extraMargin,
     marginBottom: '0px !important'
   };

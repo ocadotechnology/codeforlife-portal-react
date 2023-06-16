@@ -19,10 +19,13 @@ const root = createRoot(container);
 
 root.render(
   <React.StrictMode>
-    <App theme={theme} store={store}>
-      <Header />
+    <App
+      theme={theme}
+      store={store}
+      header={<Header />}
+      footer={<Footer />}
+    >
       <RouterProvider router={router} />
-      <Footer />
     </App>
   </React.StrictMode>
 );

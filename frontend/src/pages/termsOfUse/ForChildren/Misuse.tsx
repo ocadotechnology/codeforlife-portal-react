@@ -33,7 +33,7 @@ const Misuse: React.FC = () => {
         We’ll do our best to make sure the Code for Life website and access to your account and our games, platforms and other products or services is available to you 24 hours a day. However, we sometimes have to limit users’ access to their account or the site so that we can make repairs or add new content.
       </Typography>
       <Typography>
-        We also aim to provide you with the best service we can, but we can’t promise that the Code for Life site, or our games, platforms and services will always be fault, virus or mistake-free. If you notice a problem or fault, please let us know using the <Link onClick={() => { useFreshworksWidget('open'); }} className='body'>contact us form</Link> and we will do all we can to correct it as quickly as we can.
+        We also aim to provide you with the best service we can, but we can’t promise that the Code for Life site, or our games, platforms and services will always be fault, virus or mistake-free. If you notice a problem or fault, please let us know using the <Link onClick={() => { useFreshworksWidget('open'); }}>contact us form</Link> and we will do all we can to correct it as quickly as we can.
       </Typography>
       <Typography>
         Whether or not a user follows the Terms of Use we still have the right to:

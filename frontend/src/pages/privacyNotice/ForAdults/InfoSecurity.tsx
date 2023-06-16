@@ -11,20 +11,14 @@ const InfoSecurity: React.FC = () => (
     </Typography>
     <Typography>
       We enable Teachers to use two-factor authentication to further reinforce the security of their accounts and we encourage them to do that. You can find more details&nbsp;
-      <Link
-        className='body'
-        href='https://www.getsafeonline.org/personal/articles/passwords/'
-      >
+      <Link href='https://www.getsafeonline.org/personal/articles/passwords/'>
         here
       </Link>
       .
     </Typography>
     <Typography>
       If you want detailed information from Get Safe Online on how to protect your information and your computers and devices against fraud, identity theft, viruses and many other online problems, please visit&nbsp;
-      <Link
-        className='body'
-        href='https://www.getsafeonline.org/'
-      >
+      <Link href='https://www.getsafeonline.org/'>
         www.getsafeonline.org
       </Link>
       . Get Safe Online is supported by HM Government and leading businesses.

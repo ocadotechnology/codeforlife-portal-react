@@ -40,6 +40,7 @@ const AddStudentsForm: React.FC<{
       <Button
         endIcon={<UploadIcon />}
         variant='outlined'
+        className='body'
       >
         Import CSV file
       </Button>

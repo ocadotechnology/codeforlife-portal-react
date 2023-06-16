@@ -81,7 +81,10 @@ const ExternalStudentsJoiningRequestsActions: React.FC = () => {
 const ExternalStudentsJoiningRequestsTable: React.FC = (): JSX.Element => {
   const teacherData = getTeachersData();
   return (
-    <CflTable titles={['Name', 'Email address', 'Class', 'Actions']}>
+    <CflTable
+      className='body'
+      titles={['Name', 'Email address', 'Class', 'Actions']}
+    >
       {teacherData.map(
         (
           { teacherName, teacherClass, teacherEmail, isTeacherAdmin },
@@ -191,6 +194,8 @@ const Classes: React.FC = () => {
     <Page.Section>
       <_YourClasses />
       <ClassTable setAccessCode={setAccessCode} />
+    </Page.Section>
+    <Page.Section>
       <ExternalStudentsJoiningRequests />
     </Page.Section>
     <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>

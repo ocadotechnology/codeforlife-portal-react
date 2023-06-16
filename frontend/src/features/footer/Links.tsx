@@ -28,36 +28,60 @@ const Links: React.FC = () => (
     <Grid container spacing={{ xs: 0, sm: 1 }}>
       <Grid xs={12} sm={4}>
         <Stack>
-          <Link href={paths.aboutUs._}>
+          <Link
+            href={paths.aboutUs._}
+            className='no-decor'
+          >
             About us
           </Link>
-          <Link onClick={() => { useFreshworksWidget('open'); }}>
+          <Link
+            onClick={() => { useFreshworksWidget('open'); }}
+            className='no-decor'
+          >
             Help and support
           </Link>
         </Stack>
       </Grid>
       <Grid xs={12} sm={4}>
         <Stack>
-          <Link href={paths.privacyNotice._}>
+          <Link
+            href={paths.privacyNotice._}
+            className='no-decor'
+          >
             Privacy Notice
           </Link>
-          <Link href={paths.termsOfUse._}>
+          <Link
+            href={paths.termsOfUse._}
+            className='no-decor'
+          >
             Terms of use
           </Link>
-          <Link onClick={useOneTrustInfoToggle}>
+          <Link
+            onClick={useOneTrustInfoToggle}
+            className='no-decor'
+          >
             Cookie settings
           </Link>
         </Stack>
       </Grid>
       <Grid xs={12} sm={4}>
         <Stack>
-          <Link href={paths.homeLearning._}>
+          <Link
+            href={paths.homeLearning._}
+            className='no-decor'
+          >
             Home learning
           </Link>
-          <Link href={paths.getInvolved._}>
+          <Link
+            href={paths.getInvolved._}
+            className='no-decor'
+          >
             Get involved
           </Link>
-          <Link href={paths.codingClubs._}>
+          <Link
+            href={paths.codingClubs._}
+            className='no-decor'
+          >
             Coding clubs
           </Link>
         </Stack>

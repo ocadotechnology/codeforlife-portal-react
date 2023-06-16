@@ -33,7 +33,6 @@ import { CflHorizontalForm } from '../../components/form/CflForm';
 import Page from 'codeforlife/lib/esm/components/page';
 
 const InviteTeacherForm: React.FC = (): JSX.Element => {
-  const theme = useTheme();
   return (
     <CflHorizontalForm
       header="Invite a teacher to your school"
@@ -86,10 +85,6 @@ const InviteTeacherForm: React.FC = (): JSX.Element => {
       />
       <CheckboxField
         name="isAdmin"
-        sx={{ color: theme.palette.info.dark }}
-        stackProps={{
-          justifyContent: 'flex-start'
-        }}
         formControlLabelProps={{
           label: 'Make an administrator of the school'
         }}
@@ -211,7 +206,10 @@ const TeachersTable: React.FC = (): JSX.Element => {
   );
 
   return (
-    <CflTable titles={['Name', 'Administrator status', 'Actions']}>
+    <CflTable
+      className='body'
+      titles={['Name', 'Administrator status', 'Actions']}
+    >
       {teachersData.map(
         ({ teacherName, isTeacherAdmin, teacherEmail }, keyIdx: number) => (
           <CflTableBody key={`${keyIdx}`}>
@@ -272,9 +270,7 @@ const YourSchool: React.FC = () => {
         These teachers are already part of your school or club
       </Typography>
       <TeachersTable />
-    </Page.Section>
-    <Page.Section>
-      <Grid container>
+      <Grid container columnSpacing={5}>
         <Grid item sm={6}>
           <Typography>
             Select &apos;Delete&apos; to delete a teacher from your school or
