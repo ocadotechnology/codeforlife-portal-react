@@ -58,10 +58,7 @@ const IndependentForm: React.FC = () => {
         </Typography>
         <Typography variant="body2">
           Don&apos;t worry, you can&nbsp;
-          <Link
-            className='body'
-            href={paths.resetPassword.independent._}
-          >
+          <Link href={paths.resetPassword.independent._}>
             reset your password
           </Link>
           .
@@ -74,14 +71,10 @@ const IndependentForm: React.FC = () => {
           my={0}
         >
           Part of a school or club?&nbsp;
+          <Link fontWeight='normal' href={paths.login.student._}>
+            Log in here
+          </Link>
         </Typography>
-        <Link
-          className='body'
-          variant="body2"
-          href={paths.login.student._}
-        >
-          Log in here
-        </Link>
       </Stack>
       <SubmitButton stackProps={{ alignItems: 'end' }}>
         Log in

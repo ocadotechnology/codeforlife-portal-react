@@ -23,8 +23,11 @@ const BackupTokens: React.FC = () => {
       <Typography align="center" variant="h4">
         Backup tokens
       </Typography>
-      <Link href={paths.teacher.dashboard.account._} color="inherit" className="body">
-        &lt; Back to Your account
+      <Link
+        href={paths.teacher.dashboard.account._}
+        className='back-to'
+      >
+        Your account
       </Link>
       <Typography>
         Backup tokens can be used when your primary and backup phone numbers aren&apos;t available. The backup tokens

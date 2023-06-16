@@ -69,14 +69,16 @@ export const CflTableBody: React.FC<{
 interface CflTableProps {
   titles: string[];
   children: React.ReactNode;
+  className?: string;
 }
 const CflTable: React.FC<CflTableProps> = ({
   titles,
-  children
+  children,
+  className
 }): JSX.Element => {
   return (
     <TableContainer>
-      <Table>
+      <Table className={className}>
         <TableHead>
           <TableRowStyled>
             {titles.map((title) => (

@@ -76,7 +76,6 @@ const TeacherForm: React.FC = () => {
                 href={paths.termsOfUse._}
                 target='_blank'
                 color='inherit'
-                className='body'
               >
                 Terms of use
               </Link>
@@ -85,7 +84,6 @@ const TeacherForm: React.FC = () => {
                 href={paths.privacyNotice._}
                 target='_blank'
                 color='inherit'
-                className='body'
               >
                 Privacy notice
               </Link>

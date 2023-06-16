@@ -79,8 +79,18 @@ const RapidRouterTabs: React.FC<RapidRouterTabsProps> = ({
               pr={10}
               width="100%"
             >
-              <Typography m={0}>{episode.name}</Typography>
-              <Typography m={0}>Levels {episode.levelRange}</Typography>
+              <Typography style={{
+                marginBottom: 0,
+                color: 'white'
+              }}>
+                {episode.name}
+              </Typography>
+              <Typography style={{
+                marginBottom: 0,
+                color: 'white'
+              }}>
+                Levels {episode.levelRange}
+              </Typography>
             </Stack>
             <Field
               as={Checkbox}
@@ -133,7 +143,7 @@ const RapidRouterTabs: React.FC<RapidRouterTabsProps> = ({
               }}
               checked={
                 formik.values.levelsSubmitted[
-                  parseInt(element.levelNumber) - 1
+                parseInt(element.levelNumber) - 1
                 ] !== ''
               }
               onChange={(e: any) => {

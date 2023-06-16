@@ -33,7 +33,6 @@ import SchoolPostcodeField from '../../components/form/SchoolPostcodeField';
 import SchoolCountryField from '../../components/form/SchoolCountryField';
 
 const InviteTeacherForm: React.FC = () => {
-  const theme = useTheme();
   return (
     <CflHorizontalForm
       header="Invite a teacher to your school"
@@ -84,10 +83,6 @@ const InviteTeacherForm: React.FC = () => {
       />
       <CheckboxField
         name="isAdmin"
-        sx={{ color: theme.palette.info.dark }}
-        stackProps={{
-          justifyContent: 'flex-start'
-        }}
         formControlLabelProps={{
           label: 'Make an administrator of the school'
         }}
@@ -182,7 +177,10 @@ const TeachersTable: React.FC = () => {
   );
 
   return (
-    <CflTable titles={['Name', 'Administrator status', 'Actions']}>
+    <CflTable
+      className='body'
+      titles={['Name', 'Administrator status', 'Actions']}
+    >
       {teachersData.map(
         ({ teacherName, isTeacherAdmin, teacherEmail }, keyIdx: number) => (
           <CflTableBody key={`${keyIdx}`}>
@@ -243,9 +241,7 @@ const YourSchool: React.FC = () => {
         These teachers are already part of your school or club
       </Typography>
       <TeachersTable />
-    </Page.Section>
-    <Page.Section>
-      <Grid container>
+      <Grid container columnSpacing={5}>
         <Grid item sm={6}>
           <Typography>
             Select &apos;Delete&apos; to delete a teacher from your school or

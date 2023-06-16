@@ -32,21 +32,16 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ contents }) => {
     sliceEnd: number
   ): React.ReactElement {
     return (
-      <Stack id={stackId} gap={2}>
+      <Stack id={stackId}>
         {contents.slice(sliceStart, sliceEnd).map((content, index) => {
           index += sliceStart;
           return (
-            <Box key={index}>
-              <Typography display='inline'>
-                {index + 1}.{' '}
-              </Typography>
-              <Link
-                className='body'
-                onClick={() => { handleHeaderClick(index); }}
-              >
+            <Typography key={index}>
+              {index + 1}.{' '}
+              <Link onClick={() => { handleHeaderClick(index); }}>
                 {content.header}
               </Link>
-            </Box>
+            </Typography>
           );
         })}
       </Stack>

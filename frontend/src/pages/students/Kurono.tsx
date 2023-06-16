@@ -48,7 +48,7 @@ const Kurono: React.FC = () => {
           </Typography>
           <Typography>
             Ask your teacher or tutor to&nbsp;
-            <Link className='body' href={paths.register._}>register</Link>.
+            <Link href={paths.register._}>register</Link>.
           </Typography>
           <Button
             endIcon={<ChevronRightIcon />}

@@ -75,7 +75,7 @@ const Supporters: React.FC = () => {
             Teachers, parents, and creatives
           </Typography>
           <Typography>
-            Please get in touch through our <Link onClick={() => { useFreshworksWidget('open'); }} className='body'>contact</Link> form and let us know how you would like to get involved.
+            Please get in touch through our <Link onClick={() => { useFreshworksWidget('open'); }}>contact</Link> form and let us know how you would like to get involved.
           </Typography>
           <Typography>
             We would like to thank our friends who have contributed to this initiative.

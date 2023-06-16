@@ -192,7 +192,9 @@ const RapidRouterAccessSettings: React.FC = () => {
               episode={RapidRouterGameTabs.python}
               formik={formik}
             />
-            <Button type="submit">Save level settings</Button>
+            <Button type="submit" style={{ marginTop: 20 }}>
+              Save level settings
+            </Button>
           </Stack>
         </Form>
       )}
