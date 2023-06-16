@@ -1,10 +1,10 @@
 import React from 'react';
 import {
   Unstable_Grid2 as Grid,
-  Typography,
   useTheme,
   useMediaQuery,
-  Stack
+  Stack,
+  FormHelperText
 } from '@mui/material';
 
 import {
@@ -30,9 +30,9 @@ const SignUp: React.FC = () => {
 
   return (
     <Stack>
-      <Typography textAlign={isXS ? 'center' : undefined}>
+      <FormHelperText style={{ textAlign: isXS ? 'center' : undefined }}>
         Sign up to receive updates about Code for Life games and teaching resources.
-      </Typography>
+      </FormHelperText>
       <Form
         initialValues={initialValues}
         onSubmit={(values, { setSubmitting }) => {
@@ -65,7 +65,7 @@ const SignUp: React.FC = () => {
               width: isXS ? '100%' : undefined,
               marginLeft: 'auto'
             }}>
-              Register
+              Sign up
             </SubmitButton>
           </Grid>
         </Grid>

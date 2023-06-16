@@ -78,7 +78,7 @@ const EmailForm: React.FC = () => {
           justifyContent='center'
         >
           <Button
-            className='cancel'
+            variant='outlined'
             onClick={() => { navigate(-1); }}
           >
             Cancel

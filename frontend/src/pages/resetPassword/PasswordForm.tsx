@@ -75,7 +75,7 @@ const PasswordForm: React.FC<{
           justifyContent='center'
         >
           <Button
-            className='cancel'
+            variant='outlined'
             href={paths._}
           >
             Cancel

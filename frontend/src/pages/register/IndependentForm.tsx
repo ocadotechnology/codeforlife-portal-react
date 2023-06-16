@@ -54,8 +54,7 @@ const IndependentForm: React.FC = () => {
       header="Independent learner"
       subheader="Register below if you are not part of a school or club and wish to set up a home learning account."
       description="You will have access to learning resources for Rapid Router."
-      bgcolor="#ffc709" // TODO: use theme.palette
-      color="black"
+      userType='independent'
     >
       <DatePicker
         helperText="Please enter your date of birth (we do not store this information)."
