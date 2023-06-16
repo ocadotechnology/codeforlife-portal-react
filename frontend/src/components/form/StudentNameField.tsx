@@ -1,19 +1,18 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import { InputAdornment } from '@mui/material';
 import { PersonOutlined } from '@mui/icons-material';
-import { TextField } from 'codeforlife/lib/esm/components/form';
+import { TextField, TextFieldProps } from 'codeforlife/lib/esm/components/form';
 import * as Yup from 'yup';
 
-const StudentNameField: React.FC<{
-  name?: string
-  helperText?: string
-  readOnly?: boolean
-  style?: any
+const StudentNameField: React.FC<Omit<TextFieldProps, 'name'> & {
+  name?: string;
+  readOnly?: boolean;
+  style?: CSSProperties;
 }> = ({
   name = 'name',
   helperText = 'Choose a name',
   readOnly = false,
-  style = undefined
+  style
 }) => {
   return (
     <TextField

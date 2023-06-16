@@ -41,11 +41,11 @@ export const paths = _('', {
       school: _('/?tab=Your+school'),
       classes: _('/?tab=Your+classes', {
         editClass: _('&accessCode={accessCode}', {
-          additional: _('&setView=additional'),
-          editStudent: _('&studentID={studentID}'),
-          resetStudents: _('&setView=reset'),
-          moveStudents: _('&setView=move'),
-          releaseStudents: _('setView=release')
+          additional: _('&view=additional'),
+          editStudent: _('&studentId={studentId}'),
+          resetStudents: _('&view=reset'),
+          moveStudents: _('&view=move'),
+          releaseStudents: _('&view=release')
         })
       }),
       account: _('/?tab=Your+account', {

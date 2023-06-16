@@ -6,12 +6,14 @@ import { ChevronLeft } from '@mui/icons-material';
 
 const ResetStudent: React.FC<{
   accessCode: string;
+  studentIds: number[];
   goBack: () => void;
 }> = ({
   accessCode,
+  studentIds,
   goBack
 }) => {
-  // TODO: get from API.
+  // TODO: get from API and use params
   const classLink = 'https://www.codeforlife.education/';
   const students: Array<{
     name: string;

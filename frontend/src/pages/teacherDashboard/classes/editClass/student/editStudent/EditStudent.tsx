@@ -66,13 +66,15 @@ const UpdatePasswordForm: React.FC = () => {
 
 const EditStudent: React.FC<{
   accessCode: string;
+  // TODO: Get actual ID from backend in previous page and use it to populate page data
+  studentId: number;
   goBack: () => void;
 }> = ({
   accessCode,
+  studentId,
   goBack
 }) => {
   return (
-    // TODO: Use class code and student ID to populate data
     <Page.Section>
       <Typography align="center" variant="h4">
         Edit student details for Florian from class Class 1 ({accessCode})

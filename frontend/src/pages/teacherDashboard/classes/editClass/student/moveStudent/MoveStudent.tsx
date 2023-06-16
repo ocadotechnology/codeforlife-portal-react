@@ -146,12 +146,14 @@ const MoveStudentsForm: React.FC<{
 
 const MoveStudent: React.FC<{
   currentAccessCode: string;
+  studentIds: number[];
   goBack: () => void;
 }> = ({
   currentAccessCode,
+  studentIds,
   goBack
 }) => {
-  // TODO: Get data from backend
+  // TODO: Get data from backend using params
   const [newClassName, setNewClassSelected] = React.useState<string | undefined>(undefined);
   const studentNames = ['Student 1', 'Student 2', 'Student 3', 'Student 4', 'Student 5'];
   return (

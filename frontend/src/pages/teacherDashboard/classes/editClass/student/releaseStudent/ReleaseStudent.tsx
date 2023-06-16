@@ -1,10 +1,11 @@
 import React from 'react';
 import Page from 'codeforlife/lib/esm/components/page';
-import { Button, Grid, Link, Stack, Typography, useTheme } from '@mui/material';
+import { Button, Grid, Link, Typography, Stack, useTheme } from '@mui/material';
 import { paths } from '../../../../../../app/router';
-import { EmailField, Form } from 'codeforlife/lib/esm/components/form';
+import { Form } from 'codeforlife/lib/esm/components/form';
 import StudentNameField from '../../../../../../components/form/StudentNameField';
 import { PersonRemoveAlt1Outlined } from '@mui/icons-material';
+import NewEmailField from '../../../../../../components/form/NewEmailField';
 
 const ReleaseStudentsForm: React.FC<{
   studentNames: string[],
@@ -28,7 +29,7 @@ const ReleaseStudentsForm: React.FC<{
           <>
             <Grid item sm={6}>
               <StudentNameField
-                name={String(index)}
+                name={`original${String(index)}`}
                 helperText='Original student name'
                 readOnly={true}
                 style={{ backgroundColor: theme.palette.info.main }}
@@ -37,21 +38,7 @@ const ReleaseStudentsForm: React.FC<{
             <Grid item sm={6}>
               <StudentNameField name={String(index)}/>
             </Grid>
-            <Grid item sm={6}>
-              <EmailField
-                required
-                placeholder="Enter email address"
-                helperText="New email address"
-              />
-            </Grid>
-            {/* TODO: Replace with proper margin */}
-            <Grid item sm={6} sx={{ mb: '40px' }}>
-              <EmailField
-                required
-                placeholder="Confirm email address"
-                helperText="Confirm email address"
-              />
-            </Grid>
+            <NewEmailField index={index} />
           </>
         ))}
       </Grid>
@@ -76,12 +63,14 @@ const ReleaseStudentsForm: React.FC<{
 
 const ReleaseStudent: React.FC<{
   accessCode: string;
+  studentIds: number[];
   goBack: () => void;
 }> = ({
   accessCode,
+  studentIds,
   goBack
 }) => {
-  // TODO: Get data from backend (or from previous page state)
+  // TODO: Get data from backend using params
   const studentNames = ['Student 1', 'Student 2', 'Student 3', 'Student 4', 'Student 5'];
   return (
     <Page.Section>
@@ -111,8 +100,8 @@ const ReleaseStudent: React.FC<{
         as otherwise we may not be able to recover the account</strong>.
       </Typography>
       <Typography>
-        The students will then log in with their email via the <a href={paths.login.independent._}>independent student login</a>. Their passwords will stay
-        the same. Independent students do not need to provide a class access code.
+        The students will then log in with their email via the <Link className='body' href={paths.login.independent._}>independent student login</Link>.
+        Their passwords will stay the same. Independent students do not need to provide a class access code.
       </Typography>
       <ReleaseStudentsForm
         studentNames={studentNames}
