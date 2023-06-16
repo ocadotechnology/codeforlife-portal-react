@@ -42,10 +42,10 @@ export const paths = _('', {
       classes: _('/?tab=Your+classes', {
         editClass: _('&accessCode={accessCode}', {
           additional: _('&view=additional'),
-          editStudent: _('&studentId={studentId}'),
-          resetStudents: _('&view=reset'),
-          moveStudents: _('&view=move'),
-          releaseStudents: _('&view=release')
+          editStudent: _('&view=edit&studentIds={studentIds}'),
+          resetStudents: _('&view=reset&studentIds={studentIds}'),
+          moveStudents: _('&view=move&studentIds={studentIds}'),
+          releaseStudents: _('&view=release&studentIds={studentIds}')
         })
       }),
       account: _('/?tab=Your+account', {

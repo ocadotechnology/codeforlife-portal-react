@@ -170,18 +170,21 @@ const EditClass: React.FC<{
       },
       studentIds: {
         isRequired: false,
-        cast: (param: string) => { param.split(',').map(Number); }
+        cast: (param) => { return param.split(',').map(Number); }
       }
     });
+
     const theme = useTheme();
     const [view, setView] = React.useState(params?.view);
     const [studentIds, setStudentIds] = React.useState(params?.studentIds);
+
     if (view === 'additional') {
       return <AdditionalSettings
         accessCode={accessCode}
         goBack={() => { setView(undefined); }}
       />;
     }
+
     if (studentIds !== undefined) {
       switch (view) {
         case 'edit':
@@ -211,7 +214,7 @@ const EditClass: React.FC<{
       }
     }
     return <>
-        <Page.Section>
+      <Page.Section>
         <Typography variant="h4" align="center">
           Update details for Class 1 ({accessCode})
         </Typography>
