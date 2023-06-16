@@ -2,28 +2,38 @@ import React from 'react';
 import {
   Unstable_Grid2 as Grid,
   Typography,
-  Box,
-  Container,
-  typographyClasses
+  Container
 } from '@mui/material';
 
-import { primary } from 'codeforlife/lib/esm/theme/colors';
+import { ThemedBox } from 'codeforlife/lib/esm/theme';
+import { getStyleOverrides } from 'codeforlife/lib/esm/helpers';
 
+import { themeOptions } from '../../app/theme';
 import Links from './Links';
 import Logos from './Logos';
 import SignUp from './SignUp';
 
 const Footer: React.FC = () => {
   return (
-    <Box sx={{
-      width: '100%',
-      height: '100%',
-      backgroundColor: primary[500],
-      [`.${typographyClasses.root}`]: {
-        fontWeight: '600 !important',
-        color: 'white !important'
-      }
-    }}>
+    <ThemedBox
+      userType='teacher'
+      options={{
+        ...themeOptions,
+        components: {
+          ...themeOptions.components,
+          MuiTypography: {
+            ...themeOptions.components?.MuiTypography,
+            styleOverrides: {
+              ...themeOptions.components?.MuiTypography?.styleOverrides,
+              root: ({ ownerState }) => ({
+                ...getStyleOverrides(ownerState, 'MuiTypography', 'root', themeOptions.components),
+                fontWeight: '600 !important'
+              })
+            }
+          }
+        }
+      }}
+    >
       <Container>
         <Grid
           container
@@ -47,7 +57,7 @@ const Footer: React.FC = () => {
           </Grid>
         </Grid>
       </Container>
-    </Box>
+    </ThemedBox>
   );
 };
 

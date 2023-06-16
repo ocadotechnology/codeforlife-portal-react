@@ -40,8 +40,7 @@ const TeacherForm: React.FC = () => {
       header="Teacher/Tutor"
       subheader="Register below to create your school or club."
       description="You will have access to teaching resources, progress tracking and lesson plans for both Rapid Router and Kurono."
-      bgcolor="#ee0857" // TODO: use theme.palette
-      color="white"
+      userType='teacher'
     >
       <Form
         initialValues={initialValues}
