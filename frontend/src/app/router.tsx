@@ -40,8 +40,12 @@ export const paths = _('', {
     dashboard: _('/dashboard', {
       school: _('/?tab=Your+school'),
       classes: _('/?tab=Your+classes', {
-        edit: _('&edit={accessCode}', {
-          additional: _('&additional=true')
+        editClass: _('&accessCode={accessCode}', {
+          additional: _('&view=additional'),
+          editStudent: _('&view=edit&studentIds={studentIds}'),
+          resetStudents: _('&view=reset&studentIds={studentIds}'),
+          moveStudents: _('&view=move&studentIds={studentIds}'),
+          releaseStudents: _('&view=release&studentIds={studentIds}')
         })
       }),
       account: _('/?tab=Your+account', {

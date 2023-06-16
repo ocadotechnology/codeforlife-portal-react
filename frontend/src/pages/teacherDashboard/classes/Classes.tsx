@@ -6,7 +6,7 @@ import CflTable, {
 import { Button, Typography, useTheme } from '@mui/material';
 import { Add, Create, DoNotDisturb } from '@mui/icons-material';
 import { getClassesData, getTeachersData, getUser } from '../dummyMethods';
-import { AutocompleteField } from 'codeforlife/lib/esm/components/form';
+import { AutocompleteField, SubmitButton } from 'codeforlife/lib/esm/components/form';
 import CopyToClipboardIcon from '../../../components/CopyToClipboardIcon';
 import { CflHorizontalForm } from '../../../components/form/CflForm';
 import * as Yup from 'yup';
@@ -15,9 +15,9 @@ import SeeClassmatesProgressField from '../../../components/form/SeeClassmatesPr
 import Page from 'codeforlife/lib/esm/components/page';
 import { SearchParams } from 'codeforlife/lib/esm/helpers';
 import { validateAccessCode } from '../../login/StudentForm';
-import StudentManagement from './studentManagement/StudentManagement';
+import EditClass from './editClass/EditClass';
 
-const _YourClasses: React.FC = (): JSX.Element => {
+const _YourClasses: React.FC = () => {
   return (
     <>
       <Typography align="center" variant="h4">
@@ -55,7 +55,9 @@ const ClassTable: React.FC<{
           </CflTableCellElement>
           <CflTableCellElement justifyContent="center">
             <Button
-              onClick={() => { setAccessCode(accessCode); }}
+              onClick={() => {
+                setAccessCode(accessCode);
+              }}
               endIcon={<Create />}
             >
               Edit details
@@ -71,14 +73,17 @@ const ExternalStudentsJoiningRequestsActions: React.FC = () => {
   return (
     <>
       <Button endIcon={<Add />}>Add to class</Button>
-      <Button color="error" endIcon={<DoNotDisturb />}>
+      <Button
+        className="alert"
+        endIcon={<DoNotDisturb />}
+      >
         Reject
       </Button>
     </>
   );
 };
 
-const ExternalStudentsJoiningRequestsTable: React.FC = (): JSX.Element => {
+const ExternalStudentsJoiningRequestsTable: React.FC = () => {
   const teacherData = getTeachersData();
   return (
     <CflTable
@@ -104,7 +109,7 @@ const ExternalStudentsJoiningRequestsTable: React.FC = (): JSX.Element => {
   );
 };
 
-const ExternalStudentsJoiningRequests: React.FC = (): JSX.Element => {
+const ExternalStudentsJoiningRequests: React.FC = () => {
   return (
     <>
       <Typography align="center" variant="h4">
@@ -129,7 +134,7 @@ const CREATE_CLASS_SCHEMA = Yup.object().shape({
   seeClassmates: Yup.boolean()
 });
 
-const CreateNewClassForm: React.FC = (): JSX.Element => {
+const CreateNewClassForm: React.FC = () => {
   const teachersData = getTeachersData();
   const teacherNames = teachersData.map((teacher) => teacher.teacherName);
   return (
@@ -146,7 +151,7 @@ const CreateNewClassForm: React.FC = (): JSX.Element => {
         alert(JSON.stringify(values, null, 2));
         setSubmitting(false);
       }}
-      submitButton={<Button type="submit">Create class</Button>}
+      submitButton={<SubmitButton>Create class</SubmitButton>}
     >
       <ClassNameField />
       <AutocompleteField
@@ -167,26 +172,20 @@ const Classes: React.FC = () => {
   const theme = useTheme();
 
   const params = SearchParams.get<{
-    edit?: string;
-    additional?: boolean;
+    accessCode?: string;
   }>({
-    edit: {
+    accessCode: {
       isRequired: false,
       validate: SearchParams.validate.matchesSchema(validateAccessCode)
-    },
-    additional: {
-      isRequired: false,
-      cast: SearchParams.cast.toBoolean
     }
   });
 
-  const [accessCode, setAccessCode] = React.useState(params?.edit);
+  const [accessCode, setAccessCode] = React.useState(params?.accessCode);
 
   if (accessCode !== undefined) {
-    return <StudentManagement
+    return <EditClass
       accessCode={accessCode}
       goBack={() => { setAccessCode(undefined); }}
-      additional={params?.additional}
     />;
   }
 

@@ -23,15 +23,15 @@ import {
   ErrorOutlineOutlined
 } from '@mui/icons-material';
 import { getUser } from '../dummyMethods';
-import { TextField, CheckboxField } from 'codeforlife/lib/esm/components/form';
+import { TextField, CheckboxField, SubmitButton } from 'codeforlife/lib/esm/components/form';
 import { CflHorizontalForm } from '../../../components/form/CflForm';
 import Page from 'codeforlife/lib/esm/components/page';
 import { SearchParams } from 'codeforlife/lib/esm/helpers';
-import Setup2fa from './2fa/Setup2fa';
-import BackupTokens from './2fa/BackupTokens';
+import Setup2fa from './2fa/setup2fa/Setup2fa';
+import BackupTokens from './2fa/backupTokens/BackupTokens';
 import { paths } from '../../../app/router';
 
-const TwoFactorAuthentication: React.FC = (): JSX.Element => {
+const TwoFactorAuthentication: React.FC = () => {
   return (
     <Stack>
       <Typography variant="h5">Two factor authentication</Typography>
@@ -90,7 +90,7 @@ const YourAccountForm: React.FC = () => {
       onSubmit={(values) => {
         alert(JSON.stringify(values, null, 2));
       }}
-      submitButton={<Button>Update details</Button>}
+      submitButton={<SubmitButton>Update details</SubmitButton>}
     >
       <TextField
         name="firstName"
@@ -150,7 +150,7 @@ const YourAccountForm: React.FC = () => {
   );
 };
 
-const DeleteAccountForm: React.FC = (): JSX.Element => {
+const DeleteAccountForm: React.FC = () => {
   const theme = useTheme();
   return (
     <CflHorizontalForm
@@ -164,13 +164,12 @@ const DeleteAccountForm: React.FC = (): JSX.Element => {
         setSubmitting(false);
       }}
       submitButton={
-        <Button
+        <SubmitButton
           className='alert'
-          type="submit"
           endIcon={<DeleteOutline />}
         >
           Delete account
-        </Button>
+        </SubmitButton>
       }
     >
       <TextField

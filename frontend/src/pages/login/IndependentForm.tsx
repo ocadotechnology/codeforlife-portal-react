@@ -24,7 +24,7 @@ const initialValues: IndependentFormValues = {
   password: ''
 };
 
-const IndependentForm: React.FC = (): JSX.Element => {
+const IndependentForm: React.FC = () => {
   return (
     <BaseForm
       themedBoxProps={{ userType: 'independent' }}

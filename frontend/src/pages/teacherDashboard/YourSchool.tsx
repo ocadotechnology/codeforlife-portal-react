@@ -8,7 +8,6 @@ import {
 import React from 'react';
 import {
   Add,
-  Business,
   Create,
   DeleteOutline,
   DoDisturbOnOutlined,
@@ -25,14 +24,15 @@ import CflTable, {
 import { getSchool, getTeachersData, getUser } from './dummyMethods';
 import {
   TextField,
-  CheckboxField,
-  AutocompleteField
+  CheckboxField, SubmitButton
 } from 'codeforlife/lib/esm/components/form';
-import { getNames } from 'country-list';
 import { CflHorizontalForm } from '../../components/form/CflForm';
 import Page from 'codeforlife/lib/esm/components/page';
+import SchoolNameField from '../../components/form/SchoolNameField';
+import SchoolPostcodeField from '../../components/form/SchoolPostcodeField';
+import SchoolCountryField from '../../components/form/SchoolCountryField';
 
-const InviteTeacherForm: React.FC = (): JSX.Element => {
+const InviteTeacherForm: React.FC = () => {
   return (
     <CflHorizontalForm
       header="Invite a teacher to your school"
@@ -42,9 +42,7 @@ const InviteTeacherForm: React.FC = (): JSX.Element => {
         alert(JSON.stringify(values, null, 2));
       }}
       submitButton={
-        <Button type="submit">
-          Invite teacher
-        </Button>
+        <SubmitButton >Invite teacher</SubmitButton>
       }
     >
       <TextField
@@ -93,7 +91,8 @@ const InviteTeacherForm: React.FC = (): JSX.Element => {
   );
 };
 
-const UpdateSchoolDetailsForm: React.FC = (): JSX.Element => {
+const UpdateSchoolDetailsForm: React.FC = () => {
+  // TODO: Prepopulate with current school data
   const { schoolName, schoolPostcode, schoolCountry } = getSchool();
   return (
     <CflHorizontalForm
@@ -109,43 +108,12 @@ const UpdateSchoolDetailsForm: React.FC = (): JSX.Element => {
         alert(JSON.stringify(values, null, 2));
       }}
       submitButton={
-        <Button type="submit">
-          Update details
-        </Button>
+        <SubmitButton>Update details</SubmitButton>
       }
     >
-      <TextField
-        placeholder="Name of school or club"
-        helperText="Enter your school's name"
-        name="schoolName"
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <Business />
-            </InputAdornment>
-          )
-        }}
-      />
-      <TextField
-        placeholder="Postcode / Zipcode"
-        helperText="Enter your school's postcode"
-        name="schoolPostcode"
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <Business />
-            </InputAdornment>
-          )
-        }}
-      />
-      <AutocompleteField
-        options={getNames()}
-        textFieldProps={{
-          name: 'schoolCountry',
-          helperText: "Enter your school's country",
-          placeholder: 'Country'
-        }}
-      />
+      <SchoolNameField />
+      <SchoolPostcodeField />
+      <SchoolCountryField />
     </CflHorizontalForm>
   );
 };
@@ -160,7 +128,7 @@ const TeachersTableActions: React.FC<{
   userEmail,
   isTeacherAdmin,
   twoFactorAuthentication
-}): JSX.Element => {
+}) => {
     if (teacherEmail === userEmail) {
       return (
         <>
@@ -188,15 +156,18 @@ const TeachersTableActions: React.FC<{
       return (
         <>
           <Button endIcon={<Add />}>Make admin </Button>
-          <Button endIcon={<DoDisturbOnOutlined />} className='alert'>
-            Disable 2FA
-          </Button>
+          {twoFactorAuthentication
+            ? <Button endIcon={<DoDisturbOnOutlined />} className='alert'>
+                Disable 2FA
+              </Button>
+            : <></>
+          }
         </>
       );
     }
   };
 
-const TeachersTable: React.FC = (): JSX.Element => {
+const TeachersTable: React.FC = () => {
   const { email } = getUser();
   const teachersData = getTeachersData();
   const youText = (
@@ -245,13 +216,13 @@ const TeachersTable: React.FC = (): JSX.Element => {
 };
 
 const YourSchool: React.FC = () => {
-  const { schoolName, accessCode } = getSchool();
+  const { schoolName, schoolPostcode } = getSchool();
   const theme = useTheme();
 
   return <>
     <Page.Section>
       <Typography align="center" variant="h4">
-        Your school: {schoolName} ({accessCode})
+        Your school: {schoolName} ({schoolPostcode})
       </Typography>
       <Typography align="left">
         As an administrator of your school or club, you can select other

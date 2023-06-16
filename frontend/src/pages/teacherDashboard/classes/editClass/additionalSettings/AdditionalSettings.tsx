@@ -39,11 +39,14 @@ const currentDropdownOptions = [
   'Always allow external requests to this class (not recommended)'
 ];
 
-const ClassDetailsForm: React.FC = () => {
+const ClassDetailsForm: React.FC<{
+  goBack: () => void
+}> = ({ goBack }) => {
   return (
     <Formik
       initialValues={{
-        class: '',
+        // TODO: Prepopulate by getting class data instead of hardcoding
+        class: 'Class 1',
         classSettingOptions: currentDropdownOptions[0],
         allowStudentsToSeeEachOthersProgress: false
       }}
@@ -96,7 +99,12 @@ const ClassDetailsForm: React.FC = () => {
                   <Grid item xs={6}></Grid>
                 </Grid>
                 <Stack gap={3} direction="row" justifyContent="flex-start">
-                  <Button variant="outlined">Cancel</Button>
+                  <Button
+                    variant="outlined"
+                    onClick={goBack}
+                  >
+                    Cancel
+                  </Button>
                   <Button
                     disabled={!(formik.isValid && formik.dirty)}
                     type="submit"
@@ -246,7 +254,7 @@ const TransferClassToAnotherTeacher: React.FC = () => {
   );
 };
 
-const AdditionalClassSettings: React.FC<{
+const AdditionalSettings: React.FC<{
   accessCode: string;
   goBack: () => void;
 }> = ({
@@ -258,7 +266,7 @@ const AdditionalClassSettings: React.FC<{
     return <>
       <Page.Section>
         <Typography variant="h4" align="center">
-          Additional class settings class {'<CLASS NAME>'} ({accessCode})
+          Additional class settings class Class 1 ({accessCode})
         </Typography>
         <Link className='back-to' onClick={goBack}>
           Edit Class
@@ -272,7 +280,9 @@ const AdditionalClassSettings: React.FC<{
       </Page.Section>
       <Page.Section gridProps={{ bgcolor: theme.palette.info.light }}>
         <Typography variant="h5">Class details</Typography>
-        <ClassDetailsForm />
+        <ClassDetailsForm
+          goBack={goBack}
+        />
       </Page.Section>
       <Page.Section>
         <Typography variant="h5">Rapid Router access settings</Typography>
@@ -288,4 +298,4 @@ const AdditionalClassSettings: React.FC<{
     </>;
   };
 
-export default AdditionalClassSettings;
+export default AdditionalSettings;
