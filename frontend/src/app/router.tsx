@@ -83,7 +83,9 @@ export const paths = _('', {
     }),
     internalServerError: _('/?type=internalServerError')
   }),
-  rapidRouter: _('/rapid-router'),
+  rapidRouter: _('/rapid-router', {
+    scoreboard: _('/scoreboard')
+  }),
   kurono: _('/kurono')
 });
 

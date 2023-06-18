@@ -60,7 +60,8 @@ const LoginSelect: React.FC<{
           [`.${selectClasses.outlined}`]: {
             ...typography.button,
             padding: '6px 0px 6px 16px',
-            whiteSpace: 'pre'
+            whiteSpace: 'pre',
+            overflowWrap: 'break-word'
           },
           [`.${iconButtonClasses.root}`]: {
             color: typography.body1?.color,

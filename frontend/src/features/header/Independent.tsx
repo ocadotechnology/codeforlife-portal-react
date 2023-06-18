@@ -11,7 +11,7 @@ import { openInNewTab } from 'codeforlife/lib/esm/helpers';
 import SimpleSelect from './SimpleSelect';
 import Authenticated from './Authenticated';
 
-const Teacher: React.FC = () => {
+const Independent: React.FC = () => {
   const iconProps: SvgIconProps = {
     style: { marginLeft: '3px' },
     fontSize: 'small'
@@ -19,8 +19,8 @@ const Teacher: React.FC = () => {
 
   return <>
     <Authenticated
-      userType='Teacher'
-      dashboardHref={paths.teacher.dashboard._}
+      userType='Independent'
+      dashboardHref={paths.student.dashboard.independent._}
     >
       <SimpleSelect
         text='Games'
@@ -30,17 +30,11 @@ const Teacher: React.FC = () => {
             onClick: () => {
               window.location.href = paths.rapidRouter._;
             }
-          },
-          {
-            children: 'Kurono',
-            onClick: () => {
-              window.location.href = paths.kurono._;
-            }
           }
         ]}
       />
       <SimpleSelect
-        text='Teaching Resources'
+        text='Learning Resources'
         menuItemsProps={[
           {
             children: <>
@@ -50,21 +44,6 @@ const Teacher: React.FC = () => {
             onClick: () => {
               openInNewTab(process.env.REACT_APP_RR_TEACHING_RESOURCE as string);
             }
-          },
-          {
-            children: <>
-              Kurono&nbsp;
-              <LaunchIcon {...iconProps} />
-            </>,
-            onClick: () => {
-              openInNewTab(process.env.REACT_APP_KURONO_TEACHING_RESOURCE as string);
-            }
-          },
-          {
-            children: 'Coding Clubs',
-            onClick: () => {
-              window.location.href = paths.codingClubs._;
-            }
           }
         ]}
       />
@@ -72,4 +51,4 @@ const Teacher: React.FC = () => {
   </>;
 };
 
-export default Teacher;
+export default Independent;
