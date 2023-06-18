@@ -1,14 +1,9 @@
 import React from 'react';
 import {
   IconButton,
-  Link,
-  LinkProps,
-  Button,
   Box,
   Stack,
-  Container,
-  useTheme,
-  useMediaQuery
+  Container
 } from '@mui/material';
 import {
   Menu as MenuIcon
@@ -19,22 +14,28 @@ import { Image } from 'codeforlife/lib/esm/components';
 import { paths } from '../../app/router';
 import CflLogo from '../../images/cfl_logo.png';
 import OgLogo from '../../images/ocado_group.svg';
-import LoginSelect from './LoginSelect';
 import MenuDrawer from './MenuDrawer';
+import Unauthenticated from './Unauthenticated';
+import Teacher from './Teacher';
 
 const Header: React.FC = () => {
-  const theme = useTheme();
   const [menuIsOpen, setMenuIsOpen] = React.useState(false);
 
-  const extraMargin = '10px';
-  const linkProps: LinkProps = {
-    display: { xs: 'none', md: 'inline' },
-    color: '#383b3b',
-    variant: useMediaQuery(theme.breakpoints.up('lg')) ? 'h4' : 'h5',
-    className: 'no-decor',
-    marginLeft: extraMargin,
-    marginBottom: '0px !important'
-  };
+  // TODO: check if the use is logged in and account type.
+  // This is temporary for testing purposes.
+  let children: React.ReactNode;
+  function hrefIncludes(href: string): boolean {
+    return window.location.href.includes(href);
+  }
+  if (hrefIncludes(paths.teacher.dashboard._)) {
+    children = <Teacher />;
+  } else if (hrefIncludes(paths.student.dashboard.dependent._)) {
+    children = <Unauthenticated />;
+  } else if (hrefIncludes(paths.student.dashboard.independent._)) {
+    children = <Unauthenticated />;
+  } else {
+    children = <Unauthenticated />;
+  }
 
   return <>
     <Box style={{
@@ -54,14 +55,14 @@ const Header: React.FC = () => {
           alignItems='center'
           height='100%'
           width='100%'
-          gap={3}
+          gap={5}
         >
           <Image
             alt='Code for Life'
             src={CflLogo}
             maxWidth={{ xs: '65px', md: '80px' }}
             href={paths._}
-            marginRight={{ xs: 0, md: extraMargin }}
+            marginRight={{ xs: 0, md: '10px' }}
           />
           <Image
             alt='Ocado Group'
@@ -71,22 +72,16 @@ const Header: React.FC = () => {
             href={process.env.REACT_APP_OCADO_GROUP_HREF}
             hrefInNewTab
           />
-          <Link {...linkProps} href={paths.teacher._}>
-            Teachers
-          </Link>
-          <Link {...linkProps} href={paths.student._}>
-            Students
-          </Link>
-          <Button
-            sx={{
-              display: { xs: 'none', md: 'flex' },
-              ml: 'auto'
-            }}
-            href={paths.register._}
+          <Stack
+            direction='row'
+            alignItems='center'
+            height='100%'
+            width='100%'
+            gap={3}
+            display={{ xs: 'none', md: 'flex' }}
           >
-            Register
-          </Button>
-          <LoginSelect />
+            {children}
+          </Stack>
           <IconButton
             onClick={() => { setMenuIsOpen(true); }}
             sx={{ display: { md: 'none' } }}
@@ -96,7 +91,10 @@ const Header: React.FC = () => {
         </Stack>
       </Container>
     </Box>
-    <MenuDrawer isOpen={menuIsOpen} setIsOpen={setMenuIsOpen} />
+    <MenuDrawer
+      isOpen={menuIsOpen}
+      setIsOpen={setMenuIsOpen}
+    />
   </>;
 };
 
