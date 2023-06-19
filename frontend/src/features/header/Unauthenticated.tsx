@@ -77,8 +77,25 @@ const Unauthenticated: Menu = {
       />
     </>;
   },
-  Details: () => {
+  // eslint-disable-next-line react/prop-types
+  Details: ({ MenuButton }) => {
     return <>
+      <Button
+        href={paths.register._}
+        style={{
+          width: '100%',
+          fontSize: '20px'
+        }}
+      >
+        Register now
+      </Button>
+      {/* TODO: add login accordion */}
+      <MenuButton href={paths.teacher._}>
+        Teachers
+      </MenuButton>
+      <MenuButton href={paths.student._}>
+        Students
+      </MenuButton>
     </>;
   }
 };

@@ -10,7 +10,8 @@ import {
   Button,
   ButtonProps,
   buttonClasses,
-  useTheme
+  useTheme,
+  svgIconClasses
 } from '@mui/material';
 import {
   ChevronRight as ChevronRightIcon
@@ -18,6 +19,7 @@ import {
 import Hamburger from 'hamburger-react';
 
 import { Image } from 'codeforlife/lib/esm/components';
+import { wrap } from 'codeforlife/lib/esm/helpers';
 import {
   useFreshworksWidget,
   useOneTrustInfoToggle
@@ -27,16 +29,11 @@ import { paths } from '../../app/router';
 import CflLogo from '../../images/cfl_logo.png';
 import OgLogo from '../../images/ocado_group.svg';
 
-type ClickButtonEvent = React.MouseEvent<HTMLButtonElement, MouseEvent>;
-type ClickButtonHandler = (event?: ClickButtonEvent) => void;
-
-interface MenuProps {
-  handleClick: (handle: ClickButtonHandler) => ClickButtonHandler;
-}
-
 export interface Menu {
-  Summary: React.FC<MenuProps>;
-  Details: React.FC<MenuProps>;
+  Summary: React.FC;
+  Details: React.FC<{
+    MenuButton: React.FC<ButtonProps>;
+  }>;
 }
 
 const MenuAccordion: React.FC<{
@@ -50,17 +47,18 @@ const MenuAccordion: React.FC<{
 }) => {
     const theme = useTheme();
 
-    const commonButtonProps: ButtonProps = {
-      variant: 'text',
-      endIcon: <ChevronRightIcon />
-    };
-
-    function handleClick(handle: ClickButtonHandler) {
-      return (event?: ClickButtonEvent) => {
-        setExpanded(false);
-        handle(event);
-      };
-    }
+    const MenuButton: React.FC<ButtonProps> = ({
+      onClick, ...otherButtonProps
+    }) => (
+      <Button
+        {...otherButtonProps}
+        variant='text'
+        endIcon={<ChevronRightIcon />}
+        onClick={wrap({
+          before: () => { setExpanded(false); }
+        }, onClick)}
+      />
+    );
 
     return (
       <Accordion
@@ -116,7 +114,7 @@ const MenuAccordion: React.FC<{
                 gap={3}
                 display={{ xs: 'none', lg: 'flex' }}
               >
-                <Menu.Summary handleClick={handleClick} />
+                <Menu.Summary />
               </Stack>
               <IconButton sx={{ display: { lg: 'none' } }}>
                 <Hamburger
@@ -142,53 +140,35 @@ const MenuAccordion: React.FC<{
           },
           [`.${buttonClasses.endIcon}`]: {
             marginLeft: 'auto'
+          },
+          [`.${svgIconClasses.root}`]: {
+            fontSize: '27px'
           }
         }}>
-          <Menu.Details handleClick={handleClick} />
-          <Button
-            {...commonButtonProps}
-            href={paths.aboutUs._}
-          >
+          <Menu.Details MenuButton={MenuButton} />
+          <MenuButton href={paths.aboutUs._}>
             About us
-          </Button>
-          <Button
-            {...commonButtonProps}
-            onClick={handleClick(() => {
-              useFreshworksWidget('open');
-            })}
+          </MenuButton>
+          <MenuButton
+            onClick={() => { useFreshworksWidget('open'); }}
           >
             Help and support
-          </Button>
-          <Button
-            {...commonButtonProps}
-            onClick={handleClick(useOneTrustInfoToggle)}
-          >
+          </MenuButton>
+          <MenuButton onClick={useOneTrustInfoToggle}>
             Cookie settings
-          </Button>
-          <Button
-            {...commonButtonProps}
-            href={paths.privacyNotice._}
-          >
+          </MenuButton>
+          <MenuButton href={paths.privacyNotice._}>
             Privacy notice
-          </Button>
-          <Button
-            {...commonButtonProps}
-            href={paths.termsOfUse._}
-          >
+          </MenuButton>
+          <MenuButton href={paths.termsOfUse._}>
             Terms of use
-          </Button>
-          <Button
-            {...commonButtonProps}
-            href={paths.homeLearning._}
-          >
+          </MenuButton>
+          <MenuButton href={paths.homeLearning._}>
             Home learning
-          </Button>
-          <Button
-            {...commonButtonProps}
-            href={paths.getInvolved._}
-          >
+          </MenuButton>
+          <MenuButton href={paths.getInvolved._}>
             Get involved
-          </Button>
+          </MenuButton>
         </AccordionDetails>
       </Accordion>
     );
