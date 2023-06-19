@@ -1,26 +1,10 @@
 import React from 'react';
 import {
-  IconButton,
-  Box,
-  Stack,
-  Container,
   Backdrop,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
   useMediaQuery,
-  Theme,
-  Button
+  Theme
 } from '@mui/material';
-import {
-  Menu as MenuIcon
-} from '@mui/icons-material';
 
-import { Image } from 'codeforlife/lib/esm/components';
-
-import { paths } from '../../app/router';
-import CflLogo from '../../images/cfl_logo.png';
-import OgLogo from '../../images/ocado_group.svg';
 import MenuAccordion, { Menu } from './MenuAccordion';
 import Unauthenticated from './Unauthenticated';
 import Teacher from './authenticated/Teacher';

@@ -18,22 +18,30 @@ import {
 import Hamburger from 'hamburger-react';
 
 import { Image } from 'codeforlife/lib/esm/components';
+import {
+  useFreshworksWidget,
+  useOneTrustInfoToggle
+} from 'codeforlife/lib/esm/hooks';
 
 import { paths } from '../../app/router';
 import CflLogo from '../../images/cfl_logo.png';
 import OgLogo from '../../images/ocado_group.svg';
 
-interface BaseMenuAccordionProps {
-  expanded: boolean;
-  setExpanded: (expanded: boolean) => void;
+type ClickButtonEvent = React.MouseEvent<HTMLButtonElement, MouseEvent>;
+type ClickButtonHandler = (event?: ClickButtonEvent) => void;
+
+interface MenuProps {
+  handleClick: (handle: ClickButtonHandler) => ClickButtonHandler;
 }
 
 export interface Menu {
-  Summary: React.FC<BaseMenuAccordionProps>;
-  Details: React.FC<BaseMenuAccordionProps>;
+  Summary: React.FC<MenuProps>;
+  Details: React.FC<MenuProps>;
 }
 
-const MenuAccordion: React.FC<BaseMenuAccordionProps & {
+const MenuAccordion: React.FC<{
+  expanded: boolean;
+  setExpanded: (expanded: boolean) => void;
   Menu: Menu;
 }> = ({
   expanded,
@@ -46,6 +54,13 @@ const MenuAccordion: React.FC<BaseMenuAccordionProps & {
       variant: 'text',
       endIcon: <ChevronRightIcon />
     };
+
+    function handleClick(handle: ClickButtonHandler) {
+      return (event?: ClickButtonEvent) => {
+        setExpanded(false);
+        handle(event);
+      };
+    }
 
     return (
       <Accordion
@@ -101,10 +116,7 @@ const MenuAccordion: React.FC<BaseMenuAccordionProps & {
                 gap={3}
                 display={{ xs: 'none', lg: 'flex' }}
               >
-                <Menu.Summary
-                  expanded={expanded}
-                  setExpanded={setExpanded}
-                />
+                <Menu.Summary handleClick={handleClick} />
               </Stack>
               <IconButton sx={{ display: { lg: 'none' } }}>
                 <Hamburger
@@ -132,10 +144,7 @@ const MenuAccordion: React.FC<BaseMenuAccordionProps & {
             marginLeft: 'auto'
           }
         }}>
-          <Menu.Details
-            expanded={expanded}
-            setExpanded={setExpanded}
-          />
+          <Menu.Details handleClick={handleClick} />
           <Button
             {...commonButtonProps}
             href={paths.aboutUs._}
@@ -144,11 +153,15 @@ const MenuAccordion: React.FC<BaseMenuAccordionProps & {
           </Button>
           <Button
             {...commonButtonProps}
+            onClick={handleClick(() => {
+              useFreshworksWidget('open');
+            })}
           >
             Help and support
           </Button>
           <Button
             {...commonButtonProps}
+            onClick={handleClick(useOneTrustInfoToggle)}
           >
             Cookie settings
           </Button>
