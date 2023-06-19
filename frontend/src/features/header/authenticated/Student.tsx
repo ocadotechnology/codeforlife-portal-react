@@ -3,8 +3,8 @@ import {
   Link
 } from '@mui/material';
 
-import { paths } from '../../app/router';
-import SimpleSelect from './SimpleSelect';
+import { paths } from '../../../app/router';
+import SimpleSelect from '../SimpleSelect';
 import Authenticated from './Authenticated';
 
 const Student: React.FC = () => {

@@ -6,9 +6,9 @@ import {
   Launch as LaunchIcon
 } from '@mui/icons-material';
 
-import { paths } from '../../app/router';
+import { paths } from '../../../app/router';
 import { openInNewTab } from 'codeforlife/lib/esm/helpers';
-import SimpleSelect from './SimpleSelect';
+import SimpleSelect from '../SimpleSelect';
 import Authenticated from './Authenticated';
 
 const Teacher: React.FC = () => {

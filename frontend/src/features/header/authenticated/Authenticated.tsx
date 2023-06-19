@@ -11,7 +11,7 @@ import {
   ManageAccountsOutlined as ManageAccountsOutlinedIcon
 } from '@mui/icons-material';
 
-import LoginSelect from './LoginSelect';
+import LoginSelect from '../LoginSelect';
 
 const Authenticated: React.FC<{
   userType: string;

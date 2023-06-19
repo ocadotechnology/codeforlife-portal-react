@@ -16,9 +16,9 @@ import CflLogo from '../../images/cfl_logo.png';
 import OgLogo from '../../images/ocado_group.svg';
 import MenuDrawer from './MenuDrawer';
 import Unauthenticated from './Unauthenticated';
-import Teacher from './Teacher';
-import Student from './Student';
-import Independent from './Independent';
+import Teacher from './authenticated/Teacher';
+import Student from './authenticated/Student';
+import Independent from './authenticated/Independent';
 
 const Header: React.FC = () => {
   const [menuIsOpen, setMenuIsOpen] = React.useState(false);
