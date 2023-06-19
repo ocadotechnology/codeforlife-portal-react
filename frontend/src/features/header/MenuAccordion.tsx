@@ -23,14 +23,17 @@ import { paths } from '../../app/router';
 import CflLogo from '../../images/cfl_logo.png';
 import OgLogo from '../../images/ocado_group.svg';
 
-export interface Menu {
-  Summary: React.FC;
-  Details: React.FC;
-}
-
-const MenuAccordion: React.FC<{
+interface BaseMenuAccordionProps {
   expanded: boolean;
   setExpanded: (expanded: boolean) => void;
+}
+
+export interface Menu {
+  Summary: React.FC<BaseMenuAccordionProps>;
+  Details: React.FC<BaseMenuAccordionProps>;
+}
+
+const MenuAccordion: React.FC<BaseMenuAccordionProps & {
   Menu: Menu;
 }> = ({
   expanded,
@@ -47,14 +50,13 @@ const MenuAccordion: React.FC<{
     return (
       <Accordion
         expanded={expanded}
-        style={{
-          width: '100%',
+        sx={{
+          zIndex: (theme) => theme.zIndex.appBar,
           boxShadow: '0 2px 7px 1px rgba(0, 0, 0, 0.1)',
           backgroundColor: 'white',
           position: 'sticky',
           top: 0
         }}
-        sx={{ zIndex: (theme) => theme.zIndex.appBar }}
       >
         <AccordionSummary sx={{
           padding: '0px !important',
@@ -99,7 +101,10 @@ const MenuAccordion: React.FC<{
                 gap={3}
                 display={{ xs: 'none', lg: 'flex' }}
               >
-                <Menu.Summary />
+                <Menu.Summary
+                  expanded={expanded}
+                  setExpanded={setExpanded}
+                />
               </Stack>
               <IconButton sx={{ display: { lg: 'none' } }}>
                 <Hamburger
@@ -127,9 +132,13 @@ const MenuAccordion: React.FC<{
             marginLeft: 'auto'
           }
         }}>
-          <Menu.Details />
+          <Menu.Details
+            expanded={expanded}
+            setExpanded={setExpanded}
+          />
           <Button
             {...commonButtonProps}
+            href={paths.aboutUs._}
           >
             About us
           </Button>
@@ -145,21 +154,25 @@ const MenuAccordion: React.FC<{
           </Button>
           <Button
             {...commonButtonProps}
+            href={paths.privacyNotice._}
           >
             Privacy notice
           </Button>
           <Button
             {...commonButtonProps}
+            href={paths.termsOfUse._}
           >
             Terms of use
           </Button>
           <Button
             {...commonButtonProps}
+            href={paths.homeLearning._}
           >
             Home learning
           </Button>
           <Button
             {...commonButtonProps}
+            href={paths.getInvolved._}
           >
             Get involved
           </Button>
