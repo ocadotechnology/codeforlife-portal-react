@@ -9,7 +9,7 @@ import {
 import * as Yup from 'yup';
 
 import {
-  NewPasswordField
+  PasswordField
 } from 'codeforlife/lib/esm/components/form';
 
 export interface CflPasswordFieldsProps {
@@ -57,26 +57,28 @@ const CflPasswordFields: React.FC<CflPasswordFieldsProps> = ({
   }
 
   return <>
-    <NewPasswordField
-      passwordFieldProps={{
-        placeholder: 'Password',
-        helperText: 'Enter a password',
-        validate: Yup
-          .string()
-          .required()
-          .test(
-            'independent-password-strength-check',
-            'Invalid password',
-            (password) => {
-              setPassword(password);
-              return isStrongPassword(password);
-            }
-          )
-      }}
-      repeatPasswordFieldProps={{
-        placeholder: 'Repeat password',
-        helperText: 'Repeat password'
-      }}
+    <PasswordField
+      placeholder='Password'
+      helperText='Enter a password'
+      validate={Yup
+        .string()
+        .required()
+        .test(
+          'independent-password-strength-check',
+          'Invalid password',
+          (password) => {
+            setPassword(password);
+            return isStrongPassword(password);
+          }
+        )
+      }
+      repeat={[
+        {
+          name: 'repeatPassword',
+          placeholder: 'Repeat password',
+          helperText: 'Repeat password'
+        }
+      ]}
     />
     <Stack direction='row' justifyContent='center'>
       <CircleIcon
