@@ -30,6 +30,7 @@ import { SearchParams } from 'codeforlife/lib/esm/helpers';
 import Setup2fa from './2fa/setup2fa/Setup2fa';
 import BackupTokens from './2fa/backupTokens/BackupTokens';
 import { paths } from '../../../app/router';
+import DeleteAccountForm from "../../../features/DeleteAccountForm";
 
 const TwoFactorAuthentication: React.FC = () => {
   return (
@@ -144,53 +145,6 @@ const YourAccountForm: React.FC = () => {
               <LockOutlined />
             </InputAdornment>
           )
-        }}
-      />
-    </CflHorizontalForm>
-  );
-};
-
-const DeleteAccountForm: React.FC = () => {
-  const theme = useTheme();
-  return (
-    <CflHorizontalForm
-      header="Delete account"
-      subheader="If you no longer wish to have a Code for Life account, you can delete it by confirming below. You will receive an email to confirm this decision."
-      subheaderBold="This can't be reversed. All classes you've created will be permanently erased."
-      initialValues={DELETE_ACCOUNT_INITIAL_VALUES}
-      validationSchema={DELETE_ACCOUNT_SCHEMA}
-      onSubmit={(formik, { setSubmitting }) => {
-        alert(JSON.stringify(formik, null, 2));
-        setSubmitting(false);
-      }}
-      submitButton={
-        <SubmitButton
-          className='alert'
-          endIcon={<DeleteOutline />}
-        >
-          Delete account
-        </SubmitButton>
-      }
-    >
-      <TextField
-        name="currentPassword"
-        label="Current password"
-        helperText="Enter your current password"
-        type="password"
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <SecurityOutlined />
-            </InputAdornment>
-          )
-        }}
-      />
-      <CheckboxField
-        name="removeFromNewsletter"
-        sx={{ color: theme.palette.info.dark }}
-        formControlLabelProps={{
-          label:
-            'Please remove me from the newsletter and marketing emails too.'
         }}
       />
     </CflHorizontalForm>
