@@ -8,18 +8,7 @@ import { themeOptions as cflThemeOptions } from 'codeforlife/lib/esm/theme';
 
 // Unpack the base options to extend the theme
 export const themeOptions: ThemeOptions = {
-  ...cflThemeOptions,
-  components: {
-    ...cflThemeOptions.components,
-    MuiAccordion: {
-      styleOverrides: {
-        root: {
-          margin: '0px !important',
-          borderRadius: '0px !important'
-        }
-      }
-    }
-  }
+  ...cflThemeOptions
 };
 
 const theme = responsiveFontSizes(createTheme(themeOptions));
