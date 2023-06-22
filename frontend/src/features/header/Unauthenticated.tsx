@@ -16,10 +16,12 @@ import {
 import { includesClassNames } from 'codeforlife/lib/esm/helpers';
 
 import { paths } from '../../app/router';
-import { Menu } from './MenuAccordion';
+import { MenuComponents } from './menu/Menu';
 import LoginSelect from './LoginSelect';
+import MenuButton from './menu/MenuButton';
+import MenuAccordion from './menu/MenuAccordion';
 
-const Unauthenticated: Menu = {
+const Unauthenticated: MenuComponents = {
   Summary: () => {
     const upLg = useMediaQuery(
       (theme: Theme) => theme.breakpoints.up('lg')
@@ -77,8 +79,7 @@ const Unauthenticated: Menu = {
       />
     </>;
   },
-  // eslint-disable-next-line react/prop-types
-  Details: ({ MenuButton }) => {
+  Details: () => {
     return <>
       <Button
         href={paths.register._}
@@ -89,7 +90,17 @@ const Unauthenticated: Menu = {
       >
         Register now
       </Button>
-      {/* TODO: add login accordion */}
+      <MenuAccordion label='Log in' nesting={2}>
+        <MenuButton href={paths.login.teacher._}>
+          Teacher
+        </MenuButton>
+        <MenuButton href={paths.login.student._}>
+          Student
+        </MenuButton>
+        <MenuButton href={paths.login.independent._}>
+          Independent
+        </MenuButton>
+      </MenuAccordion>
       <MenuButton href={paths.teacher._}>
         Teachers
       </MenuButton>

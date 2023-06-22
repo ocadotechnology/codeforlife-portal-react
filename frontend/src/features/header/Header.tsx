@@ -5,7 +5,7 @@ import {
   Theme
 } from '@mui/material';
 
-import MenuAccordion, { Menu } from './MenuAccordion';
+import Menu, { MenuComponents } from './menu/Menu';
 import Unauthenticated from './Unauthenticated';
 import Teacher from './authenticated/Teacher';
 import Student from './authenticated/Student';
@@ -21,7 +21,7 @@ const Header: React.FC = () => {
 
   // TODO: check if the use is logged in and account type.
   // This is temporary for testing purposes.
-  let Menu: Menu;
+  let Components: MenuComponents;
   function hrefIncludes(href: string): boolean {
     return window.location.href.includes(href);
   }
@@ -32,14 +32,14 @@ const Header: React.FC = () => {
   // } else if (hrefIncludes(paths.student.dashboard.independent._)) {
   //   menu = <Independent />;
   // } else {
-  Menu = Unauthenticated;
+  Components = Unauthenticated;
   // }
 
   return <>
-    <MenuAccordion
+    <Menu
       expanded={expanded}
       setExpanded={setExpanded}
-      Menu={Menu}
+      Components={Components}
     />
     <Backdrop
       sx={{ zIndex: (theme) => theme.zIndex.appBar - 1 }}

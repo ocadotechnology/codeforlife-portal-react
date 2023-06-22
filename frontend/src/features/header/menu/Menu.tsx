@@ -7,58 +7,39 @@ import {
   AccordionSummary,
   accordionSummaryClasses,
   AccordionDetails,
-  Button,
-  ButtonProps,
+  accordionDetailsClasses,
   buttonClasses,
   useTheme,
   svgIconClasses
 } from '@mui/material';
-import {
-  ChevronRight as ChevronRightIcon
-} from '@mui/icons-material';
 import Hamburger from 'hamburger-react';
 
 import { Image } from 'codeforlife/lib/esm/components';
-import { wrap } from 'codeforlife/lib/esm/helpers';
 import {
   useFreshworksWidget,
   useOneTrustInfoToggle
 } from 'codeforlife/lib/esm/hooks';
 
-import { paths } from '../../app/router';
-import CflLogo from '../../images/cfl_logo.png';
-import OgLogo from '../../images/ocado_group.svg';
+import { paths } from '../../../app/router';
+import CflLogo from '../../../images/cfl_logo.png';
+import OgLogo from '../../../images/ocado_group.svg';
+import MenuButton from './MenuButton';
 
-export interface Menu {
+export interface MenuComponents {
   Summary: React.FC;
-  Details: React.FC<{
-    MenuButton: React.FC<ButtonProps>;
-  }>;
+  Details: React.FC;
 }
 
-const MenuAccordion: React.FC<{
+const Menu: React.FC<{
   expanded: boolean;
   setExpanded: (expanded: boolean) => void;
-  Menu: Menu;
+  Components: MenuComponents;
 }> = ({
   expanded,
   setExpanded,
-  Menu
+  Components
 }) => {
     const theme = useTheme();
-
-    const MenuButton: React.FC<ButtonProps> = ({
-      onClick, ...otherButtonProps
-    }) => (
-      <Button
-        {...otherButtonProps}
-        variant='text'
-        endIcon={<ChevronRightIcon />}
-        onClick={wrap({
-          before: () => { setExpanded(false); }
-        }, onClick)}
-      />
-    );
 
     return (
       <Accordion
@@ -68,15 +49,35 @@ const MenuAccordion: React.FC<{
           boxShadow: '0 2px 7px 1px rgba(0, 0, 0, 0.1)',
           backgroundColor: 'white',
           position: 'sticky',
-          top: 0
-        }}
-      >
-        <AccordionSummary sx={{
-          padding: '0px !important',
+          top: 0,
+          [`.${accordionSummaryClasses.root}`]: {
+            padding: '0px'
+          },
           [`.${accordionSummaryClasses.content}`]: {
             margin: '0px !important'
+          },
+          [`.${accordionDetailsClasses.root}`]: {
+            padding: '0px !important',
+            [`.${buttonClasses.root}`]: {
+              padding: '24px 12px',
+              width: '100%',
+              fontSize: '20px'
+            },
+            [`.${buttonClasses.text}`]: {
+              color: theme.typography.body1.color,
+              borderTop: `2px solid ${theme.palette.info.main}`
+            },
+            [`.${buttonClasses.endIcon}`]: {
+              marginLeft: 'auto'
+            },
+            [`.${svgIconClasses.root}`]: {
+              fontSize: '27px',
+              color: 'black !important'
+            }
           }
-        }}>
+        }}
+      >
+        <AccordionSummary>
           <Container
             maxWidth='xl'
             sx={{
@@ -114,7 +115,7 @@ const MenuAccordion: React.FC<{
                 gap={3}
                 display={{ xs: 'none', lg: 'flex' }}
               >
-                <Menu.Summary />
+                <Components.Summary />
               </Stack>
               <IconButton sx={{ display: { lg: 'none' } }}>
                 <Hamburger
@@ -127,25 +128,8 @@ const MenuAccordion: React.FC<{
             </Stack>
           </Container>
         </AccordionSummary>
-        <AccordionDetails sx={{
-          padding: '0px !important',
-          [`.${buttonClasses.root}`]: {
-            padding: '24px 12px',
-            width: '100%',
-            fontSize: '20px'
-          },
-          [`.${buttonClasses.text}`]: {
-            color: theme.typography.body1.color,
-            borderTop: `2px solid ${theme.palette.info.main}`
-          },
-          [`.${buttonClasses.endIcon}`]: {
-            marginLeft: 'auto'
-          },
-          [`.${svgIconClasses.root}`]: {
-            fontSize: '27px'
-          }
-        }}>
-          <Menu.Details MenuButton={MenuButton} />
+        <AccordionDetails>
+          <Components.Details />
           <MenuButton href={paths.aboutUs._}>
             About us
           </MenuButton>
@@ -174,4 +158,4 @@ const MenuAccordion: React.FC<{
     );
   };
 
-export default MenuAccordion;
+export default Menu;
