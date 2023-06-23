@@ -4,16 +4,12 @@ import {
   LinkProps,
   useMediaQuery,
   Button,
-  selectClasses,
   Theme
 } from '@mui/material';
 import {
   ExpandMore as ExpandMoreIcon,
-  ExpandLess as ExpandLessIcon,
   ChevronRight as ChevronRightIcon
 } from '@mui/icons-material';
-
-import { includesClassNames } from 'codeforlife/lib/esm/helpers';
 
 import { paths } from '../../app/router';
 import { MenuComponents } from './menu/Menu';
@@ -54,11 +50,7 @@ const Unauthenticated: MenuComponents = {
       <LoginSelect
         width='150px'
         text='Log in'
-        getIcon={(props) => (
-          includesClassNames(props, [selectClasses.iconOpen])
-            ? <ExpandLessIcon />
-            : <ExpandMoreIcon />
-        )}
+        IconComponent={ExpandMoreIcon}
         menuItemsProps={[
           {
             children: 'Teacher',

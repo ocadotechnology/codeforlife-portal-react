@@ -45,7 +45,7 @@ const Authenticated: React.FC<{
       <LoginSelect
         width='220px'
         text={userName}
-        getIcon={() => <PersonOutlineOutlinedIcon />}
+        IconComponent={PersonOutlineOutlinedIcon}
         menuItemsProps={[
           {
             children: 'Log out',

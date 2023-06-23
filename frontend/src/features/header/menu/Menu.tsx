@@ -47,13 +47,13 @@ const Menu: React.FC<{
         sx={{
           zIndex: (theme) => theme.zIndex.appBar,
           boxShadow: '0 2px 7px 1px rgba(0, 0, 0, 0.1)',
-          backgroundColor: 'white',
           position: 'sticky',
           top: 0,
           maxHeight: '100vh',
           overflowY: 'auto',
           [`.${accordionSummaryClasses.root}`]: {
-            padding: '0px'
+            padding: '0px',
+            backgroundColor: 'white !important'
           },
           [`.${accordionSummaryClasses.content}`]: {
             margin: '0px !important'
