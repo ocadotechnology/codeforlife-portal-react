@@ -94,7 +94,7 @@ jobs:
         uses: google-github-actions/setup-gcloud@v1
 
       - name: 📁 CD to Frontend
-        run: cd ./frontend
+        run: cd ./codeforlife-portal-react/frontend
 
       - name: 🛠 Install Frontend Dependencies
         # TODO: install with production=true
