@@ -5,6 +5,7 @@ import {
   Theme
 } from '@mui/material';
 
+import { paths } from '../../app/router';
 import Menu, { MenuComponents } from './menu/Menu';
 import Unauthenticated from './Unauthenticated';
 import Teacher from './authenticated/Teacher';
@@ -25,15 +26,15 @@ const Header: React.FC = () => {
   function hrefIncludes(href: string): boolean {
     return window.location.href.includes(href);
   }
-  // if (hrefIncludes(paths.teacher.dashboard._)) {
-  //   menu = <Teacher />;
-  // } else if (hrefIncludes(paths.student.dashboard.dependent._)) {
-  //   menu = <Student />;
-  // } else if (hrefIncludes(paths.student.dashboard.independent._)) {
-  //   menu = <Independent />;
-  // } else {
-  Components = Unauthenticated;
-  // }
+  if (hrefIncludes(paths.teacher.dashboard._)) {
+    Components = Teacher;
+  } else if (hrefIncludes(paths.student.dashboard.dependent._)) {
+    Components = Student;
+  } else if (hrefIncludes(paths.student.dashboard.independent._)) {
+    Components = Independent;
+  } else {
+    Components = Unauthenticated;
+  }
 
   return <>
     <Menu

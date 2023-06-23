@@ -2,9 +2,11 @@ import React from 'react';
 import {
   Accordion,
   AccordionSummary,
+  accordionSummaryClasses,
   AccordionDetails,
   Typography,
-  buttonClasses
+  useTheme,
+  svgIconClasses
 } from '@mui/material';
 import {
   ExpandMore as ExpandMoreIcon
@@ -13,40 +15,63 @@ import {
 export interface MenuAccordionProps {
   label: string;
   children: React.ReactNode;
-  nesting: number;
+  spacing?: number;
+  bgcolor?: {
+    main: string;
+    contrastText: string;
+  };
 }
 
 const MenuAccordion: React.FC<MenuAccordionProps> = ({
   label,
   children,
-  nesting
+  spacing = 1,
+  bgcolor
 }) => {
+  const theme = useTheme();
   const [expanded, setExpanded] = React.useState(false);
 
   return (
     <Accordion
       expanded={expanded}
       onChange={() => { setExpanded((expanded) => !expanded); }}
+      style={{
+        borderTop: `2px solid ${theme.palette.info.main}`
+      }}
+      sx={{
+        ...(bgcolor !== undefined && {
+          [`.${accordionSummaryClasses.root}`]: {
+            bgcolor: `${bgcolor.main} !important`
+          }
+        })
+      }}
     >
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
         sx={{
-          padding: '12px !important'
+          paddingTop: '10px !important',
+          paddingRight: '12px !important',
+          paddingBottom: '10px !important',
+          paddingLeft: `${12 * spacing}px !important`,
+          [`.${svgIconClasses.root}`]: {
+            color: `${bgcolor !== undefined
+              ? bgcolor.contrastText
+              : 'black'
+              } 
+            !important`
+          }
         }}
       >
         <Typography
           mb={0}
-          fontSize='20px'
+          fontSize='20px !important'
           fontWeight={550}
+          color={bgcolor?.contrastText}
         >
           {label}
         </Typography>
       </AccordionSummary>
-      <AccordionDetails sx={{
-        [`.${buttonClasses.root}`]: {
-          paddingLeft: `${18 * nesting}px !important`
-        }
-      }}>
+      <AccordionDetails>
         {children}
       </AccordionDetails>
     </Accordion>

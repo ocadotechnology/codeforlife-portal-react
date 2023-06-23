@@ -22,6 +22,7 @@ export interface LoginSelectProps extends Pick<SelectProps, (
   'sx' |
   'IconComponent'
 )> {
+  rotateIcon?: boolean;
   width: string;
   text: string;
   menuItemsProps: Array<MenuItemProps & {
@@ -33,6 +34,7 @@ export interface LoginSelectProps extends Pick<SelectProps, (
 const LoginSelect: React.FC<LoginSelectProps> = ({
   sx,
   IconComponent,
+  rotateIcon = false,
   width,
   text,
   menuItemsProps
@@ -61,6 +63,11 @@ const LoginSelect: React.FC<LoginSelectProps> = ({
           whiteSpace: 'pre',
           overflowWrap: 'break-word'
         },
+        ...(!rotateIcon && {
+          [`.${selectClasses.iconOpen}`]: {
+            transform: 'none'
+          }
+        }),
         [`.${svgIconClasses.root}`]: {
           color: typography.body1?.color,
           position: 'absolute',

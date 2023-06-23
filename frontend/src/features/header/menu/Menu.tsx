@@ -25,9 +25,12 @@ import CflLogo from '../../../images/cfl_logo.png';
 import OgLogo from '../../../images/ocado_group.svg';
 import MenuButton from './MenuButton';
 
-export interface MenuComponents {
-  Summary: React.FC;
-  Details: React.FC;
+export interface MenuComponents<
+  SummaryProps = any,
+  DetailsProps = any
+> {
+  Summary: React.FC<SummaryProps>;
+  Details: React.FC<DetailsProps>;
 }
 
 const Menu: React.FC<{
@@ -74,7 +77,7 @@ const Menu: React.FC<{
             },
             [`.${svgIconClasses.root}`]: {
               fontSize: '27px',
-              color: 'black !important'
+              color: 'black'
             }
           }
         }}

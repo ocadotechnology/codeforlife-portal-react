@@ -48,6 +48,7 @@ const Unauthenticated: MenuComponents = {
         Register
       </Button>
       <LoginSelect
+        rotateIcon
         width='150px'
         text='Log in'
         IconComponent={ExpandMoreIcon}
@@ -82,7 +83,7 @@ const Unauthenticated: MenuComponents = {
       >
         Register now
       </Button>
-      <MenuAccordion label='Log in' nesting={2}>
+      <MenuAccordion label='Log in'>
         <MenuButton href={paths.login.teacher._}>
           Teacher
         </MenuButton>
