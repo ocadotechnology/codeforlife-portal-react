@@ -50,6 +50,8 @@ const Menu: React.FC<{
           backgroundColor: 'white',
           position: 'sticky',
           top: 0,
+          maxHeight: '100vh',
+          overflowY: 'auto',
           [`.${accordionSummaryClasses.root}`]: {
             padding: '0px'
           },
