@@ -95,16 +95,21 @@ jobs:
 
       - name: 🛠 Install Frontend Dependencies
         working-directory: ./frontend
-        # TODO: install with production=true
-        run: yarn install --production=false
+        run: yarn install
+        # env:
+        #   NODE_ENV: production
 
       - name: 🛠 Build Frontend
         working-directory: ./frontend  
         run: yarn run build
+        env:
+          NODE_ENV: production
 
       - name: 🛠 Bundle Frontend
         working-directory: ./frontend
         run: node djangoBundler.js
+        env:
+          NODE_ENV: production
 
       - name: 🛠 Install Backend Dependencies
         working-directory: ./backend

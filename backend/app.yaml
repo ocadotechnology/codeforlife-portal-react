@@ -4,3 +4,6 @@ service: REPLACE_ME
 
 inbound_services:
 - warmup
+
+env_variables:
+  DEBUG: "0"  
