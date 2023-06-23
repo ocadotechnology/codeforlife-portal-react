@@ -93,39 +93,39 @@ jobs:
       - name: 🤖 Set up GCloud SDK
         uses: google-github-actions/setup-gcloud@v1
 
-      # - name: 📁 CD to Frontend
-      #   run: cd ./frontend
-
       - name: 🛠 Install Frontend Dependencies
+        working-directory: ./frontend
         # TODO: install with production=true
         run: yarn install --production=false
-        working-directory: ./frontend
 
       - name: 🛠 Build Frontend
+        working-directory: ./frontend  
         run: yarn run build
 
       - name: 🛠 Bundle Frontend
+        working-directory: ./frontend
         run: node djangoBundler.js
 
-      - name: 📁 CD to Backend
-        run: cd ../backend
-
       - name: 🛠 Install Backend Dependencies
+        working-directory: ./backend
         run: |
           python -m pip install --upgrade pip
           python -m pip install pipenv
           pipenv install
 
       - name: 🛠 Generate requirements.txt
+        working-directory: ./backend
         run: pipenv requirements
 
       - name: 🛠 Collect Static Files
+        working-directory: ./backend
         run: pipenv run python ./manage.py collectstatic --noinput --clear        
 
       - name: 🖊️ Configure App Deployment
         uses: mikefarah/yq@master
         with:
-          cmd: yq -i '.service = "${{ env.BRANCH }}-${{ env.SERVICE }}"' app.yaml
+          cmd: yq -i '.service = "${{ env.BRANCH }}-${{ env.SERVICE }}"' backend/app.yaml
 
       - name: 🚀 Deploy App on GCloud
+        working-directory: ./backend
         run: gcloud app deploy
