@@ -93,12 +93,12 @@ jobs:
       - name: 🤖 Set up GCloud SDK
         uses: google-github-actions/setup-gcloud@v1
 
-      - name: 📁 CD to Frontend
-        run: cd ./codeforlife-portal-react/frontend
+      # - name: 📁 CD to Frontend
+      #   run: cd ./frontend
 
       - name: 🛠 Install Frontend Dependencies
         # TODO: install with production=true
-        run: yarn install --production=false
+        run: cd ./frontend && yarn install --production=false
 
       - name: 🛠 Build Frontend
         run: yarn run build
