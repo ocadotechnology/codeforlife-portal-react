@@ -98,7 +98,8 @@ jobs:
 
       - name: 🛠 Install Frontend Dependencies
         # TODO: install with production=true
-        run: cd ./frontend && yarn install --production=false
+        run: yarn install --production=false
+        working-directory: ./frontend
 
       - name: 🛠 Build Frontend
         run: yarn run build
