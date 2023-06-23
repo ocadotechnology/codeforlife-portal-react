@@ -120,7 +120,7 @@ jobs:
 
       - name: 🛠 Generate requirements.txt
         working-directory: ./backend
-        run: pipenv requirements
+        run: pipenv requirements > requirements.txt
 
       - name: 🛠 Collect Static Files
         working-directory: ./backend
