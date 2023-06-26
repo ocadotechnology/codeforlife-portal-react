@@ -87,13 +87,22 @@ export const UnauthenticatedDetails: React.FC = () => {
       Register now
     </Button>
     <DetailsAccordion label='Log in'>
-      <DetailsButton href={paths.login.teacher._}>
+      <DetailsButton
+        href={paths.login.teacher._}
+        spacing={2}
+      >
         Teacher
       </DetailsButton>
-      <DetailsButton href={paths.login.student._}>
+      <DetailsButton
+        href={paths.login.student._}
+        spacing={2}
+      >
         Student
       </DetailsButton>
-      <DetailsButton href={paths.login.independent._}>
+      <DetailsButton
+        href={paths.login.independent._}
+        spacing={2}
+      >
         Independent
       </DetailsButton>
     </DetailsAccordion>
