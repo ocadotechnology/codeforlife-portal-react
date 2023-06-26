@@ -12,7 +12,7 @@ import {
   ExpandMore as ExpandMoreIcon
 } from '@mui/icons-material';
 
-export interface MenuAccordionProps {
+export interface DetailsAccordionProps {
   label: string;
   children: React.ReactNode;
   spacing?: number;
@@ -22,7 +22,7 @@ export interface MenuAccordionProps {
   };
 }
 
-const MenuAccordion: React.FC<MenuAccordionProps> = ({
+const DetailsAccordion: React.FC<DetailsAccordionProps> = ({
   label,
   children,
   spacing = 1,
@@ -78,4 +78,4 @@ const MenuAccordion: React.FC<MenuAccordionProps> = ({
   );
 };
 
-export default MenuAccordion;
+export default DetailsAccordion;

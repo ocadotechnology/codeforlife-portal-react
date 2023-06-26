@@ -10,18 +10,22 @@ import {
   LogoutOutlined as LogoutOutlinedIcon
 } from '@mui/icons-material';
 
-import { MenuComponents } from '../menu/Menu';
-import MenuButton from '../menu/MenuButton';
-import LoginSelect, { LoginSelectProps } from '../LoginSelect';
+import {
+  SummaryLoginSelect,
+  SummaryLoginSelectProps
+} from '../summary';
+import {
+  DetailsButton
+} from '../details';
 
-interface SummaryProps {
+interface AuthenticatedSummaryProps {
   userType: string;
   dashboardHref: string;
   children: React.ReactNode;
-  menuItemsProps: LoginSelectProps['menuItemsProps'];
+  menuItemsProps: SummaryLoginSelectProps['menuItemsProps'];
 }
 
-const Summary: React.FC<SummaryProps> = ({
+export const AuthenticatedSummary: React.FC<AuthenticatedSummaryProps> = ({
   userType,
   dashboardHref,
   children,
@@ -47,7 +51,7 @@ const Summary: React.FC<SummaryProps> = ({
       Dashboard
     </Link>
     {children}
-    <LoginSelect
+    <SummaryLoginSelect
       width='220px'
       text={userName}
       IconComponent={PersonOutlineOutlinedIcon}
@@ -63,11 +67,11 @@ const Summary: React.FC<SummaryProps> = ({
   </>;
 };
 
-interface DetailsProps {
+interface AuthenticatedDetailsProps {
   children: React.ReactNode;
 }
 
-const Details: React.FC<DetailsProps> = ({
+export const AuthenticatedDetails: React.FC<AuthenticatedDetailsProps> = ({
   children
 }) => {
   const theme = useTheme();
@@ -89,18 +93,8 @@ const Details: React.FC<DetailsProps> = ({
       {userName}
     </Typography>
     {children}
-    <MenuButton onClick={() => { alert('TODO: logout user'); }}>
+    <DetailsButton onClick={() => { alert('TODO: logout user'); }}>
       Logout
-    </MenuButton>
+    </DetailsButton>
   </>;
 };
-
-const Authenticated: MenuComponents<
-  SummaryProps,
-  DetailsProps
-> = {
-  Summary,
-  Details
-};
-
-export default Authenticated;

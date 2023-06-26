@@ -18,7 +18,7 @@ import { secondary } from 'codeforlife/lib/esm/theme/colors';
 
 type SvgIconElement = React.ReactElement<SvgIconProps, typeof SvgIcon>;
 
-export interface LoginSelectProps extends Pick<SelectProps, (
+export interface SummaryLoginSelectProps extends Pick<SelectProps, (
   'sx' |
   'IconComponent'
 )> {
@@ -31,7 +31,7 @@ export interface LoginSelectProps extends Pick<SelectProps, (
   }>;
 }
 
-const LoginSelect: React.FC<LoginSelectProps> = ({
+const SummaryLoginSelect: React.FC<SummaryLoginSelectProps> = ({
   sx,
   IconComponent,
   rotateIcon = false,
@@ -117,4 +117,4 @@ const LoginSelect: React.FC<LoginSelectProps> = ({
   );
 };
 
-export default LoginSelect;
+export default SummaryLoginSelect;

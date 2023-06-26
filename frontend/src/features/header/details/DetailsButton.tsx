@@ -7,7 +7,7 @@ import {
   ChevronRight as ChevronRightIcon
 } from '@mui/icons-material';
 
-export interface MenuButtonProps extends ButtonProps {
+export interface DetailsButtonProps extends ButtonProps {
   spacing?: number;
   bgcolor?: {
     main: string;
@@ -15,7 +15,7 @@ export interface MenuButtonProps extends ButtonProps {
   };
 }
 
-const MenuButton: React.FC<MenuButtonProps> = ({
+const DetailsButton: React.FC<DetailsButtonProps> = ({
   spacing = 1,
   bgcolor,
   sx,
@@ -42,4 +42,4 @@ const MenuButton: React.FC<MenuButtonProps> = ({
   />
 );
 
-export default MenuButton;
+export default DetailsButton;
