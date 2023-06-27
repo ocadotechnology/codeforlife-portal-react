@@ -9,7 +9,7 @@ import {
   svgIconClasses
 } from '@mui/material';
 import {
-  ExpandMore as ExpandMoreIcon
+  ArrowDropDown as ArrowDropDownIcon
 } from '@mui/icons-material';
 
 export interface DetailsAccordionProps {
@@ -47,7 +47,7 @@ const DetailsAccordion: React.FC<DetailsAccordionProps> = ({
       }}
     >
       <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
+        expandIcon={<ArrowDropDownIcon />}
         sx={{
           paddingTop: '10px !important',
           paddingRight: '12px !important',

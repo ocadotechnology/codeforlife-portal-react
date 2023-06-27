@@ -25,7 +25,9 @@ const Summary: React.FC<SummaryProps> = ({
   children
 }) => {
   return (
-    <AccordionSummary>
+    <AccordionSummary style={{
+      cursor: 'default'
+    }}>
       <Container
         maxWidth='xl'
         sx={{

@@ -67,7 +67,7 @@ jobs:
     steps:
       - name: 🛫 Checkout
         uses: actions/checkout@v3
-      
+
       - name: 🌳 Set Branch Env Var
         run: echo "BRANCH=$(git branch --show-current)" >> $GITHUB_ENV
 
@@ -115,13 +115,16 @@ jobs:
           python -m pip install pipenv
           pipenv install
 
+      - name: 🔎 Check Migrations
+        run: pipenv run python ./manage.py makemigrations --check --dry-run
+
       - name: 🛠 Generate requirements.txt
         working-directory: ./backend
         run: pipenv requirements > requirements.txt
 
       - name: 🛠 Collect Static Files
         working-directory: ./backend
-        run: pipenv run python ./manage.py collectstatic --noinput --clear        
+        run: pipenv run python ./manage.py collectstatic --noinput --clear
 
       - name: 🖊️ Configure App Deployment
         uses: mikefarah/yq@master
