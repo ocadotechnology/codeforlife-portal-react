@@ -35,7 +35,10 @@ export const IndependentSummary: React.FC = () => {
       menuItemsProps={[
         {
           children: 'Update account details',
-          icon: <ManageAccountsOutlinedIcon />
+          icon: <ManageAccountsOutlinedIcon />,
+          onClick: () => {
+            window.location.href = paths.student.dashboard.independent.account._;
+          }
         }
       ]}
     >
@@ -76,7 +79,7 @@ export const IndependentDetails: React.FC = () => {
       <DetailsAccordion label='Independent'>
         <DetailsButton
           spacing={2}
-          href={paths.student.dashboard.dependent._}
+          href={paths.student.dashboard.independent._}
           bgcolor={theme.palette.secondary}
         >
           Dashboard
@@ -110,6 +113,9 @@ export const IndependentDetails: React.FC = () => {
           </DetailsButton>
         </DetailsAccordion>
       </DetailsAccordion>
+      <DetailsButton href={paths.student.dashboard.independent.account._}>
+        Update account details
+      </DetailsButton>
     </AuthenticatedDetails>
   );
 };

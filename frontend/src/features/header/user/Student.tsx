@@ -28,7 +28,10 @@ export const StudentSummary: React.FC = () => {
       menuItemsProps={[
         {
           children: 'Change password',
-          icon: <LockOutlinedIcon />
+          icon: <LockOutlinedIcon />,
+          onClick: () => {
+            window.location.href = paths.student.dashboard.dependent.account._;
+          }
         }
       ]}
     >
@@ -100,6 +103,9 @@ export const StudentDetails: React.FC = () => {
           Scoreboard
         </DetailsButton>
       </DetailsAccordion>
+      <DetailsButton href={paths.student.dashboard.dependent.account._}>
+        Update account details
+      </DetailsButton>
     </AuthenticatedDetails>
   );
 };

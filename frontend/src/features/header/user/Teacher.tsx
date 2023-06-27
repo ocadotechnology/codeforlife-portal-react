@@ -34,7 +34,10 @@ export const TeacherSummary: React.FC = () => {
       menuItemsProps={[
         {
           children: 'Update account details',
-          icon: <ManageAccountsOutlinedIcon />
+          icon: <ManageAccountsOutlinedIcon />,
+          onClick: () => {
+            window.location.href = paths.teacher.dashboard.account._;
+          }
         }
       ]}
     >
@@ -126,8 +129,7 @@ export const TeacherDetails: React.FC = () => {
           </DetailsButton>
         </DetailsAccordion>
       </DetailsAccordion>
-      {/* TODO: set this href. */}
-      <DetailsButton href={''}>
+      <DetailsButton href={paths.teacher.dashboard.account._}>
         Update account details
       </DetailsButton>
     </AuthenticatedDetails>
