@@ -16,7 +16,7 @@ const JoinSchool: React.FC<{
     accessCode: ''
   };
 
-  const [requestSent, setRequestSent] = React.useState<boolean>(false);
+  const [requestSent, setRequestSent] = React.useState(false);
 
   return (
     <Page.Section>
@@ -63,19 +63,13 @@ const JoinSchool: React.FC<{
               setRequestSent(true);
             }}
           >
-            <Grid container spacing={2}>
-              <Grid item sm={6}>
-                <TextField
-                  placeholder="Class code"
-                  helperText="Enter class code"
-                  name="classCode"
-                  validate={validateAccessCode}
-                />
-              </Grid>
-              <Grid item sm={6}>
-                <></>
-              </Grid>
-            </Grid>
+            <TextField
+              placeholder="Class code"
+              helperText="Enter class code"
+              name="classCode"
+              sx={{ width: { xs: '100%', sm: '50%' } }}
+              validate={validateAccessCode}
+            />
 
             <Stack direction='row' spacing={2}>
               <Button

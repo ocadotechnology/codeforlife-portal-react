@@ -16,7 +16,7 @@ import HomeLearning from '../pages/homeLearning/HomeLearning';
 import PrivacyNotice from '../pages/privacyNotice/PrivacyNotice';
 import TermsOfUse from '../pages/termsOfUse/TermsOfUse';
 import Newsletter from '../pages/newsletter/Newsletter';
-import DotmailerConsent from '../pages/dotmailerConsent/DotmailerConsent';
+import CommunicationPreferences from "../pages/communicationPreferences/CommunicationPreferences";
 import Error from '../pages/error/Error';
 import TeacherDashboard from '../pages/teacherDashboard/TeacherDashboard';
 import EmailVerification from '../pages/emailVerification/EmailVerification';
@@ -62,8 +62,8 @@ export const paths = _('', {
         account: _('&view=account')
       }),
       independent: _('/?userType=independent', {
-        account: _('?view=account'),
-        joinSchool: _('?view=join')
+        account: _('&view=account'),
+        joinSchool: _('&view=join')
       })
     })
   }),
@@ -81,7 +81,7 @@ export const paths = _('', {
   }),
   termsOfUse: _('/terms-of-use'),
   newsletter: _('/newsletter'),
-  dotmailerConsent: _('/dotmailer-consent'),
+  communicationPreferences: _('/communication-preferences'),
   error: _('/error', {
     forbidden: _('/?type=forbidden'),
     pageNotFound: _('/?type=pageNotFound'),
@@ -160,8 +160,8 @@ const router = createBrowserRouter([
     element: <Newsletter />
   },
   {
-    path: paths.dotmailerConsent._,
-    element: <DotmailerConsent />
+    path: paths.communicationPreferences._,
+    element: <CommunicationPreferences />
   },
   {
     path: paths.error._,

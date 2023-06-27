@@ -4,7 +4,7 @@ import { Typography, useTheme } from '@mui/material';
 import Page from 'codeforlife/lib/esm/components/page';
 import { CheckboxField, EmailField, Form, SubmitButton } from 'codeforlife/lib/esm/components/form';
 
-const DotmailerConsent: React.FC = () => {
+const CommunicationPreferences: React.FC = () => {
   const theme = useTheme();
 
   interface Values {
@@ -47,4 +47,4 @@ const DotmailerConsent: React.FC = () => {
   );
 };
 
-export default DotmailerConsent;
+export default CommunicationPreferences;
