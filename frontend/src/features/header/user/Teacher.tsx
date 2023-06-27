@@ -96,7 +96,7 @@ export const TeacherDetails: React.FC = () => {
     <AuthenticatedDetails>
       <DetailsAccordion label='Teacher'>
         <DetailsButton
-          // TODO: set href
+          href={paths.teacher.dashboard.school._}
           spacing={2}
         >
           School / Club
