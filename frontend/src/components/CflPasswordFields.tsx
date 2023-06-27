@@ -58,6 +58,7 @@ const CflPasswordFields: React.FC<CflPasswordFieldsProps> = ({
 
   return <>
     <PasswordField
+      required
       placeholder='Password'
       helperText='Enter a password'
       validate={Yup

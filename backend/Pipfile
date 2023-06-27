@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 codeforlife = {ref = "v0.1.12", git = "https://github.com/ocadotechnology/codeforlife-package-python.git"}
+whitenoise = "==6.5.0"
 
 [dev-packages]
 

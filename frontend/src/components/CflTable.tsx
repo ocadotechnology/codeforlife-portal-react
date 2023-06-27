@@ -78,7 +78,10 @@ const CflTable: React.FC<CflTableProps> = ({
 }): JSX.Element => {
   return (
     <TableContainer>
-      <Table className={className}>
+      <Table
+        className={className}
+        style={{ display: 'table' }}
+      >
         <TableHead>
           <TableRowStyled>
             {titles.map((title) => (
