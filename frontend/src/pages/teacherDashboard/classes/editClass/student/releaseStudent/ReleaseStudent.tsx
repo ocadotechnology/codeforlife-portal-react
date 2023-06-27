@@ -2,10 +2,9 @@ import React from 'react';
 import Page from 'codeforlife/lib/esm/components/page';
 import { Button, Grid, Link, Typography, Stack, useTheme } from '@mui/material';
 import { paths } from '../../../../../../app/router';
-import { Form, SubmitButton } from 'codeforlife/lib/esm/components/form';
+import { EmailField, Form, SubmitButton } from 'codeforlife/lib/esm/components/form';
 import StudentNameField from '../../../../../../components/form/StudentNameField';
 import { PersonRemoveAlt1Outlined } from '@mui/icons-material';
-import NewEmailField from '../../../../../../components/form/NewEmailField';
 
 const ReleaseStudentsForm: React.FC<{
   studentNames: string[],
@@ -27,7 +26,7 @@ const ReleaseStudentsForm: React.FC<{
       <Grid container columnSpacing={4}>
         {studentNames.map((studentName, index) => (
           <>
-            <Grid item sm={6}>
+            <Grid item xs={12} sm={6}>
               <StudentNameField
                 name={`original${String(index)}`}
                 helperText='Original student name'
@@ -35,10 +34,26 @@ const ReleaseStudentsForm: React.FC<{
                 style={{ backgroundColor: theme.palette.info.main }}
               />
             </Grid>
-            <Grid item sm={6}>
+            <Grid item xs={12} sm={6}>
               <StudentNameField name={String(index)}/>
             </Grid>
-            <NewEmailField index={index} />
+            <Grid item xs={12}>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ sm: 4 }} sx={{ marginBottom: '30px' }}>
+                <EmailField
+                  name={(index === undefined) ? 'email' : `email${index}`}
+                  placeholder="Enter email address"
+                  helperText="New email address"
+                  required
+                  repeat={[
+                    {
+                      name: 'confirmEmail',
+                      placeholder: 'Confirm email address',
+                      helperText: 'Confirm email address'
+                    }
+                  ]}
+                />
+              </Stack>
+            </Grid>
           </>
         ))}
       </Grid>
