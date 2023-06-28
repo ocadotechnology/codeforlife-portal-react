@@ -11,10 +11,12 @@ import Register from '../pages/register/Register';
 import AboutUs from '../pages/aboutUs/AboutUs';
 import CodingClubs from '../pages/codingClubs/CodingClubs';
 import GetInvolved from '../pages/getInvolved/GetInvolved';
+import Contribute from '../pages/contribute/Contribute';
 import HomeLearning from '../pages/homeLearning/HomeLearning';
 import PrivacyNotice from '../pages/privacyNotice/PrivacyNotice';
 import TermsOfUse from '../pages/termsOfUse/TermsOfUse';
 import Newsletter from '../pages/newsletter/Newsletter';
+import CommunicationPreferences from '../pages/communicationPreferences/CommunicationPreferences';
 import Error from '../pages/error/Error';
 import TeacherDashboard from '../pages/teacherDashboard/TeacherDashboard';
 import EmailVerification from '../pages/emailVerification/EmailVerification';
@@ -56,8 +58,13 @@ export const paths = _('', {
   }),
   student: _('/student', {
     dashboard: _('/dashboard', {
-      dependent: _('/?userType=dependent'),
-      independent: _('/?userType=independent')
+      dependent: _('/?userType=dependent', {
+        account: _('&view=account')
+      }),
+      independent: _('/?userType=independent', {
+        account: _('&view=account'),
+        joinSchool: _('&view=join')
+      })
     })
   }),
   register: _('/register', {
@@ -66,6 +73,7 @@ export const paths = _('', {
   aboutUs: _('/about-us'),
   codingClubs: _('/coding-clubs'),
   getInvolved: _('/get-involved'),
+  contribute: _('/contribute'),
   homeLearning: _('/home-learning'),
   privacyNotice: _('/privacy-notice', {
     privacyNotice: _('/?tab=Privacy+notice'),
@@ -73,6 +81,7 @@ export const paths = _('', {
   }),
   termsOfUse: _('/terms-of-use'),
   newsletter: _('/newsletter'),
+  communicationPreferences: _('/communication-preferences'),
   error: _('/error', {
     forbidden: _('/?type=forbidden'),
     pageNotFound: _('/?type=pageNotFound'),
@@ -83,7 +92,9 @@ export const paths = _('', {
     }),
     internalServerError: _('/?type=internalServerError')
   }),
-  rapidRouter: _('/rapid-router'),
+  rapidRouter: _('/rapid-router', {
+    scoreboard: _('/scoreboard')
+  }),
   kurono: _('/kurono')
 });
 
@@ -129,6 +140,10 @@ const router = createBrowserRouter([
     element: <GetInvolved />
   },
   {
+    path: paths.contribute._,
+    element: <Contribute />
+  },
+  {
     path: paths.homeLearning._,
     element: <HomeLearning />
   },
@@ -143,6 +158,10 @@ const router = createBrowserRouter([
   {
     path: paths.newsletter._,
     element: <Newsletter />
+  },
+  {
+    path: paths.communicationPreferences._,
+    element: <CommunicationPreferences />
   },
   {
     path: paths.error._,

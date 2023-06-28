@@ -11,6 +11,7 @@ import GithubImg from '../../images/github.png';
 import ClubsImg from '../../images/clubs.png';
 import UniversitiesImg from '../../images/universities.png';
 import GetInvolvedHero from '../../images/get_involved_hero_cut.png';
+import { paths } from '../../app/router';
 
 const GetInvolved: React.FC = () => {
   return (
@@ -30,7 +31,7 @@ const GetInvolved: React.FC = () => {
                   'Become a Code for Life ambassador by starting up a coding club. Find out more about how you can get involved with this by visiting our coding club page.'
               }}
               mediaProps={{ title: 'Clubs', image: ClubsImg }}
-              buttonProps={{ children: 'Read more', endIcon: <ChevronRightRoundedIcon /> }}
+              buttonProps={{ href: paths.codingClubs._, children: 'Read more', endIcon: <ChevronRightRoundedIcon /> }}
             />
           </Grid>
           <Grid xs={12} md={6} lg={4}>
@@ -41,7 +42,7 @@ const GetInvolved: React.FC = () => {
                   'We welcome volunteers from all backgrounds to help us with our coding adventure. Take a look at our contribution guide to find out how to get involved in our open source projects.'
               }}
               mediaProps={{ title: 'Github', image: GithubImg }}
-              buttonProps={{ children: 'Read more', endIcon: <ChevronRightRoundedIcon /> }}
+              buttonProps={{ href: paths.contribute._, children: 'Read more', endIcon: <ChevronRightRoundedIcon /> }}
             />
           </Grid>
           <Grid xs={12} md={6} lg={4}>

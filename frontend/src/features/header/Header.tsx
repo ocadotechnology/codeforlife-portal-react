@@ -1,102 +1,120 @@
 import React from 'react';
 import {
-  IconButton,
-  Link,
-  LinkProps,
-  Button,
-  Box,
-  Stack,
-  Container,
-  useTheme,
-  useMediaQuery
+  Accordion,
+  accordionSummaryClasses,
+  accordionDetailsClasses,
+  buttonClasses,
+  svgIconClasses,
+  Backdrop,
+  useMediaQuery,
+  Theme,
+  useTheme
 } from '@mui/material';
-import {
-  Menu as MenuIcon
-} from '@mui/icons-material';
-
-import { Image } from 'codeforlife/lib/esm/components';
 
 import { paths } from '../../app/router';
-import CflLogo from '../../images/cfl_logo.png';
-import OgLogo from '../../images/ocado_group.svg';
-import LoginSelect from './LoginSelect';
-import MenuDrawer from './MenuDrawer';
+import { Summary, SummaryProps } from './summary';
+import { Details, DetailsProps } from './details';
+import {
+  UnauthenticatedSummary, UnauthenticatedDetails,
+  TeacherSummary, TeacherDetails,
+  StudentSummary, StudentDetails,
+  IndependentSummary, IndependentDetails
+} from './user';
 
 const Header: React.FC = () => {
   const theme = useTheme();
-  const [menuIsOpen, setMenuIsOpen] = React.useState(false);
+  const [expanded, setExpanded] = React.useState(false);
+  const upLg = useMediaQuery(
+    (theme: Theme) => theme.breakpoints.up('lg')
+  );
 
-  const extraMargin = '10px';
-  const linkProps: LinkProps = {
-    display: { xs: 'none', md: 'inline' },
-    color: '#383b3b',
-    variant: useMediaQuery(theme.breakpoints.up('lg')) ? 'h4' : 'h5',
-    className: 'no-decor',
-    marginLeft: extraMargin,
-    marginBottom: '0px !important'
+  if (expanded && upLg) setExpanded(false);
+
+  let children: {
+    summary: SummaryProps['children'];
+    details: DetailsProps['children'];
   };
 
+  // TODO: check if the use is logged in and account type.
+  // This is temporary for testing purposes.
+  function hrefIncludes(href: string): boolean {
+    return window.location.href.includes(href);
+  }
+  if (hrefIncludes(paths.teacher.dashboard._)) {
+    children = {
+      summary: <TeacherSummary />,
+      details: <TeacherDetails />
+    };
+  } else if (hrefIncludes(paths.student.dashboard.dependent._)) {
+    children = {
+      summary: <StudentSummary />,
+      details: <StudentDetails />
+    };
+  } else if (hrefIncludes(paths.student.dashboard.independent._)) {
+    children = {
+      summary: <IndependentSummary />,
+      details: <IndependentDetails />
+    };
+  } else {
+    children = {
+      summary: <UnauthenticatedSummary />,
+      details: <UnauthenticatedDetails />
+    };
+  }
+
   return <>
-    <Box style={{
-      width: '100%',
-      boxShadow: '0 2px 7px 1px rgba(0, 0, 0, 0.1)',
-      backgroundColor: 'white',
-      position: 'sticky',
-      top: 0,
-      zIndex: 2
-    }}>
-      <Container sx={{
-        height: { xs: '80px', md: '100px' },
-        paddingY: '15px'
-      }}>
-        <Stack
-          direction='row'
-          alignItems='center'
-          height='100%'
-          width='100%'
-          gap={3}
-        >
-          <Image
-            alt='Code for Life'
-            src={CflLogo}
-            maxWidth={{ xs: '65px', md: '80px' }}
-            href={paths._}
-            marginRight={{ xs: 0, md: extraMargin }}
-          />
-          <Image
-            alt='Ocado Group'
-            src={OgLogo}
-            maxWidth={{ xs: '115px', md: '150px' }}
-            mx={{ xs: 'auto', md: 0 }}
-            href={process.env.REACT_APP_OCADO_GROUP_HREF}
-            hrefInNewTab
-          />
-          <Link {...linkProps} href={paths.teacher._}>
-            Teachers
-          </Link>
-          <Link {...linkProps} href={paths.student._}>
-            Students
-          </Link>
-          <Button
-            sx={{
-              display: { xs: 'none', md: 'flex' },
-              ml: 'auto'
-            }}
-            href={paths.register._}
-          >
-            Register
-          </Button>
-          <LoginSelect />
-          <IconButton
-            onClick={() => { setMenuIsOpen(true); }}
-            sx={{ display: { md: 'none' } }}
-          >
-            <MenuIcon />
-          </IconButton>
-        </Stack>
-      </Container>
-    </Box>
-    <MenuDrawer isOpen={menuIsOpen} setIsOpen={setMenuIsOpen} />
+    <Accordion
+      expanded={expanded}
+      sx={{
+        zIndex: (theme) => theme.zIndex.appBar,
+        boxShadow: '0 2px 7px 1px rgba(0, 0, 0, 0.1)',
+        position: 'sticky',
+        top: 0,
+        maxHeight: '100vh',
+        overflowY: 'auto',
+        [`.${accordionSummaryClasses.root}`]: {
+          padding: '0px',
+          backgroundColor: 'white !important'
+        },
+        [`.${accordionSummaryClasses.content}`]: {
+          margin: '0px !important'
+        },
+        [`.${accordionDetailsClasses.root}`]: {
+          padding: '0px !important',
+          [`.${buttonClasses.root}`]: {
+            padding: '24px 12px',
+            width: '100%',
+            fontSize: '20px'
+          },
+          [`.${buttonClasses.text}`]: {
+            color: theme.typography.body1.color,
+            borderTop: `2px solid ${theme.palette.info.main}`
+          },
+          [`.${buttonClasses.endIcon}`]: {
+            marginLeft: 'auto'
+          },
+          [`.${svgIconClasses.root}`]: {
+            fontSize: '27px',
+            color: 'black'
+          }
+        }
+      }}
+    >
+      <Summary
+        expanded={expanded}
+        setExpanded={setExpanded}
+      >
+        {children.summary}
+      </Summary>
+      <Details>
+        {children.details}
+      </Details>
+    </Accordion>
+    <Backdrop
+      sx={{ zIndex: (theme) => theme.zIndex.appBar - 1 }}
+      open={expanded}
+      onClick={() => { setExpanded(false); }}
+    />
   </>;
 };
 

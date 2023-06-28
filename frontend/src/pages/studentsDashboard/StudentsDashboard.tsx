@@ -1,19 +1,16 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTheme } from '@mui/material';
 
 import Page, {
   SectionProps as PageSectionProps
 } from 'codeforlife/lib/esm/components/page';
 
 import { paths } from '../../app/router';
-import Characters from '../../features/characters/Characters';
 import BaseDashboard from './BaseDashboard';
 
 import { SearchParams } from 'codeforlife/lib/esm/helpers';
 
 const StudentsDashboard: React.FC = () => {
-  const theme = useTheme();
   const navigate = useNavigate();
 
   const userTypes = ['dependent', 'independent'] as const;
@@ -37,12 +34,7 @@ const StudentsDashboard: React.FC = () => {
       dashboard = <BaseDashboard isDependent={true} />;
       break;
     case 'independent':
-      dashboard = <>
-        <BaseDashboard isDependent={false} />
-        <Page.Section gridProps={{ bgcolor: theme.palette.info.main }} >
-          <Characters game='kurono' />
-        </Page.Section>
-      </>;
+      dashboard = <BaseDashboard isDependent={false} />;
       break;
   }
 

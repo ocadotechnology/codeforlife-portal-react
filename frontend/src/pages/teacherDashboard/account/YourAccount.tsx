@@ -1,35 +1,13 @@
 import React from 'react';
-import {
-  Button,
-  Unstable_Grid2 as Grid,
-  InputAdornment,
-  Stack,
-  Typography,
-  useTheme
-} from '@mui/material';
-import {
-  DELETE_ACCOUNT_INITIAL_VALUES,
-  UPDATE_TEACHER_ACCOUNT_INITIAL_VALUES
-} from '../constants';
-import {
-  DELETE_ACCOUNT_SCHEMA,
-  UPDATE_TEACHER_ACCOUNT_SCHEMA
-} from '../schemas';
-import {
-  DeleteOutline,
-  EmailOutlined,
-  LockOutlined,
-  SecurityOutlined,
-  ErrorOutlineOutlined
-} from '@mui/icons-material';
-import { getUser } from '../dummyMethods';
-import { TextField, CheckboxField, SubmitButton } from 'codeforlife/lib/esm/components/form';
-import { CflHorizontalForm } from '../../../components/form/CflForm';
+import { Button, Grid, InputAdornment, Stack, Typography, useTheme } from '@mui/material';
+import { ErrorOutlineOutlined, LockOutlined, PersonOutline } from '@mui/icons-material';
+import { EmailField, Form, PasswordField, SubmitButton, TextField } from 'codeforlife/lib/esm/components/form';
 import Page from 'codeforlife/lib/esm/components/page';
 import { SearchParams } from 'codeforlife/lib/esm/helpers';
 import Setup2fa from './2fa/setup2fa/Setup2fa';
 import BackupTokens from './2fa/backupTokens/BackupTokens';
 import { paths } from '../../../app/router';
+import DeleteAccountForm from '../../../features/DeleteAccountForm';
 
 const TwoFactorAuthentication: React.FC = () => {
   return (
@@ -78,122 +56,100 @@ const TwoFactorAuthentication: React.FC = () => {
 };
 
 const YourAccountForm: React.FC = () => {
-  const { firstName, lastName } = getUser();
+  interface Values {
+    firstName: string;
+    lastName: string;
+    email: string;
+    newPassword: string;
+    repeatPassword: string;
+    currentPassword: string;
+  }
+
+  const initialValues: Values = {
+    firstName: '',
+    lastName: '',
+    email: '',
+    newPassword: '',
+    repeatPassword: '',
+    currentPassword: ''
+  };
+
   return (
-    <CflHorizontalForm
-      initialValues={{
-        ...UPDATE_TEACHER_ACCOUNT_INITIAL_VALUES,
-        firstName,
-        lastName
-      }}
-      validationSchema={UPDATE_TEACHER_ACCOUNT_SCHEMA}
+    <Form
+      initialValues={initialValues}
       onSubmit={(values) => {
         alert(JSON.stringify(values, null, 2));
       }}
-      submitButton={<SubmitButton>Update details</SubmitButton>}
     >
-      <TextField
-        name="firstName"
-        helperText="Enter your first name"
-        placeholder="First name"
-      />
-      <TextField
-        placeholder="Last name"
-        helperText="Enter your last name"
-        name="lastName"
-      />
-      <TextField
-        placeholder="New email address (optional)"
-        helperText="Enter your new email address (optional)"
-        name="newEmail"
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <EmailOutlined />
-            </InputAdornment>
-          )
-        }}
-      />
-      <TextField
-        placeholder="New password (optional)"
-        helperText="Enter your new password (optional)"
-        name="newPassword"
-        type="password"
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <SecurityOutlined />
-            </InputAdornment>
-          )
-        }}
-      />
-      <TextField
-        placeholder="Confirm new password (optional)"
-        helperText="Confirm your new password (optional)"
-        name="confirmPassword"
-        type="password"
-      />
-      <TextField
-        placeholder="Current password"
-        helperText="Enter your current password"
-        name="currentPassword"
-        type="password"
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <LockOutlined />
-            </InputAdornment>
-          )
-        }}
-      />
-    </CflHorizontalForm>
-  );
-};
-
-const DeleteAccountForm: React.FC = () => {
-  const theme = useTheme();
-  return (
-    <CflHorizontalForm
-      header="Delete account"
-      subheader="If you no longer wish to have a Code for Life account, you can delete it by confirming below. You will receive an email to confirm this decision."
-      subheaderBold="This can't be reversed. All classes you've created will be permanently erased."
-      initialValues={DELETE_ACCOUNT_INITIAL_VALUES}
-      validationSchema={DELETE_ACCOUNT_SCHEMA}
-      onSubmit={(formik, { setSubmitting }) => {
-        alert(JSON.stringify(formik, null, 2));
-        setSubmitting(false);
-      }}
-      submitButton={
-        <SubmitButton
-          className='alert'
-          endIcon={<DeleteOutline />}
-        >
-          Delete account
-        </SubmitButton>
-      }
-    >
-      <TextField
-        name="currentPassword"
-        label="Current password"
-        helperText="Enter your current password"
-        type="password"
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <SecurityOutlined />
-            </InputAdornment>
-          )
-        }}
-      />
-      <CheckboxField
-        name="removeFromNewsletter"
-        sx={{ color: theme.palette.info.dark }}
-        formControlLabelProps={{
-          label:
-            'Please remove me from the newsletter and marketing emails too.'
-        }}
-      />
-    </CflHorizontalForm>
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={4}>
+          <TextField
+            name="firstName"
+            helperText="Enter your first name"
+            placeholder="First name"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <PersonOutline />
+                </InputAdornment>
+              )
+            }}
+          />
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <TextField
+            placeholder="Last name"
+            helperText="Enter your last name"
+            name="lastName"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <PersonOutline />
+                </InputAdornment>
+              )
+            }}
+          />
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <EmailField
+            placeholder="New email address (optional)"
+            helperText="Enter your new email address (optional)"
+            name="newEmail"
+          />
+        </Grid>
+        <Grid item xs={12} sm={8}>
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+            <PasswordField
+              placeholder="New password (optional)"
+              helperText="Enter your new password (optional)"
+              name="newPassword"
+              repeat={[
+                {
+                  name: 'repeatPassword',
+                  placeholder: 'Confirm new password (optional)',
+                  helperText: 'Confirm your new password (optional)'
+                }
+              ]}
+            />
+          </Stack>
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <PasswordField
+            placeholder="Current password"
+            helperText="Enter your current password"
+            name="currentPassword"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <LockOutlined />
+                </InputAdornment>
+              )
+            }}
+          />
+        </Grid>
+      </Grid>
+      <SubmitButton>Update details</SubmitButton>
+    </Form>
   );
 };
 
