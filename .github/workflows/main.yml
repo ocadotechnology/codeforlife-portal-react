@@ -98,7 +98,7 @@ jobs:
         #   NODE_ENV: production
 
       - name: 🛠 Build Frontend
-        working-directory: ./frontend  
+        working-directory: ./frontend
         run: yarn run build
         env:
           NODE_ENV: production
@@ -117,6 +117,7 @@ jobs:
           pipenv install
 
       - name: 🔎 Check Migrations
+        working-directory: ./backend
         run: pipenv run python ./manage.py makemigrations --check --dry-run
 
       - name: 🛠 Generate requirements.txt
