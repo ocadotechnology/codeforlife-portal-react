@@ -16,7 +16,7 @@ import HomeLearning from '../pages/homeLearning/HomeLearning';
 import PrivacyNotice from '../pages/privacyNotice/PrivacyNotice';
 import TermsOfUse from '../pages/termsOfUse/TermsOfUse';
 import Newsletter from '../pages/newsletter/Newsletter';
-import CommunicationPreferences from "../pages/communicationPreferences/CommunicationPreferences";
+import CommunicationPreferences from '../pages/communicationPreferences/CommunicationPreferences';
 import Error from '../pages/error/Error';
 import TeacherDashboard from '../pages/teacherDashboard/TeacherDashboard';
 import EmailVerification from '../pages/emailVerification/EmailVerification';
