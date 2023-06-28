@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "not-a-secret")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(int(os.getenv("DEBUG", "1")))
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
@@ -32,25 +32,49 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
+    "aimmo",
+    "game",
+    "pipeline",
+    "portal",
+    "captcha",
+    "common",
     "django.contrib.admin",
+    "django.contrib.admindocs",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
+    "django.contrib.sites",
     "django.contrib.staticfiles",
-    "codeforlife",
-    "portal",
+    "rest_framework",
+    "import_export",
+    "django_js_reverse",
+    "django_otp",
+    "django_otp.plugins.otp_static",
+    "django_otp.plugins.otp_totp",
+    "sekizai",  # for javascript and css management
+    "treebeard",
+    "two_factor",
+    "preventconcurrentlogins",
+    # "codeforlife",
 ]
 
 MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",
+    "deploy.middleware.admin_access.AdminAccessMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "deploy.middleware.security.CustomSecurityMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    # "deploy.middleware.session_timeout.SessionTimeoutMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "deploy.middleware.exceptionlogging.ExceptionLoggingMiddleware",
+    "django_otp.middleware.OTPMiddleware",
+    "preventconcurrentlogins.middleware.PreventConcurrentLoginsMiddleware",
+    "csp.middleware.CSPMiddleware",
+    # "deploy.middleware.screentime_warning.ScreentimeWarningMiddleware",
 ]
 
 ROOT_URLCONF = "service.urls"
@@ -58,17 +82,20 @@ ROOT_URLCONF = "service.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
-                "django.template.context_processors.debug",
-                "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
+                "django.template.context_processors.request",
                 "django.contrib.messages.context_processors.messages",
-            ],
+                "sekizai.context_processors.sekizai",
+                "common.context_processors.module_name",
+                "common.context_processors.cookie_management_enabled",
+                # TODO: use when integrating dotmailer
+                # "portal.context_processors.process_newsletter_form",
+            ]
         },
-    },
+    }
 ]
 
 WSGI_APPLICATION = "service.wsgi.application"
@@ -107,9 +134,11 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "en-gb"
 
-TIME_ZONE = "UTC"
+LANGUAGES = [("en-gb", "English")]
+
+TIME_ZONE = "Europe/London"
 
 USE_I18N = True
 
@@ -124,9 +153,54 @@ USE_TZ = True
 STATIC_ROOT = BASE_DIR / "static"
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "portal/static"]
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STATICFILES_FINDERS = [
+    "pipeline.finders.PipelineFinder",
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+]
+STATICFILES_STORAGE = "pipeline.storage.PipelineStorage"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
+# Custom
+MEDIA_ROOT = os.path.join(STATIC_ROOT, "email_media/")
+LOGIN_REDIRECT_URL = "/teach/dashboard/"
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+SILENCED_SYSTEM_CHECKS = ["captcha.recaptcha_test_key_error"]
+MESSAGE_STORAGE = "django.contrib.messages.storage.session.SessionStorage"
+
+
+CODEFORLIFE_WEBSITE = "www.codeforlife.education"
+CLOUD_STORAGE_PREFIX = "https://storage.googleapis.com/codeforlife-assets/"
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {"console": {"level": "DEBUG", "class": "logging.StreamHandler"}},
+    "loggers": {"two_factor": {"handlers": ["console"], "level": "INFO"}},
+}
+# TODO: assess if still need and trim fat if not.
+# RAPID_ROUTER_EARLY_ACCESS_FUNCTION_NAME = "portal.beta.has_beta_access"
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
+RECAPTCHA_DOMAIN = "www.recaptcha.net"
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    # "portal.backends.StudentLoginBackend",
+]
+PASSWORD_RESET_TIMEOUT_DAYS = 1
+
+PIPELINE_ENABLED = False
+
+# This is used in common to enable/disable the OneTrust cookie management script
+COOKIE_MANAGEMENT_ENABLED = False
+
+AUTOCONFIG_INDEX_VIEW = "home"
+SITE_ID = 1
+
+PIPELINE = {}
+
+from common.csp_config import *
