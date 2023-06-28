@@ -15,6 +15,7 @@ env:
   CYPRESS_WAIT_ON_TIMEOUT: 300
   CYPRESS_SPEC: cypress/e2e/**/*.cy.ts
   SERVICE: portal
+  PYTHON_VERSION: 3.8
 
 jobs:
   # The below code was adapted from this documentation.
@@ -29,7 +30,7 @@ jobs:
       - name: 🐍 Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.11"
+          python-version: ${{ env.PYTHON_VERSION }}
           architecture: "x64"
 
       - name: 🧪 Test on Chrome
@@ -79,7 +80,7 @@ jobs:
       - name: 🐍 Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.8
+          python-version: ${{ env.PYTHON_VERSION }}
 
       - name: 🗝 Authenticate with GCloud
         uses: google-github-actions/auth@v1
