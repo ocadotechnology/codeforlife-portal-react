@@ -1,10 +1,10 @@
 import React from 'react';
-import { InputAdornment, useTheme } from '@mui/material';
+import { useTheme } from '@mui/material';
 import { CflHorizontalForm } from '../components/form/CflForm';
 import { DELETE_ACCOUNT_INITIAL_VALUES } from '../pages/teacherDashboard/constants';
 import { DELETE_ACCOUNT_SCHEMA } from '../pages/teacherDashboard/schemas';
-import { CheckboxField, SubmitButton, TextField } from 'codeforlife/lib/esm/components/form';
-import { DeleteOutline, SecurityOutlined } from '@mui/icons-material';
+import { CheckboxField, PasswordField, SubmitButton } from 'codeforlife/lib/esm/components/form';
+import { DeleteOutline } from '@mui/icons-material';
 
 const DeleteAccountForm: React.FC = () => {
   const theme = useTheme();
@@ -28,18 +28,10 @@ const DeleteAccountForm: React.FC = () => {
         </SubmitButton>
       }
     >
-      <TextField
+      <PasswordField
         name="currentPassword"
         placeholder="Current password"
         helperText="Enter your current password"
-        type="password"
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <SecurityOutlined />
-            </InputAdornment>
-          )
-        }}
       />
       <CheckboxField
         name="removeFromNewsletter"
