@@ -14,6 +14,8 @@ import { SectionProps as PageSectionProps } from 'codeforlife/lib/esm/components
 import StudentAccount from './account/StudentAccount';
 import JoinSchool from './joinSchool/JoinSchool';
 import Characters from '../../features/characters/Characters';
+import { paths } from '../../app/router';
+import { useNavigate } from 'react-router-dom';
 
 export interface BaseDashboardProps {
   isDependent: boolean;
@@ -23,6 +25,7 @@ const BaseDashboard: React.FC<BaseDashboardProps> = ({
   isDependent
 }) => {
   const theme = useTheme();
+  const navigate = useNavigate();
   const viewOptions = ['account', 'join'] as const;
 
   const params = SearchParams.get<{
@@ -41,6 +44,13 @@ const BaseDashboard: React.FC<BaseDashboardProps> = ({
   const [view, setView] = React.useState(params?.view);
 
   let pageView: React.ReactElement<PageSectionProps, typeof Page.Section>;
+
+  React.useEffect(() => {
+    if (view === 'join' && isDependent) {
+      navigate(paths.error.forbidden._);
+    }
+  }, [view]);
+
   switch (view) {
     case 'account':
       pageView = <StudentAccount isDependent={isDependent} goBack={() => { setView(undefined); }}/>;

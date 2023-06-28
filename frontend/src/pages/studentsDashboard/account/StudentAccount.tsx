@@ -2,43 +2,34 @@ import React from 'react';
 import { Button, Grid, InputAdornment, Stack, Typography, useTheme } from '@mui/material';
 
 import Page from 'codeforlife/lib/esm/components/page';
-import { Form, SubmitButton, TextField } from 'codeforlife/lib/esm/components/form';
-import { EmailOutlined, LockOutlined, PersonOutline, SecurityOutlined } from '@mui/icons-material';
+import { EmailField, Form, PasswordField, SubmitButton, TextField } from 'codeforlife/lib/esm/components/form';
+import { LockOutlined, PersonOutline } from '@mui/icons-material';
 import DeleteAccountForm from '../../../features/DeleteAccountForm';
-import { useNavigate } from 'react-router-dom';
 import { paths } from '../../../app/router';
 
 const AccountFormPasswordFields: React.FC = () => {
   return <>
-    <Grid item sm={4}>
-      <TextField
-        placeholder="New password (optional)"
-        helperText="Enter your new password (optional)"
-        name="newPassword"
-        type="password"
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <SecurityOutlined />
-            </InputAdornment>
-          )
-        }}
-      />
+    <Grid item xs={12} sm={8}>
+      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+        <PasswordField
+          placeholder="New password (optional)"
+          helperText="Enter your new password (optional)"
+          name="newPassword"
+          repeat={[
+            {
+              name: 'repeatPassword',
+              placeholder: 'Confirm new password (optional)',
+              helperText: 'Confirm your new password (optional)'
+            }
+          ]}
+        />
+      </Stack>
     </Grid>
-    <Grid item sm={4}>
-      <TextField
-        placeholder="Confirm new password (optional)"
-        helperText="Confirm your new password (optional)"
-        name="confirmPassword"
-        type="password"
-      />
-    </Grid>
-    <Grid item sm={4}>
-      <TextField
+    <Grid item xs={12} sm={4}>
+      <PasswordField
         placeholder="Current password"
         helperText="Enter your current password"
         name="currentPassword"
-        type="password"
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
@@ -128,7 +119,7 @@ const AccountForm: React.FC<{
         }}
       >
         <Grid container spacing={2}>
-          <Grid item sm={6}>
+          <Grid item xs={12} sm={6}>
             <TextField
               name="name"
               helperText="Enter your name"
@@ -142,18 +133,11 @@ const AccountForm: React.FC<{
               }}
             />
           </Grid>
-          <Grid item sm={6}>
-            <TextField
+          <Grid item xs={12} sm={6}>
+            <EmailField
               placeholder="New email address (optional)"
               helperText="Enter your new email address (optional)"
               name="newEmail"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <EmailOutlined />
-                  </InputAdornment>
-                )
-              }}
             />
           </Grid>
           <AccountFormPasswordFields />
@@ -169,7 +153,6 @@ const StudentAccount: React.FC<{
   goBack: () => void
 }> = ({ isDependent, goBack }) => {
   const theme = useTheme();
-  const navigate = useNavigate();
 
   return (
     <>
@@ -195,11 +178,7 @@ const StudentAccount: React.FC<{
           <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
             <Typography variant='h5'>Join a school or club</Typography>
             <Typography>To find out about linking your Code For Life account with a school or club, click &apos;Join&apos;.</Typography>
-            <Button onClick={() => {
-              // TODO: There probably is a better way to do this
-              navigate(-1);
-              navigate(`${paths.student.dashboard._}/?userType=independent&view=join`);
-            }}>Join</Button>
+            <Button href={paths.student.dashboard.independent.joinSchool._}>Join</Button>
           </Page.Section>
           <Page.Section>
             <DeleteAccountForm />

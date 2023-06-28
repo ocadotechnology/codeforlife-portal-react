@@ -17,7 +17,7 @@ const CommunicationPreferences: React.FC = () => {
 
   return (
     <Page.Container>
-      <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
+      <Page.Section gridProps={{ bgcolor: theme.palette.info.main }} maxWidth='md'>
         <Typography variant='h4' align='center'>Your communication preferences</Typography>
         <Form
           initialValues={initialValues}
@@ -30,7 +30,6 @@ const CommunicationPreferences: React.FC = () => {
             required
             placeholder="Email address"
             helperText="Enter your email address"
-            sx={{ width: '60%' }}
           />
           <CheckboxField
             name="updateDotmailerConsent"
