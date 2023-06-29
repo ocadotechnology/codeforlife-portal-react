@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "e13bde372ca5823aefda830942aa0aed9e1ba3975230ea7afeaa2426ac4e6a53"
+            "sha256": "23de40e70e81158225cf44856207bf81a1bd12aa67fc7a5aad2e3f8098787c71"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -58,11 +58,11 @@
         },
         "cfl-common": {
             "hashes": [
-                "sha256:895bb84f1de2692fb265b8883dd08a0714c6934b665748008c59e828e1c6f163",
-                "sha256:c23c2609d58bf8691a70269a2dc9377ee80d3a611db5db09666220f29687f1dd"
+                "sha256:58a1c9b4a2938eb49e4c9c831cd3a220bc91ba2f1cc2504fd8de4cdb88eb500d",
+                "sha256:b19e630e1575f0ebb9c56fd4053555e0842b39a84debba6de4640c8d06f3804c"
             ],
             "index": "pypi",
-            "version": "==6.32.0"
+            "version": "==6.33.1"
         },
         "charset-normalizer": {
             "hashes": [
