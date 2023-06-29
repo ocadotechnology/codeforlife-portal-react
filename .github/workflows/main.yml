@@ -105,15 +105,18 @@ jobs:
       - name: 🌳 Set Branch Env Var
         run: echo "BRANCH=$(git branch --show-current)" >> $GITHUB_ENV
 
-      - name: 🌐 Set up Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - name: 🐍 Set up Python
+      - name: 🐍 Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pipenv'
+      
+      - name: 🌐 Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'yarn'
+          cache-dependency-path: './frontend/yarn.lock'
 
       - name: 🗝 Authenticate with GCloud
         uses: google-github-actions/auth@v1
