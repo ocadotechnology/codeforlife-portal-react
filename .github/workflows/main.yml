@@ -61,109 +61,124 @@ jobs:
         env:
           NODE_ENV: production
 
-      - uses: actions/upload-artifact@v3 
-        with:
-          name: build
-          path: ./frontend/build
-
-  # The below code was adapted from this documentation.
-  # https://docs.cypress.io/guides/continuous-integration/github-actions#Parallelization
-  # https://github.com/cypress-io/cypress-docker-images/tree/master/browsers
-  # test-chrome:
-  #   runs-on: ubuntu-latest
-  #   needs: [setup]
-  #   steps:
-  #     - name: 🛫 Checkout
-  #       uses: actions/checkout@v3
-
-  #     - name: 🐍 Setup Python
-  #       uses: actions/setup-python@v4
-  #       with:
-  #         python-version: ${{ env.PYTHON_VERSION }}
-
-  #     - name: 🧪 Test on Chrome
-  #       uses: cypress-io/github-action@v5.6.1
-  #       with:
-  #         working-directory: frontend
-  #         #TODO: Currently using the run script for local development
-  #         start: bash ../run
-  #         wait-on: ${{ env.CYPRESS_WAIT_ON }}
-  #         wait-on-timeout: ${{ env.CYPRESS_WAIT_ON_TIMEOUT }}
-  #         browser: chrome
-  #         record: true
-  #         spec: ${{ env.CYPRESS_SPEC }}
-  #         cache-key: os-${{ runner.os }}-dependencies-${{ hashFiles('yarn.lock') }}
-  #       env:
-  #         CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #         NODE_ENV: production
-
-  #     - name: 🔍 Report test info
-  #       working-directory: frontend
-  #       run: npx cypress info
-
-  #     - name: 🔍 Report CPU info
-  #       working-directory: frontend
-  #       run: node -p 'os.cpus()'
-
-  #     - name: ✅ Upload coverage to Codecov
-  #       uses: codecov/codecov-action@v3.1.0
-
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    needs: [setup]
-    # if: github.ref == 'refs/heads/production' || github.ref == 'refs/heads/development' || github.ref == 'refs/heads/staging'
-    steps:
-      - name: 🛫 Checkout
-        uses: actions/checkout@v3
-
-      - name: 🌳 Set Branch Env Var
-        run: echo "BRANCH=$(git branch --show-current)" >> $GITHUB_ENV
-
-      - name: 🐍 Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache: 'pipenv'
-
-      - name: 🌐 Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          cache: 'yarn'
-          cache-dependency-path: './frontend/yarn.lock'
-
-      - uses: actions/download-artifact@v3 
-        with:
-          name: build
-          path: ./frontend/build
-
-      - name: 🗝 Authenticate with GCloud
-        uses: google-github-actions/auth@v1
-        with:
-          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
-
-      - name: 🤖 Set up GCloud SDK
-        uses: google-github-actions/setup-gcloud@v1
-
       - name: 🛠 Bundle Frontend
         working-directory: ./frontend
         run: node djangoBundler.js
         env:
           NODE_ENV: production
 
-      - name: 🛠 Generate requirements.txt
-        working-directory: ./backend
-        run: pipenv requirements > requirements.txt
-
       - name: 🛠 Collect Static Files
         working-directory: ./backend
         run: pipenv run python ./manage.py collectstatic --noinput --clear
 
-      - name: 🖊️ Configure App Deployment
-        uses: mikefarah/yq@master
+      - uses: actions/upload-artifact@v3 
         with:
-          cmd: yq -i '.service = "${{ env.BRANCH }}-${{ env.SERVICE }}"' backend/app.yaml
+          name: react-bundle
+          path: ./backend/portal/static/react
+
+      - uses: actions/upload-artifact@v3 
+        with:
+          name: static-collection
+          path: ./backend/static
+
+  # The below code was adapted from this documentation.
+  # https://docs.cypress.io/guides/continuous-integration/github-actions#Parallelization
+  # https://github.com/cypress-io/cypress-docker-images/tree/master/browsers
+  test-chrome:
+    runs-on: ubuntu-latest
+    needs: [setup]
+    steps:
+      - name: 🛫 Checkout
+        uses: actions/checkout@v3
+
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - uses: actions/download-artifact@v3 
+        with:
+          name: bundle
+          path: ./backend/portal/static/react
+
+      - uses: actions/download-artifact@v3 
+        with:
+          name: static-collection
+          path: ./backend/static
+
+      - name: 🧪 Test on Chrome
+        uses: cypress-io/github-action@v5.6.1
+        with:
+          working-directory: frontend
+          #TODO: Currently using the run script for local development
+          start: bash ../run
+          wait-on: ${{ env.CYPRESS_WAIT_ON }}
+          wait-on-timeout: ${{ env.CYPRESS_WAIT_ON_TIMEOUT }}
+          browser: chrome
+          record: true
+          spec: ${{ env.CYPRESS_SPEC }}
+          cache-key: os-${{ runner.os }}-dependencies-${{ hashFiles('yarn.lock') }}
+        env:
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_ENV: production
+
+      - name: 🔍 Report test info
+        working-directory: frontend
+        run: npx cypress info
+
+      - name: 🔍 Report CPU info
+        working-directory: frontend
+        run: node -p 'os.cpus()'
+
+      - name: ✅ Upload coverage to Codecov
+        uses: codecov/codecov-action@v3.1.0
+
+  # build-and-deploy:
+  #   runs-on: ubuntu-latest
+  #   needs: [setup]
+  #   # if: github.ref == 'refs/heads/production' || github.ref == 'refs/heads/development' || github.ref == 'refs/heads/staging'
+  #   steps:
+  #     - name: 🛫 Checkout
+  #       uses: actions/checkout@v3
+
+  #     - name: 🌳 Set Branch Env Var
+  #       run: echo "BRANCH=$(git branch --show-current)" >> $GITHUB_ENV
+
+  #     - name: 🐍 Setup Python
+  #       uses: actions/setup-python@v4
+  #       with:
+  #         python-version: ${{ env.PYTHON_VERSION }}
+  #         cache: 'pipenv'
+
+  #     - name: 🌐 Setup Node
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: 18
+  #         cache: 'yarn'
+  #         cache-dependency-path: './frontend/yarn.lock'
+
+  #     - uses: actions/download-artifact@v3 
+  #       with:
+  #         name: build
+  #         path: ./frontend/build
+
+  #     - name: 🗝 Authenticate with GCloud
+  #       uses: google-github-actions/auth@v1
+  #       with:
+  #         credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+  #     - name: 🤖 Set up GCloud SDK
+  #       uses: google-github-actions/setup-gcloud@v1
+
+  #     - name: 🛠 Generate requirements.txt
+  #       working-directory: ./backend
+  #       run: pipenv requirements > requirements.txt
+
+  #     - name: 🖊️ Configure App Deployment
+  #       uses: mikefarah/yq@master
+  #       with:
+  #         cmd: yq -i '.service = "${{ env.BRANCH }}-${{ env.SERVICE }}"' backend/app.yaml
 
       # - name: 🚀 Deploy App on GCloud
       #   working-directory: ./backend
