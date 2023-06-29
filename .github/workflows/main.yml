@@ -46,7 +46,7 @@ jobs:
 
       - name: 📦 Install Frontend Packages
         working-directory: ./frontend
-        run: yarn install
+        run: yarn install --production=false
         # TODO: fix dependencies and uncomment below lines
         # env:
         #   NODE_ENV: production
