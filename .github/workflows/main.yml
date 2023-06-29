@@ -29,7 +29,7 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: 'pipenv'
-      
+
       - name: 🌐 Setup Node
         uses: actions/setup-node@v3
         with:
@@ -50,6 +50,17 @@ jobs:
         # TODO: fix dependencies and uncomment below lines
         # env:
         #   NODE_ENV: production
+
+      - name: 🛠 Build Frontend
+        working-directory: ./frontend
+        run: yarn run build
+        env:
+          NODE_ENV: production
+
+      - uses: actions/upload-artifact@v3 
+        with:
+          name: build
+          path: ./frontend/build
 
   # The below code was adapted from this documentation.
   # https://docs.cypress.io/guides/continuous-integration/github-actions#Parallelization
@@ -110,13 +121,18 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: 'pipenv'
-      
+
       - name: 🌐 Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: 18
           cache: 'yarn'
           cache-dependency-path: './frontend/yarn.lock'
+
+      - uses: actions/download-artifact@v3 
+        with:
+          name: build
+          path: ./frontend/build
 
       - name: 🗝 Authenticate with GCloud
         uses: google-github-actions/auth@v1
@@ -125,12 +141,6 @@ jobs:
 
       - name: 🤖 Set up GCloud SDK
         uses: google-github-actions/setup-gcloud@v1
-
-      - name: 🛠 Build Frontend
-        working-directory: ./frontend
-        run: yarn run build
-        env:
-          NODE_ENV: production
 
       - name: 🛠 Bundle Frontend
         working-directory: ./frontend
