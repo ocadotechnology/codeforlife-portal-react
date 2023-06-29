@@ -44,6 +44,10 @@ jobs:
           python -m pip install pipenv
           pipenv install
 
+      - name: 🔎 Check Migrations
+        working-directory: ./backend
+        run: pipenv run python ./manage.py makemigrations --check --dry-run
+
       - name: 📦 Install Frontend Packages
         working-directory: ./frontend
         run: yarn install --production=false
@@ -147,10 +151,6 @@ jobs:
         run: node djangoBundler.js
         env:
           NODE_ENV: production
-
-      - name: 🔎 Check Migrations
-        working-directory: ./backend
-        run: pipenv run python ./manage.py makemigrations --check --dry-run
 
       - name: 🛠 Generate requirements.txt
         working-directory: ./backend
