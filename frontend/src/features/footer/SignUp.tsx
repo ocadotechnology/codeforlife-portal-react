@@ -13,6 +13,7 @@ import {
   EmailField,
   SubmitButton
 } from 'codeforlife/lib/esm/components/form';
+import { useSignUpMutation } from '../../app/api';
 
 interface SignUpValues {
   email: string;
@@ -28,6 +29,13 @@ const SignUp: React.FC = () => {
   const theme = useTheme();
   const isXS = useMediaQuery(theme.breakpoints.only('xs'));
 
+  const [signUp] = useSignUpMutation();
+
+  const handleSubmit = (values: any, { setSubmitting }: any): void => {
+    setSubmitting(false);
+    signUp(values);
+  };
+
   return (
     <Stack>
       <FormHelperText style={{ textAlign: isXS ? 'center' : undefined }}>
@@ -35,10 +43,7 @@ const SignUp: React.FC = () => {
       </FormHelperText>
       <Form
         initialValues={initialValues}
-        onSubmit={(values, { setSubmitting }) => {
-          // TODO: to call backend
-          setSubmitting(false);
-        }}
+        onSubmit={handleSubmit}
       >
         <Grid container>
           <Grid xs={12}>
