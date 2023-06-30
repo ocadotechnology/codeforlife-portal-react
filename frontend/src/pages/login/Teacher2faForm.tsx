@@ -35,16 +35,22 @@ const Teacher2faForm: React.FC = () => {
           .matches(/^[0-9]{6}$/, 'Invalid token')}
         required
       />
-      <Button href={paths.login.teacher.backupToken._}>
+      <Button
+        className='body'
+        href={paths.login.teacher.backupToken._}
+      >
         Use a backup token
       </Button>
       <Stack direction="row" spacing={2} justifyContent="space-between">
-        <Button href={paths.login.teacher._}>
+        <Button
+          href={paths.login.teacher._}
+          variant='outlined'
+        >
           Cancel
         </Button>
         <SubmitButton
           // TODO: Remove href and replace with submit functionality
-          href={paths.teacher.dashboard.school._}/>
+          href={paths.teacher.dashboard.school._} />
       </Stack>
     </BaseForm>
   );

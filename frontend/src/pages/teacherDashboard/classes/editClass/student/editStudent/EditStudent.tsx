@@ -27,10 +27,12 @@ const UpdateNameForm: React.FC = () => {
       }}
       // TODO: Disable button by default
       submitButton={
-        <SubmitButton>Update</SubmitButton>
+        <SubmitButton className='body'>
+          Update
+        </SubmitButton>
       }
     >
-      <StudentNameField/>
+      <StudentNameField />
     </CflHorizontalForm>
   );
 };
@@ -74,21 +76,21 @@ const EditStudent: React.FC<{
   studentId,
   goBack
 }) => {
-  return (
-    <Page.Section>
-      <Typography align="center" variant="h4">
-        Edit student details for Florian from class Class 1 ({accessCode})
-      </Typography>
-      <Link className='back-to' onClick={goBack}>
-        Class
-      </Link>
-      <Typography>
-        Edit this student&apos;s name and manage their password and direct access link.
-      </Typography>
-      <UpdateNameForm />
-      <UpdatePasswordForm />
-    </Page.Section>
-  );
-};
+    return (
+      <Page.Section>
+        <Typography align="center" variant="h4">
+          Edit student details for Florian from class Class 1 ({accessCode})
+        </Typography>
+        <Link className='back-to' onClick={goBack}>
+          Class
+        </Link>
+        <Typography>
+          Edit this student&apos;s name and manage their password and direct access link.
+        </Typography>
+        <UpdateNameForm />
+        <UpdatePasswordForm />
+      </Page.Section>
+    );
+  };
 
 export default EditStudent;

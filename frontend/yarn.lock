@@ -4093,9 +4093,9 @@ coa@^2.0.2:
     chalk "^2.4.1"
     q "^1.1.2"
 
-"codeforlife@github:ocadotechnology/codeforlife-package-javascript#v1.22.7":
-  version "1.22.7"
-  resolved "https://codeload.github.com/ocadotechnology/codeforlife-package-javascript/tar.gz/93a48a0f45bc9882900bb642a1218f32a549caea"
+"codeforlife@github:ocadotechnology/codeforlife-package-javascript#v1.22.8":
+  version "1.22.8"
+  resolved "https://codeload.github.com/ocadotechnology/codeforlife-package-javascript/tar.gz/2ce3f3aa0c587536c909c81850b83aab8356252c"
   dependencies:
     "@emotion/react" "^11.10.6"
     "@emotion/styled" "^11.10.6"
