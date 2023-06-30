@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Unstable_Grid2 as Grid,
   useTheme,
@@ -13,6 +13,8 @@ import {
   EmailField,
   SubmitButton
 } from 'codeforlife/lib/esm/components/form';
+
+import { useNavigate } from 'react-router-dom';
 import { useSignUpMutation } from '../../app/api';
 
 interface SignUpValues {
@@ -30,10 +32,21 @@ const SignUp: React.FC = () => {
   const isXS = useMediaQuery(theme.breakpoints.only('xs'));
 
   const [signUp] = useSignUpMutation();
+  const [signUpMessage, setSignUpMessage] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = (values: any, { setSubmitting }: any): void => {
     setSubmitting(false);
-    signUp(values);
+    signUp(values).unwrap()
+      .then(() => {
+        setSignUpMessage('Thank you for signing up! 🎉');
+        // TODO: useNavigate() may be used only in the context of a <Router> component.
+        navigate('/', { state: { a: 'bbbbb' } });
+      }) // fulfilled
+      .catch(() => {
+        setSignUpMessage('Invalid email address. Please try again.');
+        navigate('/', { state: { a: 'cccc' } });
+      }); // error
   };
 
   return (

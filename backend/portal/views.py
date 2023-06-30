@@ -10,7 +10,8 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
-
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 import json
 
 @csrf_exempt
@@ -18,10 +19,19 @@ def process_newsletter_form(request):
     if request.method == "POST":
         form_data = json.loads(request.body.decode())
         user_email = form_data["email"]
-        print(f'{form_data=}')
-        add_to_dotmailer("", "", user_email, DotmailerUserType.NO_ACCOUNT)
-        # messages.success(request, "Thank you for signing up! 🎉")
-        return HttpResponse(status=200)
+        try:
+            validate_email(user_email)
+        except ValidationError as e:
+            # messages.error(
+            #     request,
+            #     "Invalid email address. Please try again.",
+            #     extra_tags="sub-nav--warning",
+            # )
+            return HttpResponse(status=400)
+        else:
+            add_to_dotmailer("", "", user_email, DotmailerUserType.NO_ACCOUNT)
+            # messages.success(request, "Thank you for signing up! 🎉")
+            return HttpResponse(status=200)
        
     return HttpResponse(status=405)
 
