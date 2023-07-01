@@ -5,7 +5,7 @@ import {
 
 import { ImageProps } from 'codeforlife/lib/esm/components';
 
-import { paths } from '../../app/router';
+import { paths } from '../../app/routes';
 import KirstyImage from '../../images/kirsty.png';
 import NigelImage from '../../images/nigel.png';
 import DeeImage from '../../images/dee.png';

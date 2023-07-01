@@ -9,7 +9,7 @@ import {
 
 import Page from 'codeforlife/lib/esm/components/page';
 
-import { paths } from '../../app/router';
+import { paths } from '../../app/routes';
 import AboutRR from './AboutRR';
 import Levels from './Levels';
 

@@ -13,7 +13,7 @@ import {
   useOneTrustInfoToggle
 } from 'codeforlife/lib/esm/hooks';
 
-import { paths } from '../../app/router';
+import { paths } from '../../app/routes';
 
 const Links: React.FC = () => (
   <ThemeProvider theme={createTheme(useTheme(), {
@@ -45,13 +45,13 @@ const Links: React.FC = () => (
       <Grid xs={12} sm={4}>
         <Stack>
           <Link
-            href={paths.privacyNotice._}
+            href={paths.privacyNotice.privacyNotice._}
             className='no-decor'
           >
             Privacy Notice
           </Link>
           <Link
-            href={paths.termsOfUse._}
+            href={paths.termsOfUse.termsOfUse._}
             className='no-decor'
           >
             Terms of use

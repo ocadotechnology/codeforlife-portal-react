@@ -8,7 +8,7 @@ import {
   ChevronRight as ChevronRightIcon
 } from '@mui/icons-material';
 
-import { paths } from '../../app/router';
+import { paths } from '../../app/routes';
 
 const CodingClubs: React.FC = () => {
   return (

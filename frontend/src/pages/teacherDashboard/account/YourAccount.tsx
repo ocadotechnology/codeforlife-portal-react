@@ -6,7 +6,7 @@ import Page from 'codeforlife/lib/esm/components/page';
 import { SearchParams } from 'codeforlife/lib/esm/helpers';
 import Setup2fa from './2fa/setup2fa/Setup2fa';
 import BackupTokens from './2fa/backupTokens/BackupTokens';
-import { paths } from '../../../app/router';
+import { paths } from '../../../app/routes';
 import DeleteAccountForm from '../../../features/DeleteAccountForm';
 
 const TwoFactorAuthentication: React.FC = () => {

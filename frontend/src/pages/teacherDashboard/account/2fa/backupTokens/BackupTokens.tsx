@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Link, ListItemText, Typography } from '@mui/material';
-import { paths } from '../../../../../app/router';
+import { paths } from '../../../../../app/routes';
 import { ItemizedList } from 'codeforlife/lib/esm/components';
 import Page from 'codeforlife/lib/esm/components/page';
 

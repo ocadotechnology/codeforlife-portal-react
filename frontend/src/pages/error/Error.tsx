@@ -5,12 +5,14 @@ import {
   Typography,
   Button
 } from '@mui/material';
+import { useParams } from 'react-router-dom';
+import * as yup from 'yup';
 
 import Page from 'codeforlife/lib/esm/components/page';
 import { Image } from 'codeforlife/lib/esm/components';
-import { SearchParams } from 'codeforlife/lib/esm/helpers';
+import { tryValidateSync } from 'codeforlife/lib/esm/helpers/yup';
 
-import { paths } from '../../app/router';
+import { paths } from '../../app/routes';
 import ErrorProps, {
   forbidden403,
   pageNotFound404,
@@ -19,39 +21,34 @@ import ErrorProps, {
 } from './ErrorProps';
 
 const Error: React.FC = () => {
-  const errorTypes = [
-    '403', 'forbidden',
-    '404', 'pageNotFound',
-    '429', 'tooManyRequests',
-    '500', 'internalServerError'
-  ] as const;
-
-  const userTypes = [
-    'teacher',
-    'independent',
-    'student'
-  ] as const;
-
-  let params = SearchParams.get<{
-    type: typeof errorTypes[number],
-    userType?: typeof userTypes[number]
-  }>({
-    type: {
-      validate: SearchParams.validate.inOptions(errorTypes)
-    },
-    userType: {
-      validate: SearchParams.validate.inOptions(userTypes),
-      isRequired: false
+  const params = tryValidateSync(
+    useParams(),
+    yup.object({
+      type: yup.string()
+        .oneOf([
+          '403', 'forbidden',
+          '404', 'page-not-found',
+          '429', 'too-many-requests',
+          '500', 'internal-server-error'
+        ] as const)
+        .required()
+        .default('page-not-found'),
+      userType: yup.string()
+        .oneOf([
+          'teacher',
+          'independent',
+          'student'
+        ] as const)
+        .when('type', {
+          is: (type: string) => ['429', 'too-many-requests'].includes(type),
+          then: (schema) => schema.required()
+        })
+    }),
+    {
+      // Special case. Don't redirect to an error page - we're already here.
+      onError: () => ({ type: 'internal-server-error' as const })
     }
-  });
-
-  if (params === null || (
-    ['429', 'tooManyRequests'].includes(params.type) &&
-    params.userType === undefined
-  )) {
-    // Special case. Don't redirect to an error page - we're already here.
-    params = { type: 'internalServerError' };
-  }
+  );
 
   let errorProps: ErrorProps;
   switch (params.type) {
@@ -60,16 +57,16 @@ const Error: React.FC = () => {
       errorProps = forbidden403();
       break;
     case '404':
-    case 'pageNotFound':
+    case 'page-not-found':
       errorProps = pageNotFound404();
       break;
     case '429':
-    case 'tooManyRequests':
+    case 'too-many-requests':
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       errorProps = tooManyRequests429(params.userType!);
       break;
     case '500':
-    case 'internalServerError':
+    case 'internal-server-error':
       errorProps = internalServerError500();
       break;
   }

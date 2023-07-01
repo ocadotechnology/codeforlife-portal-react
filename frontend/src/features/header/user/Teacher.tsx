@@ -7,7 +7,7 @@ import {
   ManageAccountsOutlined as ManageAccountsOutlinedIcon
 } from '@mui/icons-material';
 
-import { paths } from '../../../app/router';
+import { paths } from '../../../app/routes';
 import { openInNewTab } from 'codeforlife/lib/esm/helpers';
 import {
   SummarySelect
@@ -30,7 +30,7 @@ export const TeacherSummary: React.FC = () => {
   return (
     <AuthenticatedSummary
       userType='Teacher'
-      dashboardHref={paths.teacher.dashboard._}
+      dashboardHref={paths.teacher.dashboard.school._}
       menuItemsProps={[
         {
           children: 'Update account details',

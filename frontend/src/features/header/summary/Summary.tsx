@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   AccordionSummary,
   Container,
@@ -11,7 +12,7 @@ import { Image } from 'codeforlife/lib/esm/components';
 
 import CflLogo from '../../../images/cfl_logo.png';
 import OgLogo from '../../../images/ocado_group.svg';
-import { paths } from '../../../app/router';
+import { paths } from '../../../app/routes';
 
 export interface SummaryProps {
   expanded: boolean;
@@ -24,6 +25,8 @@ const Summary: React.FC<SummaryProps> = ({
   setExpanded,
   children
 }) => {
+  const navigate = useNavigate();
+
   return (
     <AccordionSummary style={{
       cursor: 'default'
@@ -46,7 +49,7 @@ const Summary: React.FC<SummaryProps> = ({
             alt='Code for Life'
             src={CflLogo}
             maxWidth={{ xs: '65px', lg: '80px' }}
-            href={paths._}
+            onClick={() => { navigate(paths._); }}
             marginRight={{ xs: 0, lg: '10px' }}
           />
           <Image

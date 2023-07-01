@@ -1,12 +1,12 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-
-import { SearchParams } from 'codeforlife/lib/esm/helpers';
+import { useNavigate, useParams } from 'react-router-dom';
+import * as yup from 'yup';
 
 import Page from 'codeforlife/lib/esm/components/page';
+import { tryValidateSync } from 'codeforlife/lib/esm/helpers/yup';
 
-import { paths } from '../../app/router';
-import BaseForm from './BaseForm';
+import { paths } from '../../app/routes';
+import { BaseFormProps } from './BaseForm';
 import TeacherForm from './TeacherForm';
 import StudentForm from './StudentForm';
 import IndependentForm from './IndependentForm';
@@ -14,23 +14,28 @@ import IndependentForm from './IndependentForm';
 const Login: React.FC = () => {
   const navigate = useNavigate();
 
-  const userTypes = ['teacher', 'student', 'independent'] as const;
-  const params = SearchParams.get<{
-    userType: typeof userTypes[number];
-  }>({
-    userType: { validate: SearchParams.validate.inOptions(userTypes) }
-  });
-
-  React.useEffect(() => {
-    if (params === null) {
-      navigate(paths.error.internalServerError._);
+  const params = tryValidateSync(
+    useParams(),
+    yup.object({
+      userType: yup.string()
+        .oneOf([
+          'teacher',
+          'student',
+          'independent'
+        ] as const)
+        .required()
+    }),
+    {
+      onError: () => {
+        React.useEffect(() => {
+          navigate(paths.error.pageNotFound._);
+        }, []);
+      }
     }
-  }, []);
+  );
 
-  if (params === null) return <></>;
-
-  let form: React.ReactElement<typeof BaseForm>;
-  switch (params.userType) {
+  let form: React.ReactElement<BaseFormProps<any>> = <></>;
+  switch (params?.userType) {
     case 'teacher':
       form = <TeacherForm />;
       break;

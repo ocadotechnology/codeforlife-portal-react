@@ -6,7 +6,7 @@ import {
 
 import Page from 'codeforlife/lib/esm/components/page';
 
-import { paths } from '../../../app/router';
+import { paths } from '../../../app/routes';
 import TableOfContents from '../../../components/TableOfContents';
 import WhoWeAre from './WhoWeAre';
 import PersonalInfo from './PersonalInfo';

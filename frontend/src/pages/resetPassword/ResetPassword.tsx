@@ -1,34 +1,47 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import * as yup from 'yup';
 
 import Page from 'codeforlife/lib/esm/components/page';
-import { SearchParams } from 'codeforlife/lib/esm/helpers';
+import { tryValidateSync } from 'codeforlife/lib/esm/helpers/yup';
+import { fromSearchParams } from 'codeforlife/lib/esm/helpers/router';
 import { ThemedBox } from 'codeforlife/lib/esm/theme';
 
 import { themeOptions } from '../../app/theme';
-import { paths } from '../../app/router';
+import { paths } from '../../app/routes';
 import EmailForm from './EmailForm';
 import PasswordForm from './PasswordForm';
 
 const ResetPassword: React.FC = () => {
   const navigate = useNavigate();
 
-  const userTypes = ['teacher', 'independent'] as const;
-  const params = SearchParams.get<{
-    userType: typeof userTypes[number];
-    token?: string;
-  }>({
-    userType: { validate: SearchParams.validate.inOptions(userTypes) },
-    token: { isRequired: false }
-  });
-
-  React.useEffect(() => {
-    if (params === null) {
-      navigate(paths.error.internalServerError._);
+  const params = tryValidateSync(
+    useParams(),
+    yup.object({
+      userType: yup.string()
+        .oneOf([
+          'teacher',
+          'independent'
+        ] as const)
+        .required()
+    }),
+    {
+      onError: () => {
+        React.useEffect(() => {
+          navigate(paths.error.pageNotFound._);
+        }, []);
+      }
     }
-  }, []);
+  );
 
-  if (params === null) return <></>;
+  if (params === undefined) return <></>;
+
+  const searchParams = tryValidateSync(
+    fromSearchParams(),
+    yup.object({
+      token: yup.string()
+    })
+  );
 
   return (
     <Page.Container>
@@ -38,12 +51,12 @@ const ResetPassword: React.FC = () => {
           options={themeOptions}
           userType={params.userType}
         >
-          {params.token === undefined
-            ? <EmailForm />
-            : <PasswordForm
+          {searchParams?.token !== undefined
+            ? <PasswordForm
               userType={params.userType}
-              token={params.token}
+              token={searchParams.token}
             />
+            : <EmailForm />
           }
         </ThemedBox>
       </Page.Section>

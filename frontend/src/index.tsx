@@ -1,10 +1,9 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { RouterProvider } from 'react-router-dom';
 
 import { App } from 'codeforlife/lib/esm/components';
 
-import router from './app/router';
+import routes from './app/routes';
 import theme from './app/theme';
 import store from './app/store';
 import Header from './features/header/Header';
@@ -25,7 +24,7 @@ root.render(
       header={<Header />}
       footer={<Footer />}
     >
-      <RouterProvider router={router} />
+      {routes}
     </App>
   </React.StrictMode>
 );

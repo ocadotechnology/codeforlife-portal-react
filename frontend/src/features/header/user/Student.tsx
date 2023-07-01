@@ -7,7 +7,7 @@ import {
   LockOutlined as LockOutlinedIcon
 } from '@mui/icons-material';
 
-import { paths } from '../../../app/router';
+import { paths } from '../../../app/routes';
 import {
   SummarySelect
 } from '../summary';

@@ -4,7 +4,7 @@ import {
   Unstable_Grid2 as Grid,
   Typography
 } from '@mui/material';
-import { paths } from '../../app/router';
+import { paths } from '../../app/routes';
 
 const AboutRR: React.FC = () => (
   <Grid container columnSpacing={4}>

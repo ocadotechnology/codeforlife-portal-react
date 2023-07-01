@@ -8,7 +8,7 @@ import {
   ManageAccountsOutlined as ManageAccountsOutlinedIcon
 } from '@mui/icons-material';
 
-import { paths } from '../../../app/router';
+import { paths } from '../../../app/routes';
 import { openInNewTab } from 'codeforlife/lib/esm/helpers';
 import {
   SummarySelect

@@ -5,12 +5,12 @@ import Page, {
   SectionProps as PageSectionProps
 } from 'codeforlife/lib/esm/components/page';
 
-import { paths } from '../../app/router';
+import { paths } from '../../app/routes';
 import BaseDashboard from './BaseDashboard';
 
 import { SearchParams } from 'codeforlife/lib/esm/helpers';
 
-const StudentsDashboard: React.FC = () => {
+const StudentDashboard: React.FC = () => {
   const navigate = useNavigate();
 
   const userTypes = ['dependent', 'independent'] as const;
@@ -45,4 +45,4 @@ const StudentsDashboard: React.FC = () => {
   );
 };
 
-export default StudentsDashboard;
+export default StudentDashboard;

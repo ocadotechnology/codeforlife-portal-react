@@ -13,7 +13,7 @@ import {
 
 import { Image, YouTubeVideo } from 'codeforlife/lib/esm/components';
 
-import { paths } from '../../app/router';
+import { paths } from '../../app/routes';
 
 import RapidRouterImage from '../../images/rapid_router_landing_hero.png';
 import RapidRouterIcon from '../../images/RR_logo.svg';

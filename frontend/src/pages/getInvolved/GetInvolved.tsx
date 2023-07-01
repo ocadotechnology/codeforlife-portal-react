@@ -11,7 +11,7 @@ import GithubImg from '../../images/github.png';
 import ClubsImg from '../../images/clubs.png';
 import UniversitiesImg from '../../images/universities.png';
 import GetInvolvedHero from '../../images/get_involved_hero_cut.png';
-import { paths } from '../../app/router';
+import { paths } from '../../app/routes';
 
 const GetInvolved: React.FC = () => {
   return (

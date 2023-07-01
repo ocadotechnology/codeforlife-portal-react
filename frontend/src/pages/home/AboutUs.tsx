@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Unstable_Grid2 as Grid,
   Stack,
@@ -11,7 +12,7 @@ import {
 
 import { Image } from 'codeforlife/lib/esm/components';
 
-import { paths } from '../../app/router';
+import { paths } from '../../app/routes';
 
 import PieChartIcon from '../../images/icon_piechart.png';
 import ControllerIcon from '../../images/icon_controller.png';
@@ -37,6 +38,8 @@ const Column: React.FC<{
 );
 
 const AboutUs: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <Grid container columnSpacing={2}>
       <Grid xs={12}>
@@ -62,7 +65,7 @@ const AboutUs: React.FC = () => {
       />
       <Grid xs={12} display='flex' justifyContent='end'>
         <Button
-          href={paths.aboutUs._}
+          onClick={() => { navigate(paths.aboutUs._); }}
           endIcon={<ChevronRightIcon />}
         >
           About us

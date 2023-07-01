@@ -8,7 +8,7 @@ import {
 
 import { Image, ImageProps } from 'codeforlife/lib/esm/components';
 
-import { paths } from '../../app/router';
+import { paths } from '../../app/routes';
 
 import ReubenPhoto from '../../images/reuben.png';
 import SianPhoto from '../../images/sian.png';

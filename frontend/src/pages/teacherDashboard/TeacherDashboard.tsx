@@ -14,18 +14,22 @@ const TeacherDashboard: React.FC = () => {
     <Page.Container>
       <Page.TabBar
         header={`Welcome back, ${userName}`}
+        originalPath='/teacher/dashboard/:tab'
         tabs={[
           {
             label: 'Your school',
-            children: <YourSchool />
+            children: <YourSchool />,
+            path: 'school'
           },
           {
             label: 'Your classes',
-            children: <Classes />
+            children: <Classes />,
+            path: 'classes'
           },
           {
             label: 'Your account',
-            children: <YourAccount />
+            children: <YourAccount />,
+            path: 'account'
           }
         ]}
       />

@@ -11,7 +11,7 @@ import {
   useTheme
 } from '@mui/material';
 
-import { paths } from '../../app/router';
+import { paths } from '../../app/routes';
 import { Summary, SummaryProps } from './summary';
 import { Details, DetailsProps } from './details';
 import {
@@ -64,6 +64,7 @@ const Header: React.FC = () => {
 
   return <>
     <Accordion
+      id='header'
       expanded={expanded}
       sx={{
         zIndex: (theme) => theme.zIndex.appBar,

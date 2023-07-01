@@ -9,7 +9,7 @@ import {
   OpenInNew as OpenInNewIcon
 } from '@mui/icons-material';
 
-import { paths } from '../../app/router';
+import { paths } from '../../app/routes';
 import TeacherSection from './TeacherSection';
 
 const Kurono: React.FC = () => {

@@ -9,7 +9,7 @@ import type {
 } from '@reduxjs/toolkit/query';
 import { useNavigate } from 'react-router-dom';
 
-import { paths } from './router';
+import { paths } from './routes';
 
 const baseQuery = fetchBaseQuery({
   baseUrl: process.env.REACT_APP_API_BASE_URL

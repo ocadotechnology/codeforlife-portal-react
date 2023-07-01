@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from '@mui/material';
 import { ChevronRight as ChevronRightIcon } from '@mui/icons-material';
 
-import { paths } from '../../app/router';
+import { paths } from '../../app/routes';
 import BaseForm from './BaseForm';
 import CflPasswordFields from '../../components/CflPasswordFields';
 
@@ -73,7 +73,7 @@ const TeacherForm: React.FC = () => {
             label: <>
               I am over 18 years old have read and understood the&nbsp;
               <Link
-                href={paths.termsOfUse._}
+                href={paths.termsOfUse.termsOfUse._}
                 target='_blank'
                 color='inherit'
               >
@@ -81,7 +81,7 @@ const TeacherForm: React.FC = () => {
               </Link>
               &nbsp;and the&nbsp;
               <Link
-                href={paths.privacyNotice._}
+                href={paths.privacyNotice.privacyNotice._}
                 target='_blank'
                 color='inherit'
               >

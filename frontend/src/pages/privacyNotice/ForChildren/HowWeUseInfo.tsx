@@ -7,7 +7,7 @@ import {
 
 import { ItemizedList } from 'codeforlife/lib/esm/components';
 
-import { paths } from '../../../app/router';
+import { paths } from '../../../app/routes';
 
 const HowWeUseInfo: React.FC = () => <>
   <Typography>
@@ -28,7 +28,7 @@ const HowWeUseInfo: React.FC = () => <>
     </ListItemText>
     <ListItemText>
       Help make sure that our portal is safe and secure and that users are following our&nbsp;
-      <Link href={paths.termsOfUse._}>
+      <Link href={paths.termsOfUse.termsOfUse._}>
         Terms of Use
       </Link>
       . For example, we might need to use account information to block a user from Code for Life temporarily or permanently if they misuse the site (e.g. by giving other people access to their account),

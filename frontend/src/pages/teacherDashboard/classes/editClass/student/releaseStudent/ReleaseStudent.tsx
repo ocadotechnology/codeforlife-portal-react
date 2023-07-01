@@ -1,7 +1,7 @@
 import React from 'react';
 import Page from 'codeforlife/lib/esm/components/page';
 import { Button, Grid, Link, Typography, Stack, useTheme } from '@mui/material';
-import { paths } from '../../../../../../app/router';
+import { paths } from '../../../../../../app/routes';
 import { EmailField, Form, SubmitButton } from 'codeforlife/lib/esm/components/form';
 import StudentNameField from '../../../../../../components/form/StudentNameField';
 import { PersonRemoveAlt1Outlined } from '@mui/icons-material';

@@ -7,7 +7,7 @@ import {
   Check as CheckIcon
 } from '@mui/icons-material';
 
-import { paths } from '../../app/router';
+import { paths } from '../../app/routes';
 import NewStudentsTable from '../../features/newStudentsTable/NewStudentsTable';
 
 const ClassCredentials: React.FC = () => {

@@ -1,7 +1,6 @@
 import React from 'react';
-import {
-  AccordionDetails
-} from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { AccordionDetails } from '@mui/material';
 
 import {
   useFreshworksWidget,
@@ -9,7 +8,7 @@ import {
 } from 'codeforlife/lib/esm/hooks';
 
 import DetailsButton from './DetailsButton';
-import { paths } from '../../../app/router';
+import { paths } from '../../../app/routes';
 
 export interface DetailsProps {
   children: React.ReactNode;
@@ -18,10 +17,12 @@ export interface DetailsProps {
 const Details: React.FC<DetailsProps> = ({
   children
 }) => {
+  const navigate = useNavigate();
+
   return (
     <AccordionDetails>
       {children}
-      <DetailsButton href={paths.aboutUs._}>
+      <DetailsButton onClick={() => { navigate(paths.aboutUs._); }}>
         About us
       </DetailsButton>
       <DetailsButton
@@ -32,16 +33,16 @@ const Details: React.FC<DetailsProps> = ({
       <DetailsButton onClick={useOneTrustInfoToggle}>
         Cookie settings
       </DetailsButton>
-      <DetailsButton href={paths.privacyNotice._}>
+      <DetailsButton onClick={() => { navigate(paths.privacyNotice.privacyNotice._); }}>
         Privacy notice
       </DetailsButton>
-      <DetailsButton href={paths.termsOfUse._}>
+      <DetailsButton onClick={() => { navigate(paths.termsOfUse.termsOfUse._); }}>
         Terms of use
       </DetailsButton>
-      <DetailsButton href={paths.homeLearning._}>
+      <DetailsButton onClick={() => { navigate(paths.homeLearning._); }}>
         Home learning
       </DetailsButton>
-      <DetailsButton href={paths.getInvolved._}>
+      <DetailsButton onClick={() => { navigate(paths.getInvolved._); }}>
         Get involved
       </DetailsButton>
     </AccordionDetails>

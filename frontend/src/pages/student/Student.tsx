@@ -8,13 +8,13 @@ import {
 
 import Page from 'codeforlife/lib/esm/components/page';
 
-import { paths } from '../../app/router';
+import { paths } from '../../app/routes';
 import Characters from '../../features/characters/Characters';
 import PlayImage from '../../images/home_play_hero.png';
 import RapidRouter from './RapidRouter';
 import Kurono from './Kurono';
 
-const Students: React.FC = () => {
+const Student: React.FC = () => {
   const theme = useTheme();
 
   return (
@@ -48,4 +48,4 @@ const Students: React.FC = () => {
   );
 };
 
-export default Students;
+export default Student;

@@ -8,7 +8,7 @@ import {
 import { Image, ImageProps } from 'codeforlife/lib/esm/components';
 import { ThemedBox, ThemedBoxProps } from 'codeforlife/lib/esm/theme';
 
-import { paths } from '../../app/router';
+import { paths } from '../../app/routes';
 import { themeOptions } from '../../app/theme';
 
 const Status: React.FC<{
