@@ -57,6 +57,7 @@ const Kurono: React.FC = () => {
             .
           </Typography>
           <Button
+            onClick={() => { navigate(paths.login.student._); }}
             endIcon={<ChevronRightIcon />}
             sx={{ mt: 'auto', mb: { xs: 1, md: 0 } }}
           >

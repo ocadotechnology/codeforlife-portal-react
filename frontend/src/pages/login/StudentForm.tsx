@@ -44,7 +44,7 @@ const AccessCodeForm: React.FC<{
         helperText="Enter your access code"
         validate={validateAccessCode}
       />
-      <Typography variant="body2" fontWeight="bold" my={0}>
+      <Typography variant="body2" fontWeight="bold">
         Forgotten your login details? Please check with your teacher.
       </Typography>
       <SubmitButton
