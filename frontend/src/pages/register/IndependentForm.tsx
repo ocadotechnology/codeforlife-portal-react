@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Link, FormHelperText } from '@mui/material';
 import { ChevronRight as ChevronRightIcon } from '@mui/icons-material';
 
@@ -34,6 +35,7 @@ const initialValues: IndependentFormValues = {
 };
 
 const IndependentForm: React.FC = () => {
+  const navigate = useNavigate();
   const [yearsOfAge, setYearsOfAge] = React.useState<number>();
 
   const EmailApplicableAge = 13;
@@ -98,7 +100,7 @@ const IndependentForm: React.FC = () => {
                 label: <>
                   I have read and understood the &nbsp;
                   <Link
-                    href={paths.termsOfUse.termsOfUse._}
+                    onClick={() => { navigate(paths.termsOfUse.termsOfUse._); }}
                     target='_blank'
                     color='inherit'
                   >
@@ -106,7 +108,7 @@ const IndependentForm: React.FC = () => {
                   </Link>
                   &nbsp;and the&nbsp;
                   <Link
-                    href={paths.privacyNotice.privacyNotice._}
+                    onClick={() => { navigate(paths.privacyNotice.privacyNotice._); }}
                     target='_blank'
                     color='inherit'
                   >

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button, Grid, InputAdornment, Stack, Typography, useTheme } from '@mui/material';
 import { ErrorOutlineOutlined, LockOutlined, PersonOutline } from '@mui/icons-material';
 import { EmailField, Form, PasswordField, SubmitButton, TextField } from 'codeforlife/lib/esm/components/form';
@@ -10,6 +11,8 @@ import { paths } from '../../../app/router';
 import DeleteAccountForm from '../../../features/DeleteAccountForm';
 
 const TwoFactorAuthentication: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <Stack>
       <Typography variant="h5">Two factor authentication</Typography>
@@ -17,7 +20,7 @@ const TwoFactorAuthentication: React.FC = () => {
         Use your smartphone or tablet to enhance your account&apos;s security by
         using an authenticator app.
       </Typography>
-      <Button href={paths.teacher.dashboard.account.setup2FA._}>
+      <Button onClick={() => { navigate(paths.teacher.dashboard.account.setup2FA._); }}>
         Setup two factor authentication
       </Button>
       <Grid container>
@@ -30,7 +33,7 @@ const TwoFactorAuthentication: React.FC = () => {
           <Typography>View and create backup tokens for your account.</Typography>
           <Button
             className='body'
-            href={paths.teacher.dashboard.account.backupTokens._}
+            onClick={() => { navigate(paths.teacher.dashboard.account.backupTokens._); }}
           >
             Manage backup tokens
           </Button>

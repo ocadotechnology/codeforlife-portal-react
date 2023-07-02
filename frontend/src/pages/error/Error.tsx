@@ -1,11 +1,14 @@
 import React from 'react';
 import {
+  useNavigate,
+  useParams
+} from 'react-router-dom';
+import {
   Unstable_Grid2 as Grid,
   Stack,
   Typography,
   Button
 } from '@mui/material';
-import { useParams } from 'react-router-dom';
 import * as yup from 'yup';
 
 import Page from 'codeforlife/lib/esm/components/page';
@@ -21,6 +24,8 @@ import ErrorProps, {
 } from './ErrorProps';
 
 const Error: React.FC = () => {
+  const navigate = useNavigate();
+
   const params = tryValidateSync(
     useParams(),
     yup.object({
@@ -92,7 +97,7 @@ const Error: React.FC = () => {
               </Typography>
               <Button
                 sx={{ mb: { xs: 1, sm: 0 } }}
-                href={paths._}
+                onClick={() => { navigate(paths._); }}
               >
                 Back to homepage
               </Button>

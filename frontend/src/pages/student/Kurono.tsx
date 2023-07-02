@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Unstable_Grid2 as Grid,
   Stack,
@@ -18,6 +19,8 @@ import KuronoImage from '../../images/kurono_landing_hero.png';
 import KuronoIcon from '../../images/kurono_logo.svg';
 
 const Kurono: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <Grid container spacing={1}>
       <Grid
@@ -48,7 +51,10 @@ const Kurono: React.FC = () => {
           </Typography>
           <Typography>
             Ask your teacher or tutor to&nbsp;
-            <Link href={paths.register._}>register</Link>.
+            <Link onClick={() => { navigate(paths.register._); }}>
+              register
+            </Link>
+            .
           </Typography>
           <Button
             endIcon={<ChevronRightIcon />}

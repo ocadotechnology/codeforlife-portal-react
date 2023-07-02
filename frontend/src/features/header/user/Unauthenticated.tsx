@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Link,
   LinkProps,
@@ -21,6 +22,8 @@ import {
 } from '../details';
 
 export const UnauthenticatedSummary: React.FC = () => {
+  const navigate = useNavigate();
+
   const upLg = useMediaQuery(
     (theme: Theme) => theme.breakpoints.up('lg')
   );
@@ -37,15 +40,21 @@ export const UnauthenticatedSummary: React.FC = () => {
   }
 
   return <>
-    <Link {...linkProps} href={paths.teacher._}>
+    <Link
+      {...linkProps}
+      onClick={() => { navigate(paths.teacher._); }}
+    >
       Teachers
     </Link>
-    <Link {...linkProps} href={paths.student._}>
+    <Link
+      {...linkProps}
+      onClick={() => { navigate(paths.student._); }}
+    >
       Students
     </Link>
     <Button
       sx={{ ml: 'auto' }}
-      href={paths.register._}
+      onClick={() => { navigate(paths.register._); }}
     >
       Register
     </Button>
@@ -76,9 +85,11 @@ export const UnauthenticatedSummary: React.FC = () => {
 };
 
 export const UnauthenticatedDetails: React.FC = () => {
+  const navigate = useNavigate();
+
   return <>
     <Button
-      href={paths.register._}
+      onClick={() => { navigate(paths.register._); }}
       style={{
         width: '100%',
         fontSize: '20px'
@@ -88,28 +99,28 @@ export const UnauthenticatedDetails: React.FC = () => {
     </Button>
     <DetailsAccordion label='Log in'>
       <DetailsButton
-        href={paths.login.teacher._}
+        onClick={() => { navigate(paths.login.teacher._); }}
         spacing={2}
       >
         Teacher
       </DetailsButton>
       <DetailsButton
-        href={paths.login.student._}
+        onClick={() => { navigate(paths.login.student._); }}
         spacing={2}
       >
         Student
       </DetailsButton>
       <DetailsButton
-        href={paths.login.independent._}
+        onClick={() => { navigate(paths.login.independent._); }}
         spacing={2}
       >
         Independent
       </DetailsButton>
     </DetailsAccordion>
-    <DetailsButton href={paths.teacher._}>
+    <DetailsButton onClick={() => { navigate(paths.teacher._); }}>
       Teachers
     </DetailsButton>
-    <DetailsButton href={paths.student._}>
+    <DetailsButton onClick={() => { navigate(paths.student._); }}>
       Students
     </DetailsButton>
   </>;

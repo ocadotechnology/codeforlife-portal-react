@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Unstable_Grid2 as Grid,
   Typography,
@@ -11,6 +12,8 @@ import {
 import { paths } from '../../app/router';
 
 const CodingClubs: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <Grid container>
       <Grid xs={12}>
@@ -25,7 +28,7 @@ const CodingClubs: React.FC = () => {
       </Grid>
       <Grid xs={12} display='flex' justifyContent='end'>
         <Button
-          href={paths.codingClubs._}
+          onClick={() => { navigate(paths.codingClubs._); }}
           endIcon={<ChevronRightIcon />}
         >
           Find out more

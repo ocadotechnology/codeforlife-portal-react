@@ -40,8 +40,8 @@ export const paths = _('', {
     independent: _('/independent')
   }),
   resetPassword: _('/reset-password', {
-    teacher: _('/?userType=teacher'),
-    independent: _('/?userType=independent')
+    teacher: _('/teacher'),
+    independent: _('/independent')
   }),
   teacher: _('/teacher', {
     onboarding: _('/onboarding'),

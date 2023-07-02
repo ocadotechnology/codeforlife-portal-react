@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   SvgIconProps
 } from '@mui/material';
@@ -92,11 +93,13 @@ export const TeacherSummary: React.FC = () => {
 };
 
 export const TeacherDetails: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <AuthenticatedDetails>
       <DetailsAccordion label='Teacher'>
         <DetailsButton
-          href={paths.teacher.dashboard.school._}
+          onClick={() => { navigate(paths.teacher.dashboard.school._); }}
           spacing={2}
         >
           School / Club
@@ -129,7 +132,7 @@ export const TeacherDetails: React.FC = () => {
           </DetailsButton>
         </DetailsAccordion>
       </DetailsAccordion>
-      <DetailsButton href={paths.teacher.dashboard.account._}>
+      <DetailsButton onClick={() => { navigate(paths.teacher.dashboard.account._); }}>
         Update account details
       </DetailsButton>
     </AuthenticatedDetails>

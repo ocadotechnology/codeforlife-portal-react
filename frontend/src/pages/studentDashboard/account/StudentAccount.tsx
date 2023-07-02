@@ -1,9 +1,27 @@
 import React from 'react';
-import { Button, Grid, InputAdornment, Stack, Typography, useTheme } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import {
+  Button,
+  Grid,
+  InputAdornment,
+  Stack,
+  Typography,
+  useTheme
+} from '@mui/material';
+import {
+  LockOutlined,
+  PersonOutline
+} from '@mui/icons-material';
 
 import Page from 'codeforlife/lib/esm/components/page';
-import { EmailField, Form, PasswordField, SubmitButton, TextField } from 'codeforlife/lib/esm/components/form';
-import { LockOutlined, PersonOutline } from '@mui/icons-material';
+import {
+  EmailField,
+  Form,
+  PasswordField,
+  SubmitButton,
+  TextField
+} from 'codeforlife/lib/esm/components/form';
+
 import DeleteAccountForm from '../../../features/DeleteAccountForm';
 import { paths } from '../../../app/router';
 
@@ -54,7 +72,7 @@ const AccountFormButtons: React.FC<{
         Cancel
       </Button>
       <SubmitButton>
-        { /* TODO: Connect to backend */ }
+        { /* TODO: Connect to backend */}
         Update details
       </SubmitButton>
     </Stack>
@@ -68,91 +86,92 @@ const AccountForm: React.FC<{
   isDependent,
   goBack
 }) => {
-  if (isDependent) {
-    interface Values {
-      newPassword: string;
-      repeatPassword: string;
-      currentPassword: string;
-    }
+    if (isDependent) {
+      interface Values {
+        newPassword: string;
+        repeatPassword: string;
+        currentPassword: string;
+      }
 
-    const initialValues: Values = {
-      newPassword: '',
-      repeatPassword: '',
-      currentPassword: ''
-    };
+      const initialValues: Values = {
+        newPassword: '',
+        repeatPassword: '',
+        currentPassword: ''
+      };
 
-    return (
-      <Form
-        initialValues={initialValues}
-        onSubmit={(values) => {
-          alert(JSON.stringify(values, null, 2));
-        }}
-      >
-        <Grid container spacing={2}>
-          <AccountFormPasswordFields />
-        </Grid>
-        <AccountFormButtons goBack={goBack}/>
-      </Form>
-    );
-  } else {
-    interface Values {
-      name: string;
-      email: string;
-      newPassword: string;
-      repeatPassword: string;
-      currentPassword: string;
-    }
-
-    const initialValues: Values = {
-      name: '',
-      email: '',
-      newPassword: '',
-      repeatPassword: '',
-      currentPassword: ''
-    };
-
-    return (
-      <Form
-        initialValues={initialValues}
-        onSubmit={(values) => {
-          alert(JSON.stringify(values, null, 2));
-        }}
-      >
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              name="name"
-              helperText="Enter your name"
-              placeholder="Name"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <PersonOutline />
-                  </InputAdornment>
-                )
-              }}
-            />
+      return (
+        <Form
+          initialValues={initialValues}
+          onSubmit={(values) => {
+            alert(JSON.stringify(values, null, 2));
+          }}
+        >
+          <Grid container spacing={2}>
+            <AccountFormPasswordFields />
           </Grid>
-          <Grid item xs={12} sm={6}>
-            <EmailField
-              placeholder="New email address (optional)"
-              helperText="Enter your new email address (optional)"
-              name="newEmail"
-            />
+          <AccountFormButtons goBack={goBack} />
+        </Form>
+      );
+    } else {
+      interface Values {
+        name: string;
+        email: string;
+        newPassword: string;
+        repeatPassword: string;
+        currentPassword: string;
+      }
+
+      const initialValues: Values = {
+        name: '',
+        email: '',
+        newPassword: '',
+        repeatPassword: '',
+        currentPassword: ''
+      };
+
+      return (
+        <Form
+          initialValues={initialValues}
+          onSubmit={(values) => {
+            alert(JSON.stringify(values, null, 2));
+          }}
+        >
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                name="name"
+                helperText="Enter your name"
+                placeholder="Name"
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <PersonOutline />
+                    </InputAdornment>
+                  )
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <EmailField
+                placeholder="New email address (optional)"
+                helperText="Enter your new email address (optional)"
+                name="newEmail"
+              />
+            </Grid>
+            <AccountFormPasswordFields />
           </Grid>
-          <AccountFormPasswordFields />
-        </Grid>
-        <AccountFormButtons goBack={goBack}/>
-      </Form>
-    );
-  }
-};
+          <AccountFormButtons goBack={goBack} />
+        </Form>
+      );
+    }
+  };
 
 const StudentAccount: React.FC<{
   isDependent: boolean,
   goBack: () => void
 }> = ({ isDependent, goBack }) => {
   const theme = useTheme();
+  const navigate = useNavigate();
 
   return (
     <>
@@ -174,17 +193,19 @@ const StudentAccount: React.FC<{
         <AccountForm isDependent={isDependent} goBack={goBack} />
       </Page.Section>
       {!isDependent
-      ? <>
+        ? <>
           <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
             <Typography variant='h5'>Join a school or club</Typography>
             <Typography>To find out about linking your Code For Life account with a school or club, click &apos;Join&apos;.</Typography>
-            <Button href={paths.student.dashboard.independent.joinSchool._}>Join</Button>
+            <Button onClick={() => { navigate(paths.student.dashboard.independent.joinSchool._); }}>
+              Join
+            </Button>
           </Page.Section>
           <Page.Section>
             <DeleteAccountForm />
           </Page.Section>
         </>
-      : <></>
+        : <></>
       }
     </>
   );

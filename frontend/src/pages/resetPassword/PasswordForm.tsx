@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Button,
   Stack,
@@ -19,6 +20,7 @@ const PasswordForm: React.FC<{
   userType: 'teacher' | 'independent';
   token: string;
 }> = ({ userType, token }) => {
+  const navigate = useNavigate();
   const [didSubmit, setDidSubmit] = React.useState(false);
 
   interface Values {
@@ -43,11 +45,12 @@ const PasswordForm: React.FC<{
       <Typography>
         Please log in.
       </Typography>
-      <Button href={
-        userType === 'teacher'
+      <Button onClick={() => {
+        navigate(userType === 'teacher'
           ? paths.login.teacher._
           : paths.login.independent._
-      }>
+        );
+      }}>
         OK
       </Button>
     </Stack>
@@ -76,7 +79,7 @@ const PasswordForm: React.FC<{
         >
           <Button
             variant='outlined'
-            href={paths._}
+            onClick={() => { navigate(paths._); }}
           >
             Cancel
           </Button>

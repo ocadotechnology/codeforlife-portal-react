@@ -93,7 +93,7 @@ const BaseTeacherForm: React.FC = () => {
         </Typography>
         <Typography variant="body2">
           Don&apos;t worry, you can&nbsp;
-          <Link href={paths.resetPassword.teacher._}>
+          <Link onClick={() => { navigate(paths.resetPassword.teacher._); }}>
             reset your password
           </Link>
           .
