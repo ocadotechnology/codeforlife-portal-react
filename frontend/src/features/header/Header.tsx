@@ -20,6 +20,7 @@ import {
   StudentSummary, StudentDetails,
   IndependentSummary, IndependentDetails
 } from './user';
+import HeaderContext from './HeaderContext';
 
 const Header: React.FC = () => {
   const theme = useTheme();
@@ -67,54 +68,55 @@ const Header: React.FC = () => {
   }
 
   return <>
-    <Accordion
-      id='header'
-      expanded={expanded}
-      sx={{
-        zIndex: (theme) => theme.zIndex.appBar,
-        boxShadow: '0 2px 7px 1px rgba(0, 0, 0, 0.1)',
-        position: 'sticky',
-        top: 0,
-        maxHeight: '100vh',
-        overflowY: 'auto',
-        [`.${accordionSummaryClasses.root}`]: {
-          padding: '0px',
-          backgroundColor: 'white !important'
-        },
-        [`.${accordionSummaryClasses.content}`]: {
-          margin: '0px !important'
-        },
-        [`.${accordionDetailsClasses.root}`]: {
-          padding: '0px !important',
-          [`.${buttonClasses.root}`]: {
-            padding: '24px 12px',
-            width: '100%',
-            fontSize: '20px'
-          },
-          [`.${buttonClasses.text}`]: {
-            color: theme.typography.body1.color,
-            borderTop: `2px solid ${theme.palette.info.main}`
-          },
-          [`.${buttonClasses.endIcon}`]: {
-            marginLeft: 'auto'
-          },
-          [`.${svgIconClasses.root}`]: {
-            fontSize: '27px',
-            color: 'black'
-          }
-        }
-      }}
-    >
-      <Summary
+    <HeaderContext.Provider value={{
+      expanded, setExpanded
+    }}>
+      <Accordion
+        id='header'
         expanded={expanded}
-        setExpanded={setExpanded}
+        sx={{
+          zIndex: (theme) => theme.zIndex.appBar,
+          boxShadow: '0 2px 7px 1px rgba(0, 0, 0, 0.1)',
+          position: 'sticky',
+          top: 0,
+          maxHeight: '100vh',
+          overflowY: 'auto',
+          [`.${accordionSummaryClasses.root}`]: {
+            padding: '0px',
+            backgroundColor: 'white !important'
+          },
+          [`.${accordionSummaryClasses.content}`]: {
+            margin: '0px !important'
+          },
+          [`.${accordionDetailsClasses.root}`]: {
+            padding: '0px !important',
+            [`.${buttonClasses.root}`]: {
+              padding: '24px 12px',
+              width: '100%',
+              fontSize: '20px'
+            },
+            [`.${buttonClasses.text}`]: {
+              color: theme.typography.body1.color,
+              borderTop: `2px solid ${theme.palette.info.main}`
+            },
+            [`.${buttonClasses.endIcon}`]: {
+              marginLeft: 'auto'
+            },
+            [`.${svgIconClasses.root}`]: {
+              fontSize: '27px',
+              color: 'black'
+            }
+          }
+        }}
       >
-        {children.summary}
-      </Summary>
-      <Details>
-        {children.details}
-      </Details>
-    </Accordion>
+        <Summary>
+          {children.summary}
+        </Summary>
+        <Details>
+          {children.details}
+        </Details>
+      </Accordion>
+    </HeaderContext.Provider>
     <Backdrop
       sx={{ zIndex: (theme) => theme.zIndex.appBar - 1 }}
       open={expanded}
