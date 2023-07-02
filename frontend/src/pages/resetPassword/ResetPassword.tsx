@@ -8,7 +8,7 @@ import { fromSearchParams } from 'codeforlife/lib/esm/helpers/router';
 import { ThemedBox } from 'codeforlife/lib/esm/theme';
 
 import { themeOptions } from '../../app/theme';
-import { paths } from '../../app/routes';
+import { paths } from '../../app/router';
 import EmailForm from './EmailForm';
 import PasswordForm from './PasswordForm';
 

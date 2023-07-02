@@ -7,7 +7,7 @@ import {
 import CflCard from '../../components/CflCard';
 import RRLogoGreenImage from '../../images/RR_logo_green.svg';
 import KuronoLogoGreyImage from '../../images/kurono_logo_grey_background.svg';
-import { paths } from '../../app/routes';
+import { paths } from '../../app/router';
 
 const Games: React.FC<{
   isDependent: boolean

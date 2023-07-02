@@ -5,7 +5,7 @@ import Page from 'codeforlife/lib/esm/components/page';
 import { EmailField, Form, PasswordField, SubmitButton, TextField } from 'codeforlife/lib/esm/components/form';
 import { LockOutlined, PersonOutline } from '@mui/icons-material';
 import DeleteAccountForm from '../../../features/DeleteAccountForm';
-import { paths } from '../../../app/routes';
+import { paths } from '../../../app/router';
 
 const AccountFormPasswordFields: React.FC = () => {
   return <>

@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 
 import { App } from 'codeforlife/lib/esm/components';
 
-import Router from './app/routes';
+import Router from './app/router';
 import theme from './app/theme';
 import store from './app/store';
 import reportWebVitals from './reportWebVitals';

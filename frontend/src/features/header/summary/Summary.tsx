@@ -12,7 +12,7 @@ import { Image } from 'codeforlife/lib/esm/components';
 
 import CflLogo from '../../../images/cfl_logo.png';
 import OgLogo from '../../../images/ocado_group.svg';
-import { paths } from '../../../app/routes';
+import { paths } from '../../../app/router';
 
 export interface SummaryProps {
   expanded: boolean;

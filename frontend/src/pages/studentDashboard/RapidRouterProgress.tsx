@@ -9,7 +9,7 @@ import {
 } from '@mui/icons-material';
 import { Image } from 'codeforlife/lib/esm/components';
 import RRLogoImage from '../../images/RR_logo.svg';
-import { paths } from '../../app/routes';
+import { paths } from '../../app/router';
 
 const RapidRouterProgress: React.FC<{
   isDependent: boolean

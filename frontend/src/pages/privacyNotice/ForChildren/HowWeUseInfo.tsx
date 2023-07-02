@@ -7,7 +7,7 @@ import {
 
 import { ItemizedList } from 'codeforlife/lib/esm/components';
 
-import { paths } from '../../../app/routes';
+import { paths } from '../../../app/router';
 
 const HowWeUseInfo: React.FC = () => <>
   <Typography>

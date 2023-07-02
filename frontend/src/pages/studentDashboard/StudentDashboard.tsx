@@ -5,7 +5,7 @@ import Page, {
   SectionProps as PageSectionProps
 } from 'codeforlife/lib/esm/components/page';
 
-import { paths } from '../../app/routes';
+import { paths } from '../../app/router';
 import BaseDashboard from './BaseDashboard';
 
 import { SearchParams } from 'codeforlife/lib/esm/helpers';

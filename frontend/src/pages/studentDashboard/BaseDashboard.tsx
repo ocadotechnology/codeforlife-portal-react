@@ -14,7 +14,7 @@ import { SectionProps as PageSectionProps } from 'codeforlife/lib/esm/components
 import StudentAccount from './account/StudentAccount';
 import JoinSchool from './joinSchool/JoinSchool';
 import Characters from '../../features/characters/Characters';
-import { paths } from '../../app/routes';
+import { paths } from '../../app/router';
 import { useNavigate } from 'react-router-dom';
 
 export interface BaseDashboardProps {

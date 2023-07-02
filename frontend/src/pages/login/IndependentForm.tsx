@@ -5,7 +5,7 @@ import {
   Typography
 } from '@mui/material';
 
-import { paths } from '../../app/routes';
+import { paths } from '../../app/router';
 import BaseForm from './BaseForm';
 
 import {

@@ -10,7 +10,7 @@ import {
 
 import { Image, ImageProps, OrderedGrid } from 'codeforlife/lib/esm/components';
 
-import { paths } from '../../app/routes';
+import { paths } from '../../app/router';
 import EducateImage from '../../images/dashboard_educate.png';
 import PlayImage from '../../images/dashboard_play.png';
 

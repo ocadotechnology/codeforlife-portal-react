@@ -14,7 +14,7 @@ import {
 } from 'codeforlife/lib/esm/components/form';
 import { tryValidateSync } from 'codeforlife/lib/esm/helpers/yup';
 
-import { paths } from '../../app/routes';
+import { paths } from '../../app/router';
 import BaseForm from './BaseForm';
 import Teacher2faBackupForm from './Teacher2faBackupForm';
 import Teacher2faForm from './Teacher2faForm';

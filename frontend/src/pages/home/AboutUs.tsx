@@ -12,7 +12,7 @@ import {
 
 import { Image } from 'codeforlife/lib/esm/components';
 
-import { paths } from '../../app/routes';
+import { paths } from '../../app/router';
 
 import PieChartIcon from '../../images/icon_piechart.png';
 import ControllerIcon from '../../images/icon_controller.png';

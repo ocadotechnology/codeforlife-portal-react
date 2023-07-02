@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, FormHelperText } from '@mui/material';
 import { ChevronRight as ChevronRightIcon } from '@mui/icons-material';
 
-import { paths } from '../../app/routes';
+import { paths } from '../../app/router';
 import BaseForm from './BaseForm';
 import DatePicker from '../../components/DatePicker';
 import CflPasswordFields from '../../components/CflPasswordFields';

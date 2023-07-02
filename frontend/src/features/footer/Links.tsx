@@ -13,7 +13,7 @@ import {
   useOneTrustInfoToggle
 } from 'codeforlife/lib/esm/hooks';
 
-import { paths } from '../../app/routes';
+import { paths } from '../../app/router';
 
 const Links: React.FC = () => (
   <ThemeProvider theme={createTheme(useTheme(), {

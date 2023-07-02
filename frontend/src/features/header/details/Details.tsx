@@ -8,7 +8,7 @@ import {
 } from 'codeforlife/lib/esm/hooks';
 
 import DetailsButton from './DetailsButton';
-import { paths } from '../../../app/routes';
+import { paths } from '../../../app/router';
 
 export interface DetailsProps {
   children: React.ReactNode;

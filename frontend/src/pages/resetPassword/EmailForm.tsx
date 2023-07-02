@@ -15,7 +15,7 @@ import {
   Image
 } from 'codeforlife/lib/esm/components';
 
-import { paths } from '../../app/routes';
+import { paths } from '../../app/router';
 import PaperPlaneImg from '../../images/paper_plane.png';
 
 const EmailForm: React.FC = () => {

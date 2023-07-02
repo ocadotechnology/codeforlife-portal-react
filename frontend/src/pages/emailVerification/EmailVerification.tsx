@@ -8,7 +8,7 @@ import { tryValidateSync } from 'codeforlife/lib/esm/helpers/yup';
 
 import SadFaceImg from '../../images/sadface.png';
 import PaperPlaneImg from '../../images/paper_plane.png';
-import { paths } from '../../app/routes';
+import { paths } from '../../app/router';
 import Status from './Status';
 
 const EmailVerification: React.FC = () => {

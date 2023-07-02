@@ -8,7 +8,7 @@ import {
 
 import Page from 'codeforlife/lib/esm/components/page';
 
-import { paths } from '../../app/routes';
+import { paths } from '../../app/router';
 import Characters from '../../features/characters/Characters';
 import PlayImage from '../../images/home_play_hero.png';
 import RapidRouter from './RapidRouter';

@@ -12,7 +12,7 @@ import Page from 'codeforlife/lib/esm/components/page';
 import { Image } from 'codeforlife/lib/esm/components';
 import { tryValidateSync } from 'codeforlife/lib/esm/helpers/yup';
 
-import { paths } from '../../app/routes';
+import { paths } from '../../app/router';
 import ErrorProps, {
   forbidden403,
   pageNotFound404,

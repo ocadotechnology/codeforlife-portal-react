@@ -11,7 +11,7 @@ import {
   ChevronRight as ChevronRightIcon
 } from '@mui/icons-material';
 
-import { paths } from '../../../app/routes';
+import { paths } from '../../../app/router';
 import {
   SummaryLoginSelect
 } from '../summary';

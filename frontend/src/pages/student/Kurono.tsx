@@ -12,7 +12,7 @@ import {
 
 import { Image, YouTubeVideo } from 'codeforlife/lib/esm/components';
 
-import { paths } from '../../app/routes';
+import { paths } from '../../app/router';
 
 import KuronoImage from '../../images/kurono_landing_hero.png';
 import KuronoIcon from '../../images/kurono_logo.svg';

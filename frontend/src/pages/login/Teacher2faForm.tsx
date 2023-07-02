@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { paths } from '../../app/routes';
+import { paths } from '../../app/router';
 import BaseForm from './BaseForm';
 import { SubmitButton, TextField } from 'codeforlife/lib/esm/components/form';
 import * as Yup from 'yup';

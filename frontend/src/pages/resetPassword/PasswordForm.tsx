@@ -11,7 +11,7 @@ import {
 } from 'codeforlife/lib/esm/components/form';
 import { Image } from 'codeforlife/lib/esm/components';
 
-import { paths } from '../../app/routes';
+import { paths } from '../../app/router';
 import CflPasswordFields from '../../components/CflPasswordFields';
 import ConfirmationTickImage from '../../images/confirmation_tick.png';
 

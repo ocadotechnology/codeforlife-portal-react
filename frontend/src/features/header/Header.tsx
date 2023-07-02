@@ -11,7 +11,7 @@ import {
   useTheme
 } from '@mui/material';
 
-import { paths } from '../../app/routes';
+import { paths } from '../../app/router';
 import { Summary, SummaryProps } from './summary';
 import { Details, DetailsProps } from './details';
 import {

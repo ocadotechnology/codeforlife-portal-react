@@ -5,7 +5,7 @@ import * as yup from 'yup';
 import Page from 'codeforlife/lib/esm/components/page';
 import { tryValidateSync } from 'codeforlife/lib/esm/helpers/yup';
 
-import { paths } from '../../app/routes';
+import { paths } from '../../app/router';
 import { BaseFormProps } from './BaseForm';
 import TeacherForm from './TeacherForm';
 import StudentForm from './StudentForm';

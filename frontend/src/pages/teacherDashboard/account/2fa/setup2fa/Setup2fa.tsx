@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Stack, Typography } from '@mui/material';
 import { Form, SubmitButton, TextField } from 'codeforlife/lib/esm/components/form';
-import { paths } from '../../../../../app/routes';
+import { paths } from '../../../../../app/router';
 import { Image } from 'codeforlife/lib/esm/components';
 import cflLogo from '../../../../../images/cfl_logo.png';
 import * as Yup from 'yup';
