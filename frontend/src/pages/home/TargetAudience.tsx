@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Typography,
   Button,
@@ -15,6 +16,8 @@ import EducateImage from '../../images/dashboard_educate.png';
 import PlayImage from '../../images/dashboard_play.png';
 
 const TargetAudience: React.FC = () => {
+  const navigate = useNavigate();
+
   const images: ImageProps[] = [
     { alt: 'teacher with student', src: EducateImage },
     { alt: 'kids playing', src: PlayImage }
@@ -28,8 +31,14 @@ const TargetAudience: React.FC = () => {
     'Anyone can learn how to code. We will help you learn how. It\'s fun, free and easy.'
   ];
   const buttons: ButtonProps[] = [
-    { children: 'Learn more', href: paths.teacher._ },
-    { children: 'Get started', href: paths.student._ }
+    {
+      children: 'Learn more',
+      onClick: () => { navigate(paths.teacher._); }
+    },
+    {
+      children: 'Get started',
+      onClick: () => { navigate(paths.student._); }
+    }
   ];
 
   return (

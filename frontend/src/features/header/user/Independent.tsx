@@ -24,6 +24,8 @@ import {
 } from './Authenticated';
 
 export const IndependentSummary: React.FC = () => {
+  const navigate = useNavigate();
+
   const iconProps: SvgIconProps = {
     style: { marginLeft: '3px' },
     fontSize: 'small'
@@ -37,9 +39,7 @@ export const IndependentSummary: React.FC = () => {
         {
           children: 'Update account details',
           icon: <ManageAccountsOutlinedIcon />,
-          onClick: () => {
-            window.location.href = paths.student.dashboard.independent.account._;
-          }
+          onClick: () => { navigate(paths.student.dashboard.independent.account._); }
         }
       ]}
     >

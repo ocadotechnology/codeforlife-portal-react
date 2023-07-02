@@ -35,10 +35,6 @@ export const UnauthenticatedSummary: React.FC = () => {
     marginBottom: '0px !important'
   };
 
-  function onClick(href: string) {
-    return () => { window.location.href = href; };
-  }
-
   return <>
     <Link
       {...linkProps}
@@ -67,17 +63,17 @@ export const UnauthenticatedSummary: React.FC = () => {
         {
           children: 'Teacher',
           icon: <ChevronRightIcon />,
-          onClick: onClick(paths.login.teacher._)
+          onClick: () => { navigate(paths.login.teacher._); }
         },
         {
           children: 'Student',
           icon: <ChevronRightIcon />,
-          onClick: onClick(paths.login.student._)
+          onClick: () => { navigate(paths.login.student._); }
         },
         {
           children: 'Independent',
           icon: <ChevronRightIcon />,
-          onClick: onClick(paths.login.independent._)
+          onClick: () => { navigate(paths.login.independent._); }
         }
       ]}
     />

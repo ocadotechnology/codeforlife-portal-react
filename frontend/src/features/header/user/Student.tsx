@@ -22,6 +22,8 @@ import {
 } from './Authenticated';
 
 export const StudentSummary: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <AuthenticatedSummary
       userType='Student'
@@ -30,9 +32,7 @@ export const StudentSummary: React.FC = () => {
         {
           children: 'Change password',
           icon: <LockOutlinedIcon />,
-          onClick: () => {
-            window.location.href = paths.student.dashboard.dependent.account._;
-          }
+          onClick: () => { navigate(paths.student.dashboard.dependent.account._); }
         }
       ]}
     >

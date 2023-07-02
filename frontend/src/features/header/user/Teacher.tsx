@@ -23,6 +23,8 @@ import {
 } from './Authenticated';
 
 export const TeacherSummary: React.FC = () => {
+  const navigate = useNavigate();
+
   const iconProps: SvgIconProps = {
     style: { marginLeft: '3px' },
     fontSize: 'small'
@@ -36,9 +38,7 @@ export const TeacherSummary: React.FC = () => {
         {
           children: 'Update account details',
           icon: <ManageAccountsOutlinedIcon />,
-          onClick: () => {
-            window.location.href = paths.teacher.dashboard.account._;
-          }
+          onClick: () => { navigate(paths.teacher.dashboard.account._); }
         }
       ]}
     >
@@ -82,9 +82,7 @@ export const TeacherSummary: React.FC = () => {
           },
           {
             children: 'Coding Clubs',
-            onClick: () => {
-              window.location.href = paths.codingClubs._;
-            }
+            onClick: () => { navigate(paths.codingClubs._); }
           }
         ]}
       />
