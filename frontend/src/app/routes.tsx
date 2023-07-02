@@ -1,7 +1,14 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
+import {
+  BrowserRouter,
+  Route
+} from 'react-router-dom';
 
 import { path as _ } from 'codeforlife/lib/esm/helpers';
+import { ScrollRoutes } from 'codeforlife/lib/esm/components';
+
+import Header from '../features/header/Header';
+import Footer from '../features/footer/Footer';
 
 import Home from '../pages/home/Home';
 import Login from '../pages/login/Login';
@@ -104,87 +111,93 @@ export const paths = _('', {
   kurono: _('/kurono')
 });
 
-const routes = <>
-  <Route
-    path={paths._}
-    element={<Home />}
-  />
-  <Route
-    path={paths.aboutUs._}
-    element={<AboutUs />}
-  />
-  <Route
-    path={`${paths.privacyNotice._}/:tab`}
-    element={<PrivacyNotice />}
-  />
-  <Route
-    path={`${paths.termsOfUse._}/:tab`}
-    element={<TermsOfUse />}
-  />
-  <Route
-    path={paths.homeLearning._}
-    element={<HomeLearning />}
-  />
-  <Route
-    path={paths.getInvolved._}
-    element={<GetInvolved />}
-  />
-  <Route
-    path={paths.codingClubs._}
-    element={<CodingClubs />}
-  />
-  <Route
-    path={paths.communicationPreferences._}
-    element={<CommunicationPreferences />}
-  />
-  <Route
-    path={paths.contribute._}
-    element={<Contribute />}
-  />
-  <Route
-    path={`${paths.login._}/:userType/:view?`}
-    element={<Login />}
-  />
-  <Route
-    path={`${paths.resetPassword._}/:userType`}
-    element={<ResetPassword />}
-  />
-  <Route
-    path={paths.register._}
-    element={<Register />}
-  />
-  <Route
-    path={`${paths.register.emailVerification._}/:userType`}
-    element={<EmailVerification />}
-  />
-  <Route
-    path={paths.teacher._}
-    element={<Teacher />}
-  />
-  <Route
-    path={paths.teacher.onboarding._}
-    element={<TeacherOnboarding />}
-  />
-  <Route
-    path={`${paths.teacher.dashboard._}/:tab`}
-    element={<TeacherDashboard />}
-  />
-  <Route
-    path={paths.student._}
-    element={<Student />}
-  />
-  <Route
-    path={paths.student.dashboard._}
-    element={<StudentDashboard />}
-  />
-  <Route
-    path={`${paths.error._}/:type/:userType?`}
-    element={<Error />}
-  />
-  <Route
-    path='*' // Page not found
-    element={<Error />}
-  />
-</>;
+const Router: React.FC = () => (
+  <BrowserRouter>
+    <Header />
+    <ScrollRoutes>
+      <Route
+        path={paths._}
+        element={<Home />}
+      />
+      <Route
+        path={paths.aboutUs._}
+        element={<AboutUs />}
+      />
+      <Route
+        path={`${paths.privacyNotice._}/:tab`}
+        element={<PrivacyNotice />}
+      />
+      <Route
+        path={`${paths.termsOfUse._}/:tab`}
+        element={<TermsOfUse />}
+      />
+      <Route
+        path={paths.homeLearning._}
+        element={<HomeLearning />}
+      />
+      <Route
+        path={paths.getInvolved._}
+        element={<GetInvolved />}
+      />
+      <Route
+        path={paths.codingClubs._}
+        element={<CodingClubs />}
+      />
+      <Route
+        path={paths.communicationPreferences._}
+        element={<CommunicationPreferences />}
+      />
+      <Route
+        path={paths.contribute._}
+        element={<Contribute />}
+      />
+      <Route
+        path={`${paths.login._}/:userType/:view?`}
+        element={<Login />}
+      />
+      <Route
+        path={`${paths.resetPassword._}/:userType`}
+        element={<ResetPassword />}
+      />
+      <Route
+        path={paths.register._}
+        element={<Register />}
+      />
+      <Route
+        path={`${paths.register.emailVerification._}/:userType`}
+        element={<EmailVerification />}
+      />
+      <Route
+        path={paths.teacher._}
+        element={<Teacher />}
+      />
+      <Route
+        path={paths.teacher.onboarding._}
+        element={<TeacherOnboarding />}
+      />
+      <Route
+        path={`${paths.teacher.dashboard._}/:tab`}
+        element={<TeacherDashboard />}
+      />
+      <Route
+        path={paths.student._}
+        element={<Student />}
+      />
+      <Route
+        path={paths.student.dashboard._}
+        element={<StudentDashboard />}
+      />
+      <Route
+        path={`${paths.error._}/:type/:userType?`}
+        element={<Error />}
+      />
+      <Route
+        path='*' // Page not found
+        element={<Error />}
+      />
+    </ScrollRoutes>
+    <Footer />
+  </BrowserRouter>
+);
 
-export default routes;
+export default Router;
