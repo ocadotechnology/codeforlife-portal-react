@@ -28,6 +28,10 @@ const Header: React.FC = () => {
     (theme: Theme) => theme.breakpoints.up('lg')
   );
 
+  React.useEffect(() => {
+    console.log('Header mounted!!!');
+  }, []);
+
   if (expanded && upLg) setExpanded(false);
 
   let children: {
