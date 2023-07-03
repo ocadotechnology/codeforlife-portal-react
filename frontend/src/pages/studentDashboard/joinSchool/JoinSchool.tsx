@@ -1,10 +1,19 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import {
+  Button,
+  Stack,
+  Typography
+} from '@mui/material';
 
 import Page from 'codeforlife/lib/esm/components/page';
-import { Button, Grid, Stack, Typography } from '@mui/material';
-import { Form, SubmitButton, TextField } from 'codeforlife/lib/esm/components/form';
-import { validateAccessCode } from '../../login/StudentForm';
+import {
+  Form,
+  SubmitButton,
+  TextField
+} from 'codeforlife/lib/esm/components/form';
+
+import { accessCodeSchema } from '../../../app/schemas';
 
 const JoinSchool: React.FC = () => {
   const navigate = useNavigate();
@@ -69,7 +78,8 @@ const JoinSchool: React.FC = () => {
               helperText="Enter class code"
               name="classCode"
               sx={{ width: { xs: '100%', sm: '50%' } }}
-              validate={validateAccessCode}
+              validate={accessCodeSchema}
+              required
             />
 
             <Stack direction='row' spacing={2}>

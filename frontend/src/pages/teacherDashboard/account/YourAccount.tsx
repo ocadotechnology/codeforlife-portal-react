@@ -1,10 +1,30 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Button, Grid, InputAdornment, Stack, Typography, useTheme } from '@mui/material';
-import { ErrorOutlineOutlined, LockOutlined, PersonOutline } from '@mui/icons-material';
-import { EmailField, Form, PasswordField, SubmitButton, TextField } from 'codeforlife/lib/esm/components/form';
+import { useNavigate, useParams } from 'react-router-dom';
+import {
+  Button,
+  Grid,
+  InputAdornment,
+  Stack,
+  Typography,
+  useTheme
+} from '@mui/material';
+import {
+  ErrorOutlineOutlined,
+  LockOutlined,
+  PersonOutline
+} from '@mui/icons-material';
+import * as yup from 'yup';
+
+import {
+  EmailField,
+  Form,
+  PasswordField,
+  SubmitButton,
+  TextField
+} from 'codeforlife/lib/esm/components/form';
 import Page from 'codeforlife/lib/esm/components/page';
-import { SearchParams } from 'codeforlife/lib/esm/helpers';
+import { tryValidateSync } from 'codeforlife/lib/esm/helpers/yup';
+
 import Setup2fa from './2fa/setup2fa/Setup2fa';
 import BackupTokens from './2fa/backupTokens/BackupTokens';
 import { paths } from '../../../app/router';
@@ -159,14 +179,18 @@ const YourAccountForm: React.FC = () => {
 const YourAccount: React.FC = () => {
   const theme = useTheme();
 
-  const twoFAOptions = ['setup', 'backupTokens'] as const;
-  const params = SearchParams.get<{
-    twoFA: typeof twoFAOptions[number]
-  }>({
-    twoFA: { validate: SearchParams.validate.inOptions(twoFAOptions) }
-  });
+  const params = tryValidateSync(
+    useParams(),
+    yup.object({
+      view: yup.string()
+        .oneOf([
+          'setup-2fa',
+          'backup-tokens'
+        ] as const)
+    })
+  );
 
-  if (params === null) {
+  if (params?.view === undefined) {
     return <>
       <Page.Section>
         <Typography align="center" variant="h4">
@@ -184,10 +208,10 @@ const YourAccount: React.FC = () => {
     </>;
   }
 
-  switch (params.twoFA) {
-    case 'setup':
+  switch (params.view) {
+    case 'setup-2fa':
       return <Setup2fa />;
-    case 'backupTokens':
+    case 'backup-tokens':
       return <BackupTokens />;
   }
 };

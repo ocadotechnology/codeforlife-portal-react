@@ -6,7 +6,9 @@ import YourSchool from './YourSchool';
 import Classes from './classes/Classes';
 import YourAccount from './account/YourAccount';
 
-const TeacherDashboard: React.FC = () => {
+const TeacherDashboard: React.FC<{
+  tab: number;
+}> = ({ tab }) => {
   // TODO: get from API.
   const userName = 'John Doe';
 
@@ -14,6 +16,7 @@ const TeacherDashboard: React.FC = () => {
     <Page.Container>
       <Page.TabBar
         header={`Welcome back, ${userName}`}
+        value={tab}
         originalPath='/teacher/dashboard/:tab'
         tabs={[
           {

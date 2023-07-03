@@ -35,8 +35,8 @@ const TeacherForm: React.FC = () => {
     yup.object({
       view: yup.string()
         .oneOf([
-          'login2fa',
-          'backupToken'
+          '2fa',
+          'backup-token'
         ] as const)
     })
   );
@@ -44,10 +44,10 @@ const TeacherForm: React.FC = () => {
   let form = <BaseTeacherForm />;
   if (params?.view !== undefined) {
     switch (params.view) {
-      case 'login2fa':
+      case '2fa':
         form = <Teacher2faForm />;
         break;
-      case 'backupToken':
+      case 'backup-token':
         form = <Teacher2faBackupForm />;
         break;
     }
@@ -102,7 +102,7 @@ const BaseTeacherForm: React.FC = () => {
       <SubmitButton
         stackProps={{ alignItems: 'end' }}
         // TODO: Remove href and replace with submit functionality
-        onClick={() => { navigate(paths.login.teacher.login2fa._); }}>
+        onClick={() => { navigate(paths.login.teacher.twoFA._); }}>
         Log in
       </SubmitButton>
     </BaseForm>
