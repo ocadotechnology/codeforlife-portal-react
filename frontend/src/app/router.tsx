@@ -64,12 +64,12 @@ export const paths = _('', {
   }),
   student: _('/student', {
     dashboard: _('/dashboard', {
-      dependent: _('/?userType=dependent', {
-        account: _('&view=account')
+      dependent: _('/dependent', {
+        account: _('/account')
       }),
-      independent: _('/?userType=independent', {
-        account: _('&view=account'),
-        joinSchool: _('&view=join')
+      independent: _('/independent', {
+        account: _('/account'),
+        joinSchool: _('/join')
       })
     })
   }),
@@ -184,7 +184,7 @@ const Router: React.FC = () => (
         element={<Student />}
       />
       <Route
-        path={paths.student.dashboard._}
+        path={`${paths.student.dashboard._}/:type/:view?`}
         element={<StudentDashboard />}
       />
       <Route

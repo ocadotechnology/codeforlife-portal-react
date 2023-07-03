@@ -60,14 +60,14 @@ const AccountFormPasswordFields: React.FC = () => {
   </>;
 };
 
-const AccountFormButtons: React.FC<{
-  goBack: () => void
-}> = ({ goBack }) => {
+const AccountFormButtons: React.FC = () => {
+  const navigate = useNavigate();
+
   return <>
     <Stack direction='row' spacing={2}>
       <Button
         variant='outlined'
-        onClick={goBack}
+        onClick={() => { navigate(-1); }}
       >
         Cancel
       </Button>
@@ -81,95 +81,90 @@ const AccountFormButtons: React.FC<{
 
 const AccountForm: React.FC<{
   isDependent: boolean;
-  goBack: () => void;
-}> = ({
-  isDependent,
-  goBack
-}) => {
-    if (isDependent) {
-      interface Values {
-        newPassword: string;
-        repeatPassword: string;
-        currentPassword: string;
-      }
-
-      const initialValues: Values = {
-        newPassword: '',
-        repeatPassword: '',
-        currentPassword: ''
-      };
-
-      return (
-        <Form
-          initialValues={initialValues}
-          onSubmit={(values) => {
-            alert(JSON.stringify(values, null, 2));
-          }}
-        >
-          <Grid container spacing={2}>
-            <AccountFormPasswordFields />
-          </Grid>
-          <AccountFormButtons goBack={goBack} />
-        </Form>
-      );
-    } else {
-      interface Values {
-        name: string;
-        email: string;
-        newPassword: string;
-        repeatPassword: string;
-        currentPassword: string;
-      }
-
-      const initialValues: Values = {
-        name: '',
-        email: '',
-        newPassword: '',
-        repeatPassword: '',
-        currentPassword: ''
-      };
-
-      return (
-        <Form
-          initialValues={initialValues}
-          onSubmit={(values) => {
-            alert(JSON.stringify(values, null, 2));
-          }}
-        >
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                name="name"
-                helperText="Enter your name"
-                placeholder="Name"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <PersonOutline />
-                    </InputAdornment>
-                  )
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <EmailField
-                placeholder="New email address (optional)"
-                helperText="Enter your new email address (optional)"
-                name="newEmail"
-              />
-            </Grid>
-            <AccountFormPasswordFields />
-          </Grid>
-          <AccountFormButtons goBack={goBack} />
-        </Form>
-      );
+}> = ({ isDependent }) => {
+  if (isDependent) {
+    interface Values {
+      newPassword: string;
+      repeatPassword: string;
+      currentPassword: string;
     }
-  };
+
+    const initialValues: Values = {
+      newPassword: '',
+      repeatPassword: '',
+      currentPassword: ''
+    };
+
+    return (
+      <Form
+        initialValues={initialValues}
+        onSubmit={(values) => {
+          alert(JSON.stringify(values, null, 2));
+        }}
+      >
+        <Grid container spacing={2}>
+          <AccountFormPasswordFields />
+        </Grid>
+        <AccountFormButtons />
+      </Form>
+    );
+  } else {
+    interface Values {
+      name: string;
+      email: string;
+      newPassword: string;
+      repeatPassword: string;
+      currentPassword: string;
+    }
+
+    const initialValues: Values = {
+      name: '',
+      email: '',
+      newPassword: '',
+      repeatPassword: '',
+      currentPassword: ''
+    };
+
+    return (
+      <Form
+        initialValues={initialValues}
+        onSubmit={(values) => {
+          alert(JSON.stringify(values, null, 2));
+        }}
+      >
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              name="name"
+              helperText="Enter your name"
+              placeholder="Name"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <PersonOutline />
+                  </InputAdornment>
+                )
+              }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <EmailField
+              placeholder="New email address (optional)"
+              helperText="Enter your new email address (optional)"
+              name="newEmail"
+            />
+          </Grid>
+          <AccountFormPasswordFields />
+        </Grid>
+        <AccountFormButtons />
+      </Form>
+    );
+  }
+};
 
 const StudentAccount: React.FC<{
-  isDependent: boolean,
-  goBack: () => void
-}> = ({ isDependent, goBack }) => {
+  isDependent: boolean
+}> = ({ isDependent }) => {
   const theme = useTheme();
   const navigate = useNavigate();
 
@@ -190,7 +185,7 @@ const StudentAccount: React.FC<{
               password is strong enough to be secure.</Typography>
           </>
         }
-        <AccountForm isDependent={isDependent} goBack={goBack} />
+        <AccountForm isDependent={isDependent} />
       </Page.Section>
       {!isDependent
         ? <>

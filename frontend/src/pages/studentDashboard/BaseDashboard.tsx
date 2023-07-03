@@ -1,21 +1,22 @@
 import React from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   useTheme,
   Link
 } from '@mui/material';
+import * as yup from 'yup';
 
 import Page from 'codeforlife/lib/esm/components/page';
+import { tryValidateSync } from 'codeforlife/lib/esm/helpers/yup';
+import { SectionProps as PageSectionProps } from 'codeforlife/lib/esm/components/page/Section';
 
 import Games from './Games';
 import RapidRouterProgress from './RapidRouterProgress';
 import KuronoProgress from './KuronoProgress';
-import { SearchParams } from 'codeforlife/lib/esm/helpers';
-import { SectionProps as PageSectionProps } from 'codeforlife/lib/esm/components/page/Section';
 import StudentAccount from './account/StudentAccount';
 import JoinSchool from './joinSchool/JoinSchool';
 import Characters from '../../features/characters/Characters';
 import { paths } from '../../app/router';
-import { useNavigate } from 'react-router-dom';
 
 export interface BaseDashboardProps {
   isDependent: boolean;
@@ -26,40 +27,36 @@ const BaseDashboard: React.FC<BaseDashboardProps> = ({
 }) => {
   const theme = useTheme();
   const navigate = useNavigate();
-  const viewOptions = ['account', 'join'] as const;
 
-  const params = SearchParams.get<{
-    view?: typeof viewOptions[number];
-  }>({
-    view: {
-      isRequired: false,
-      validate: SearchParams.validate.inOptions(viewOptions)
-    }
-  });
+  const params = tryValidateSync(
+    useParams(),
+    yup.object({
+      view: yup.string()
+        .oneOf([
+          'account',
+          'join'
+        ] as const)
+    })
+  );
 
   // TODO: get from api store.
   const name = 'John';
   const classCode = 1;
 
-  const [view, setView] = React.useState(params?.view);
-
-  let pageView: React.ReactElement<PageSectionProps, typeof Page.Section>;
-
   React.useEffect(() => {
-    if (view === 'join' && isDependent) {
+    if (params?.view === 'join' && isDependent) {
       navigate(paths.error.forbidden._);
     }
-  }, [view]);
+  }, [params]);
 
-  switch (view) {
+  let view: React.ReactElement<PageSectionProps, typeof Page.Section> | undefined;
+  switch (params?.view) {
     case 'account':
-      pageView = <StudentAccount isDependent={isDependent} goBack={() => { setView(undefined); }}/>;
+      view = <StudentAccount isDependent={isDependent} />;
       break;
     case 'join':
-      pageView = <JoinSchool goBack={() => { setView(undefined); }}/>;
+      view = <JoinSchool />;
       break;
-    default:
-      pageView = <></>;
   }
 
   return <>
@@ -70,7 +67,7 @@ const BaseDashboard: React.FC<BaseDashboardProps> = ({
       bgcolor={isDependent ? 'tertiary' : 'secondary'}
     />
     {view !== undefined
-      ? <>{ pageView }</>
+      ? view
       : <>
         <Page.Notification bgcolor={isDependent ? 'tertiary' : 'secondary'}>
           {isDependent
@@ -78,7 +75,7 @@ const BaseDashboard: React.FC<BaseDashboardProps> = ({
             : <>
               You are logged in as an independent student.
               If you want to join a school, you need to&nbsp;
-              <Link onClick={() => { setView('join'); }} color="inherit">
+              <Link onClick={() => { navigate(paths.student.dashboard.independent.joinSchool._); }} color="inherit">
                 request to join one
               </Link>
               .
@@ -94,13 +91,10 @@ const BaseDashboard: React.FC<BaseDashboardProps> = ({
         <Page.Section>
           <KuronoProgress isDependent={isDependent} />
         </Page.Section>
-        {!isDependent
-        ? <>
+        {!isDependent &&
           <Page.Section gridProps={{ bgcolor: theme.palette.info.main }} >
             <Characters game='kurono' />
           </Page.Section>
-        </>
-        : <></>
         }
       </>
     }
