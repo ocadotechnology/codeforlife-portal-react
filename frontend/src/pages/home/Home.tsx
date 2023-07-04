@@ -1,7 +1,6 @@
 import React from 'react';
 import {
-  useTheme,
-  useMediaQuery
+  useTheme
 } from '@mui/material';
 
 import Page from 'codeforlife/lib/esm/components/page';
@@ -16,17 +15,8 @@ const Home: React.FC = () => {
 
   return (
     <Page.Container>
-      <Page.Section gridProps={{
-        style: {
-          background: `linear-gradient(
-            to ${useMediaQuery(theme.breakpoints.down('sm')) ? 'bottom' : 'right'},
-            ${theme.palette.primary.main} 50%,
-            ${theme.palette.tertiary.main} 0
-          )`
-        }
-      }}>
-        <TargetAudience />
-      </Page.Section>
+      {/* Special case: un-contained page section */}
+      <TargetAudience />
       <Page.Section>
         <AboutUs />
       </Page.Section>

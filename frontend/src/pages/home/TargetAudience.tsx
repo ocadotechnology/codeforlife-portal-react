@@ -3,7 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import {
   Typography,
   Button,
-  ButtonProps
+  ButtonProps,
+  useTheme,
+  SxProps,
+  Stack
 } from '@mui/material';
 import {
   ChevronRight as ChevronRightIcon
@@ -16,8 +19,25 @@ import EducateImage from '../../images/dashboard_educate.png';
 import PlayImage from '../../images/dashboard_play.png';
 
 const TargetAudience: React.FC = () => {
+  const theme = useTheme();
   const navigate = useNavigate();
 
+  const padding = {
+    xs: theme.spacing(2),
+    md: theme.spacing(4),
+    lg: theme.spacing(6)
+  };
+
+  const commonItemSxProps: SxProps[] = [
+    {
+      backgroundColor: theme.palette.primary.main,
+      paddingX: padding
+    },
+    {
+      backgroundColor: theme.palette.tertiary.main,
+      paddingX: padding
+    }
+  ];
   const images: ImageProps[] = [
     { alt: 'teacher with student', src: EducateImage },
     { alt: 'kids playing', src: PlayImage }
@@ -43,47 +63,60 @@ const TargetAudience: React.FC = () => {
 
   return (
     <OrderedGrid
-      containerProps={{ columnSpacing: 4 }}
       rows={[
-        images.map((image) => ({
+        images.map((image, index) => ({
           element: (
             <Image
               {...image}
-              maxWidth='450px'
+              maxWidth='550px'
             />
           ),
-          itemProps: { className: 'flex-center' }
+          itemProps: {
+            className: 'flex-center',
+            sx: commonItemSxProps[index]
+          }
         })),
-        headers.map((header) => ({
+        headers.map((header, index) => ({
           element: (
             <Typography
-              variant='h2'
+              variant='h1'
               style={{ color: 'white' }}
             >
               {header}
             </Typography>
-          )
-        })),
-        bodies.map((body) => ({
-          element: (
-            <Typography
-              fontSize={21}
-              style={{ color: 'white' }}
-            >
-              {body}
-            </Typography>
-          )
-        })),
-        buttons.map((button) => ({
-          element: (
-            <Button
-              style={{ backgroundColor: 'white' }}
-              endIcon={<ChevronRightIcon />}
-              sx={{ mb: { xs: 2, sm: 0 } }}
-              {...button}
-            />
           ),
-          itemProps: { className: 'flex-end' }
+          itemProps: {
+            sx: commonItemSxProps[index]
+          }
+        })),
+        bodies.map((body, index) => ({
+          element: (
+            <Stack direction={{ xs: 'column', lg: 'row' }}>
+              <Typography
+                fontSize='1.4rem !important'
+                fontWeight={500}
+                sx={{
+                  color: 'white !important',
+                  mb: { lg: 0 },
+                  mr: { lg: theme.spacing(3) }
+                }}
+              >
+                {body}
+              </Typography>
+              <Button
+                style={{ backgroundColor: 'white' }}
+                endIcon={<ChevronRightIcon />}
+                sx={{ ml: 'auto', mt: 'auto' }}
+                {...buttons[index]}
+              />
+            </Stack>
+          ),
+          itemProps: {
+            sx: {
+              ...commonItemSxProps[index],
+              paddingBottom: padding
+            }
+          }
         }))
       ]}
       globalItemProps={{

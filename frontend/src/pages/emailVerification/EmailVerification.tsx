@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import * as yup from 'yup';
 
 import Page from 'codeforlife/lib/esm/components/page';
-import { fromSearchParams } from 'codeforlife/lib/esm/helpers/router';
+import { fromSearchParams } from 'codeforlife/lib/esm/hooks';
 import { tryValidateSync } from 'codeforlife/lib/esm/helpers/yup';
 
 import SadFaceImg from '../../images/sadface.png';

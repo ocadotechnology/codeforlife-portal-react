@@ -28,15 +28,19 @@ const Column: React.FC<{
           src={img.src}
           maxWidth='350px'
         />
-        <Typography fontFamily='SpaceGrotesk' fontSize={22}>
+        <Typography
+          fontFamily='SpaceGrotesk'
+          fontSize='1.3rem !important'
+          fontWeight={500}
+        >
           &ldquo;{quote}&rdquo;
         </Typography>
       </Stack>
       <Stack textAlign='end' marginTop='auto'>
-        <Typography fontWeight='bold'>
+        <Typography fontWeight='bold' mb={0}>
           — {person.name}
         </Typography>
-        <Typography variant='body2'>
+        <Typography variant='body2' mb={0}>
           {person.title}
         </Typography>
       </Stack>
@@ -50,7 +54,7 @@ const Quotes: React.FC = () => {
   return (
     <Grid container columnSpacing={4}>
       <Grid xs={12}>
-        <Typography variant='h2' textAlign='center'>
+        <Typography variant='h3' textAlign='center'>
           Why you&apos;ll love Code for Life
         </Typography>
       </Grid>
