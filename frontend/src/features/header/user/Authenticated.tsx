@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Typography,
   Link,
@@ -32,6 +33,7 @@ export const AuthenticatedSummary: React.FC<AuthenticatedSummaryProps> = ({
   menuItemsProps
 }) => {
   const theme = useTheme();
+  const navigate = useNavigate();
   const upLg = useMediaQuery(theme.breakpoints.up('lg'));
 
   // TODO: get from API.
@@ -46,7 +48,7 @@ export const AuthenticatedSummary: React.FC<AuthenticatedSummaryProps> = ({
     </Typography>
     <Link
       className='no-decor'
-      href={dashboardHref}
+      onClick={() => { navigate(dashboardHref); }}
     >
       Dashboard
     </Link>

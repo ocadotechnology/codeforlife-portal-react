@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Unstable_Grid2 as Grid,
   Typography,
@@ -19,6 +20,8 @@ import RapidRouterImage from '../../images/rapid_router_landing_hero.png';
 import RapidRouterIcon from '../../images/RR_logo.svg';
 
 const RapidRouter: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <Grid container spacing={1}>
       <Grid xs={12}>
@@ -55,13 +58,17 @@ const RapidRouter: React.FC = () => {
           </Typography>
           <Typography>
             If you are not part of a school, you can&nbsp;
-            <Link href={paths.register._}>register here</Link>.
+            <Link onClick={() => { navigate(paths.register._); }}>
+              register here
+            </Link>
+            .
           </Typography>
           <Button
             endIcon={<LaunchIcon />}
             style={{ marginTop: 'auto' }}
             className='body'
-            href={process.env.REACT_APP_BLOCKLY_GUIDE_SRC}
+            href={process.env.REACT_APP_BLOCKLY_GUIDE_SRC as string}
+            target='_blank'
           >
             Learn more about Blockly
           </Button>

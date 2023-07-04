@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Unstable_Grid2 as Grid,
   Stack,
@@ -44,6 +45,8 @@ const Column: React.FC<{
 );
 
 const Quotes: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <Grid container columnSpacing={4}>
       <Grid xs={12}>
@@ -55,7 +58,7 @@ const Quotes: React.FC = () => {
         <Typography textAlign='center'>
           Don&apos;t just take our word for it, here are some lovely quotes from our fabulous teacher friends.
           <br />
-          Interested in getting involved? <Link href={paths.getInvolved._}>Get in touch</Link>.
+          Interested in getting involved? <Link onClick={() => { navigate(paths.getInvolved._); }}>Get in touch</Link>.
         </Typography>
       </Grid>
       <Column

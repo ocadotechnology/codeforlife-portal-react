@@ -1,20 +1,28 @@
 import React from 'react';
+import {
+  useParams,
+  useNavigate,
+  generatePath
+} from 'react-router-dom';
+import { Button, Typography, useTheme } from '@mui/material';
+import { Add, Create, DoNotDisturb } from '@mui/icons-material';
+import * as Yup from 'yup';
+
+import { AutocompleteField, SubmitButton } from 'codeforlife/lib/esm/components/form';
+import Page from 'codeforlife/lib/esm/components/page';
+import { tryValidateSync } from 'codeforlife/lib/esm/helpers/yup';
+
 import CflTable, {
   CflTableBody,
   CflTableCellElement
 } from '../../../components/CflTable';
-import { Button, Typography, useTheme } from '@mui/material';
-import { Add, Create, DoNotDisturb } from '@mui/icons-material';
+import { accessCodeSchema } from '../../../app/schemas';
+import { paths } from '../../../app/router';
 import { getClassesData, getTeachersData, getUser } from '../dummyMethods';
-import { AutocompleteField, SubmitButton } from 'codeforlife/lib/esm/components/form';
 import CopyToClipboardIcon from '../../../components/CopyToClipboardIcon';
 import { CflHorizontalForm } from '../../../components/form/CflForm';
-import * as Yup from 'yup';
 import ClassNameField from '../../../components/form/ClassNameField';
 import SeeClassmatesProgressField from '../../../components/form/SeeClassmatesProgressField';
-import Page from 'codeforlife/lib/esm/components/page';
-import { SearchParams } from 'codeforlife/lib/esm/helpers';
-import { validateAccessCode } from '../../login/StudentForm';
 import EditClass from './editClass/EditClass';
 
 const _YourClasses: React.FC = () => {
@@ -33,11 +41,11 @@ const _YourClasses: React.FC = () => {
   );
 };
 
-const ClassTable: React.FC<{
-  setAccessCode: (accessCode: string) => void
-}> = ({ setAccessCode }) => {
+const ClassTable: React.FC = () => {
+  const navigate = useNavigate();
   const classData = getClassesData();
   const { firstName, lastName } = getUser();
+
   return (
     <CflTable titles={['Class name', 'Access code', 'Teacher', 'Action']}>
       {classData.map(({ className, accessCode, teacher }, keyIdx: number) => (
@@ -56,7 +64,10 @@ const ClassTable: React.FC<{
           <CflTableCellElement justifyContent="center">
             <Button
               onClick={() => {
-                setAccessCode(accessCode);
+                navigate(generatePath(
+                  paths.teacher.dashboard.classes.editClass._,
+                  { accessCode }
+                ));
               }}
               endIcon={<Create />}
             >
@@ -171,28 +182,21 @@ const CreateNewClassForm: React.FC = () => {
 const Classes: React.FC = () => {
   const theme = useTheme();
 
-  const params = SearchParams.get<{
-    accessCode?: string;
-  }>({
-    accessCode: {
-      isRequired: false,
-      validate: SearchParams.validate.matchesSchema(validateAccessCode)
-    }
-  });
+  const params = tryValidateSync(
+    useParams(),
+    Yup.object({ accessCode: accessCodeSchema })
+  );
 
-  const [accessCode, setAccessCode] = React.useState(params?.accessCode);
-
-  if (accessCode !== undefined) {
+  if (params?.accessCode !== undefined) {
     return <EditClass
-      accessCode={accessCode}
-      goBack={() => { setAccessCode(undefined); }}
+      accessCode={params.accessCode}
     />;
   }
 
   return <>
     <Page.Section>
       <_YourClasses />
-      <ClassTable setAccessCode={setAccessCode} />
+      <ClassTable />
     </Page.Section>
     <Page.Section>
       <ExternalStudentsJoiningRequests />

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   AccordionSummary,
   Container,
@@ -12,18 +13,19 @@ import { Image } from 'codeforlife/lib/esm/components';
 import CflLogo from '../../../images/cfl_logo.png';
 import OgLogo from '../../../images/ocado_group.svg';
 import { paths } from '../../../app/router';
+import HeaderContext from '../HeaderContext';
 
 export interface SummaryProps {
-  expanded: boolean;
-  setExpanded: (expanded: boolean) => void;
   children: React.ReactNode;
 }
 
 const Summary: React.FC<SummaryProps> = ({
-  expanded,
-  setExpanded,
   children
 }) => {
+  const navigate = useNavigate();
+  // @ts-expect-error value is set
+  const { expanded, setExpanded } = React.useContext(HeaderContext);
+
   return (
     <AccordionSummary style={{
       cursor: 'default'
@@ -46,7 +48,7 @@ const Summary: React.FC<SummaryProps> = ({
             alt='Code for Life'
             src={CflLogo}
             maxWidth={{ xs: '65px', lg: '80px' }}
-            href={paths._}
+            onClick={() => { navigate(paths._); }}
             marginRight={{ xs: 0, lg: '10px' }}
           />
           <Image

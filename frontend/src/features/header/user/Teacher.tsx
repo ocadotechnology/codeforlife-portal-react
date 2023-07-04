@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   SvgIconProps
 } from '@mui/material';
@@ -22,6 +23,8 @@ import {
 } from './Authenticated';
 
 export const TeacherSummary: React.FC = () => {
+  const navigate = useNavigate();
+
   const iconProps: SvgIconProps = {
     style: { marginLeft: '3px' },
     fontSize: 'small'
@@ -30,14 +33,12 @@ export const TeacherSummary: React.FC = () => {
   return (
     <AuthenticatedSummary
       userType='Teacher'
-      dashboardHref={paths.teacher.dashboard._}
+      dashboardHref={paths.teacher.dashboard.school._}
       menuItemsProps={[
         {
           children: 'Update account details',
           icon: <ManageAccountsOutlinedIcon />,
-          onClick: () => {
-            window.location.href = paths.teacher.dashboard.account._;
-          }
+          onClick: () => { navigate(paths.teacher.dashboard.account._); }
         }
       ]}
     >
@@ -81,9 +82,7 @@ export const TeacherSummary: React.FC = () => {
           },
           {
             children: 'Coding Clubs',
-            onClick: () => {
-              window.location.href = paths.codingClubs._;
-            }
+            onClick: () => { navigate(paths.codingClubs._); }
           }
         ]}
       />
@@ -92,11 +91,13 @@ export const TeacherSummary: React.FC = () => {
 };
 
 export const TeacherDetails: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <AuthenticatedDetails>
       <DetailsAccordion label='Teacher'>
         <DetailsButton
-          href={paths.teacher.dashboard.school._}
+          onClick={() => { navigate(paths.teacher.dashboard.school._); }}
           spacing={2}
         >
           School / Club
@@ -129,7 +130,7 @@ export const TeacherDetails: React.FC = () => {
           </DetailsButton>
         </DetailsAccordion>
       </DetailsAccordion>
-      <DetailsButton href={paths.teacher.dashboard.account._}>
+      <DetailsButton onClick={() => { navigate(paths.teacher.dashboard.account._); }}>
         Update account details
       </DetailsButton>
     </AuthenticatedDetails>

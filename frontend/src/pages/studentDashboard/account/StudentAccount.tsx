@@ -1,9 +1,27 @@
 import React from 'react';
-import { Button, Grid, InputAdornment, Stack, Typography, useTheme } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import {
+  Button,
+  Grid,
+  InputAdornment,
+  Stack,
+  Typography,
+  useTheme
+} from '@mui/material';
+import {
+  LockOutlined,
+  PersonOutline
+} from '@mui/icons-material';
 
 import Page from 'codeforlife/lib/esm/components/page';
-import { EmailField, Form, PasswordField, SubmitButton, TextField } from 'codeforlife/lib/esm/components/form';
-import { LockOutlined, PersonOutline } from '@mui/icons-material';
+import {
+  EmailField,
+  Form,
+  PasswordField,
+  SubmitButton,
+  TextField
+} from 'codeforlife/lib/esm/components/form';
+
 import DeleteAccountForm from '../../../features/DeleteAccountForm';
 import { paths } from '../../../app/router';
 
@@ -42,19 +60,19 @@ const AccountFormPasswordFields: React.FC = () => {
   </>;
 };
 
-const AccountFormButtons: React.FC<{
-  goBack: () => void
-}> = ({ goBack }) => {
+const AccountFormButtons: React.FC = () => {
+  const navigate = useNavigate();
+
   return <>
     <Stack direction='row' spacing={2}>
       <Button
         variant='outlined'
-        onClick={goBack}
+        onClick={() => { navigate(-1); }}
       >
         Cancel
       </Button>
       <SubmitButton>
-        { /* TODO: Connect to backend */ }
+        { /* TODO: Connect to backend */}
         Update details
       </SubmitButton>
     </Stack>
@@ -63,11 +81,7 @@ const AccountFormButtons: React.FC<{
 
 const AccountForm: React.FC<{
   isDependent: boolean;
-  goBack: () => void;
-}> = ({
-  isDependent,
-  goBack
-}) => {
+}> = ({ isDependent }) => {
   if (isDependent) {
     interface Values {
       newPassword: string;
@@ -91,7 +105,7 @@ const AccountForm: React.FC<{
         <Grid container spacing={2}>
           <AccountFormPasswordFields />
         </Grid>
-        <AccountFormButtons goBack={goBack}/>
+        <AccountFormButtons />
       </Form>
     );
   } else {
@@ -142,17 +156,17 @@ const AccountForm: React.FC<{
           </Grid>
           <AccountFormPasswordFields />
         </Grid>
-        <AccountFormButtons goBack={goBack}/>
+        <AccountFormButtons />
       </Form>
     );
   }
 };
 
 const StudentAccount: React.FC<{
-  isDependent: boolean,
-  goBack: () => void
-}> = ({ isDependent, goBack }) => {
+  isDependent: boolean
+}> = ({ isDependent }) => {
   const theme = useTheme();
+  const navigate = useNavigate();
 
   return (
     <>
@@ -171,20 +185,22 @@ const StudentAccount: React.FC<{
               password is strong enough to be secure.</Typography>
           </>
         }
-        <AccountForm isDependent={isDependent} goBack={goBack} />
+        <AccountForm isDependent={isDependent} />
       </Page.Section>
       {!isDependent
-      ? <>
+        ? <>
           <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
             <Typography variant='h5'>Join a school or club</Typography>
             <Typography>To find out about linking your Code For Life account with a school or club, click &apos;Join&apos;.</Typography>
-            <Button href={paths.student.dashboard.independent.joinSchool._}>Join</Button>
+            <Button onClick={() => { navigate(paths.student.dashboard.independent.joinSchool._); }}>
+              Join
+            </Button>
           </Page.Section>
           <Page.Section>
             <DeleteAccountForm />
           </Page.Section>
         </>
-      : <></>
+        : <></>
       }
     </>
   );

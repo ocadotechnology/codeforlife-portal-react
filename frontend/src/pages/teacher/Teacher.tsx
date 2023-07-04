@@ -9,7 +9,7 @@ import RapidRouter from './RapidRouter';
 import Resources from './Resources';
 import TeacherSlides from './TeacherSlides';
 
-const Teachers: React.FC = () => {
+const Teacher: React.FC = () => {
   const theme = useTheme();
 
   return (
@@ -31,9 +31,8 @@ const Teachers: React.FC = () => {
       <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
         <Kurono />
       </Page.Section>
-
     </Page.Container>
   );
 };
 
-export default Teachers;
+export default Teacher;

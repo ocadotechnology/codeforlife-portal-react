@@ -1,10 +1,16 @@
 import React from 'react';
+import {
+  useNavigate,
+  useParams,
+  generatePath
+} from 'react-router-dom';
 import { Typography } from '@mui/material';
 import { ChevronRight as ChevronRightIcon } from '@mui/icons-material';
 import * as Yup from 'yup';
 
-import { SearchParams } from 'codeforlife/lib/esm/helpers';
+import { tryValidateSync } from 'codeforlife/lib/esm/helpers/yup';
 
+import { accessCodeSchema } from '../../app/schemas';
 import BaseForm from './BaseForm';
 
 import {
@@ -13,13 +19,11 @@ import {
   EmailField
 } from 'codeforlife/lib/esm/components/form';
 
-export const validateAccessCode = Yup.string()
-  .required()
-  .matches(/^[A-Z]{2}[0-9]{3}$/, 'Invalid access code');
+import { paths } from '../../app/router';
 
-const AccessCodeForm: React.FC<{
-  setAccessCode: (accessCode: string) => void;
-}> = ({ setAccessCode }) => {
+const AccessCodeForm: React.FC = () => {
+  const navigate = useNavigate();
+
   interface Values {
     accessCode: string;
   }
@@ -34,17 +38,21 @@ const AccessCodeForm: React.FC<{
       header="Welcome"
       subheader="Please enter your class code."
       initialValues={initialValues}
-      onSubmit={(values) => {
-        setAccessCode(values.accessCode);
+      onSubmit={({ accessCode }) => {
+        navigate(generatePath(
+          paths.login.student.class._,
+          { accessCode }
+        ));
       }}
     >
       <TextField
         name="accessCode"
         placeholder="Access code"
         helperText="Enter your access code"
-        validate={validateAccessCode}
+        validate={accessCodeSchema}
+        required
       />
-      <Typography variant="body2" fontWeight="bold" my={0}>
+      <Typography variant="body2" fontWeight="bold">
         Forgotten your login details? Please check with your teacher.
       </Typography>
       <SubmitButton
@@ -104,19 +112,13 @@ const CredentialsForm: React.FC<{
 };
 
 const StudentForm: React.FC = () => {
-  const params = SearchParams.get<{
-    accessCode?: string;
-  }>({
-    accessCode: {
-      isRequired: false,
-      validate: SearchParams.validate.matchesSchema(validateAccessCode)
-    }
-  });
-
-  const [accessCode, setAccessCode] = React.useState(params?.accessCode);
+  const accessCode = tryValidateSync(
+    useParams(),
+    Yup.object({ accessCode: accessCodeSchema })
+  )?.accessCode;
 
   return accessCode === undefined
-    ? <AccessCodeForm setAccessCode={setAccessCode} />
+    ? <AccessCodeForm />
     : <CredentialsForm accessCode={accessCode} />;
 };
 
