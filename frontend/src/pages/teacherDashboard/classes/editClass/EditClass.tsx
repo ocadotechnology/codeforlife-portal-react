@@ -265,8 +265,6 @@ const EditClass: React.FC<{
       }
     )?.studentIds;
 
-    console.log(studentIds);
-
     if (studentIds !== undefined) {
       switch (params.view) {
         case 'edit':

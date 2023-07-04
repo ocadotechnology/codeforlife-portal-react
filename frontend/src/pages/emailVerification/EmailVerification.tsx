@@ -20,7 +20,6 @@ const EmailVerification: React.FC = () => {
       userType: yup.string()
         .oneOf([
           'teacher',
-          'student',
           'independent'
         ] as const)
         .required()
