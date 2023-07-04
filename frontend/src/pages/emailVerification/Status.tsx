@@ -37,11 +37,13 @@ const Status: React.FC<{
           marginY={5}
           {...imageProps}
         />
-        {body.map((text, index) =>
-          <Typography key={index}>
-            {text}
-          </Typography>
-        )}
+        <Stack>
+          {body.map((text, index) =>
+            <Typography key={index}>
+              {text}
+            </Typography>
+          )}
+        </Stack>
         <Button
           onClick={() => { navigate(paths._); }}
           style={{ marginTop: 30 }}
