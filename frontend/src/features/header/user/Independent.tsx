@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   SvgIconProps,
   useTheme
@@ -23,6 +24,8 @@ import {
 } from './Authenticated';
 
 export const IndependentSummary: React.FC = () => {
+  const navigate = useNavigate();
+
   const iconProps: SvgIconProps = {
     style: { marginLeft: '3px' },
     fontSize: 'small'
@@ -36,9 +39,7 @@ export const IndependentSummary: React.FC = () => {
         {
           children: 'Update account details',
           icon: <ManageAccountsOutlinedIcon />,
-          onClick: () => {
-            window.location.href = paths.student.dashboard.independent.account._;
-          }
+          onClick: () => { navigate(paths.student.dashboard.independent.account._); }
         }
       ]}
     >
@@ -73,13 +74,14 @@ export const IndependentSummary: React.FC = () => {
 
 export const IndependentDetails: React.FC = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
 
   return (
     <AuthenticatedDetails>
       <DetailsAccordion label='Independent'>
         <DetailsButton
           spacing={2}
-          href={paths.student.dashboard.independent._}
+          onClick={() => { navigate(paths.student.dashboard.independent._); }}
           bgcolor={theme.palette.secondary}
         >
           Dashboard
@@ -91,7 +93,7 @@ export const IndependentDetails: React.FC = () => {
         >
           <DetailsButton
             spacing={3}
-            href={paths.rapidRouter._}
+            onClick={() => { navigate(paths.rapidRouter._); }}
             bgcolor={theme.palette.secondary}
           >
             Rapid Router
@@ -113,7 +115,7 @@ export const IndependentDetails: React.FC = () => {
           </DetailsButton>
         </DetailsAccordion>
       </DetailsAccordion>
-      <DetailsButton href={paths.student.dashboard.independent.account._}>
+      <DetailsButton onClick={() => { navigate(paths.student.dashboard.independent.account._); }}>
         Update account details
       </DetailsButton>
     </AuthenticatedDetails>

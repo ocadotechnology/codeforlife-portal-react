@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Link
 } from '@mui/material';
@@ -47,16 +48,20 @@ export function pageNotFound404(): ErrorProps {
 export function tooManyRequests429(
   userType: 'teacher' | 'independent' | 'student'
 ): ErrorProps {
+  const navigate = useNavigate();
+
   let body: ErrorProps['body'];
   switch (userType) {
     case 'teacher':
     case 'independent':
       body = <>
         If you wish to proceed, please&nbsp;
-        <Link href={(userType === 'teacher')
+        <Link onClick={() => {
+          navigate((userType === 'teacher')
             ? paths.resetPassword.teacher._
             : paths.resetPassword.independent._
-          }>
+          );
+        }}>
           reset your password
         </Link>
         . Alternatively, you will need to wait 24 hours for your account to be unlocked again.

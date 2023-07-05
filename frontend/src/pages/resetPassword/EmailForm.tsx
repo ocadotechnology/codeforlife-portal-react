@@ -44,7 +44,7 @@ const EmailForm: React.FC = () => {
       <Typography>
         If you have entered a valid email address, you will receive a link enabling you to reset your password.
       </Typography>
-      <Button href={paths._}>
+      <Button onClick={() => { navigate(paths._); }}>
         Back to homepage
       </Button>
     </Stack>

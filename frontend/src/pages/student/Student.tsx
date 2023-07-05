@@ -14,7 +14,7 @@ import PlayImage from '../../images/home_play_hero.png';
 import RapidRouter from './RapidRouter';
 import Kurono from './Kurono';
 
-const Students: React.FC = () => {
+const Student: React.FC = () => {
   const theme = useTheme();
 
   return (
@@ -48,4 +48,4 @@ const Students: React.FC = () => {
   );
 };
 
-export default Students;
+export default Student;

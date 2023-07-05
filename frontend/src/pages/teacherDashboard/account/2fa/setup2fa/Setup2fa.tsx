@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button, Stack, Typography } from '@mui/material';
 import { Form, SubmitButton, TextField } from 'codeforlife/lib/esm/components/form';
 import { paths } from '../../../../../app/router';
@@ -16,7 +17,9 @@ const initialValues: Setup2faFormValues = {
 };
 
 const Setup2fa: React.FC = () => {
+  const navigate = useNavigate();
   const [setupComplete, setSetupComplete] = React.useState<boolean>(false);
+
   return (
     <Page.Section>
       {setupComplete
@@ -30,7 +33,7 @@ const Setup2fa: React.FC = () => {
           <Typography>
             You will now need to use your code generator the next time you log in.
           </Typography>
-          <Button href={paths.teacher.dashboard.account._}>
+          <Button onClick={() => { navigate(paths.teacher.dashboard.account._); }}>
             OK
           </Button>
         </>
@@ -69,7 +72,7 @@ const Setup2fa: React.FC = () => {
               sx={{ maxWidth: '230px' }}
             />
             <Stack direction="row" spacing={2} justifyContent="flex-end">
-              <Button href={paths.teacher.dashboard.account._}>
+              <Button onClick={() => { navigate(paths.teacher.dashboard.account._); }}>
                 Cancel
               </Button>
               <SubmitButton

@@ -4,17 +4,18 @@ import {
   Link,
   Typography
 } from '@mui/material';
-import * as Yup from 'yup';
-
-import { paths } from '../../app/router';
-import BaseForm from './BaseForm';
+import { useNavigate, useParams } from 'react-router-dom';
+import * as yup from 'yup';
 
 import {
   EmailField,
   TextField,
   SubmitButton
 } from 'codeforlife/lib/esm/components/form';
-import { SearchParams } from 'codeforlife/lib/esm/helpers';
+import { tryValidateSync } from 'codeforlife/lib/esm/helpers/yup';
+
+import { paths } from '../../app/router';
+import BaseForm from './BaseForm';
 import Teacher2faBackupForm from './Teacher2faBackupForm';
 import Teacher2faForm from './Teacher2faForm';
 
@@ -29,23 +30,24 @@ const initialValues: TeacherFormValues = {
 };
 
 const TeacherForm: React.FC = () => {
-  const loginSteps = ['login2fa', 'backupToken'] as const;
-  const params = SearchParams.get<{
-    loginStep?: typeof loginSteps[number]
-  }>({
-    loginStep: {
-      validate: SearchParams.validate.inOptions(loginSteps),
-      isRequired: false
-    }
-  });
+  const params = tryValidateSync(
+    useParams(),
+    yup.object({
+      view: yup.string()
+        .oneOf([
+          '2fa',
+          'backup-token'
+        ] as const)
+    })
+  );
 
   let form = <BaseTeacherForm />;
-  if (params?.loginStep !== undefined) {
-    switch (params.loginStep) {
-      case 'login2fa':
+  if (params?.view !== undefined) {
+    switch (params.view) {
+      case '2fa':
         form = <Teacher2faForm />;
         break;
-      case 'backupToken':
+      case 'backup-token':
         form = <Teacher2faBackupForm />;
         break;
     }
@@ -55,6 +57,8 @@ const TeacherForm: React.FC = () => {
 };
 
 const BaseTeacherForm: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <BaseForm
       themedBoxProps={{ userType: 'teacher' }}
@@ -77,7 +81,6 @@ const BaseTeacherForm: React.FC = () => {
         placeholder="Password"
         helperText="Enter your password"
         type="password"
-        validate={Yup.string()}
         required
       />
       <Stack>
@@ -90,7 +93,7 @@ const BaseTeacherForm: React.FC = () => {
         </Typography>
         <Typography variant="body2">
           Don&apos;t worry, you can&nbsp;
-          <Link href={paths.resetPassword.teacher._}>
+          <Link onClick={() => { navigate(paths.resetPassword.teacher._); }}>
             reset your password
           </Link>
           .
@@ -99,7 +102,7 @@ const BaseTeacherForm: React.FC = () => {
       <SubmitButton
         stackProps={{ alignItems: 'end' }}
         // TODO: Remove href and replace with submit functionality
-        href={paths.login.teacher.login2fa._}>
+        onClick={() => { navigate(paths.login.teacher.twoFA._); }}>
         Log in
       </SubmitButton>
     </BaseForm>

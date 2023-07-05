@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Unstable_Grid2 as Grid,
   Stack,
@@ -27,15 +28,20 @@ const Column: React.FC<{
           src={img.src}
           maxWidth='350px'
         />
-        <Typography fontFamily='SpaceGrotesk' fontSize={22}>
+        <Typography
+          fontFamily='SpaceGrotesk'
+          fontSize='1.3rem !important'
+          fontWeight={500}
+        >
           &ldquo;{quote}&rdquo;
         </Typography>
       </Stack>
       <Stack textAlign='end' marginTop='auto'>
-        <Typography fontWeight='bold'>
+        <Typography fontWeight='bold' mb={0}>
           — {person.name}
         </Typography>
-        <Typography variant='body2'>
+        {/* TODO: come up with better approach to handle margin bottom */}
+        <Typography variant='body2' mb={0}>
           {person.title}
         </Typography>
       </Stack>
@@ -44,10 +50,12 @@ const Column: React.FC<{
 );
 
 const Quotes: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <Grid container columnSpacing={4}>
       <Grid xs={12}>
-        <Typography variant='h2' textAlign='center'>
+        <Typography variant='h3' textAlign='center'>
           Why you&apos;ll love Code for Life
         </Typography>
       </Grid>
@@ -55,7 +63,7 @@ const Quotes: React.FC = () => {
         <Typography textAlign='center'>
           Don&apos;t just take our word for it, here are some lovely quotes from our fabulous teacher friends.
           <br />
-          Interested in getting involved? <Link href={paths.getInvolved._}>Get in touch</Link>.
+          Interested in getting involved? <Link onClick={() => { navigate(paths.getInvolved._); }}>Get in touch</Link>.
         </Typography>
       </Grid>
       <Column

@@ -16,6 +16,7 @@ import SignUp from './SignUp';
 const Footer: React.FC = () => {
   return (
     <ThemedBox
+      id='footer'
       userType='teacher'
       options={{
         ...themeOptions,

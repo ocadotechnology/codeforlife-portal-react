@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Button,
   Typography
@@ -11,6 +12,8 @@ import { paths } from '../../app/router';
 import TeacherSection from './TeacherSection';
 
 const Resources: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <TeacherSection
       videoSource={process.env.REACT_APP_TEACHER_RESOURCES_YOUTUBE_VIDEO_SRC as string}
@@ -29,7 +32,7 @@ const Resources: React.FC = () => {
         style={{
           marginTop: 'auto'
         }}
-        href={paths.register._}
+        onClick={() => { navigate(paths.register._); }}
       >
         Register now
       </Button>

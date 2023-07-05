@@ -3,7 +3,8 @@ import {
   Unstable_Grid2 as Grid,
   Grid2Props,
   Typography,
-  useTheme
+  useTheme,
+  Box
 } from '@mui/material';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 
@@ -66,17 +67,19 @@ const Level: React.FC<Pick<Grid2Props, 'direction'> & {
           <Typography variant='h5'>
             Levels {text.levels}
           </Typography>
-          {text.sessions.map((session) => <>
-            <Typography variant='h6'>
-              {typeof session.ids === 'string'
-                ? session.ids
-                : 'Session ' + session.ids.join(' & ')
-              }
-            </Typography>
-            <Typography>
-              {session.body}
-            </Typography>
-          </>)}
+          {text.sessions.map((session, index) =>
+            <Box key={`session-${index}`}>
+              <Typography variant='h6'>
+                {typeof session.ids === 'string'
+                  ? session.ids
+                  : 'Session ' + session.ids.join(' & ')
+                }
+              </Typography>
+              <Typography>
+                {session.body}
+              </Typography>
+            </Box>
+          )}
         </Grid>
       </Grid >
     </Page.Section>

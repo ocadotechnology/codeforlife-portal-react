@@ -1,10 +1,13 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button, Link, ListItemText, Typography } from '@mui/material';
 import { paths } from '../../../../../app/router';
 import { ItemizedList } from 'codeforlife/lib/esm/components';
 import Page from 'codeforlife/lib/esm/components/page';
 
 const BackupTokens: React.FC = () => {
+  const navigate = useNavigate();
+
   const backupTokens = [
     'token1',
     'token2',
@@ -24,7 +27,7 @@ const BackupTokens: React.FC = () => {
         Backup tokens
       </Typography>
       <Link
-        href={paths.teacher.dashboard.account._}
+        onClick={() => { navigate(paths.teacher.dashboard.account._); }}
         className='back-to'
       >
         Your account

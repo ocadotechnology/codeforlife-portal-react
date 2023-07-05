@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Stack,
   Link,
@@ -25,6 +26,8 @@ const initialValues: IndependentFormValues = {
 };
 
 const IndependentForm: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <BaseForm
       themedBoxProps={{ userType: 'independent' }}
@@ -58,7 +61,7 @@ const IndependentForm: React.FC = () => {
         </Typography>
         <Typography variant="body2">
           Don&apos;t worry, you can&nbsp;
-          <Link href={paths.resetPassword.independent._}>
+          <Link onClick={() => { navigate(paths.resetPassword.independent._); }}>
             reset your password
           </Link>
           .
@@ -71,7 +74,7 @@ const IndependentForm: React.FC = () => {
           my={0}
         >
           Part of a school or club?&nbsp;
-          <Link fontWeight='normal' href={paths.login.student._}>
+          <Link fontWeight='normal' onClick={() => { navigate(paths.login.student._); }}>
             Log in here
           </Link>
         </Typography>
