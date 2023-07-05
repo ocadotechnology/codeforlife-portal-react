@@ -21,16 +21,10 @@ def process_newsletter_form(request):
         user_email = form_data["email"]
         try:
             validate_email(user_email)
-        except ValidationError as e:
-            # messages.error(
-            #     request,
-            #     "Invalid email address. Please try again.",
-            #     extra_tags="sub-nav--warning",
-            # )
+        except ValidationError:
             return HttpResponse(status=400)
         else:
             add_to_dotmailer("", "", user_email, DotmailerUserType.NO_ACCOUNT)
-            # messages.success(request, "Thank you for signing up! 🎉")
             return HttpResponse(status=200)
        
     return HttpResponse(status=405)

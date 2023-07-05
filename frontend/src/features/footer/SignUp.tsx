@@ -32,20 +32,16 @@ const SignUp: React.FC = () => {
   const isXS = useMediaQuery(theme.breakpoints.only('xs'));
 
   const [signUp] = useSignUpMutation();
-  const [signUpMessage, setSignUpMessage] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = (values: any, { setSubmitting }: any): void => {
     setSubmitting(false);
     signUp(values).unwrap()
       .then(() => {
-        setSignUpMessage('Thank you for signing up! 🎉');
-        // TODO: useNavigate() may be used only in the context of a <Router> component.
-        navigate('/', { state: { a: 'bbbbb' } });
+        navigate('/', { state: { signUpSuccess: true } }); // ''
       }) // fulfilled
       .catch(() => {
-        setSignUpMessage('Invalid email address. Please try again.');
-        navigate('/', { state: { a: 'cccc' } });
+        navigate('/', { state: { signUpSuccess: false } }); // ''
       }); // error
   };
 
