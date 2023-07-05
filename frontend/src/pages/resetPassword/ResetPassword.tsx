@@ -4,7 +4,7 @@ import * as yup from 'yup';
 
 import Page from 'codeforlife/lib/esm/components/page';
 import { tryValidateSync } from 'codeforlife/lib/esm/helpers/yup';
-import { fromSearchParams } from 'codeforlife/lib/esm/helpers/router';
+import { fromSearchParams } from 'codeforlife/lib/esm/hooks';
 import { ThemedBox } from 'codeforlife/lib/esm/theme';
 
 import { themeOptions } from '../../app/theme';
