@@ -40,6 +40,7 @@ const Column: React.FC<{
         <Typography fontWeight='bold' mb={0}>
           — {person.name}
         </Typography>
+        {/* TODO: come up with better approach to handle margin bottom */}
         <Typography variant='body2' mb={0}>
           {person.title}
         </Typography>
