@@ -39,7 +39,7 @@ const HomeLearning: React.FC = () => {
       <Page.Section
         gridProps={{ bgcolor: theme.palette.tertiary.main }}
         className='flex-center-x'
-        sx={{ paddingY: '15px' }}
+        sx={{ paddingY: (theme) => theme.spacing(2) }}
       >
         <Button
           endIcon={<SendIcon />}
