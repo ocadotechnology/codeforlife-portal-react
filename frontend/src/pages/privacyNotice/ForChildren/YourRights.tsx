@@ -37,7 +37,7 @@ const YourRights: React.FC = () => <>
       change your mind about giving us consent to use your personal data.
     </ListItemText>
   </ItemizedList>
-  <Typography>
+  <Typography mb={0}>
     If you would like to use any of these rights listed above, please email our Data Protection Officer at&nbsp;
     <Link href='mailto:individualrights@ocado.com'>
       individualrights@ocado.com

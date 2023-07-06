@@ -74,7 +74,7 @@ const HowWeUseInfo: React.FC = () => (
     <Typography>
       We summarise below the purposes for which we use your personal data and the lawful basis on which we rely.
     </Typography>
-    <Table className='text'>
+    <Table className='text body'>
       <TableHead>
         <CustomTableRow
           left="Purpose"
@@ -136,7 +136,7 @@ const HowWeUseInfo: React.FC = () => (
         />
       </TableBody>
     </Table>
-    <Typography>
+    <Typography mb={0}>
       When we rely on <strong>legitimate interests</strong> to process personal data, we consider and balance those interests against any potential impact on you (both positive and negative) and your rights and interests. If we consider that our interests are overridden by the impact on you, we will not use your personal data in this way (unless the law gives us another valid ground to do so). You can obtain further information about how we assess our legitimate interests against any potential impact on you in respect of specific activities by contacting us.
     </Typography>
   </>

@@ -32,7 +32,7 @@ const OtherLimitsOfUse: React.FC = () => {
         <ListItemText>
           use the site in a way that affects other peoples’ use or enjoyment of the Code for Life website,
         </ListItemText>
-        <ListItemText>
+        <ListItemText className='last'>
           do anything that could cause damage the site, for example taking action that allows in, computer viruses, logic bombs, Trojan horses or some other kind of harmful software or data.
         </ListItemText>
       </ItemizedList>

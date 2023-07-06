@@ -224,7 +224,7 @@ const YourSchool: React.FC = () => {
       <Typography align="center" variant="h4">
         Your school: {schoolName} ({schoolPostcode})
       </Typography>
-      <Typography align="left">
+      <Typography mb={0}>
         As an administrator of your school or club, you can select other
         teachers to whom you can provide or revoke administrative rights. You
         can also add and remove teachers from your school or club. As

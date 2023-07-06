@@ -50,18 +50,31 @@ const Contribute: React.FC = () => {
       <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
         <Grid container spacing={4}>
           <Grid item sm={6}>
-            <Typography variant='h4'>Our products</Typography>
-            <Typography><strong>The portal or website</strong></Typography>
-            <Typography>This is the gateway for users to get to know who we are and what we do. It hosts our web-based
-              games and plenty of teaching resources.</Typography>
-            <Typography><strong>Rapid Router</strong></Typography>
-            <Typography>An introduction to coding that is aimed at Key Stages 1-3 (age 5 to 14). Built on Blockly, it&apos;s
+            <Typography variant='h4'>
+              Our products
+            </Typography>
+            <Typography fontWeight='bold'>
+              The portal or website
+            </Typography>
+            <Typography>
+              This is the gateway for users to get to know who we are and what we do. It hosts our web-based
+              games and plenty of teaching resources.
+            </Typography>
+            <Typography fontWeight='bold'>
+              Rapid Router
+            </Typography>
+            <Typography>
+              An introduction to coding that is aimed at Key Stages 1-3 (age 5 to 14). Built on Blockly, it&apos;s
               a visual programming language similar to Scratch. The levels start off with Blockly and gradually progress
               to Python. With 109 levels, Rapid Router is our flagship game with the biggest user base.</Typography>
-            <Typography><strong>Kurono</strong></Typography>
-            <Typography>A multiplayer game that is aimed at older students of Key Stages 3 and up, it is primarily for
+            <Typography fontWeight='bold'>
+              Kurono
+            </Typography>
+            <Typography mb={0}>
+              A multiplayer game that is aimed at older students of Key Stages 3 and up, it is primarily for
               use in a class or a club setting. Students code in Python to move their avatar around in order to complete
-              tasks. Parts of Kurono are still in development.</Typography>
+              tasks. Parts of Kurono are still in development.
+            </Typography>
           </Grid>
           <Grid item sm={6}>
             <Image
@@ -82,11 +95,17 @@ const Contribute: React.FC = () => {
             />
           </Grid>
           <Grid item sm={6}>
-            <Typography variant='h4'>How you can contribute</Typography>
-            <Typography>Today, there is a small dedicated team working full time on Code for Life. This year, we&apos;re
-              expecting to reach over 100,000 newly registered teachers and students. We need your help to do even more.</Typography>
-            <Typography>If contributing to open-source projects to support education in coding and technology sounds
-              exciting for you, we&apos;d love to have you on board!</Typography>
+            <Typography variant='h4'>
+              How you can contribute
+            </Typography>
+            <Typography>
+              Today, there is a small dedicated team working full time on Code for Life. This year, we&apos;re
+              expecting to reach over 100,000 newly registered teachers and students. We need your help to do even more.
+            </Typography>
+            <Typography>
+              If contributing to open-source projects to support education in coding and technology sounds
+              exciting for you, we&apos;d love to have you on board!
+            </Typography>
             <Stack alignItems='end'>
               <Button
                 href='https://docs.codeforlife.education/'

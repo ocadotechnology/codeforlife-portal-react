@@ -72,12 +72,16 @@ const Setup2fa: React.FC = () => {
               sx={{ maxWidth: '230px' }}
             />
             <Stack direction="row" spacing={2} justifyContent="flex-end">
-              <Button onClick={() => { navigate(paths.teacher.dashboard.account._); }}>
+              <Button
+                variant='outlined'
+                onClick={() => { navigate(paths.teacher.dashboard.account._); }}
+              >
                 Cancel
               </Button>
               <SubmitButton
                 // TODO: Remove href and replace with submit functionality
-                onClick={() => { setSetupComplete(true); }}>
+                onClick={() => { setSetupComplete(true); }}
+              >
                 Next
               </SubmitButton>
             </Stack>

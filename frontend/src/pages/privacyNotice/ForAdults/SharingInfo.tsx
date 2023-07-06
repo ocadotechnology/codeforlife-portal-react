@@ -57,7 +57,7 @@ const SharingInfo: React.FC = () => (
       <ListItemText>
         Where necessary, we share personal information with our <strong>business advisors</strong>, such as legal advisors, consultants, accountants or auditors, for the purposes outlined in this Notice.
       </ListItemText>
-      <ListItemText>
+      <ListItemText className='last'>
         In the event of a legal dispute, a court order or a legitimate request from a <strong>law enforcement agency or other public authority</strong>, we will share your personal information with our legal advisors, courts or such public authority, as necessary.
       </ListItemText>
     </ItemizedList>

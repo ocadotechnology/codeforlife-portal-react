@@ -27,7 +27,7 @@ const UpdateNameForm: React.FC = () => {
       }}
       // TODO: Disable button by default
       submitButton={
-        <SubmitButton className='body'>
+        <SubmitButton>
           Update
         </SubmitButton>
       }
@@ -76,7 +76,7 @@ const EditStudent: React.FC<{
   studentId,
   goBack
 }) => {
-    return (
+    return <>
       <Page.Section>
         <Typography align="center" variant="h4">
           Edit student details for Florian from class Class 1 ({accessCode})
@@ -84,13 +84,17 @@ const EditStudent: React.FC<{
         <Link className='back-to' onClick={goBack}>
           Class
         </Link>
-        <Typography>
+        <Typography mb={0}>
           Edit this student&apos;s name and manage their password and direct access link.
         </Typography>
-        <UpdateNameForm />
-        <UpdatePasswordForm />
       </Page.Section>
-    );
+      <Page.Section>
+        <UpdateNameForm />
+      </Page.Section>
+      <Page.Section>
+        <UpdatePasswordForm />
+      </Page.Section >
+    </>;
   };
 
 export default EditStudent;

@@ -46,7 +46,7 @@ const Liability: React.FC = () => {
         <ListItemText>
           fraud or fraudulent misrepresentation by us; or
         </ListItemText>
-        <ListItemText>
+        <ListItemText className='last'>
           any liability which we cannot exclude or limit by law.
         </ListItemText>
       </ItemizedList>

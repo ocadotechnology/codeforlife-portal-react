@@ -10,7 +10,7 @@ const HowLongWeKeepData: React.FC = () => <>
   <Typography>
     Once you deactivate your account, we might keep an anonymous version of your information to help us with research and other business reasons like assessing how the business is performing and planning for the future.
   </Typography>
-  <Typography>
+  <Typography mb={0}>
     For users that have registered but whose accounts are inactive, we’ll delete your personal information after 3 years of inactivity.
   </Typography>
 </>;

@@ -59,7 +59,7 @@ const YourRights: React.FC = () => (
         let us know (if possible) the information to which your request relates.
       </ListItemText>
     </ItemizedList>
-    <Typography>
+    <Typography mb={0}>
       If you would like to unsubscribe from any email newsletter or other promotional emails, you can click on the unsubscribe link which you can find at the bottom of our emails, in order to be removed from our mailing list. It could take up to 72 hours to process the update through our systems.
     </Typography>
   </>

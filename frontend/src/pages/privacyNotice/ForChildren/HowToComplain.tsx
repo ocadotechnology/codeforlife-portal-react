@@ -18,7 +18,7 @@ const HowToComplain: React.FC = () => <>
   <Typography>
     Telephone: 0303 123 1113
   </Typography>
-  <Typography>
+  <Typography mb={0}>
     Website:&nbsp;
     <Link href='https://ico.org.uk/concerns'>
       https://ico.org.uk/concerns
