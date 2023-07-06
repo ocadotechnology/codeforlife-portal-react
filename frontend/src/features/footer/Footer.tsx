@@ -2,11 +2,11 @@ import React from 'react';
 import {
   Unstable_Grid2 as Grid,
   Typography,
-  Container
+  Container,
+  Stack
 } from '@mui/material';
 
 import { ThemedBox } from 'codeforlife/lib/esm/theme';
-import { getStyleOverrides } from 'codeforlife/lib/esm/helpers';
 
 import { themeOptions } from '../../app/theme';
 import Links from './Links';
@@ -14,45 +14,30 @@ import Logos from './Logos';
 import SignUp from './SignUp';
 
 const Footer: React.FC = () => {
+  const spacing = 5;
+
   return (
     <ThemedBox
       id='footer'
       userType='teacher'
-      options={{
-        ...themeOptions,
-        components: {
-          ...themeOptions.components,
-          MuiTypography: {
-            ...themeOptions.components?.MuiTypography,
-            styleOverrides: {
-              ...themeOptions.components?.MuiTypography?.styleOverrides,
-              root: ({ ownerState }) => ({
-                ...getStyleOverrides(ownerState, 'MuiTypography', 'root', themeOptions.components),
-                fontWeight: '600 !important'
-              })
-            }
-          }
-        }
-      }}
+      options={themeOptions}
     >
       <Container>
-        <Grid
-          container
-          rowSpacing={{ xs: 2, sm: 1 }}
-          columnSpacing={1}
-          padding={0}
-        >
-          <Grid xs={12} sm={8} order={{ xs: 1 }}>
-            <Links />
+        <Grid container spacing={spacing}>
+          <Grid xs={12} sm={8}>
+            <Stack spacing={spacing}>
+              <Links />
+              <SignUp />
+            </Stack>
           </Grid>
-          <Grid xs={12} sm={4} order={{ xs: 3, sm: 2 }}>
+          <Grid xs={12} sm={4}>
             <Logos />
           </Grid>
-          <Grid xs={12} sm={8} order={{ xs: 2, sm: 3 }}>
-            <SignUp />
-          </Grid>
-          <Grid xs={12} order={{ xs: 4 }}>
-            <Typography marginTop={3} textAlign='center'>
+          <Grid xs={12}>
+            <Typography
+              textAlign='center'
+              variant='body2'
+            >
               © Ocado Group {new Date().getFullYear()}
             </Typography>
           </Grid>
