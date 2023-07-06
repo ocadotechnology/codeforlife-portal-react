@@ -10,6 +10,7 @@ import AboutUs from './AboutUs';
 import Quotes from './Quotes';
 import CodingClubs from './CodingClubs';
 import { useLocation } from 'react-router-dom';
+import NewsSignUp from './NewsSignUp';
 
 const Home: React.FC = () => {
   const theme = useTheme();
@@ -17,13 +18,7 @@ const Home: React.FC = () => {
 
   return (
     <Page.Container>
-      <>
-        {location.state?.signUpSuccess !== undefined &&
-          <Page.Notification>
-            {location.state.signUpSuccess ? 'Thank you for signing up! 🎉' : 'Invalid email address. Please try again.'}
-          </Page.Notification>
-        }
-      </>
+      <NewsSignUp signUpSuccess={location.state?.signUpSuccess} />
       {/* Special case: un-contained page section */}
       <TargetAudience />
       <Page.Section>

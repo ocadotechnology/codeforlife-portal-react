@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Unstable_Grid2 as Grid,
   useTheme,
@@ -38,11 +38,11 @@ const SignUp: React.FC = () => {
     setSubmitting(false);
     signUp(values).unwrap()
       .then(() => {
-        navigate('/', { state: { signUpSuccess: true } }); // ''
-      }) // fulfilled
+        navigate('/', { state: { signUpSuccess: true } });
+      })
       .catch(() => {
-        navigate('/', { state: { signUpSuccess: false } }); // ''
-      }); // error
+        navigate('/', { state: { signUpSuccess: false } });
+      });
   };
 
   return (
