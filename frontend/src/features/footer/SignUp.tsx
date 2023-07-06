@@ -14,23 +14,21 @@ import {
   SubmitButton
 } from 'codeforlife/lib/esm/components/form';
 
-interface SignUpValues {
-  email: string;
-  over18: boolean;
-}
-
-const initialValues: SignUpValues = {
-  email: '',
-  over18: false
-};
-
 const SignUp: React.FC = () => {
   const theme = useTheme();
-  const isXS = useMediaQuery(theme.breakpoints.only('xs'));
+  const onlyXS = useMediaQuery(theme.breakpoints.only('xs'));
+
+  const initialValues: {
+    email: string;
+    over18: boolean;
+  } = {
+    email: '',
+    over18: false
+  };
 
   return (
     <Stack>
-      <FormHelperText style={{ textAlign: isXS ? 'center' : undefined }}>
+      <FormHelperText style={{ textAlign: onlyXS ? 'center' : undefined }}>
         Sign up to receive updates about Code for Life games and teaching resources.
       </FormHelperText>
       <Form
@@ -40,35 +38,31 @@ const SignUp: React.FC = () => {
           setSubmitting(false);
         }}
       >
-        <Grid container>
-          <Grid xs={12}>
-            <EmailField
-              required
-              placeholder='Your email address'
-              helperText='Enter email address above'
-              FormHelperTextProps={{
-                style: { color: 'white' }
-              }}
-            />
-          </Grid>
-          <Grid xs={12} sm={8} className={isXS ? 'flex-center-x' : undefined}>
-            <CheckboxField
-              required
-              name='over18'
-              formControlLabelProps={{
-                label: 'Please confirm that you are over 18.'
-              }}
-            />
-          </Grid>
-          <Grid xs={12} sm={4} className={isXS ? undefined : 'flex-end-x'}>
-            <SubmitButton style={{
-              width: isXS ? '100%' : undefined,
-              marginLeft: 'auto'
-            }}>
-              Sign up
-            </SubmitButton>
-          </Grid>
-        </Grid>
+        <EmailField
+          required
+          placeholder='Your email address'
+          helperText='Enter email address above'
+        />
+        <Stack
+          spacing='auto'
+          direction={onlyXS ? 'column' : 'row'}
+          alignItems='center'
+        >
+          <CheckboxField
+            required
+            name='over18'
+            formControlLabelProps={{
+              label: 'Please confirm that you are over 18.'
+            }}
+            marginBottom={onlyXS ? undefined : 0}
+          />
+          <SubmitButton
+            stackProps={{ width: onlyXS ? '100%' : undefined }}
+            style={{ width: onlyXS ? '100%' : undefined }}
+          >
+            Sign up
+          </SubmitButton>
+        </Stack>
       </Form>
     </Stack>
   );
