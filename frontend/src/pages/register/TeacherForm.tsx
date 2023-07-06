@@ -14,7 +14,7 @@ import {
   TextField
 } from 'codeforlife/lib/esm/components/form';
 
-interface TeacherFormValues {
+export interface TeacherFormValues {
   firstName: string;
   lastName: string;
   email: string;
@@ -35,12 +35,13 @@ const initialValues: TeacherFormValues = {
 };
 
 const TeacherForm: React.FC = () => {
+  const [addUs];
   return (
     <BaseForm
       header="Teacher/Tutor"
       subheader="Register below to create your school or club."
       description="You will have access to teaching resources, progress tracking and lesson plans for both Rapid Router and Kurono."
-      userType='teacher'
+      userType="teacher"
     >
       <Form
         initialValues={initialValues}
@@ -70,25 +71,23 @@ const TeacherForm: React.FC = () => {
           required
           name="termsOfUse"
           formControlLabelProps={{
-            label: <>
-              I am over 18 years old have read and understood the&nbsp;
-              <Link
-                href={paths.termsOfUse._}
-                target='_blank'
-                color='inherit'
-              >
-                Terms of use
-              </Link>
-              &nbsp;and the&nbsp;
-              <Link
-                href={paths.privacyNotice._}
-                target='_blank'
-                color='inherit'
-              >
-                Privacy notice
-              </Link>
-              .
-            </>
+            label: (
+              <>
+                I am over 18 years old have read and understood the&nbsp;
+                <Link href={paths.termsOfUse._} target="_blank" color="inherit">
+                  Terms of use
+                </Link>
+                &nbsp;and the&nbsp;
+                <Link
+                  href={paths.privacyNotice._}
+                  target="_blank"
+                  color="inherit"
+                >
+                  Privacy notice
+                </Link>
+                .
+              </>
+            )
           }}
         />
         <CheckboxField
@@ -98,7 +97,7 @@ const TeacherForm: React.FC = () => {
               'Sign up to receive updates about Code for Life games and teaching resources.'
           }}
         />
-        <CflPasswordFields userType='teacher' />
+        <CflPasswordFields userType="teacher" />
         <SubmitButton
           stackProps={{ alignItems: 'end' }}
           endIcon={<ChevronRightIcon />}

@@ -10,6 +10,8 @@ import type {
 import { useNavigate } from 'react-router-dom';
 
 import { paths } from './router';
+import { TeacherFormValues } from '../pages/register/TeacherForm';
+import qs from 'qs';
 
 const baseQuery = fetchBaseQuery({
   baseUrl: process.env.REACT_APP_API_BASE_URL
@@ -40,10 +42,34 @@ const baseQueryWrapper: BaseQueryFn<
   return result;
 };
 
+
 const api = createApi({
   reducerPath: 'api',
   baseQuery: baseQueryWrapper,
-  endpoints: () => ({})
+  endpoints: (builder) => ({
+    getRegister: builder.query({
+      query() {
+        return {
+          url: '/api/register/',
+          method: 'POST'
+        };
+      }
+    }),
+    addUser: builder.mutation({
+      query(user: TeacherFormValues) {
+        return {
+          url: '/api/register/',
+          method: 'POST',
+          body: qs.stringify({ ...user, 'teacher_signup-teacher_email': '' }),
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': 'This will have a cookie'
+          }
+        };
+      }
+    })
+  })
 });
+
 
 export default api;
