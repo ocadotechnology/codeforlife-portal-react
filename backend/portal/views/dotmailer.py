@@ -21,10 +21,10 @@ def process_newsletter_form(request):
         try:
             validate_email(user_email)
         except ValidationError:
-            return HttpResponse(status=400)
+            return JsonResponse(status=200, data={'success': False})
         else:
             add_to_dotmailer("", "", user_email, DotmailerUserType.NO_ACCOUNT)
-            return HttpResponse(status=200)
+            return JsonResponse(status=200, data={'success': True})
        
     return HttpResponse(status=405)
 

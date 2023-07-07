@@ -40,11 +40,14 @@ const SignUp: React.FC = () => {
   const handleSubmit = (values: SignUpValues, { setSubmitting }: FormikHelpers<SignUpValues>): void => {
     setSubmitting(false);
     signUp(values).unwrap()
-      .then(() => {
-        navigate('/', { state: { signUpSuccess: true } });
+      .then((res) => {
+        if (res?.success === true) {
+          navigate('/', { state: { signUpSuccess: true } });
+        } else {
+          navigate('/', { state: { signUpSuccess: false } });
+        }
       })
       .catch(() => {
-        navigate('/', { state: { signUpSuccess: false } });
       });
   };
 
