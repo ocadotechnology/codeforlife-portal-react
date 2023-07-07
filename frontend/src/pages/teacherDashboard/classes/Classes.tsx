@@ -132,7 +132,7 @@ const ExternalStudentsJoiningRequests: React.FC = () => {
         enabled external requests for that class.
       </Typography>
       <ExternalStudentsJoiningRequestsTable />
-      <Typography fontWeight="bold">
+      <Typography fontWeight="bold" mb={0}>
         No student has currently requested to join your classes.
       </Typography>
     </>

@@ -16,7 +16,7 @@ const InfoSecurity: React.FC = () => (
       </Link>
       .
     </Typography>
-    <Typography>
+    <Typography mb={0}>
       If you want detailed information from Get Safe Online on how to protect your information and your computers and devices against fraud, identity theft, viruses and many other online problems, please visit&nbsp;
       <Link href='https://www.getsafeonline.org/'>
         www.getsafeonline.org

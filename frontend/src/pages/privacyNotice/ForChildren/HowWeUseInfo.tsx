@@ -43,7 +43,7 @@ const HowWeUseInfo: React.FC = () => {
       <ListItemText>
         We will need to use your personal information to answer any questions you’ve asked using the ‘Contact Us’ form. Messages you send and receive through the site and any forms you send to us will be recorded. The Contact Us form is strictly for the purpose of user support. User-initiated communication concerning topics other than those relating directly to the Code for Life portal, including resources or user experience, may not be answered. Please be aware that we will never ask for personal information other than what is required to identify your account and respond to your queries, and we will never ask for your password,
       </ListItemText>
-      <ListItemText>
+      <ListItemText className='last'>
         If you or your parent and guardian should make a legal claim against us, we may need to process your personal information to help defend ourselves against that claim.
       </ListItemText>
     </ItemizedList>

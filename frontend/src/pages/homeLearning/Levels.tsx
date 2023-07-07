@@ -35,7 +35,10 @@ const Level: React.FC<Pick<Grid2Props, 'direction'> & {
   }
 }> = ({ direction, banner, cardProps, text }) => {
   return <>
-    <Page.Section gridProps={{ bgcolor: banner.bgcolor }}>
+    <Page.Section
+      sx={{ paddingY: (theme) => theme.spacing(2) }}
+      gridProps={{ bgcolor: banner.bgcolor }}
+    >
       <Typography
         variant='h4'
         color={banner.color}
@@ -53,6 +56,7 @@ const Level: React.FC<Pick<Grid2Props, 'direction'> & {
       >
         <Grid xs={12} md={4}>
           <CflCard
+            style={{ minHeight: 'auto' }}
             mediaProps={cardProps.mediaProps}
             text={cardProps.text}
             buttonProps={{
@@ -75,7 +79,9 @@ const Level: React.FC<Pick<Grid2Props, 'direction'> & {
                   : 'Session ' + session.ids.join(' & ')
                 }
               </Typography>
-              <Typography>
+              <Typography
+                mb={index === text.sessions.length - 1 ? 0 : undefined}
+              >
                 {session.body}
               </Typography>
             </Box>
@@ -162,7 +168,7 @@ const Levels: React.FC = () => {
           },
           {
             ids: [4, 5],
-            body: 'Guide your child through creating their own routes in Rapid Router. Perhaps you can join in and try each other&apos;s routes?'
+            body: 'Guide your child through creating their own routes in Rapid Router. Perhaps you can join in and try each other\'s routes?'
           }
         ]
       }}
@@ -188,11 +194,11 @@ const Levels: React.FC = () => {
         sessions: [
           {
             ids: [1],
-            body: 'Recap earlier levels before looking at repeat loops. Encourage your child to plan ahead on the printable worksheet before writing more complex programs. If they&apos;re unsure about using loops, ask them to write the code without loops and then look for repeating patterns.'
+            body: 'Recap earlier levels before looking at repeat loops. Encourage your child to plan ahead on the printable worksheet before writing more complex programs. If they\'re unsure about using loops, ask them to write the code without loops and then look for repeating patterns.'
           },
           {
             ids: [2],
-            body: 'A video and printable resources support this lesson, which builds your child&apos;s understanding of loops with a new loop, repeat-until.'
+            body: 'A video and printable resources support this lesson, which builds your child\'s understanding of loops with a new loop, repeat-until.'
           },
           {
             ids: [3, 4],

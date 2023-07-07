@@ -224,7 +224,7 @@ const YourSchool: React.FC = () => {
       <Typography align="center" variant="h4">
         Your school: {schoolName} ({schoolPostcode})
       </Typography>
-      <Typography align="left">
+      <Typography mb={0}>
         As an administrator of your school or club, you can select other
         teachers to whom you can provide or revoke administrative rights. You
         can also add and remove teachers from your school or club. As
@@ -243,14 +243,14 @@ const YourSchool: React.FC = () => {
       <TeachersTable />
       <Grid container columnSpacing={5}>
         <Grid item sm={6}>
-          <Typography>
+          <Typography mb={0}>
             Select &apos;Delete&apos; to delete a teacher from your school or
             club. You will be able to move any existing classes assigned to
             that teacher to other teachers in your school or club.
           </Typography>
         </Grid>
         <Grid item sm={6}>
-          <Typography fontWeight="bold" color="error">
+          <Typography fontWeight="bold" color="error" mb={0}>
             We strongly recommend that administrators who are using 2FA ensure
             there is another administrator who will be able to disable their
             2FA should they have problems with their smartphone or tablet.

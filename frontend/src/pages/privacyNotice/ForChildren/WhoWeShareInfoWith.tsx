@@ -27,7 +27,7 @@ const WhoWeShareInfoWith: React.FC = () => <>
   <Typography>
     We’ll only share your personal information with organisations mentioned in this Privacy Notice. They all sign an agreement to say that they will keep your personal information as safe and secure as we do, and that they will strictly follow our instructions on how your data can be used.
   </Typography>
-  <Typography>
+  <Typography mb={0}>
     Finally, we may need to share your information for legal reasons, such as if we sold our business to another company, if our business advisors needed the information to help us achieve the purposes in this Privacy Notice, or to respond to law enforcement or court requests if there is a legal problem.
   </Typography>
 </>;

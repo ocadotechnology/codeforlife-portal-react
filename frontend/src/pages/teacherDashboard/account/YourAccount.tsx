@@ -57,7 +57,12 @@ const TwoFactorAuthentication: React.FC = () => {
           >
             Manage backup tokens
           </Button>
-          <Typography variant="body2" fontWeight="bold" color="error">
+          <Typography
+            variant="body2"
+            fontWeight="bold"
+            color="error"
+            mb={0}
+          >
             Note: Please make sure that you store any login details in a secure place.
           </Typography>
         </Grid>

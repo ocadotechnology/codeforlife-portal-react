@@ -25,7 +25,7 @@ const IP: React.FC = () => {
         <ListItemText>
           Any other software or services you see on our website
         </ListItemText>
-        <ListItemText>
+        <ListItemText className='last'>
           Source Code (this is the code that our website and games are made up of)
         </ListItemText>
       </ItemizedList>

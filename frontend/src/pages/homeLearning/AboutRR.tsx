@@ -37,10 +37,7 @@ const AboutRR: React.FC = () => {
         </Typography>
       </Grid>
       <Grid xs={12} className='flex-end-x'>
-        <Button
-          sx={{ mb: { xs: 1, md: 0 } }}
-          onClick={() => { navigate(paths.register._); }}
-        >
+        <Button onClick={() => { navigate(paths.register._); }}>
           Register now
         </Button>
       </Grid>

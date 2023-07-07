@@ -108,7 +108,7 @@ const TypesOfInfo: React.FC = () => (
       <ListItemText>
         Technical information, such as the IP address and other information about the device you use to access the Code for Life portal, and technical information about how you use these (for example, which pages on our portal you visit, for how long you stay on each page, etc.): when you navigate the portal and allow the use of non-essential cookies.
       </ListItemText>
-      <ListItemText>
+      <ListItemText className='last'>
         Your email address and marketing preferences, if you select to sign up to our newsletter.
       </ListItemText>
     </ItemizedList>

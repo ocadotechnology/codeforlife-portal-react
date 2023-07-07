@@ -5,7 +5,7 @@ import {
 } from '@mui/material';
 
 const HowToContactUs: React.FC = () => <>
-  <Typography>
+  <Typography mb={0}>
     Please contact our Data Protection Officer at&nbsp;
     <Link href='mailto:individualrights@ocado.com'>
       individualrights@ocado.com

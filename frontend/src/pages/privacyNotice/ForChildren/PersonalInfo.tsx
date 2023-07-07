@@ -50,7 +50,7 @@ const PersonalInfo: React.FC = () => <>
       The marketing choices you have selected, if you are over 18 years of age and have signed up for our newsletter.
     </ListItemText>
   </ItemizedList>
-  <Typography>
+  <Typography mb={0}>
     If you are under 13 years old, you will need to ask a parent or guardian to register for you and we will collect personal information about them.
   </Typography>
 </>;

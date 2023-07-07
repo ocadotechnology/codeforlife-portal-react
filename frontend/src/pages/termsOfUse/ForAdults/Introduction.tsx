@@ -39,7 +39,7 @@ const Introduction: React.FC = () => {
         <Typography fontWeight='bold'>
           By registering, you accept that you are entering into a contract with us in accordance with the Terms & Conditions and the Privacy Notice. Visitors to the Code for Life portal who do not register to become a User, similarly affirm that they are bound by the Terms & Conditions and the Privacy Notice each time they access the Code for Life site. We reserve the right to update the Terms of Use at any time, so please check them periodically, as all changes will be binding on you provided that you use the website after they have been made. To assist you in determining whether the Terms & Conditions have changed since your most recent visit to the website, we will display the date when the Terms of Use and Privacy Notice were most recently updated.
         </Typography>
-        <Typography fontWeight='bold'>
+        <Typography fontWeight='bold' mb={0}>
           Important: You must ensure that any email address we hold for you is kept up-to-date and that you have full access to it. Important notifications are sent to the email address you provide. Failure to keep this information updated can result in your Code for Life account being deleted and/or restricted.
         </Typography>
       </Grid>
