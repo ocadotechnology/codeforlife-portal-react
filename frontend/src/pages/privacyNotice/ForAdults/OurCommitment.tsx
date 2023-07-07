@@ -18,7 +18,7 @@ const OurCommitment: React.FC = () => (
       <ListItemText>
         We take extra precautions for the safety and privacy of our younger learners. Where personal information could be entered, for example when a student names a level, the teacher is notified via email and the teacher has the ability to delete the level if its name is rude or compromising.
       </ListItemText>
-      <ListItemText>
+      <ListItemText className='last'>
         Our portal only relates to Code for Life and we do not show advertisements on our website or within our lessons.
       </ListItemText>
     </ItemizedList>

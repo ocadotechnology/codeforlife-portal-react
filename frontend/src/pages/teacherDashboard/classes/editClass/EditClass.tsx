@@ -305,7 +305,7 @@ const EditClass: React.FC<{
       }}>
         Classes
       </Link>
-      <Typography>
+      <Typography mb={0}>
         Here you can view and manage all of your students within this class.
         You can add new students, transfer existing students to another one of
         your classes or to another teacher within your school or club, or

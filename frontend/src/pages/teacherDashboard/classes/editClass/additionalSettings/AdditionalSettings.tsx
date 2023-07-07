@@ -271,7 +271,7 @@ const AdditionalSettings: React.FC<{
         <Link className='back-to' onClick={goBack}>
           Edit Class
         </Link>
-        <Typography>
+        <Typography mb={0}>
           You may change the name of the class, or change permissions to allow
           external requests from independent students to join this class. You
           may also transfer the class to another teacher, or change permissions

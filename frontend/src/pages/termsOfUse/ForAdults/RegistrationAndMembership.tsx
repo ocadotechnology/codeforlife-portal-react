@@ -79,7 +79,7 @@ const RegistrationAndMembership: React.FC = () => {
       <Typography>
         Please note that we are not an internet service provider. All Users of Code for Life must have internet access and the necessary software for email and web usage.
       </Typography>
-      <Typography>
+      <Typography mb={0}>
         Code for Life’s Privacy Notice forms part of the Terms & Conditions, and your acceptance of the Terms & Conditions constitutes consent to the way we may handle your personal data as detailed in that notice.
       </Typography>
     </Stack >

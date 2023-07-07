@@ -31,7 +31,7 @@ const Misuse: React.FC = () => {
         <ListItemText>
           place material on, or otherwise use, the Code for Life for any business or commercial purpose; or
         </ListItemText>
-        <ListItemText>
+        <ListItemText className='last'>
           use their access to the Code for Life, or information gathered from it, in connection with the sending of unsolicited bulk email (sometimes known as spam).
         </ListItemText>
       </ItemizedList>

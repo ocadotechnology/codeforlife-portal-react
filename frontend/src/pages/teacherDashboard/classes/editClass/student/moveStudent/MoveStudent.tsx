@@ -102,32 +102,30 @@ const MoveStudentsForm: React.FC<{
       }}
     >
       {(form) => <>
-        <TableContainer>
-          <Table>
-            <TableHead>
-              <TableRowStyled>
+        <Table className='body'>
+          <TableHead>
+            <TableRowStyled>
+              <CflTableCellElement>
+                Existing name
+              </CflTableCellElement>
+              <CflTableCellElement>
+                New student name
+              </CflTableCellElement>
+            </TableRowStyled>
+          </TableHead>
+          <TableBody>
+            {studentNames.map((studentName, index) => (
+              <TableRowStyled key={index}>
                 <CflTableCellElement>
-                  Existing name
+                  {studentName}
                 </CflTableCellElement>
                 <CflTableCellElement>
-                  New student name
+                  <StudentNameField name={String(index)} />
                 </CflTableCellElement>
               </TableRowStyled>
-            </TableHead>
-            <TableBody>
-              {studentNames.map((studentName, index) => (
-                <TableRowStyled key={index}>
-                  <CflTableCellElement>
-                    {studentName}
-                  </CflTableCellElement>
-                  <CflTableCellElement>
-                    <StudentNameField name={String(index)}/>
-                  </CflTableCellElement>
-                </TableRowStyled>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+            ))}
+          </TableBody>
+        </Table>
         <Stack direction='row' spacing={2} justifyContent='end'>
           <Button
             variant='outlined'
@@ -153,32 +151,50 @@ const MoveStudent: React.FC<{
   studentIds,
   goBack
 }) => {
-  // TODO: Get data from backend using params
-  const [newClassName, setNewClassSelected] = React.useState<string | undefined>(undefined);
-  const studentNames = ['Student 1', 'Student 2', 'Student 3', 'Student 4', 'Student 5'];
-  return (
-    <Page.Section>
-      <Typography align='center' variant='h4'>
-        Move students from class Class 1 ({currentAccessCode})
-      </Typography>
-      <Link className='back-to' onClick={goBack}>
-        Class
-      </Link>
+    // TODO: Get data from backend using params
+    const [newClassName, setNewClassSelected] = React.useState<string>();
+    const studentNames = ['Student 1', 'Student 2', 'Student 3', 'Student 4', 'Student 5'];
+    return <>
+      <Page.Section>
+        <Typography align='center' variant='h4'>
+          Move students from class Class 1 ({currentAccessCode})
+        </Typography>
+        <Link
+          className='back-to'
+          onClick={goBack}
+          marginBottom={newClassName === undefined
+            ? undefined
+            : '0px !important'
+          }
+        >
+          Class
+        </Link>
+        {newClassName === undefined &&
+          <Typography mb={0}>
+            Choose a class from the drop down menu below to move the student.
+          </Typography>
+        }
+      </Page.Section>
       {newClassName === undefined
         ? <>
-            <Typography>
-              Choose a class from the drop down menu below to move the student.
-            </Typography>
-            <SelectClassForm setNewClassSelected={setNewClassSelected} goBack={goBack}/>
-          </>
+          <Page.Section>
+            <SelectClassForm
+              setNewClassSelected={setNewClassSelected}
+              goBack={goBack}
+            />
+          </Page.Section>
+        </>
         : <>
+          <Page.Section>
             <Typography variant='h5'>
               Students currently in destination class
             </Typography>
             <Typography>
               The following students are in class {newClassName} into which you are about to move students from class Class 1.
             </Typography>
-            <StudentsTable/>
+            <StudentsTable />
+          </Page.Section>
+          <Page.Section>
             <Typography variant='h5'>
               Students to transfer
             </Typography>
@@ -187,11 +203,11 @@ const MoveStudent: React.FC<{
               class Class 1. Their names will be used in their new login details, so please ensure
               it is different from any other existing students in the class.
             </Typography>
-            <MoveStudentsForm studentNames={studentNames} goBack={goBack}/>
-          </>
-        }
-    </Page.Section>
-  );
-};
+            <MoveStudentsForm studentNames={studentNames} goBack={goBack} />
+          </Page.Section>
+        </>
+      }
+    </>;
+  };
 
 export default MoveStudent;

@@ -90,7 +90,7 @@ const ReleaseStudent: React.FC<{
     // TODO: Get data from backend using params
     const studentNames = ['Student 1', 'Student 2', 'Student 3', 'Student 4', 'Student 5'];
 
-    return (
+    return <>
       <Page.Section>
         <Typography align='center' variant='h4'>
           Release student from class Class 1 ({accessCode})
@@ -98,9 +98,11 @@ const ReleaseStudent: React.FC<{
         <Link className='back-to' onClick={goBack}>
           Class
         </Link>
-        <Typography>
+        <Typography mb={0}>
           Convert students into independent students.
         </Typography>
+      </Page.Section>
+      <Page.Section>
         <Typography variant='h5'>
           Students to release from school
         </Typography>
@@ -125,8 +127,8 @@ const ReleaseStudent: React.FC<{
           studentNames={studentNames}
           goBack={goBack}
         />
-      </Page.Section>
-    );
+      </Page.Section >
+    </>;
   };
 
 export default ReleaseStudent;

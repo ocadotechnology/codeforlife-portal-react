@@ -56,7 +56,7 @@ const Misuse: React.FC = () => {
         <ListItemText>
           post content on Code for life for business purposes or use the Code for Life site for a business purpose OR
         </ListItemText>
-        <ListItemText>
+        <ListItemText className='last'>
           use the Code for Life site or information you’ve taken from it, to send out spam emails.
         </ListItemText>
       </ItemizedList>

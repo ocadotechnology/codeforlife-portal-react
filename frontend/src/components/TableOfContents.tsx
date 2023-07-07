@@ -36,7 +36,10 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ contents }) => {
         {contents.slice(sliceStart, sliceEnd).map((content, index) => {
           index += sliceStart;
           return (
-            <Typography key={index}>
+            <Typography
+              key={index}
+              mb={index === sliceEnd - 1 ? 0 : undefined}
+            >
               {index + 1}.{' '}
               <Link onClick={() => { handleHeaderClick(index); }}>
                 {content.header}

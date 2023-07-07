@@ -6,7 +6,7 @@ import {
 
 const ContactUs: React.FC = () => (
   <>
-    <Typography>
+    <Typography mb={0}>
       Please contact our Data Protection Officer or us at&nbsp;
       <Link href='mailto:individualrights@ocado.com'>
         individualrights@ocado.com

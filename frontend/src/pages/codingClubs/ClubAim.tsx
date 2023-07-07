@@ -16,7 +16,7 @@ const ClubAim: React.FC = () => {
       <Typography>
         The FREE resource packs are aimed at two different groups, the first is aimed at students ages between 7-11yrs with an interest in learning Python. The second pack is aimed at students 12yrs and up, including adults. This moves at a much faster pace and also introduces students to setting up an environment on their own computer.
       </Typography>
-      <Typography>
+      <Typography mb={0}>
         Both packs are a condensed learning pathway using our game Rapid Router alongside suggested session plan and slides.
       </Typography>
     </Stack>
