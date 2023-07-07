@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Stack,
   Button
@@ -11,6 +12,8 @@ import { paths } from '../../app/router';
 import NewStudentsTable from '../../features/newStudentsTable/NewStudentsTable';
 
 const ClassCredentials: React.FC = () => {
+  const navigate = useNavigate();
+
   // TODO: get from API.
   const classLink = 'https://www.codeforlife.education/';
   const students: Array<{
@@ -34,7 +37,7 @@ const ClassCredentials: React.FC = () => {
       <Button
         endIcon={<CheckIcon />}
         variant="outlined"
-        href={paths.teacher.dashboard.school._}
+        onClick={() => { navigate(paths.teacher.dashboard.school._); }}
       >
         Complete setup
       </Button>

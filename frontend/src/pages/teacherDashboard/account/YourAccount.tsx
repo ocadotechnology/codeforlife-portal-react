@@ -1,15 +1,38 @@
 import React from 'react';
-import { Button, Grid, InputAdornment, Stack, Typography, useTheme } from '@mui/material';
-import { ErrorOutlineOutlined, LockOutlined, PersonOutline } from '@mui/icons-material';
-import { EmailField, Form, PasswordField, SubmitButton, TextField } from 'codeforlife/lib/esm/components/form';
+import { useNavigate, useParams } from 'react-router-dom';
+import {
+  Button,
+  Grid,
+  InputAdornment,
+  Stack,
+  Typography,
+  useTheme
+} from '@mui/material';
+import {
+  ErrorOutlineOutlined,
+  LockOutlined,
+  PersonOutline
+} from '@mui/icons-material';
+import * as yup from 'yup';
+
+import {
+  EmailField,
+  Form,
+  PasswordField,
+  SubmitButton,
+  TextField
+} from 'codeforlife/lib/esm/components/form';
 import Page from 'codeforlife/lib/esm/components/page';
-import { SearchParams } from 'codeforlife/lib/esm/helpers';
+import { tryValidateSync } from 'codeforlife/lib/esm/helpers/yup';
+
 import Setup2fa from './2fa/setup2fa/Setup2fa';
 import BackupTokens from './2fa/backupTokens/BackupTokens';
 import { paths } from '../../../app/router';
 import DeleteAccountForm from '../../../features/DeleteAccountForm';
 
 const TwoFactorAuthentication: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <Stack>
       <Typography variant="h5">Two factor authentication</Typography>
@@ -17,7 +40,7 @@ const TwoFactorAuthentication: React.FC = () => {
         Use your smartphone or tablet to enhance your account&apos;s security by
         using an authenticator app.
       </Typography>
-      <Button href={paths.teacher.dashboard.account.setup2FA._}>
+      <Button onClick={() => { navigate(paths.teacher.dashboard.account.setup2FA._); }}>
         Setup two factor authentication
       </Button>
       <Grid container>
@@ -30,11 +53,16 @@ const TwoFactorAuthentication: React.FC = () => {
           <Typography>View and create backup tokens for your account.</Typography>
           <Button
             className='body'
-            href={paths.teacher.dashboard.account.backupTokens._}
+            onClick={() => { navigate(paths.teacher.dashboard.account.backupTokens._); }}
           >
             Manage backup tokens
           </Button>
-          <Typography variant="body2" fontWeight="bold" color="error">
+          <Typography
+            variant="body2"
+            fontWeight="bold"
+            color="error"
+            mb={0}
+          >
             Note: Please make sure that you store any login details in a secure place.
           </Typography>
         </Grid>
@@ -156,14 +184,18 @@ const YourAccountForm: React.FC = () => {
 const YourAccount: React.FC = () => {
   const theme = useTheme();
 
-  const twoFAOptions = ['setup', 'backupTokens'] as const;
-  const params = SearchParams.get<{
-    twoFA: typeof twoFAOptions[number]
-  }>({
-    twoFA: { validate: SearchParams.validate.inOptions(twoFAOptions) }
-  });
+  const params = tryValidateSync(
+    useParams(),
+    yup.object({
+      view: yup.string()
+        .oneOf([
+          'setup-2fa',
+          'backup-tokens'
+        ] as const)
+    })
+  );
 
-  if (params === null) {
+  if (params?.view === undefined) {
     return <>
       <Page.Section>
         <Typography align="center" variant="h4">
@@ -181,10 +213,10 @@ const YourAccount: React.FC = () => {
     </>;
   }
 
-  switch (params.twoFA) {
-    case 'setup':
+  switch (params.view) {
+    case 'setup-2fa':
       return <Setup2fa />;
-    case 'backupTokens':
+    case 'backup-tokens':
       return <BackupTokens />;
   }
 };

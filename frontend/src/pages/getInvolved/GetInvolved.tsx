@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Unstable_Grid2 as Grid
 } from '@mui/material';
@@ -14,6 +15,8 @@ import GetInvolvedHero from '../../images/get_involved_hero_cut.png';
 import { paths } from '../../app/router';
 
 const GetInvolved: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <Page.Container>
       <Page.Banner
@@ -31,7 +34,11 @@ const GetInvolved: React.FC = () => {
                   'Become a Code for Life ambassador by starting up a coding club. Find out more about how you can get involved with this by visiting our coding club page.'
               }}
               mediaProps={{ title: 'Clubs', image: ClubsImg }}
-              buttonProps={{ href: paths.codingClubs._, children: 'Read more', endIcon: <ChevronRightRoundedIcon /> }}
+              buttonProps={{
+                onClick: () => { navigate(paths.codingClubs._); },
+                children: 'Read more',
+                endIcon: <ChevronRightRoundedIcon />
+              }}
             />
           </Grid>
           <Grid xs={12} md={6} lg={4}>
@@ -42,7 +49,11 @@ const GetInvolved: React.FC = () => {
                   'We welcome volunteers from all backgrounds to help us with our coding adventure. Take a look at our contribution guide to find out how to get involved in our open source projects.'
               }}
               mediaProps={{ title: 'Github', image: GithubImg }}
-              buttonProps={{ href: paths.contribute._, children: 'Read more', endIcon: <ChevronRightRoundedIcon /> }}
+              buttonProps={{
+                onClick: () => { navigate(paths.contribute._); },
+                children: 'Read more',
+                endIcon: <ChevronRightRoundedIcon />
+              }}
             />
           </Grid>
           <Grid xs={12} md={6} lg={4}>
@@ -53,7 +64,11 @@ const GetInvolved: React.FC = () => {
                   'Please get in touch at codeforlife@ocado.com if you are interested in working on Code for Life projects with your students including coding, user experience, data analytics and new feature design.'
               }}
               mediaProps={{ title: 'Universities', image: UniversitiesImg }}
-              buttonProps={{ children: 'Get in touch', endIcon: <ChevronRightRoundedIcon /> }}
+              buttonProps={{
+                href: 'mailto:codeforlife@ocado.com',
+                children: 'Get in touch',
+                endIcon: <ChevronRightRoundedIcon />
+              }}
             />
           </Grid>
         </Grid>

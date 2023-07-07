@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Link,
   useTheme
@@ -21,6 +22,8 @@ import {
 } from './Authenticated';
 
 export const StudentSummary: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <AuthenticatedSummary
       userType='Student'
@@ -29,9 +32,7 @@ export const StudentSummary: React.FC = () => {
         {
           children: 'Change password',
           icon: <LockOutlinedIcon />,
-          onClick: () => {
-            window.location.href = paths.student.dashboard.dependent.account._;
-          }
+          onClick: () => { navigate(paths.student.dashboard.dependent.account._); }
         }
       ]}
     >
@@ -64,13 +65,14 @@ export const StudentSummary: React.FC = () => {
 
 export const StudentDetails: React.FC = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
 
   return (
     <AuthenticatedDetails>
       <DetailsAccordion label='Student'>
         <DetailsButton
           spacing={2}
-          href={paths.student.dashboard.dependent._}
+          onClick={() => { navigate(paths.student.dashboard.dependent._); }}
           bgcolor={theme.palette.tertiary}
         >
           Dashboard
@@ -103,7 +105,7 @@ export const StudentDetails: React.FC = () => {
           Scoreboard
         </DetailsButton>
       </DetailsAccordion>
-      <DetailsButton href={paths.student.dashboard.dependent.account._}>
+      <DetailsButton onClick={() => { navigate(paths.student.dashboard.dependent.account._); }}>
         Update account details
       </DetailsButton>
     </AuthenticatedDetails>

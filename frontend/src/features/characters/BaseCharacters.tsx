@@ -55,7 +55,7 @@ const BaseCharacters: React.FC<{
           })),
           characters.map((character, index) => ({
             element: (
-              <Typography key={index}>
+              <Typography key={index} mb={0}>
                 {character.description}
               </Typography>
             )

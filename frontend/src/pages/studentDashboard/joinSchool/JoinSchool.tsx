@@ -1,13 +1,23 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import {
+  Button,
+  Stack,
+  Typography
+} from '@mui/material';
 
 import Page from 'codeforlife/lib/esm/components/page';
-import { Button, Grid, Stack, Typography } from '@mui/material';
-import { Form, SubmitButton, TextField } from 'codeforlife/lib/esm/components/form';
-import { validateAccessCode } from '../../login/StudentForm';
+import {
+  Form,
+  SubmitButton,
+  TextField
+} from 'codeforlife/lib/esm/components/form';
 
-const JoinSchool: React.FC<{
-  goBack: () => void
-}> = ({ goBack }) => {
+import { accessCodeSchema } from '../../../app/schemas';
+
+const JoinSchool: React.FC = () => {
+  const navigate = useNavigate();
+
   interface Values {
     accessCode: string;
   }
@@ -22,9 +32,9 @@ const JoinSchool: React.FC<{
     <Page.Section>
       <Typography align='center' variant='h4'>Join a school or club</Typography>
       {requestSent
-      ? <>
+        ? <>
           <Typography variant='h5'>Request pending</Typography>
-          { /* TODO: Fetch actual values from backend. */ }
+          { /* TODO: Fetch actual values from backend. */}
           <Typography>Your request to join class AB123 in the school or club Code for Life School is still pending.</Typography>
           <Typography>The teacher for that class must review and approve the request to complete the process.</Typography>
           <Typography>If successful, the teacher will then contact you with your new login details.</Typography>
@@ -35,7 +45,7 @@ const JoinSchool: React.FC<{
           <Stack direction='row' spacing={2}>
             <Button
               variant='outlined'
-              onClick={goBack}
+              onClick={() => { navigate(-1); }}
             >
               Back
             </Button>
@@ -47,7 +57,7 @@ const JoinSchool: React.FC<{
             </Button>
           </Stack>
         </>
-      : <>
+        : <>
           <Typography variant='h5'>Request to join a school or club</Typography>
           <Typography>If you want to link your Code For Life account with a school or club, ask a teacher to enable external
             requests and provide you with the Class Access Code for the class you want to join. Simply add the Class Access
@@ -68,13 +78,14 @@ const JoinSchool: React.FC<{
               helperText="Enter class code"
               name="classCode"
               sx={{ width: { xs: '100%', sm: '50%' } }}
-              validate={validateAccessCode}
+              validate={accessCodeSchema}
+              required
             />
 
             <Stack direction='row' spacing={2}>
               <Button
                 variant='outlined'
-                onClick={goBack}
+                onClick={() => { navigate(-1); }}
               >
                 Cancel
               </Button>

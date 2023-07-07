@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Button,
   useTheme
@@ -17,6 +18,7 @@ import HomeLearningHeroImage from '../../images/home_learning_hero_hexagon.png';
 
 const HomeLearning: React.FC = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
 
   return (
     <Page.Container>
@@ -30,14 +32,14 @@ const HomeLearning: React.FC = () => {
       </Page.Section>
       <Levels />
       <Page.Section className='flex-end-x'>
-        <Button href={paths.register._}>
+        <Button onClick={() => { navigate(paths.register._); }}>
           Register now
         </Button>
       </Page.Section>
       <Page.Section
         gridProps={{ bgcolor: theme.palette.tertiary.main }}
         className='flex-center-x'
-        sx={{ paddingY: '15px' }}
+        sx={{ paddingY: (theme) => theme.spacing(2) }}
       >
         <Button
           endIcon={<SendIcon />}

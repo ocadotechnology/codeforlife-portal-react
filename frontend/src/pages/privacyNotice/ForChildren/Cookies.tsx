@@ -127,10 +127,10 @@ const Cookies: React.FC = () => <>
   <Typography>
     You can switch the functional and analytics cookies on and off at any time by clicking this button below.
   </Typography>
-  <Button onClick={useOneTrustInfoToggle}>
+  <Button className='body' onClick={useOneTrustInfoToggle}>
     Cookie Settings
   </Button>
-  <Typography>
+  <Typography mb={0}>
     You cannot switch strictly necessary cookies off as our website won’t work properly without them.
   </Typography>
 </>;

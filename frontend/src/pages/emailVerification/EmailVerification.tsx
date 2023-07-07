@@ -1,9 +1,10 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-
-import { SearchParams } from 'codeforlife/lib/esm/helpers';
+import { useNavigate, useParams } from 'react-router-dom';
+import * as yup from 'yup';
 
 import Page from 'codeforlife/lib/esm/components/page';
+import { fromSearchParams } from 'codeforlife/lib/esm/hooks';
+import { tryValidateSync } from 'codeforlife/lib/esm/helpers/yup';
 
 import SadFaceImg from '../../images/sadface.png';
 import PaperPlaneImg from '../../images/paper_plane.png';
@@ -13,27 +14,40 @@ import Status from './Status';
 const EmailVerification: React.FC = () => {
   const navigate = useNavigate();
 
-  const userTypes = ['teacher', 'student', 'independent'] as const;
-  const params = SearchParams.get<{
-    success: boolean;
-    userType: typeof userTypes[number];
-  }>({
-    success: { cast: SearchParams.cast.toBoolean },
-    userType: { validate: SearchParams.validate.inOptions(userTypes) }
-  });
-
-  React.useEffect(() => {
-    if (params === null) {
-      navigate(paths.error.internalServerError._);
+  const params = tryValidateSync(
+    useParams(),
+    yup.object({
+      userType: yup.string()
+        .oneOf([
+          'teacher',
+          'independent'
+        ] as const)
+        .required()
+    }),
+    {
+      onError: () => {
+        React.useEffect(() => {
+          navigate(paths.error.pageNotFound._);
+        }, []);
+      }
     }
-  }, []);
+  );
 
-  if (params === null) return <></>;
+  if (params === undefined) return <></>;
+
+  const searchParams = tryValidateSync(
+    fromSearchParams(),
+    yup.object({
+      success: yup.boolean()
+        .required()
+        .default(true)
+    })
+  );
 
   return (
     <Page.Container>
       <Page.Section maxWidth="md" className="flex-center">
-        {params.success
+        {searchParams?.success === true
           ? <Status
             userType={params.userType}
             header="We need to verify your email address"

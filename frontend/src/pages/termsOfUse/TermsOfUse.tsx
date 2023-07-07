@@ -10,14 +10,17 @@ const TermsOfUse: React.FC = () => {
     <Page.Container>
       <Page.TabBar
         header='Terms of use'
+        originalPath='/terms-of-use/:tab'
         tabs={[
           {
             label: 'Terms of use',
-            children: <ForAdults />
+            children: <ForAdults />,
+            path: 'terms-of-use'
           },
           {
             label: 'Child-friendly',
-            children: <ForChildren />
+            children: <ForChildren />,
+            path: 'child-friendly'
           }
         ]}
       />

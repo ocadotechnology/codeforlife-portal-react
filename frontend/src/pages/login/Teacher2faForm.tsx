@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { paths } from '../../app/router';
 import BaseForm from './BaseForm';
@@ -15,6 +16,8 @@ const initialValues: Login2faFormValues = {
 };
 
 const Teacher2faForm: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <BaseForm
       themedBoxProps={{ userType: 'teacher' }}
@@ -37,20 +40,21 @@ const Teacher2faForm: React.FC = () => {
       />
       <Button
         className='body'
-        href={paths.login.teacher.backupToken._}
+        onClick={() => { navigate(paths.login.teacher.backupToken._); }}
       >
         Use a backup token
       </Button>
       <Stack direction="row" spacing={2} justifyContent="space-between">
         <Button
-          href={paths.login.teacher._}
+          onClick={() => { navigate(paths.login.teacher._); }}
           variant='outlined'
         >
           Cancel
         </Button>
         <SubmitButton
           // TODO: Remove href and replace with submit functionality
-          href={paths.teacher.dashboard.school._} />
+          onClick={() => { navigate(paths.teacher.dashboard.school._); }}
+        />
       </Stack>
     </BaseForm>
   );

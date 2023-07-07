@@ -1,11 +1,10 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Unstable_Grid2 as Grid,
   Stack,
   Link,
-  createTheme,
-  ThemeProvider,
-  useTheme
+  LinkProps
 } from '@mui/material';
 
 import {
@@ -15,79 +14,74 @@ import {
 
 import { paths } from '../../app/router';
 
-const Links: React.FC = () => (
-  <ThemeProvider theme={createTheme(useTheme(), {
-    components: {
-      MuiLink: {
-        defaultProps: {
-          color: '#fff'
-        }
-      }
-    }
-  })}>
-    <Grid container spacing={{ xs: 0, sm: 1 }}>
-      <Grid xs={12} sm={4}>
-        <Stack>
+const LinkStack: React.FC<{
+  links: Array<Omit<LinkProps, 'children'> & {
+    children: string;
+  }>;
+}> = ({ links }) => {
+  return (
+    <Grid xs={12} sm={4}>
+      <Stack spacing={1}>
+        {links.map((link) =>
           <Link
-            href={paths.aboutUs._}
+            key={link.children}
             className='no-decor'
-          >
-            About us
-          </Link>
-          <Link
-            onClick={() => { useFreshworksWidget('open'); }}
-            className='no-decor'
-          >
-            Help and support
-          </Link>
-        </Stack>
-      </Grid>
-      <Grid xs={12} sm={4}>
-        <Stack>
-          <Link
-            href={paths.privacyNotice._}
-            className='no-decor'
-          >
-            Privacy Notice
-          </Link>
-          <Link
-            href={paths.termsOfUse._}
-            className='no-decor'
-          >
-            Terms of use
-          </Link>
-          <Link
-            onClick={useOneTrustInfoToggle}
-            className='no-decor'
-          >
-            Cookie settings
-          </Link>
-        </Stack>
-      </Grid>
-      <Grid xs={12} sm={4}>
-        <Stack>
-          <Link
-            href={paths.homeLearning._}
-            className='no-decor'
-          >
-            Home learning
-          </Link>
-          <Link
-            href={paths.getInvolved._}
-            className='no-decor'
-          >
-            Get involved
-          </Link>
-          <Link
-            href={paths.codingClubs._}
-            className='no-decor'
-          >
-            Coding clubs
-          </Link>
-        </Stack>
-      </Grid>
+            fontSize='0.95rem'
+            fontWeight={600}
+            color='#fff'
+            {...link}
+          />
+        )}
+      </Stack>
     </Grid>
-  </ThemeProvider>
-);
+  );
+};
+
+const Links: React.FC = () => {
+  const navigate = useNavigate();
+
+  return (
+    <Grid container spacing={1}>
+      <LinkStack links={[
+        {
+          onClick: () => { navigate(paths.aboutUs._); },
+          children: 'About us'
+        },
+        {
+          onClick: () => { useFreshworksWidget('open'); },
+          children: 'Help and support'
+        }
+      ]} />
+      <LinkStack links={[
+        {
+          onClick: () => { navigate(paths.privacyNotice.privacyNotice._); },
+          children: 'Privacy notice'
+        },
+        {
+          onClick: () => { navigate(paths.termsOfUse.termsOfUse._); },
+          children: 'Terms of use'
+        },
+        {
+          onClick: useOneTrustInfoToggle,
+          children: 'Cookie settings'
+        }
+      ]} />
+      <LinkStack links={[
+        {
+          onClick: () => { navigate(paths.homeLearning._); },
+          children: 'Home learning'
+        },
+        {
+          onClick: () => { navigate(paths.getInvolved._); },
+          children: 'Get involved'
+        },
+        {
+          onClick: () => { navigate(paths.codingClubs._); },
+          children: 'Coding clubs'
+        }
+      ]} />
+    </Grid >
+  );
+};
 
 export default Links;

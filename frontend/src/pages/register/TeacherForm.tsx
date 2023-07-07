@@ -73,7 +73,7 @@ const TeacherForm: React.FC = () => {
             label: <>
               I am over 18 years old have read and understood the&nbsp;
               <Link
-                href={paths.termsOfUse._}
+                href={paths.termsOfUse.termsOfUse._}
                 target='_blank'
                 color='inherit'
               >
@@ -81,7 +81,7 @@ const TeacherForm: React.FC = () => {
               </Link>
               &nbsp;and the&nbsp;
               <Link
-                href={paths.privacyNotice._}
+                href={paths.privacyNotice.privacyNotice._}
                 target='_blank'
                 color='inherit'
               >

@@ -28,7 +28,7 @@ const OurResponsibilities: React.FC = () => {
         <ListItemText>
           the site not being suitable for your learning needs,
         </ListItemText>
-        <ListItemText>
+        <ListItemText className='last'>
           any inaccuracies in the description of our games or levels.
         </ListItemText>
       </ItemizedList>

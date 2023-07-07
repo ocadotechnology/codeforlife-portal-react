@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Unstable_Grid2 as Grid,
   Stack,
   Typography
 } from '@mui/material';
@@ -9,35 +8,28 @@ const Statistic: React.FC<{
   number: string
   description: string
 }> = ({ number, description }) => (
-  <Grid xs={12} md={4}>
-    <Stack>
-      <Typography
-        variant='h3'
-        style={{ color: '#00a3e0' }}
-        textAlign='center'
-      >
-        {number}
-      </Typography>
-      <Typography textAlign='center'>
-        {description}
-      </Typography>
-    </Stack>
-  </Grid>
+  <Stack>
+    <Typography
+      variant='h2'
+      sx={{ color: (theme) => theme.palette.tertiary.main }}
+    >
+      {number}
+    </Typography>
+    <Typography mb={0}>
+      {description}
+    </Typography>
+  </Stack>
 );
 
 const Statistics: React.FC = () => {
   return <>
-    <Grid container padding={3}>
-      <Grid xs={12} textAlign='center'>
-        <Typography variant='h5'>
-          Code For Life is a non profit initiative that delivers free, open-source games that help all students learn computing.
-        </Typography>
-      </Grid>
-      <Grid
-        container
-        display='flex'
-        justifyContent='center'
-        spacing={1}
+    <Stack textAlign='center'>
+      <Typography variant='h4'>
+        Code For Life is a non profit initiative that delivers free, open-source games that help all students learn computing.
+      </Typography>
+      <Stack
+        direction={{ xs: 'column', md: 'row' }}
+        spacing={3}
         mt={3}
       >
         <Statistic
@@ -52,8 +44,8 @@ const Statistics: React.FC = () => {
           number='>270,000'
           description='Active users so far, with numbers growing every day. In 2020 alone, close to 100,000 new people subscribed to our resources.'
         />
-      </Grid>
-    </Grid >
+      </Stack>
+    </Stack >
   </>;
 };
 

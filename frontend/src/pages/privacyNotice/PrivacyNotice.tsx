@@ -10,14 +10,17 @@ const PrivacyNotice: React.FC = () => {
     <Page.Container>
       <Page.TabBar
         header='Privacy notice'
+        originalPath='/privacy-notice/:tab'
         tabs={[
           {
             label: 'Privacy notice',
-            children: <ForAdults />
+            children: <ForAdults />,
+            path: 'privacy-notice'
           },
           {
             label: 'Child-friendly',
-            children: <ForChildren />
+            children: <ForChildren />,
+            path: 'child-friendly'
           }
         ]}
       />

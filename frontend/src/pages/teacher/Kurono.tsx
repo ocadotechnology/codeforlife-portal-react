@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Button,
   Link,
@@ -13,6 +14,8 @@ import { paths } from '../../app/router';
 import TeacherSection from './TeacherSection';
 
 const Kurono: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <TeacherSection
       videoSource={process.env.REACT_APP_KURONO_FOR_TEACHER_YOUTUBE_VIDEO_SRC as string}
@@ -39,7 +42,7 @@ const Kurono: React.FC = () => {
         style={{
           marginTop: 'auto'
         }}
-        href={paths.register._}
+        onClick={() => { navigate(paths.register._); }}
       >
         Register now
       </Button>
