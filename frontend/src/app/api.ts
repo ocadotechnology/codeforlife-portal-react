@@ -49,10 +49,18 @@ export const api = createApi({
         method: 'POST',
         body: payload
       })
+    }),
+    consentForm: builder.mutation({
+      query: (payload) => ({
+        url: 'consent_form/',
+        method: 'POST',
+        body: payload
+      })
     })
   })
 });
 
 export const {
-  useSignUpMutation
+  useSignUpMutation,
+  useConsentFormMutation
 } = api;
