@@ -95,11 +95,11 @@ const Cookies: React.FC = () => <>
           </Typography>
           <Typography>
             We use other companies called (
-            <Link href='https://developers.google.com/analytics/devguides/collection/analyticsjs/cookie-usage'>
+            <Link href='https://developers.google.com/analytics/devguides/collection/analyticsjs/cookie-usage' target='_blank'>
               Google Analytics
             </Link>
             &nbsp;and&nbsp;
-            <Link href='https://mouseflow.com/legal/gdpr/'>
+            <Link href='https://mouseflow.com/legal/gdpr/' target='_blank'>
               Mouseflow
             </Link>
             ) to help us collect information from these cookies (see the “Third-party cookies” section below).

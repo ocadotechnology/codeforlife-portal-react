@@ -20,7 +20,7 @@ const HowToComplain: React.FC = () => <>
   </Typography>
   <Typography mb={0}>
     Website:&nbsp;
-    <Link href='https://ico.org.uk/concerns'>
+    <Link href='https://ico.org.uk/concerns' target='_blank'>
       https://ico.org.uk/concerns
     </Link>
   </Typography>
