@@ -11,8 +11,7 @@ import type {
 import { paths } from './router';
 
 const baseQuery = fetchBaseQuery({
-  // baseUrl: process.env.REACT_APP_API_BASE_URL
-  baseUrl: 'http://localhost:8000/'
+  baseUrl: process.env.REACT_APP_API_BASE_URL
 });
 
 const baseQueryWrapper: BaseQueryFn<
