@@ -29,7 +29,6 @@ def process_newsletter_form(request):
     return HttpResponse(status=405)
 
 
-@csrf_exempt
 def dotmailer_consent_form(request):
     if request.method == "POST":
         form_data = json.loads(request.body.decode())
