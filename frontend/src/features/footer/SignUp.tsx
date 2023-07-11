@@ -15,7 +15,6 @@ import {
 
 import { useNavigate } from 'react-router-dom';
 import { useSignUpMutation } from '../../app/api';
-import { FormikHelpers } from 'formik';
 
 interface SignUpValues {
   email: string;
@@ -37,18 +36,12 @@ const SignUp: React.FC = () => {
   const [signUp] = useSignUpMutation();
   const navigate = useNavigate();
 
-  const handleSubmit = (values: SignUpValues, { setSubmitting }: FormikHelpers<SignUpValues>): void => {
-    setSubmitting(false);
+  const handleSubmit = (values: SignUpValues): void => {
     signUp(values).unwrap()
       .then((res) => {
-        if (res?.success === true) {
-          navigate('/', { state: { signUpSuccess: true } });
-        } else {
-          navigate('/', { state: { signUpSuccess: false } });
-        }
+        navigate('/', { state: { signUpSuccess: res?.success } });
       })
-      .catch(() => {
-      });
+      .catch((err) => { console.log('SignUp submit error: ', err); });
   };
 
   return (

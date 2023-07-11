@@ -4,7 +4,6 @@ import { Typography, useTheme } from '@mui/material';
 import Page from 'codeforlife/lib/esm/components/page';
 import { CheckboxField, EmailField, Form, SubmitButton } from 'codeforlife/lib/esm/components/form';
 import { useConsentFormMutation } from '../../app/api';
-import { FormikHelpers } from 'formik';
 import { useNavigate } from 'react-router-dom';
 
 const CommunicationPreferences: React.FC = () => {
@@ -22,18 +21,16 @@ const CommunicationPreferences: React.FC = () => {
     email: ''
   };
 
-  const handleSubmit = (values: Values, { setSubmitting }: FormikHelpers<Values>): void => {
-    setSubmitting(false);
+  const handleSubmit = (values: Values): void => {
     sendConsentForm(values).unwrap()
       .then((res) => {
-        if (res?.success === true) {
+        if (res?.success) {
           navigate('/');
         } else {
           setNotificationOpen(true);
         }
       })
-      .catch(() => {
-      });
+      .catch((err) => { console.log('CommunicationPreferences submit error: ', err); });
   };
 
   return (
