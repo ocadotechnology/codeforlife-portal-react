@@ -31,21 +31,21 @@ const SharingInfo: React.FC = () => (
     </Typography>
     <Typography>
       For more information on Freshdesk’s Privacy Notice, visit&nbsp;
-      <Link href='https://www.freshworks.com/privacy/'>
+      <Link href='https://www.freshworks.com/privacy/' target='_blank'>
         https://www.freshworks.com/privacy/
       </Link>
       .
     </Typography>
     <Typography>
       For more information on Freshdesk and GDPR, visit&nbsp;
-      <Link href='https://freshdesk.com/gdpr'>
+      <Link href='https://freshdesk.com/gdpr' target='_blank'>
         https://freshdesk.com/gdpr
       </Link>
       .
     </Typography>
     <Typography>
       We will occasionally ask for feedback on our portal. We will usually do this via an email which will direct you to our survey provider, <strong>UsabilityHub</strong>. It will only record; time spent, country, device type, device platform, unless specifically asked within the questions themselves for example, the survey may ask your age. You can find out more about UsabilityHub&nbsp;
-      <Link href='https://usabilityhub.com/'>
+      <Link href='https://usabilityhub.com/' target='_blank'>
         here
       </Link>
       .
