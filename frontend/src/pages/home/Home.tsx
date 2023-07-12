@@ -9,12 +9,16 @@ import TargetAudience from './TargetAudience';
 import AboutUs from './AboutUs';
 import Quotes from './Quotes';
 import CodingClubs from './CodingClubs';
+import { useLocation } from 'react-router-dom';
+import NewsSignUp from './NewsSignUp';
 
 const Home: React.FC = () => {
   const theme = useTheme();
+  const location = useLocation();
 
   return (
     <Page.Container>
+      <NewsSignUp signUpSuccess={location.state?.signUpSuccess} />
       {/* Special case: un-contained page section */}
       <TargetAudience />
       <Page.Section>

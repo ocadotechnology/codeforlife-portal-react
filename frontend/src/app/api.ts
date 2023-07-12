@@ -7,8 +7,8 @@ import type {
   FetchArgs,
   FetchBaseQueryError
 } from '@reduxjs/toolkit/query';
-import { useNavigate } from 'react-router-dom';
 
+import qs from 'qs';
 import { paths } from './router';
 
 const baseQuery = fetchBaseQuery({
@@ -19,20 +19,19 @@ const baseQueryWrapper: BaseQueryFn<
   string | FetchArgs, unknown, FetchBaseQueryError // eslint-disable-line @typescript-eslint/indent
 > = async (args, api, extraOptions) => {
   const result = await baseQuery(args, api, extraOptions);
-  const navigate = useNavigate();
 
   if (result.error) {
     switch (result.error.status) {
       case 403:
-        navigate(paths.error.forbidden._);
+        window.location.href = paths.error.forbidden._;
         break;
 
       case 404:
-        navigate(paths.error.pageNotFound._);
+        window.location.href = paths.error.pageNotFound._;
         break;
 
       default:
-        navigate(paths.error.internalServerError._);
+        window.location.href = paths.error.internalServerError._;
         break;
     }
   }
@@ -40,10 +39,34 @@ const baseQueryWrapper: BaseQueryFn<
   return result;
 };
 
-const api = createApi({
+export const api = createApi({
   reducerPath: 'api',
   baseQuery: baseQueryWrapper,
-  endpoints: () => ({})
+  endpoints: (builder) => ({
+    signUp: builder.mutation({
+      query: (payload) => ({
+        url: 'news_signup/',
+        method: 'POST',
+        body: qs.stringify(payload),
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      })
+    }),
+    consentForm: builder.mutation({
+      query: (payload) => ({
+        url: 'consent_form/',
+        method: 'POST',
+        body: qs.stringify(payload),
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      })
+    })
+  })
 });
 
-export default api;
+export const {
+  useSignUpMutation,
+  useConsentFormMutation
+} = api;
