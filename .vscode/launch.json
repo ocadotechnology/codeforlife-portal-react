@@ -10,6 +10,18 @@
       "name": "Launch Chrome",
       "url": "http://localhost:3000",
       "webRoot": "${workspaceFolder}/src"
+    },
+    {
+      "name": "Django Server",
+      "type": "python",
+      "request": "launch",
+      "django": true,
+      "justMyCode": false,
+      "program": "${workspaceFolder}/backend/manage.py",
+      "args": [
+        "runserver",
+        "localhost:8000"
+      ]
     }
   ]
 }
