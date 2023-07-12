@@ -8,6 +8,7 @@ import type {
   FetchBaseQueryError
 } from '@reduxjs/toolkit/query';
 
+import qs from 'qs';
 import { paths } from './router';
 
 const baseQuery = fetchBaseQuery({
@@ -46,14 +47,20 @@ export const api = createApi({
       query: (payload) => ({
         url: 'news_signup/',
         method: 'POST',
-        body: payload
+        body: qs.stringify(payload),
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
       })
     }),
     consentForm: builder.mutation({
       query: (payload) => ({
         url: 'consent_form/',
         method: 'POST',
-        body: payload
+        body: qs.stringify(payload),
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
       })
     })
   })

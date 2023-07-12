@@ -16,7 +16,7 @@ import json
 @csrf_exempt
 def process_newsletter_form(request):
     if request.method == "POST":
-        form_data = json.loads(request.body.decode())
+        form_data = request.POST
         user_email = form_data["email"]
         try:
             validate_email(user_email)
@@ -31,7 +31,7 @@ def process_newsletter_form(request):
 
 def dotmailer_consent_form(request):
     if request.method == "POST":
-        form_data = json.loads(request.body.decode())
+        form_data = request.POST
         user_email = form_data["email"]
         try:
             user = get_dotmailer_user_by_email(user_email)
