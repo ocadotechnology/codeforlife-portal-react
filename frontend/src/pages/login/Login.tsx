@@ -6,6 +6,8 @@ import TeacherForm from './TeacherForm';
 import StudentForm from './StudentForm';
 import IndependentForm from './IndependentForm';
 
+import { useSearchParams } from 'react-router-dom';
+
 const Login: React.FC<{
   userType: 'teacher' | 'student' | 'independent'
 }> = ({ userType }) => {
@@ -22,8 +24,17 @@ const Login: React.FC<{
       break;
   }
 
+  const [searchParams] = useSearchParams();
+
   return (
     <Page.Container>
+      {
+        searchParams.get('verify_email')
+          ? <Page.Notification>
+            Your email address was successfully verified, please log in.
+          </Page.Notification>
+          : <></>
+      }
       <Page.Section maxWidth='md'>
         {form}
       </Page.Section>

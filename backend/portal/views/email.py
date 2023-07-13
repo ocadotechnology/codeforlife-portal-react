@@ -40,8 +40,7 @@ def verify_email(request, token):
 
     usertype = "independent" if logged_in_as_independent_student(user_found) else "teacher"
 
-    # messages.success(request, "Your email address was successfully verified, please log in.")
-    return HttpResponseRedirect(f"{FRONTEND_URL}/login/{usertype}")
+    return HttpResponseRedirect(f"{FRONTEND_URL}/login/{usertype}?verify_email=true")
 
 
 def send_new_users_report(request):
