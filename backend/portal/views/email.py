@@ -8,31 +8,28 @@ from django.conf import settings
 from django.contrib import messages as messages
 from django.contrib.auth.models import User
 from django.db.models import Count
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.utils import timezone
 from django_countries import countries
-
 from portal.app_settings import CONTACT_FORM_EMAILS
-
+from service.settings import FRONTEND_URL
 
 def verify_email(request, token):
     decoded_jwt = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
 
     user_found = User.objects.filter(email=decoded_jwt["email"]).first()
-    usertype = "TEACHER" if Teacher.objects.filter(new_user=user_found).exists() else "INDEP_STUDENT"
+    usertype = "teacher" if Teacher.objects.filter(new_user=user_found).exists() else "independent"
     is_expired = decoded_jwt["expires"] < timezone.now().timestamp()
 
     is_changing_email = decoded_jwt["new_email"] != ""
     updated_email = decoded_jwt["new_email"] if is_changing_email else decoded_jwt["email"]
 
     if not user_found or is_expired:
-        return JsonResponse(status=200, data={'success': False, 'usertype': usertype})
-        # return render(request, "portal/email_verification_failed.html", {"usertype": usertype})
+        return HttpResponseRedirect(f"{FRONTEND_URL}/register/email-verification/{usertype}?success=false")
 
     is_user_verified = user_found.userprofile.is_verified
     if is_user_verified and not is_changing_email:
-        return JsonResponse(status=200, data={'success': False, 'usertype': usertype})
-        # return render(request, "portal/email_verification_failed.html", {"usertype": usertype})
+        return HttpResponseRedirect(f"{FRONTEND_URL}/register/email-verification/{usertype}?success=false")
 
     if not is_user_verified or is_changing_email:
         user_found.email = updated_email
@@ -41,15 +38,10 @@ def verify_email(request, token):
         user_found.userprofile.save()
         user_found.save()
 
+    usertype = "independent" if logged_in_as_independent_student(user_found) else "teacher"
+
     # messages.success(request, "Your email address was successfully verified, please log in.")
-
-    # if logged_in_as_independent_student(user_found):
-    #     login_url = "independent_student_login"
-    # else:
-    #     login_url = "teacher_login"
-    usertype = "INDEP_STUDENT" if logged_in_as_independent_student(user_found) else "TEACHER"
-
-    return JsonResponse(status=200, data={'success': True, 'usertype': usertype})
+    return HttpResponseRedirect(f"{FRONTEND_URL}/login/{usertype}")
 
 
 def send_new_users_report(request):

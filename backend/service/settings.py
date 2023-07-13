@@ -210,4 +210,6 @@ SITE_ID = 1
 
 PIPELINE = {}
 
+FRONTEND_URL = "http://localhost:3000"
+
 from common.csp_config import *
