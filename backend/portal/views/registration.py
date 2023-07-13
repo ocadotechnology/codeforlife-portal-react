@@ -20,7 +20,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib.auth.forms import PasswordResetForm, SetPasswordForm
 from django.contrib.auth.tokens import default_token_generator
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.template.response import TemplateResponse
 from django.urls import reverse_lazy
@@ -31,6 +31,7 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.decorators.http import require_POST
+from rest_framework import status
 
 from deploy import captcha
 from portal import app_settings
@@ -63,7 +64,9 @@ def blocked_and_not_expired(user: Student or Teacher):
 
 def school_student_reset_password_tracker(request, activity_today):
     if "transfer_students" in request.POST:
-        student_list = ast.literal_eval(request.POST.get("transfer_students", []))
+        student_list = ast.literal_eval(
+            request.POST.get("transfer_students", [])
+        )
         for student_id in student_list:
             current_student = Student.objects.get(id=student_id)
             if blocked_and_not_expired(current_student):
@@ -77,9 +80,9 @@ def school_student_reset_password_tracker(request, activity_today):
 
 
 def teacher_or_indy_reset_password_tracker(request, activity_today, email):
-    get_user = Teacher.objects.filter(new_user__email=email) or Student.objects.filter(
+    get_user = Teacher.objects.filter(
         new_user__email=email
-    )
+    ) or Student.objects.filter(new_user__email=email)
     user = get_user[0]
     if blocked_and_not_expired(user):
         if "teacher" in request.path:
@@ -92,7 +95,9 @@ def teacher_or_indy_reset_password_tracker(request, activity_today, email):
 def handle_reset_password_tracking(
     request, user_type, access_code=None, student_id=None
 ):
-    activity_today = DailyActivity.objects.get_or_create(date=datetime.now().date())[0]
+    activity_today = DailyActivity.objects.get_or_create(
+        date=datetime.now().date()
+    )[0]
     # school student has 2 different ways of resetting password
     # hence the function is extended
     # check for indy student or teacher account
@@ -116,7 +121,8 @@ def teacher_password_reset(request):
     )
 
 
-@csrf_protect
+# TODO: set CSRF cookie.
+# @csrf_protect
 def password_reset(
     request,
     usertype,
@@ -133,8 +139,9 @@ def password_reset(
     if request.method == "POST":
         handle_reset_password_tracking(request, usertype)
         form = password_reset_form(request.POST)
-        if not captcha.CAPTCHA_ENABLED:
-            remove_captcha_from_form(form)
+        # TODO: assess whether this is needed
+        # if not captcha.CAPTCHA_ENABLED:
+        #     remove_captcha_from_form(form)
         if form.is_valid():
             opts = {
                 "use_https": request.is_secure(),
@@ -147,26 +154,31 @@ def password_reset(
             }
             form.save(**opts)
 
-            return render(
-                request, "portal/reset_password_email_sent.html", {"usertype": usertype}
-            )
-    else:
-        form = password_reset_form()
+            # return render(
+            #     request,
+            #     "portal/reset_password_email_sent.html",
+            #     {"usertype": usertype},
+            # )
+            return HttpResponse(status=status.HTTP_200_OK)
+    # else:
+        # form = password_reset_form()
+    return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
 
-    if not captcha.CAPTCHA_ENABLED:
-        remove_captcha_from_form(form)
+    # TODO: assess whether this is needed
+    # if not captcha.CAPTCHA_ENABLED:
+    #     remove_captcha_from_form(form)
 
-    context = {
-        "form": form,
-        "title": _("Password reset"),
-        "settings": app_settings,
-        "should_use_recaptcha": captcha.CAPTCHA_ENABLED,
-        "usertype": usertype,
-    }
+    # context = {
+    #     "form": form,
+    #     "title": _("Password reset"),
+    #     "settings": app_settings,
+    #     "should_use_recaptcha": captcha.CAPTCHA_ENABLED,
+    #     "usertype": usertype,
+    # }
 
-    update_context_and_apps(request, context, current_app, extra_context)
+    # update_context_and_apps(request, context, current_app, extra_context)
 
-    return TemplateResponse(request, template_name, context)
+    # return TemplateResponse(request, template_name, context)
 
 
 def update_context_and_apps(request, context, current_app, extra_context):
@@ -230,7 +242,9 @@ def password_reset_confirm(
                 _check_and_unblock_user(user.username, usertype)
 
                 return render(
-                    request, "portal/reset_password_done.html", {"usertype": usertype}
+                    request,
+                    "portal/reset_password_done.html",
+                    {"usertype": usertype},
                 )
         else:
             form = set_password_form(user)

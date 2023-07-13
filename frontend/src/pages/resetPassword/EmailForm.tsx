@@ -16,11 +16,12 @@ import {
 } from 'codeforlife/lib/esm/components';
 
 import { paths } from '../../app/router';
+import { useResetTeacherPasswordMutation } from '../../app/api';
 import PaperPlaneImg from '../../images/paper_plane.png';
 
 const EmailForm: React.FC = () => {
   const navigate = useNavigate();
-  const [didSubmit, setDidSubmit] = React.useState(false);
+  const [resetTeacherPassword, result] = useResetTeacherPasswordMutation();
 
   interface Values {
     email: string;
@@ -30,7 +31,7 @@ const EmailForm: React.FC = () => {
     email: ''
   };
 
-  return (didSubmit)
+  return (result.isSuccess)
     ? <Stack gap={1} alignItems='center'>
       <Typography textAlign='center' variant='h4'>
         Thank you
@@ -60,12 +61,7 @@ const EmailForm: React.FC = () => {
       </Typography>
       <Form
         initialValues={initialValues}
-        onSubmit={(values, { setSubmitting }) => {
-          // TODO: Connect this to the backend
-          console.log(values);
-          setSubmitting(false);
-          setDidSubmit(true);
-        }}
+        onSubmit={resetTeacherPassword}
       >
         <EmailField
           placeholder='Email address'
