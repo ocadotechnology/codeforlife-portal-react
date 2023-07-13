@@ -56,7 +56,9 @@ const ResetPassword: React.FC = () => {
               userType={params.userType}
               token={searchParams.token}
             />
-            : <EmailForm />
+            : <EmailForm
+              userType={params.userType}
+            />
           }
         </ThemedBox>
       </Page.Section>

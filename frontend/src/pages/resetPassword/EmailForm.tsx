@@ -16,12 +16,24 @@ import {
 } from 'codeforlife/lib/esm/components';
 
 import { paths } from '../../app/router';
-import { useResetTeacherPasswordMutation } from '../../app/api';
+import {
+  useResetTeacherPasswordMutation,
+  useResetIndependentStudentPasswordMutation
+} from '../../app/api';
 import PaperPlaneImg from '../../images/paper_plane.png';
 
-const EmailForm: React.FC = () => {
+interface EmailFormProps {
+  userType: 'teacher' | 'independent'
+}
+
+const EmailForm: React.FC<EmailFormProps> = ({
+  userType
+}) => {
   const navigate = useNavigate();
-  const [resetTeacherPassword, result] = useResetTeacherPasswordMutation();
+  const [resetPassword, result] = (userType === 'teacher'
+    ? useResetTeacherPasswordMutation
+    : useResetIndependentStudentPasswordMutation
+  )();
 
   interface Values {
     email: string;
@@ -61,7 +73,7 @@ const EmailForm: React.FC = () => {
       </Typography>
       <Form
         initialValues={initialValues}
-        onSubmit={resetTeacherPassword}
+        onSubmit={resetPassword}
       >
         <EmailField
           placeholder='Email address'

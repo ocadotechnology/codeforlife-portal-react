@@ -2,6 +2,18 @@ import api from '../api';
 
 const registrationApi = api.injectEndpoints({
   endpoints: (build) => ({
+    resetIndependentStudentPassword: build.mutation<null, {
+      email: string;
+    }>({
+      query: (body) => ({
+        url: 'user/password/reset/student/',
+        method: 'POST',
+        body,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      })
+    }),
     resetTeacherPassword: build.mutation<null, {
       email: string;
     }>({
@@ -32,6 +44,7 @@ const registrationApi = api.injectEndpoints({
 
 export default registrationApi;
 export const {
+  useResetIndependentStudentPasswordMutation,
   useResetTeacherPasswordMutation,
   useDeleteAccountMutation
 } = registrationApi;

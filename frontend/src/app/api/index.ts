@@ -4,6 +4,7 @@ import {
   useConsentFormMutation
 } from './endpoints/dotmailer';
 import {
+  useResetIndependentStudentPasswordMutation,
   useResetTeacherPasswordMutation,
   useDeleteAccountMutation
 } from './endpoints/registration';
@@ -14,6 +15,7 @@ export {
   useSignUpMutation,
   useConsentFormMutation,
   // registration
+  useResetIndependentStudentPasswordMutation,
   useResetTeacherPasswordMutation,
   useDeleteAccountMutation
 };
