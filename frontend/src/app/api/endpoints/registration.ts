@@ -13,11 +13,25 @@ const registrationApi = api.injectEndpoints({
           'Content-Type': 'application/x-www-form-urlencoded'
         }
       })
+    }),
+    deleteAccount: build.mutation<null, {
+      password: string;
+      unsubscribeNewsletter: boolean;
+    }>({
+      query: (body) => ({
+        url: 'delete/account/',
+        method: 'POST',
+        body,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      })
     })
   })
 });
 
 export default registrationApi;
 export const {
-  useResetTeacherPasswordMutation
+  useResetTeacherPasswordMutation,
+  useDeleteAccountMutation
 } = registrationApi;

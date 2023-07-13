@@ -161,7 +161,7 @@ def password_reset(
             # )
             return HttpResponse(status=status.HTTP_200_OK)
     # else:
-        # form = password_reset_form()
+    #     form = password_reset_form()
     return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
 
     # TODO: assess whether this is needed
@@ -322,17 +322,18 @@ def delete_account(request):
     user = request.user
     password = request.POST.get("password")
 
-    if not user.check_password(password):
-        messages.error(
-            request, "Your account was not deleted due to incorrect password."
-        )
-        return HttpResponseRedirect(reverse_lazy("dashboard"))
+    # TODO: handle this feedback.
+    # if not user.check_password(password):
+    #     messages.error(
+    #         request, "Your account was not deleted due to incorrect password."
+    #     )
+    #     return HttpResponseRedirect(reverse_lazy("dashboard"))
 
     email = user.email
     anonymise(user)
 
     # remove from dotmailer
-    if bool(request.POST.get("unsubscribe_newsletter")):
+    if bool(request.POST.get("unsubscribeNewsletter")):
         delete_contact(email)
 
     # send confirmation email
@@ -345,4 +346,4 @@ def delete_account(request):
         message["title"],
     )
 
-    return HttpResponseRedirect(reverse_lazy("home"))
+    return HttpResponse()
