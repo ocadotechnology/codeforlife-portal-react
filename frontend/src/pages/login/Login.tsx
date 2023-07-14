@@ -1,12 +1,14 @@
 import React from 'react';
 
 import Page from 'codeforlife/lib/esm/components/page';
+import { tryValidateSync } from 'codeforlife/lib/esm/helpers/yup';
+import { fromSearchParams } from 'codeforlife/lib/esm/hooks';
 import { BaseFormProps } from './BaseForm';
 import TeacherForm from './TeacherForm';
 import StudentForm from './StudentForm';
 import IndependentForm from './IndependentForm';
 
-import { useSearchParams } from 'react-router-dom';
+import * as yup from 'yup';
 
 const Login: React.FC<{
   userType: 'teacher' | 'student' | 'independent'
@@ -24,12 +26,17 @@ const Login: React.FC<{
       break;
   }
 
-  const [searchParams] = useSearchParams();
-
+  const searchParams = tryValidateSync(
+    fromSearchParams(),
+    yup.object({
+      verifyEmail: yup.boolean()
+        .default(false)
+    })
+  );
   return (
     <Page.Container>
       {
-        searchParams.get('verify_email')
+        searchParams?.verifyEmail
           ? <Page.Notification>
             Your email address was successfully verified, please log in.
           </Page.Notification>

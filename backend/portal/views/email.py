@@ -40,9 +40,9 @@ def verify_email(request, token):
 
     usertype = "independent" if logged_in_as_independent_student(user_found) else "teacher"
 
-    return HttpResponseRedirect(f"{FRONTEND_URL}/login/{usertype}?verify_email=true")
+    return HttpResponseRedirect(f"{FRONTEND_URL}/login/{usertype}?verifyEmail=true")
 
-
+# TODO: convert this to cron job
 def send_new_users_report(request):
     new_users_count = User.objects.filter(date_joined__gte=timezone.now() - timedelta(days=7)).count()
     users_count = User.objects.count()
@@ -78,4 +78,5 @@ def send_new_users_report(request):
         ),
         "new users",
     )
-    return HttpResponse(status=200)
+    return HttpResponse("success")
+
