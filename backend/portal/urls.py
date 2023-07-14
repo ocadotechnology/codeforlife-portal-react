@@ -5,7 +5,13 @@ from portal.views.login.teacher import TeacherLoginView
 from portal.views.email import verify_email
 from portal.views.views import render_react
 from portal.views.dotmailer import dotmailer_consent_form, process_newsletter_form
-from .views.home import render_signup_form, download_student_pack, banner_message
+from .views.home import (
+    render_signup_form,
+    download_student_pack,
+    banner_message,
+    terms_and_conditions,
+    privacy_notice,
+)
 
 JWT_REGEX = r"[a-zA-Z0-9\-_]+\.[a-zA-Z0-9\-_]+\.[a-zA-Z0-9\-_]+"
 
@@ -25,12 +31,12 @@ urlpatterns = [
     url(rf"^verify_email/(?P<token>{JWT_REGEX})/$", verify_email, name="verify_email"),
     url(
         r"^terms",
-        override_legacy_views,
+        terms_and_conditions,
         name="terms",
     ),
     url(
         r"^privacy-notice/$",
-        override_legacy_views,
+        privacy_notice,
         name="privacy_notice",
     ),
     url(

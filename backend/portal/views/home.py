@@ -25,6 +25,7 @@ from django.views.decorators.cache import cache_control
 
 from deploy import captcha
 from portal.forms.play import IndependentStudentSignupForm
+from portal.helpers.domain import get_domain
 from portal.forms.teach import TeacherSignupForm
 from portal.helpers.captcha import remove_captcha_from_forms
 from portal.helpers.ratelimit import (
@@ -38,6 +39,7 @@ LOGGER = logging.getLogger(__name__)
 
 def redirect_teacher_to_correct_page(request, teacher):
     # this view will be handled on the frontend
+    # but it is still used by other views in the common package
     return JsonResponse({"message": "this view is not used anymore", "status": 200})
     if teacher.has_school():
         link = reverse("two_factor:profile")
@@ -247,30 +249,6 @@ def reset_screentime_warning(request):
 
 @cache_control(private=True)
 def banner_message(request):
-    # Putting this in a try catch because it causes some weird issue in the tests where the first Selenium test passes,
-    # but any following test fails because it cannot find the Maintenance banner instance.
-
-    # 12 July 2023 18:11 - I am leaving this as is in case it breaks the tests?
-    try:
-        maintenance_banner = DynamicElement.objects.get(name="Maintenance banner")
-
-        if maintenance_banner.active:
-            messages.info(
-                request, format_html(maintenance_banner.text), extra_tags="safe"
-            )
-    except ObjectDoesNotExist:
-        pass
-
-    """
-    This view is where we can add any messages to be shown upon loading the home page.
-    Following this format:
-
-    messages.success(request, "message text here", extra_tags="tag classes here")
-
-    This example uses the success function which will display a welcoming message on the
-    sub banner (right under the page header). Other functions can be used to indicate a
-    warning, an error or a simple information.
-    """
     last_banner = DynamicElement.objects.all().last()
     return JsonResponse(
         {
@@ -279,4 +257,14 @@ def banner_message(request):
             "active": last_banner.active,
         },
         status=200,
+    )
+
+
+def terms_and_conditions(request):
+    return JsonResponse({"link": f"{get_domain(request)}/terms-of-use/terms-of-use"})
+
+
+def privacy_notice(request):
+    return JsonResponse(
+        {"link": f"{get_domain(request)}/privacy-notice/privacy-notice"}
     )
