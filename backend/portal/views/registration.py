@@ -241,23 +241,26 @@ def password_reset_confirm(
 
                 _check_and_unblock_user(user.username, usertype)
 
-                return render(
-                    request,
-                    "portal/reset_password_done.html",
-                    {"usertype": usertype},
-                )
-        else:
-            form = set_password_form(user)
-    else:
-        validlink = False
-        form = None
-        title = _("Password reset unsuccessful")
+                return HttpResponse()
+                # return render(
+                #     request,
+                #     "portal/reset_password_done.html",
+                #     {"usertype": usertype},
+                # )
 
-    context = {"form": form, "title": title, "validlink": validlink}
+    return HttpResponse(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    #     else:
+    #         form = set_password_form(user)
+    # else:
+    #     validlink = False
+    #     form = None
+    #     title = _("Password reset unsuccessful")
 
-    update_context_and_apps(request, context, current_app, extra_context)
+    # context = {"form": form, "title": title, "validlink": validlink}
 
-    return TemplateResponse(request, template_name, context)
+    # update_context_and_apps(request, context, current_app, extra_context)
+
+    # return TemplateResponse(request, template_name, context)
 
 
 def _check_and_unblock_user(username, usertype, access_code=None):
