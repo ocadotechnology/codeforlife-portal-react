@@ -20,11 +20,12 @@ urlpatterns = [
         teacher_password_reset,
         name="teacher_password_reset",
     ),
-    path(
-        "user/password/reset/done/",
-        password_reset_done,
-        name="reset_password_email_sent",
-    ),
+    # TODO: confirm this is not needed.
+    # path(
+    #     "user/password/reset/done/",
+    #     password_reset_done,
+    #     name="reset_password_email_sent",
+    # ),
     re_path(
         r"^user/password/reset/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$",
         password_reset_check_and_confirm,
