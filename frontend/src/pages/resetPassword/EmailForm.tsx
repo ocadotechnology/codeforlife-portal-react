@@ -17,8 +17,8 @@ import {
 
 import { paths } from '../../app/router';
 import {
-  useResetTeacherPasswordMutation,
-  useResetIndependentStudentPasswordMutation
+  useRequestTeacherPasswordResetMutation,
+  useRequestIndependentStudentPasswordResetMutation
 } from '../../app/api';
 import PaperPlaneImg from '../../images/paper_plane.png';
 
@@ -30,9 +30,9 @@ const EmailForm: React.FC<EmailFormProps> = ({
   userType
 }) => {
   const navigate = useNavigate();
-  const [resetPassword, result] = (userType === 'teacher'
-    ? useResetTeacherPasswordMutation
-    : useResetIndependentStudentPasswordMutation
+  const [requestPasswordReset, result] = (userType === 'teacher'
+    ? useRequestTeacherPasswordResetMutation
+    : useRequestIndependentStudentPasswordResetMutation
   )();
 
   interface Values {
@@ -73,7 +73,7 @@ const EmailForm: React.FC<EmailFormProps> = ({
       </Typography>
       <Form
         initialValues={initialValues}
-        onSubmit={resetPassword}
+        onSubmit={requestPasswordReset}
       >
         <EmailField
           placeholder='Email address'
