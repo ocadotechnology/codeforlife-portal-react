@@ -5,11 +5,11 @@ import { ChevronRight as ChevronRightIcon } from '@mui/icons-material';
 import { paths } from '../../app/router';
 import BaseForm from './BaseForm';
 import CflPasswordFields from '../../components/CflPasswordFields';
+import { useNavigate } from 'react-router-dom';
 
 import {
   Form,
   SubmitButton,
-  EmailField,
   CheckboxField,
   TextField
 } from 'codeforlife/lib/esm/components/form';
@@ -41,6 +41,18 @@ const initialValues: TeacherFormValues = {
 // rename the 'name' attribute to the same keys as above for each field
 const TeacherForm: React.FC = () => {
   const [addUser] = api.useAddUserMutation();
+  const navigate = useNavigate();
+  const handleSubmit = (values: any): void => {
+    addUser(values)
+      .unwrap()
+      .then((res) => {
+        navigate('/register/email-verification/teacher');
+      })
+      .catch((err) => {
+        console.error(err);
+        // TODO: set errors in the form for any async from errors ?
+      });
+  };
   return (
     <BaseForm
       header="Teacher/Tutor"
@@ -50,15 +62,9 @@ const TeacherForm: React.FC = () => {
     >
       <Form
         initialValues={initialValues}
-        onSubmit={async (values, event) => {
+        onSubmit={(values, event) => {
           // TODO: to call backend
-          console.log(event);
-          try {
-            const resposne = await addUser(values).unwrap();
-            console.log(resposne);
-          } catch (error) {
-            console.log(error);
-          }
+          handleSubmit(values);
         }}
       >
         <TextField

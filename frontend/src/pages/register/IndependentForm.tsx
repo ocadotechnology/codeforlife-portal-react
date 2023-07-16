@@ -63,6 +63,23 @@ const IndependentForm: React.FC = () => {
           )
     );
   }
+  const handleSubmit = (values: any): void => {
+    // TODO: Once backed is modernised please rename these to something more sensible
+    addUser({
+      ...values,
+      'independent_student_signup-date_of_birth_day': datePickerDay,
+      'independent_student_signup-date_of_birth_month': datePickerMonth,
+      'independent_student_signup-date_of_birth_year': datePickerYear
+    })
+      .unwrap()
+      .then((res) => {
+        navigate('/register/email-verification/teacher');
+      })
+      .catch((err) => {
+        console.error(err);
+        // TODO: set errors in the form for any async from errors ?
+      });
+  };
 
   const [addUser] = api.useAddUserMutation();
   return (
@@ -79,20 +96,8 @@ const IndependentForm: React.FC = () => {
       {yearsOfAge !== undefined && (
         <Form
           initialValues={initialValues}
-          onSubmit={async (values) => {
-            // TODO: Once backed is modernised please rename these to something more sensible
-            try {
-              const response = await addUser({
-                ...values,
-                'independent_student_signup-date_of_birth_day': datePickerDay,
-                'independent_student_signup-date_of_birth_month':
-                  datePickerMonth,
-                'independent_student_signup-date_of_birth_year': datePickerYear
-              }).unwrap();
-              console.log(response);
-            } catch (error) {
-              console.error(error);
-            }
+          onSubmit={(values) => {
+            handleSubmit(values);
           }}
         >
           <TextField

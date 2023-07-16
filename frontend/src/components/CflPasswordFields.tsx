@@ -13,7 +13,9 @@ const CflPasswordFields: React.FC<CflPasswordFieldsProps> = ({ userType }) => {
   const [password, setPassword] = React.useState('');
   const idPrefixes = userType === 'teacher' ? 'teacher' : 'independent';
   const legacyDjangoPrefix =
-    userType === 'teacher' ? 'teacher_signup-' : 'independent_student_signup-';
+    userType === 'teacher'
+      ? 'teacher_signup-teacher_'
+      : 'independent_student_signup-';
   // TODO: Load from central storage.
   const mostUsed = ['Abcd1234', 'Password1', 'Qwerty123'];
 

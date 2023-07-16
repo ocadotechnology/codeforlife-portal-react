@@ -2,7 +2,6 @@ import os
 
 
 def get_domain(request):
-    os.environ
     """
     Returns the domain of the request
     """

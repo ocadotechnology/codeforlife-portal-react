@@ -1,8 +1,8 @@
 import logging
 import math
 
-from common import email_messages
-from common.helpers.emails import (
+from portal import email_messages
+from portal.helpers.emails import (
     NOTIFICATION_EMAIL,
     DotmailerUserType,
     add_to_dotmailer,
@@ -16,7 +16,7 @@ from django.contrib import messages as messages
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
@@ -37,6 +37,8 @@ from portal.helpers.ratelimit import (
 LOGGER = logging.getLogger(__name__)
 
 
+# TODO: Check if the teacher is onboarded or not and redirect accordingly
+# TODO: Check if 2FA is enabled
 def redirect_teacher_to_correct_page(request, teacher):
     # this view will be handled on the frontend
     # but it is still used by other views in the common package
@@ -63,8 +65,9 @@ def redirect_teacher_to_correct_page(request, teacher):
 
 def process_signup_form(request, data):
     email = data["teacher_email"]
+    does_email_exist = User.objects.filter(email=email).exists()
 
-    if email and User.objects.filter(email=email).exists():
+    if email and does_email_exist:
         email_message = email_messages.userAlreadyRegisteredEmail(request, email)
         is_email_ratelimited = is_ratelimited(
             request=request,
@@ -95,13 +98,13 @@ def process_signup_form(request, data):
         )
         send_verification_email(request, teacher.user.user, data)
 
-    return JsonResponse({"success": True}, status=200)
-    return render(
-        request,
-        "portal/email_verification_needed.html",
-        {"usertype": "TEACHER"},
-        status=302,
-    )
+    return HttpResponse()
+    # return render(
+    #     request,
+    #     "portal/email_verification_needed.html",
+    #     {"usertype": "TEACHER"},
+    #     status=302,
+    # )
 
 
 def process_independent_student_signup_form(request, data):
@@ -131,12 +134,13 @@ def process_independent_student_signup_form(request, data):
             LOGGER.warning(
                 f"Ratelimit independent {RATELIMIT_USER_ALREADY_REGISTERED_EMAIL_GROUP}: {email}"
             )
-        return render(
-            request,
-            "portal/email_verification_needed.html",
-            {"usertype": "INDEP_STUDENT"},
-            status=302,
-        )
+        return HttpResponse()
+        # return render(
+        #     request,
+        #     "portal/email_verification_needed.html",
+        #     {"usertype": "INDEP_STUDENT"},
+        #     status=302,
+        # )
 
     student = Student.objects.independentStudentFactory(
         name=data["name"], email=data["email"], password=data["password"]
@@ -148,14 +152,13 @@ def process_independent_student_signup_form(request, data):
 
     send_verification_email(request, student.new_user, data, age=age)
 
-    return JsonResponse({"success": True}, status=200)
-
-    return render(
-        request,
-        "portal/email_verification_needed.html",
-        {"usertype": "INDEP_STUDENT"},
-        status=302,
-    )
+    return HttpResponse()
+    # return render(
+    #     request,
+    #     "portal/email_verification_needed.html",
+    #     {"usertype": "INDEP_STUDENT"},
+    #     status=302,
+    # )
 
 
 def render_signup_form(request):
@@ -192,7 +195,8 @@ def render_signup_form(request):
                 data = independent_student_signup_form.cleaned_data
                 return process_independent_student_signup_form(request, data)
 
-    return JsonResponse({"finished": True})
+        return HttpResponse()
+    return HttpResponse(status=405)
 
 
 def redirect_teacher_to_correct_page(request, teacher):
@@ -217,10 +221,10 @@ def redirect_teacher_to_correct_page(request, teacher):
 
 
 def logout(request):
-    response = JsonResponse({"success": False}, status=400)
+    response = HttpResponse(status=400)
     if request.user.is_authenticated:
         logout(request)
-        response = JsonResponse({"success": True}, status=200)
+        response = HttpResponse(status=200)
     return response
 
 
@@ -229,22 +233,26 @@ from portal.templatetags.app_tags import cloud_storage
 from portal.views.teacher.teach import DownloadType
 
 
-def download_student_pack(request, student_pack_type):
+def count_student_pack_downloads(request, student_pack_type):
     if request.method == "POST":
-        count_student_pack_downloads_click(int(student_pack_type))
+        count_student_pack_downloads_click(
+            int(student_pack_type)
+        )  # use google analytics to track downloads
         link = (
-            cloud_storage("club_packs/PythonCodingClub.zip")
+            cloud_storage(
+                "club_packs/PythonCodingClub.zip"
+            )  # TODO: make a static url on the frontend
             if DownloadType(int(student_pack_type)) == DownloadType.PYTHON_PACK
             else cloud_storage("club_packs/PrimaryCodingClub.zip")
         )
         return JsonResponse({"link": link}, status=200)
-    return JsonResponse({"message": "method not allowed"}, status=405)
+    return HttpResponse(status=405)
 
 
 def reset_screentime_warning(request):
     if request.user.is_authenticated:
         request.session["last_screentime_warning"] = timezone.now().timestamp()
-    return JsonResponse({"success": True}, status=204)  # No content
+    return HttpResponse()
 
 
 @cache_control(private=True)
@@ -257,14 +265,4 @@ def banner_message(request):
             "active": last_banner.active,
         },
         status=200,
-    )
-
-
-def terms_and_conditions(request):
-    return JsonResponse({"link": f"{get_domain(request)}/terms-of-use/terms-of-use"})
-
-
-def privacy_notice(request):
-    return JsonResponse(
-        {"link": f"{get_domain(request)}/privacy-notice/privacy-notice"}
     )
