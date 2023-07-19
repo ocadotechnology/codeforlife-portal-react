@@ -7,9 +7,9 @@
     {
       "type": "chrome",
       "request": "launch",
-      "name": "Launch Chrome",
+      "name": "React Dev Server",
       "url": "http://localhost:3000",
-      "webRoot": "${workspaceFolder}/src"
+      "preLaunchTask": "start-react-dev-server"
     },
     {
       "name": "Django Server",
