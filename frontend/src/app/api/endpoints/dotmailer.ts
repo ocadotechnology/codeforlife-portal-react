@@ -1,11 +1,12 @@
-import qs from 'qs';
-
 import api from '../api';
 
 const dotmailerApi = api.injectEndpoints({
   endpoints: (build) => ({
-    // TODO: set body and response types
-    signUp: build.mutation({
+    signUp: build.mutation<null | {
+      success: boolean
+    }, {
+      email: string;
+    }>({
       query: (body) => ({
         url: 'news_signup/',
         method: 'POST',
@@ -15,8 +16,11 @@ const dotmailerApi = api.injectEndpoints({
         }
       })
     }),
-    // TODO: set body and response types
-    consentForm: build.mutation({
+    consentForm: build.mutation<null | {
+      success: boolean
+    }, {
+      email: string;
+    }>({
       query: (body) => ({
         url: 'consent_form/',
         method: 'POST',
