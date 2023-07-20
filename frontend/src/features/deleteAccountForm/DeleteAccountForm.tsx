@@ -14,6 +14,7 @@ import {
   PasswordField,
   SubmitButton
 } from 'codeforlife/lib/esm/components/form';
+import { setFormErrors } from 'codeforlife/lib/esm/helpers/formik';
 
 import { paths } from '../../app/router';
 import { useDeleteAccountMutation } from '../../app/api';
@@ -23,34 +24,15 @@ export interface DeleteAccountFormProps {
   userType: 'teacher' | 'independent'
 }
 
-export interface DeleteAccountFormValues {
-  password: string;
-  unsubscribeNewsletter: boolean;
-}
-
 const DeleteAccountForm: React.FC<DeleteAccountFormProps> = ({
   userType
 }) => {
   const navigate = useNavigate();
-  const [values, setValues] = React.useState<DeleteAccountFormValues>();
-  const [openDialog, setOpenDialog] = React.useState(false);
   const [deleteAccount] = useDeleteAccountMutation();
-
-  function _deleteAccount(): void {
-    if (values !== undefined) {
-      deleteAccount(values)
-        .unwrap()
-        // TODO: ensure user is logged out.
-        .then(() => { navigate(paths._); })
-        // TOOD: handle failed to delete account.
-        .catch(() => { });
-    }
-  }
-
-  const initialValues: DeleteAccountFormValues = {
-    password: '',
-    unsubscribeNewsletter: false
-  };
+  const [dialog, setDialog] = React.useState<{
+    open: boolean;
+    onDeleteAccount?: () => void;
+  }>({ open: false });
 
   return <>
     <Typography variant='h5'>
@@ -63,11 +45,25 @@ const DeleteAccountForm: React.FC<DeleteAccountFormProps> = ({
       This can&apos;t be reversed. All classes you&apos;ve created will be permanently erased.
     </Typography>
     <Form
-      initialValues={initialValues}
-      onSubmit={(values) => {
-        setValues(values);
+      initialValues={{
+        password: '',
+        unsubscribeNewsletter: false
+      }}
+      onSubmit={(values, { setErrors }) => {
         // TODO: validate if teacher has classes. If not, delete account immediately.
-        setOpenDialog(true);
+        setDialog({
+          open: true,
+          onDeleteAccount: () => {
+            deleteAccount(values)
+              .unwrap()
+              // TODO: ensure user is logged out.
+              .then(() => { navigate(paths._); })
+              .catch((error) => {
+                setFormErrors(error, setErrors);
+                setDialog({ open: false });
+              });
+          }
+        });
       }}
     >
       <Grid container columnSpacing={4}>
@@ -94,11 +90,13 @@ const DeleteAccountForm: React.FC<DeleteAccountFormProps> = ({
         Delete account
       </SubmitButton>
     </Form>
-    <TeacherDialog
-      open={userType === 'teacher' && values !== undefined && openDialog}
-      onClose={() => { setValues(undefined); }}
-      deleteAccount={_deleteAccount}
-    />
+    {userType === 'teacher' && dialog.onDeleteAccount !== undefined &&
+      <TeacherDialog
+        open={dialog.open}
+        onClose={() => { setDialog({ open: false }); }}
+        onDeleteAccount={dialog.onDeleteAccount}
+      />
+    }
   </>;
 };
 

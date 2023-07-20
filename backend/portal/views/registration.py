@@ -20,7 +20,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib.auth.forms import PasswordResetForm, SetPasswordForm
 from django.contrib.auth.tokens import default_token_generator
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.shortcuts import render
 from django.template.response import TemplateResponse
 from django.urls import reverse_lazy
@@ -189,17 +189,17 @@ def update_context_and_apps(request, context, current_app, extra_context):
         request.current_app = current_app
 
 
-def password_reset_done(
-    request,
-    template_name="portal/reset_password_email_sent.html",
-    current_app=None,
-    extra_context=None,
-):
-    context = {"title": _("Password reset sent")}
+# def password_reset_done(
+#     request,
+#     template_name="portal/reset_password_email_sent.html",
+#     current_app=None,
+#     extra_context=None,
+# ):
+#     context = {"title": _("Password reset sent")}
 
-    update_context_and_apps(request, context, current_app, extra_context)
+#     update_context_and_apps(request, context, current_app, extra_context)
 
-    return TemplateResponse(request, template_name, context)
+#     return TemplateResponse(request, template_name, context)
 
 
 @sensitive_post_parameters()
@@ -321,16 +321,15 @@ def password_reset_check_and_confirm(request, uidb64=None, token=None):
 
 @require_POST
 @login_required(login_url=reverse_lazy("teacher_login"))
-def delete_account(request):
+def delete_account(request: HttpRequest):
     user = request.user
     password = request.POST.get("password")
 
-    # TODO: handle this feedback.
-    # if not user.check_password(password):
-    #     messages.error(
-    #         request, "Your account was not deleted due to incorrect password."
-    #     )
-    #     return HttpResponseRedirect(reverse_lazy("dashboard"))
+    if not user.check_password(password):
+        return JsonResponse(
+            {"password": "incorrect password"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
 
     email = user.email
     anonymise(user)

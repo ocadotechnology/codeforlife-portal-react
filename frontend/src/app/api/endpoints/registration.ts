@@ -43,7 +43,9 @@ const registrationApi = api.injectEndpoints({
         }
       })
     }),
-    deleteAccount: build.mutation<null, {
+    deleteAccount: build.mutation<null | {
+      password?: string;
+    }, {
       password: string;
       unsubscribeNewsletter: boolean;
     }>({

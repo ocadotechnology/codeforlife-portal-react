@@ -15,13 +15,13 @@ import { paths } from '../../app/router';
 interface TeacherDialogProps {
   open: boolean;
   onClose: () => void;
-  deleteAccount: () => void;
+  onDeleteAccount: () => void;
 }
 
 const TeacherDialog: React.FC<TeacherDialogProps> = ({
   open,
   onClose,
-  deleteAccount
+  onDeleteAccount
 }) => {
   const navigate = useNavigate();
 
@@ -42,7 +42,7 @@ const TeacherDialog: React.FC<TeacherDialogProps> = ({
         <Button
           className='alert'
           endIcon={<DeleteOutlineIcon />}
-          onClick={deleteAccount}
+          onClick={onDeleteAccount}
         >
           Delete
         </Button>
