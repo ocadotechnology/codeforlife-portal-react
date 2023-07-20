@@ -1,10 +1,6 @@
 import React from 'react';
 import { Link } from '@mui/material';
 import { ChevronRight as ChevronRightIcon } from '@mui/icons-material';
-
-import { paths } from '../../app/router';
-import BaseForm from './BaseForm';
-import CflPasswordFields from '../../components/CflPasswordFields';
 import { useNavigate } from 'react-router-dom';
 
 import {
@@ -13,7 +9,11 @@ import {
   CheckboxField,
   TextField
 } from 'codeforlife/lib/esm/components/form';
-import { api } from '../../app/api';
+
+import { paths } from '../../app/router';
+import BaseForm from './BaseForm';
+import CflPasswordFields from '../../components/CflPasswordFields';
+import { useRegisterUserMutation } from '../../app/api';
 
 // TODO: Once backend is modernised, rename the variables
 // to something more readable on both frontend and backend
@@ -40,24 +40,26 @@ const initialValues: TeacherFormValues = {
 // TODO: Follow up from above, once backend is modernised, please also
 // rename the 'name' attribute to the same keys as above for each field
 const TeacherForm: React.FC = () => {
-  const [addUser] = api.useAddUserMutation();
   const navigate = useNavigate();
+  const [registerUser] = useRegisterUserMutation();
+
   const handleSubmit = (values: any): void => {
-    addUser(values)
+    registerUser(values)
       .unwrap()
-      .then((res) => {
+      .then(() => {
         navigate('/register/email-verification/teacher');
       })
-      .catch((err) => {
-        console.error(err);
+      .catch((error) => {
+        console.error(error);
         // TODO: set errors in the form for any async from errors ?
       });
   };
+
   return (
     <BaseForm
-      header="Teacher/Tutor"
       subheader="Register below to create your school or club."
       description="You will have access to teaching resources, progress tracking and lesson plans for both Rapid Router and Kurono."
+      header="Teacher/Tutor"
       userType="teacher"
     >
       <Form

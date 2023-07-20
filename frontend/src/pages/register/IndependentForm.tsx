@@ -3,11 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { Link, FormHelperText } from '@mui/material';
 import { ChevronRight as ChevronRightIcon } from '@mui/icons-material';
 
-import { paths } from '../../app/router';
-import BaseForm from './BaseForm';
-import DatePicker from '../../components/DatePicker';
-import CflPasswordFields from '../../components/CflPasswordFields';
-
 import {
   Form,
   SubmitButton,
@@ -15,7 +10,12 @@ import {
   TextField,
   CheckboxField
 } from 'codeforlife/lib/esm/components/form';
-import { api } from '../../app/api';
+
+import { paths } from '../../app/router';
+import BaseForm from './BaseForm';
+import DatePicker from '../../components/DatePicker';
+import CflPasswordFields from '../../components/CflPasswordFields';
+import { useRegisterUserMutation } from '../../app/api';
 
 interface IndependentFormValues {
   fullName: string;
@@ -42,6 +42,7 @@ const IndependentForm: React.FC = () => {
   const [datePickerDay, setDatePickerDay] = React.useState<number>();
   const [datePickerMonth, setDatePickerMonth] = React.useState<number>();
   const [datePickerYear, setDatePickerYear] = React.useState<number>();
+  const [registerUser] = useRegisterUserMutation();
 
   const EmailApplicableAge = 13;
   const ReceiveUpdateAge = 18;
@@ -59,13 +60,13 @@ const IndependentForm: React.FC = () => {
       dob === undefined
         ? undefined
         : Math.floor(
-            (new Date().getTime() - dob.getTime()) / (1000 * 60 * 60 * 24 * 365)
-          )
+          (new Date().getTime() - dob.getTime()) / (1000 * 60 * 60 * 24 * 365)
+        )
     );
   }
   const handleSubmit = (values: any): void => {
     // TODO: Once backed is modernised please rename these to something more sensible
-    addUser({
+    registerUser({
       ...values,
       'independent_student_signup-date_of_birth_day': datePickerDay,
       'independent_student_signup-date_of_birth_month': datePickerMonth,
@@ -81,7 +82,6 @@ const IndependentForm: React.FC = () => {
       });
   };
 
-  const [addUser] = api.useAddUserMutation();
   return (
     <BaseForm
       header="Independent learner"
