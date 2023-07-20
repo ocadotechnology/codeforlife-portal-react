@@ -11,7 +11,7 @@ import BaseForm from './BaseForm';
 
 import {
   EmailField,
-  TextField,
+  PasswordField,
   SubmitButton
 } from 'codeforlife/lib/esm/components/form';
 
@@ -44,12 +44,10 @@ const IndependentForm: React.FC = () => {
         placeholder="Email address"
         helperText="Enter your email address"
       />
-      <TextField
+      <PasswordField
         required
-        name="password"
         placeholder="Password"
         helperText="Enter your password"
-        type="password"
       />
       <Stack>
         <Typography

@@ -22,7 +22,7 @@ import {
   TextField
 } from 'codeforlife/lib/esm/components/form';
 
-import DeleteAccountForm from '../../../features/DeleteAccountForm';
+import DeleteAccountForm from '../../../features/deleteAccountForm/DeleteAccountForm';
 import { paths } from '../../../app/router';
 
 const AccountFormPasswordFields: React.FC = () => {
@@ -197,7 +197,7 @@ const StudentAccount: React.FC<{
             </Button>
           </Page.Section>
           <Page.Section>
-            <DeleteAccountForm />
+            <DeleteAccountForm userType='independent' />
           </Page.Section>
         </>
         : <></>
