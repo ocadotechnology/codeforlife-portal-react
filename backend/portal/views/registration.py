@@ -4,7 +4,6 @@ import re
 from common.email_messages import accountDeletionEmail
 from portal.views.login import has_user_lockout_expired
 
-from django.contrib.auth.models import User
 from datetime import datetime
 from common.helpers.emails import (
     delete_contact,
@@ -248,7 +247,7 @@ def password_reset_confirm(
                 #     {"usertype": usertype},
                 # )
 
-    return HttpResponse(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    return HttpResponse(status=status.HTTP_403_FORBIDDEN)
     #     else:
     #         form = set_password_form(user)
     # else:
