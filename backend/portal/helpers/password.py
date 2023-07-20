@@ -14,7 +14,9 @@ import requests
 def is_password_pwned(password):
     # Create SHA1 hash of the password
     sha1_hash = hashlib.sha1(password.encode()).hexdigest()
-    prefix = sha1_hash[:5]  # Take the first 5 characters of the hash as the prefix
+    prefix = sha1_hash[
+        :5
+    ]  # Take the first 5 characters of the hash as the prefix
 
     # Make a request to the Pwned Passwords API
     url = f"https://api.pwnedpasswords.com/range/{prefix}"
@@ -109,14 +111,6 @@ def password_strength_test(
     numbers=True,
     special_char=True,
 ):
-    most_used_passwords = [
-        "Abcd1234",
-        "Password1",
-        "Qwerty123",
-        "password",
-        "qwerty",
-        "abcdef",
-    ]
     return (
         len(password) >= minimum_password_length
         and (not upper or re.search(r"[A-Z]", password))
@@ -126,7 +120,6 @@ def password_strength_test(
             not special_char
             or re.search(r"[!@#$%^&*()_+\-=\[\]{};':\"\\|,.<>\/?]", password)
         )
-        and (password not in most_used_passwords)
     )
 
 
