@@ -28,7 +28,7 @@ import { tryValidateSync } from 'codeforlife/lib/esm/helpers/yup';
 import Setup2fa from './2fa/setup2fa/Setup2fa';
 import BackupTokens from './2fa/backupTokens/BackupTokens';
 import { paths } from '../../../app/router';
-import DeleteAccountForm from '../../../features/DeleteAccountForm';
+import DeleteAccountForm from '../../../features/deleteAccountForm/DeleteAccountForm';
 
 const TwoFactorAuthentication: React.FC = () => {
   const navigate = useNavigate();
@@ -208,7 +208,7 @@ const YourAccount: React.FC = () => {
         <TwoFactorAuthentication />
       </Page.Section>
       <Page.Section>
-        <DeleteAccountForm />
+        <DeleteAccountForm userType='teacher' />
       </Page.Section>
     </>;
   }

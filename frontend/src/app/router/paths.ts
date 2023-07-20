@@ -65,7 +65,6 @@ const paths = _('', {
     termsOfUse: _('/terms-of-use'),
     childFriendly: _('/child-friendly')
   }),
-  newsletter: _('/newsletter'),
   communicationPreferences: _('/communication-preferences'),
   error: _('/error', {
     forbidden: _('/forbidden'),

@@ -16,7 +16,8 @@ import BaseForm from './BaseForm';
 import {
   SubmitButton,
   TextField,
-  EmailField
+  EmailField,
+  PasswordField
 } from 'codeforlife/lib/esm/components/form';
 
 import { paths } from '../../app/router';
@@ -94,11 +95,9 @@ const CredentialsForm: React.FC<{
         helperText="Enter your username"
         required
       />
-      <TextField
-        name="password"
+      <PasswordField
         placeholder="Password"
         helperText="Enter your password"
-        type="password"
         required
       />
       <SubmitButton

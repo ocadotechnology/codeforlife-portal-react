@@ -9,7 +9,7 @@ import * as yup from 'yup';
 
 import {
   EmailField,
-  TextField,
+  PasswordField,
   SubmitButton
 } from 'codeforlife/lib/esm/components/form';
 import { tryValidateSync } from 'codeforlife/lib/esm/helpers/yup';
@@ -76,11 +76,9 @@ const BaseTeacherForm: React.FC = () => {
         placeholder="Email address"
         helperText="Enter your email address"
       />
-      <TextField
-        name="password"
+      <PasswordField
         placeholder="Password"
         helperText="Enter your password"
-        type="password"
         required
       />
       <Stack>
