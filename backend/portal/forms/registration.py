@@ -45,7 +45,6 @@ class PasswordResetForm(forms.Form):
         help_text="Enter your email address",
     )
 
-    # TODO: assess whether this is needed
     # captcha = ReCaptchaField(widget=ReCaptchaV2Invisible)
 
     def save(

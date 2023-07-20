@@ -138,7 +138,6 @@ def password_reset(
     if request.method == "POST":
         handle_reset_password_tracking(request, usertype)
         form = password_reset_form(request.POST)
-        # TODO: assess whether this is needed
         # if not captcha.CAPTCHA_ENABLED:
         #     remove_captcha_from_form(form)
         if form.is_valid():
@@ -163,7 +162,6 @@ def password_reset(
     #     form = password_reset_form()
     return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
 
-    # TODO: assess whether this is needed
     # if not captcha.CAPTCHA_ENABLED:
     #     remove_captcha_from_form(form)
 
