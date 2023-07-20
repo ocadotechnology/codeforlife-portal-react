@@ -1,6 +1,6 @@
 from captcha.fields import ReCaptchaField
 from captcha.widgets import ReCaptchaV2Invisible
-from common.email_messages import resetEmailPasswordMessage
+from ..email_messages import resetEmailPasswordMessage
 from common.helpers.emails import NOTIFICATION_EMAIL, send_email
 from common.models import Student, Teacher
 from django import forms
@@ -15,35 +15,53 @@ from portal.helpers.password import PasswordStrength, form_clean_password
 
 class TeacherPasswordResetSetPasswordForm(django_auth_forms.SetPasswordForm):
     def __init__(self, user, *args, **kwargs):
-        super(TeacherPasswordResetSetPasswordForm, self).__init__(user, *args, **kwargs)
+        super(TeacherPasswordResetSetPasswordForm, self).__init__(
+            user, *args, **kwargs
+        )
         self.fields["new_password1"].help_text = "Enter your new password"
-        self.fields["new_password1"].widget.attrs["placeholder"] = "New password"
+        self.fields["new_password1"].widget.attrs[
+            "placeholder"
+        ] = "New password"
         self.fields["new_password2"].help_text = "Confirm your new password"
-        self.fields["new_password2"].widget.attrs["placeholder"] = "Confirm password"
+        self.fields["new_password2"].widget.attrs[
+            "placeholder"
+        ] = "Confirm password"
 
     def clean_new_password1(self):
-        return form_clean_password(self, "new_password1", PasswordStrength.TEACHER)
+        return form_clean_password(
+            self, "new_password1", PasswordStrength.TEACHER
+        )
 
 
 class StudentPasswordResetSetPasswordForm(django_auth_forms.SetPasswordForm):
     def __init__(self, user, *args, **kwargs):
-        super(StudentPasswordResetSetPasswordForm, self).__init__(user, *args, **kwargs)
+        super(StudentPasswordResetSetPasswordForm, self).__init__(
+            user, *args, **kwargs
+        )
         self.fields["new_password1"].help_text = "Enter your new password"
-        self.fields["new_password1"].widget.attrs["placeholder"] = "New password"
+        self.fields["new_password1"].widget.attrs[
+            "placeholder"
+        ] = "New password"
         self.fields["new_password2"].help_text = "Confirm your new password"
-        self.fields["new_password2"].widget.attrs["placeholder"] = "Confirm password"
+        self.fields["new_password2"].widget.attrs[
+            "placeholder"
+        ] = "Confirm password"
 
     def clean_new_password1(self):
-        return form_clean_password(self, "new_password1", PasswordStrength.INDEPENDENT)
+        return form_clean_password(
+            self, "new_password1", PasswordStrength.INDEPENDENT
+        )
 
 
 class PasswordResetForm(forms.Form):
     email = forms.EmailField(
-        widget=forms.EmailInput(attrs={"autocomplete": "off", "placeholder": "Email address"}),
+        widget=forms.EmailInput(
+            attrs={"autocomplete": "off", "placeholder": "Email address"}
+        ),
         help_text="Enter your email address",
     )
 
-    captcha = ReCaptchaField(widget=ReCaptchaV2Invisible)
+    # captcha = ReCaptchaField(widget=ReCaptchaV2Invisible)
 
     def save(
         self,
@@ -62,7 +80,9 @@ class PasswordResetForm(forms.Form):
         """
         UserModel = get_user_model()
         if self.username:
-            active_users = UserModel._default_manager.filter(username=self.username, is_active=True)
+            active_users = UserModel._default_manager.filter(
+                username=self.username, is_active=True
+            )
             for user in active_users:
                 # Make sure that no email is sent to a user that actually has
                 # a password marked as unusable
@@ -85,7 +105,11 @@ class PasswordResetForm(forms.Form):
                 }
 
                 email_subject_content = resetEmailPasswordMessage(
-                    request, domain, context["uid"], context["token"], context["protocol"]
+                    request,
+                    domain,
+                    context["uid"],
+                    context["token"],
+                    context["protocol"],
                 )
 
                 send_email(
@@ -125,7 +149,9 @@ class StudentPasswordResetForm(PasswordResetForm):
 class DeleteAccountForm(forms.Form):
     delete_password = forms.CharField(
         required=True,
-        widget=forms.PasswordInput(attrs={"autocomplete": "off", "placeholder": "Confirm password"}),
+        widget=forms.PasswordInput(
+            attrs={"autocomplete": "off", "placeholder": "Confirm password"}
+        ),
         help_text="Confirm password",
     )
 

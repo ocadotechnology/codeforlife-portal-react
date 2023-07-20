@@ -14,7 +14,9 @@ import requests
 def is_password_pwned(password):
     # Create SHA1 hash of the password
     sha1_hash = hashlib.sha1(password.encode()).hexdigest()
-    prefix = sha1_hash[:5]  # Take the first 5 characters of the hash as the prefix
+    prefix = sha1_hash[
+        :5
+    ]  # Take the first 5 characters of the hash as the prefix
 
     # Make a request to the Pwned Passwords API
     url = f"https://api.pwnedpasswords.com/range/{prefix}"
@@ -57,7 +59,9 @@ class PasswordStrength(Enum):
                     f"Password not strong enough, consider using at least {minimum_password_length} characters and making it hard to guess."
                 )
             if is_password_pwned(password):
-                raise forms.ValidationError("Password is too common, consider using a different password.")
+                raise forms.ValidationError(
+                    "Password is too common, consider using a different password."
+                )
 
         elif self is PasswordStrength.INDEPENDENT:
             minimum_password_length = 8
@@ -74,7 +78,9 @@ class PasswordStrength(Enum):
                     "upper and lower case letters, and numbers and making it hard to guess."
                 )
             if is_password_pwned(password):
-                raise forms.ValidationError("Password is too common, consider using a different password.")
+                raise forms.ValidationError(
+                    "Password is too common, consider using a different password."
+                )
         else:
             minimum_password_length = 10
             if password and not password_strength_test(
@@ -90,7 +96,9 @@ class PasswordStrength(Enum):
                     "upper and lower case letters, numbers, special characters and making it hard to guess."
                 )
             if is_password_pwned(password):
-                raise forms.ValidationError("Password is too common, consider using a different password.")
+                raise forms.ValidationError(
+                    "Password is too common, consider using a different password."
+                )
 
         return password
 
@@ -103,21 +111,15 @@ def password_strength_test(
     numbers=True,
     special_char=True,
 ):
-    most_used_passwords = [
-        "Abcd1234",
-        "Password1",
-        "Qwerty123",
-        "password",
-        "qwerty",
-        "abcdef",
-    ]
     return (
         len(password) >= minimum_password_length
         and (not upper or re.search(r"[A-Z]", password))
         and (not lower or re.search(r"[a-z]", password))
         and (not numbers or re.search(r"[0-9]", password))
-        and (not special_char or re.search(r"[!@#$%^&*()_+\-=\[\]{};':\"\\|,.<>\/?]", password))
-        and (password not in most_used_passwords)
+        and (
+            not special_char
+            or re.search(r"[!@#$%^&*()_+\-=\[\]{};':\"\\|,.<>\/?]", password)
+        )
     )
 
 
@@ -129,7 +131,9 @@ def form_clean_password(self, password_field_name, strength: PasswordStrength):
         algorithm, iterations, salt, hash = current_user_password.split("$")
         new_hashed_password = ph().encode(password, salt)
         if new_hashed_password == current_user_password:
-            raise ValidationError(f"Please choose a password that you haven't used before")
+            raise ValidationError(
+                f"Please choose a password that you haven't used before"
+            )
     return password
 
 

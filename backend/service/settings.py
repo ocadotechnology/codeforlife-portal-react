@@ -69,7 +69,7 @@ MIDDLEWARE = [
     "django.middleware.locale.LocaleMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
-    # "django.middleware.csrf.CsrfViewMiddleware", disable for dev only
+    # "django.middleware.csrf.CsrfViewMiddleware",
     "deploy.middleware.security.CustomSecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
@@ -185,7 +185,9 @@ CLOUD_STORAGE_PREFIX = "https://storage.googleapis.com/codeforlife-assets/"
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
-    "handlers": {"console": {"level": "DEBUG", "class": "logging.StreamHandler"}},
+    "handlers": {
+        "console": {"level": "DEBUG", "class": "logging.StreamHandler"}
+    },
     "loggers": {"two_factor": {"handlers": ["console"], "level": "INFO"}},
 }
 # TODO: assess if still need and trim fat if not.

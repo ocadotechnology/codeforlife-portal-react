@@ -13,25 +13,19 @@ import {
 import { Image } from 'codeforlife/lib/esm/components';
 
 import { paths } from '../../app/router';
+import { useResetPasswordMutation } from '../../app/api';
 import CflPasswordFields from '../../components/CflPasswordFields';
 import ConfirmationTickImage from '../../images/confirmation_tick.png';
 
 const PasswordForm: React.FC<{
   userType: 'teacher' | 'independent';
+  userId: string;
   token: string;
-}> = ({ userType, token }) => {
+}> = ({ userType, userId, token }) => {
   const navigate = useNavigate();
-  const [didSubmit, setDidSubmit] = React.useState(false);
+  const [resetPassword, result] = useResetPasswordMutation();
 
-  interface Values {
-    email: string;
-  }
-
-  const initialValues: Values = {
-    email: ''
-  };
-
-  return (didSubmit)
+  return (result.isSuccess)
     ? <Stack gap={1} alignItems='center'>
       <Typography textAlign='center' variant='h4'>
         Your password has been reset
@@ -62,13 +56,19 @@ const PasswordForm: React.FC<{
         Please enter a new password and confirm it in the box below to reset your account’s password.
       </Typography>
       <Form
-        initialValues={initialValues}
-        onSubmit={(values, { setSubmitting }) => {
-          // TODO: connect this to the backend
-          console.log(values);
-          setSubmitting(false);
-          setDidSubmit(true);
+        initialValues={{
+          password: '',
+          repeatPassword: ''
         }}
+        onSubmit={async (values) => await resetPassword({
+          userId,
+          token,
+          // TODO: make field names consistent with backend.
+          body: {
+            new_password1: values.password,
+            new_password2: values.repeatPassword
+          }
+        })}
       >
         <CflPasswordFields userType={userType} />
         <Stack

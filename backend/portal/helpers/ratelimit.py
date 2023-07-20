@@ -56,7 +56,11 @@ def school_student_key(group, request):
 def get_ratelimit_cache_key_for_user(user: str):
     # check for email quickly
 
-    user_rate = RATELIMIT_LOGIN_RATE if EMAIL_REGEX_PATTERN.match(user) else RATELIMIT_LOGIN_RATE_SCHOOL_STUDENT
+    user_rate = (
+        RATELIMIT_LOGIN_RATE
+        if EMAIL_REGEX_PATTERN.match(user)
+        else RATELIMIT_LOGIN_RATE_SCHOOL_STUDENT
+    )
     _, period = _split_rate(rate=user_rate)
     window = _get_window(value=user, period=period)
     cache_key = _make_cache_key(
@@ -79,7 +83,15 @@ def clear_ratelimit_cache_for_user(user: str):
     cache.delete(cache_key)
 
 
-def is_ratelimited(request, group=None, fn=None, key=None, rate=None, method=ALL, increment=False):
+def is_ratelimited(
+    request,
+    group=None,
+    fn=None,
+    key=None,
+    rate=None,
+    method=ALL,
+    increment=False,
+):
     """
     As in django-ratelimit. Calls "get_usage" defined below to enable the usage of
     the custom cache_key functionality.
@@ -91,7 +103,15 @@ def is_ratelimited(request, group=None, fn=None, key=None, rate=None, method=ALL
     return usage["should_limit"]
 
 
-def get_usage(request, group=None, fn=None, key=None, rate=None, method=ALL, increment=False):
+def get_usage(
+    request,
+    group=None,
+    fn=None,
+    key=None,
+    rate=None,
+    method=ALL,
+    increment=False,
+):
     """
     As in django-ratelimit. Makes cache_key global so it can be called outside the scope
     and the cache can be accessed at later times.
@@ -99,7 +119,9 @@ def get_usage(request, group=None, fn=None, key=None, rate=None, method=ALL, inc
     global cache_key
 
     if group is None and fn is None:
-        raise ImproperlyConfigured("get_usage must be called with either " "`group` or `fn` arguments")
+        raise ImproperlyConfigured(
+            "get_usage must be called with either " "`group` or `fn` arguments"
+        )
 
     if not getattr(settings, "RATELIMIT_ENABLE", True):
         return None
@@ -154,7 +176,9 @@ def get_usage(request, group=None, fn=None, key=None, rate=None, method=ALL, inc
         keyfn = import_string(key)
         value = keyfn(group, request)
     else:
-        raise ImproperlyConfigured("Could not understand ratelimit key: %s" % key)
+        raise ImproperlyConfigured(
+            "Could not understand ratelimit key: %s" % key
+        )
 
     window = _get_window(value, period)
     initial_value = 1 if increment else 0

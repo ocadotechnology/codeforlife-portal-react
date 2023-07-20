@@ -40,8 +40,7 @@ const SocialMediaIconButton: React.FC<{
         sx: {
           fontSize: {
             xs: getFontSize(50),
-            sm: getFontSize(42),
-            md: getFontSize(50)
+            sm: getFontSize(42)
           },
           borderRadius: '50%',
           border: rounded ? '3px solid white' : undefined,
@@ -59,14 +58,12 @@ const Logos: React.FC = () => {
   const theme = useTheme();
   const downMD = useMediaQuery(theme.breakpoints.down('md'));
 
-  const spacing = { xs: 3, md: 1.5 };
-
   const ocadoGroupImage = (
     <Image
       alt='Ocado Group'
       src={OcadoGroupIcon}
       style={{ width: 'auto' }}
-      maxHeight={{ xs: '50px', sm: '40px', md: '50px' }}
+      maxHeight={{ xs: '50px', sm: '40px' }}
       marginLeft={{ xs: 0, md: 'auto !important' }}
       href={process.env.REACT_APP_OCADO_GROUP_HREF}
       hrefInNewTab
@@ -74,7 +71,7 @@ const Logos: React.FC = () => {
   );
 
   return (
-    <Grid container spacing={spacing}>
+    <Grid container spacing={{ xs: 3 }}>
       <Grid
         xs={12}
         order={{ xs: 2, md: 1 }}
@@ -90,7 +87,7 @@ const Logos: React.FC = () => {
         <Stack
           direction='row'
           width='100%'
-          spacing={spacing}
+          spacing={{ xs: 3, sm: 2 }}
           justifyContent={{ xs: 'center', md: 'normal' }}
         >
           <SocialMediaIconButton href={

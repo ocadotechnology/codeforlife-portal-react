@@ -3,10 +3,7 @@ import os
 
 
 def resetEmailPasswordMessage(request, domain, uid, token, protocol):
-    password_reset_uri = reverse_lazy(
-        "password_reset_check_and_confirm", kwargs={"uidb64": uid, "token": token}
-    )
-    url = f"{protocol}://{domain}{password_reset_uri}"
+    url = f"{protocol}://{domain}/?userId={uid}&token={token}"
     return {
         "subject": f"Password reset request",
         "message": (
@@ -20,7 +17,9 @@ def resetEmailPasswordMessage(request, domain, uid, token, protocol):
 def emailVerificationNeededEmail(request, token):
     url = f"{request.build_absolute_uri(reverse('verify_email', kwargs={'token': token}))}"
     terms_url = rf"{os.getenv('FRONTEND_URL')}/terms-of-use/terms-of-use"
-    privacy_notice_url = rf"{os.getenv('FRONTEND_URL')}/privacy-notice/privacy-notice"
+    privacy_notice_url = (
+        rf"{os.getenv('FRONTEND_URL')}/privacy-notice/privacy-notice"
+    )
     return {
         "subject": f"Email verification ",
         "message": (
@@ -34,7 +33,9 @@ def emailVerificationNeededEmail(request, token):
 def parentsEmailVerificationNeededEmail(request, user, token):
     url = f"{request.build_absolute_uri(reverse('verify_email', kwargs={'token': token}))}"
     terms_url = rf"{os.getenv('FRONTEND_URL')}/terms-of-use/terms-of-use"
-    privacy_notice_url = rf"{os.getenv('FRONTEND_URL')}/privacy-notice/privacy-notice"
+    privacy_notice_url = (
+        rf"{os.getenv('FRONTEND_URL')}/privacy-notice/privacy-notice"
+    )
     return {
         "subject": f"Code for Life account request",
         "message": (
@@ -188,7 +189,10 @@ def inviteTeacherEmail(request, schoolName, token, account_exists):
             f"{url}"
         )
 
-    return {"subject": f"You've been invited to join Code for Life", "message": message}
+    return {
+        "subject": f"You've been invited to join Code for Life",
+        "message": message,
+    }
 
 
 def accountDeletionEmail(request):

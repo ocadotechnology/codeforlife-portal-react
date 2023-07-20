@@ -30,11 +30,6 @@ export const UPDATE_TEACHER_ACCOUNT_SCHEMA = object({
   )
 });
 
-export const DELETE_ACCOUNT_SCHEMA = object({
-  currentPassword: string().required('Current password is required'),
-  removeFromNewsletter: boolean().required()
-});
-
 export const CREATE_CLASS_SCHEMA = object({
   className: string().required('Class name is required'),
   teacherName: string().required('Teacher name is required'),
