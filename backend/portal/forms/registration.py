@@ -1,6 +1,6 @@
 from captcha.fields import ReCaptchaField
 from captcha.widgets import ReCaptchaV2Invisible
-from common.email_messages import resetEmailPasswordMessage
+from ..email_messages import resetEmailPasswordMessage
 from common.helpers.emails import NOTIFICATION_EMAIL, send_email
 from common.models import Student, Teacher
 from django import forms
@@ -154,3 +154,5 @@ class DeleteAccountForm(forms.Form):
         delete_password = self.cleaned_data.get("delete_password", None)
         if not self.user.check_password(delete_password):
             raise forms.ValidationError("Incorrect password")
+
+# http://example.com/?userId=Mg&amp;token=brn00a-928bb157565b01dcae8ec21fc312f183
