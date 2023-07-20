@@ -1,3 +1,4 @@
+// TODO: relocate this helper.
 export const allBoxesChecked: (
   levels: Array<{ levelNumber: string; name: string }>,
   formikLevels: string[]
