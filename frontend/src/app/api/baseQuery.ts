@@ -19,12 +19,12 @@ const baseQuery: BaseQueryFn<
   unknown,
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
-  // Check if the request has a body and it's content type is specified.
+  // Check if the request has a body and its content type is specified.
   if (typeof args.body === 'object' &&
     args.headers !== undefined &&
     'Content-Type' in args.headers
   ) {
-    // Stringify the request body based on it's content type.
+    // Stringify the request body based on its content type.
     switch (args.headers['Content-Type']) {
       case 'application/x-www-form-urlencoded':
         args.body = qs.stringify(args.body);
