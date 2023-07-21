@@ -46,7 +46,7 @@ const Summary: React.FC<SummaryProps> = ({
         <Image
           alt='Ocado Group'
           src={OgLogo}
-          maxWidth={{ xs: '115px', lg: '150px' }}
+          maxWidth={{ xs: '100px', lg: '120px' }}
           mx={{ xs: 'auto', lg: 0 }}
           href={process.env.REACT_APP_OCADO_GROUP_HREF}
           hrefInNewTab
