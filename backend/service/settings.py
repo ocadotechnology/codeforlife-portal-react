@@ -212,4 +212,6 @@ SITE_ID = 1
 
 PIPELINE = {}
 
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
+
 from common.csp_config import *
