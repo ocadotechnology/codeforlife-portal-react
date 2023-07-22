@@ -325,7 +325,7 @@ const EditClass: React.FC<{
         <StudentsTable accessCode={accessCode} />
       </Box>
     </Page.Section>
-    <Page.Section gridProps={{ bgcolor: theme.palette.info.light }}>
+    <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
       <AddStudentsForm onSubmit={() => {
         alert('submitted');
       }} />

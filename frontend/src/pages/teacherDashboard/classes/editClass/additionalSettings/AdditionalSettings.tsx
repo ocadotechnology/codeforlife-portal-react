@@ -278,7 +278,7 @@ const AdditionalSettings: React.FC<{
           to allow pupils to see their classmates&apos; progress.
         </Typography>
       </Page.Section>
-      <Page.Section gridProps={{ bgcolor: theme.palette.info.light }}>
+      <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
         <Typography variant="h5">Class details</Typography>
         <ClassDetailsForm
           goBack={goBack}
@@ -292,7 +292,7 @@ const AdditionalSettings: React.FC<{
         </Typography>
         <RapidRouterAccessSettings />
       </Page.Section>
-      <Page.Section gridProps={{ bgcolor: theme.palette.info.light }}>
+      <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
         <TransferClassToAnotherTeacher />
       </Page.Section>
     </>;

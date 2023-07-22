@@ -15,7 +15,6 @@ import { tableCellClasses } from '@mui/material/TableCell';
 export const TableCellElementStyled = styled(TableCell)(({ theme }) => ({
   outline: `1px solid ${theme.palette.common.white}`,
   [`&.${tableCellClasses.head}`]: {
-    background: theme.palette.info.dark,
     color: theme.palette.common.white
   }
 }));
