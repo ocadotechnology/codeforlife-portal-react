@@ -24,7 +24,7 @@ const BaseForm: React.FC<ThemedBoxProps & {
       options={themeOptions}
       userType={userType}
       height='100%'
-      p={3}
+      p={5}
     >
       <Typography variant='h4' textAlign='center'>
         {header}
