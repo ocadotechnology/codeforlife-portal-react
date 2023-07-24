@@ -14,7 +14,7 @@ import {
 } from 'codeforlife/lib/esm/components/form';
 
 import { useNavigate } from 'react-router-dom';
-import { useSignUpMutation } from '../../app/api';
+import { useSubscribeToNewsletterMutation } from '../../app/api';
 
 interface SignUpValues {
   email: string;
@@ -33,7 +33,7 @@ const SignUp: React.FC = () => {
     over18: false
   };
 
-  const [signUp] = useSignUpMutation();
+  const [signUp] = useSubscribeToNewsletterMutation();
   const navigate = useNavigate();
 
   const handleSubmit = (values: SignUpValues): void => {

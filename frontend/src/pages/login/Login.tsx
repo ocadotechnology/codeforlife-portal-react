@@ -35,12 +35,10 @@ const Login: React.FC<{
   );
   return (
     <Page.Container>
-      {
-        searchParams?.verifyEmail
-          ? <Page.Notification>
-            Your email address was successfully verified, please log in.
-          </Page.Notification>
-          : <></>
+      {searchParams?.verifyEmail === true &&
+        <Page.Notification>
+          Your email address was successfully verified, please log in.
+        </Page.Notification>
       }
       <Page.Section maxWidth='md'>
         {form}

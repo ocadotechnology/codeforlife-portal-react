@@ -2,7 +2,7 @@ import api from '../api';
 
 const dotmailerApi = api.injectEndpoints({
   endpoints: (build) => ({
-    signUp: build.mutation<null | {
+    subscribeToNewsletter: build.mutation<null | {
       success: boolean
     }, {
       email: string;
@@ -35,6 +35,6 @@ const dotmailerApi = api.injectEndpoints({
 
 export default dotmailerApi;
 export const {
-  useSignUpMutation,
+  useSubscribeToNewsletterMutation,
   useConsentFormMutation
 } = dotmailerApi;
