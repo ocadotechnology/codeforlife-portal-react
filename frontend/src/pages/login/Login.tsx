@@ -35,7 +35,7 @@ const Login: React.FC<{
   );
 
   return (
-    <Page.Container padding={5}>
+    <Page.Container>
       {searchParams?.verifyEmail === true &&
         <Page.Notification>
           Your email address was successfully verified, please log in.
