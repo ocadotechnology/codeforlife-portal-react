@@ -30,7 +30,7 @@ export const UnauthenticatedSummary: React.FC = () => {
 
   const linkProps: LinkProps = {
     color: '#383b3b',
-    variant: upLg ? 'h4' : 'h5',
+    variant: upLg ? 'h5' : 'h6',
     className: 'no-decor',
     marginBottom: '0px !important'
   };
