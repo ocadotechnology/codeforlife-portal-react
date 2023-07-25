@@ -14,7 +14,7 @@ import { Image } from 'codeforlife/lib/esm/components';
 
 import { paths } from '../../app/router';
 import { useResetPasswordMutation } from '../../app/api';
-import CflPasswordFields from '../../components/CflPasswordFields';
+import CflPasswordFields from '../../features/cflPasswordFields/CflPasswordFields';
 import ConfirmationTickImage from '../../images/confirmation_tick.png';
 
 const PasswordForm: React.FC<{
