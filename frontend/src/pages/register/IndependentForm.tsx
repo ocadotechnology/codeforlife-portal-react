@@ -6,7 +6,7 @@ import { ChevronRight as ChevronRightIcon } from '@mui/icons-material';
 import { paths } from '../../app/router';
 import BaseForm from './BaseForm';
 import DatePicker from '../../components/DatePicker';
-import CflPasswordFields from '../../components/CflPasswordFields';
+import CflPasswordFields from '../../features/cflPasswordFields/CflPasswordFields';
 
 import {
   Form,

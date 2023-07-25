@@ -81,7 +81,7 @@ MIDDLEWARE = [
     # "deploy.middleware.screentime_warning.ScreentimeWarningMiddleware",
 ]
 
-ROOT_URLCONF = 'service.urls'
+ROOT_URLCONF = "service.urls"
 
 TEMPLATES = [
     {
@@ -113,16 +113,16 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'service.wsgi.application'
+WSGI_APPLICATION = "service.wsgi.application"
 
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
     if DEBUG
     else {
@@ -139,16 +139,16 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
 
@@ -173,7 +173,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_ROOT = BASE_DIR / "static"
-STATIC_URL = '/static/'
+STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "portal/static"]
 MEDIA_ROOT = STATIC_URL + "/email_media/"
 
@@ -183,7 +183,9 @@ PIPELINE_ENABLED = False  # True if assets should be compressed, False if not.
 PIPELINE = {}
 
 # Gets all the static files from the apps mentioned above in INSTALLED_APPS
-STATICFILES_FINDERS = ["django.contrib.staticfiles.finders.AppDirectoriesFinder"]
+STATICFILES_FINDERS = [
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder"
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -208,14 +210,24 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 EMAIL_ADDRESS = "no-reply@codeforlife.education"
 
 DOTMAILER_CREATE_CONTACT_URL = os.getenv("DOTMAILER_CREATE_CONTACT_URL", "")
-DOTMAILER_MAIN_ADDRESS_BOOK_URL = os.getenv("DOTMAILER_MAIN_ADDRESS_BOOK_URL", "")
-DOTMAILER_TEACHER_ADDRESS_BOOK_URL = os.getenv("DOTMAILER_TEACHER_ADDRESS_BOOK_URL", "")
-DOTMAILER_STUDENT_ADDRESS_BOOK_URL = os.getenv("DOTMAILER_STUDENT_ADDRESS_BOOK_URL", "")
+DOTMAILER_MAIN_ADDRESS_BOOK_URL = os.getenv(
+    "DOTMAILER_MAIN_ADDRESS_BOOK_URL", ""
+)
+DOTMAILER_TEACHER_ADDRESS_BOOK_URL = os.getenv(
+    "DOTMAILER_TEACHER_ADDRESS_BOOK_URL", ""
+)
+DOTMAILER_STUDENT_ADDRESS_BOOK_URL = os.getenv(
+    "DOTMAILER_STUDENT_ADDRESS_BOOK_URL", ""
+)
 DOTMAILER_NO_ACCOUNT_ADDRESS_BOOK_URL = os.getenv(
     "DOTMAILER_NO_ACCOUNT_ADDRESS_BOOK_URL", ""
 )
-DOTMAILER_GET_USER_BY_EMAIL_URL = os.getenv("DOTMAILER_GET_USER_BY_EMAIL_URL", "")
-DOTMAILER_DELETE_USER_BY_ID_URL = os.getenv("DOTMAILER_DELETE_USER_BY_ID_URL", "")
+DOTMAILER_GET_USER_BY_EMAIL_URL = os.getenv(
+    "DOTMAILER_GET_USER_BY_EMAIL_URL", ""
+)
+DOTMAILER_DELETE_USER_BY_ID_URL = os.getenv(
+    "DOTMAILER_DELETE_USER_BY_ID_URL", ""
+)
 DOTMAILER_PUT_CONSENT_DATA_URL = os.getenv("DOTMAILER_PUT_CONSENT_DATA_URL", "")
 DOTMAILER_SEND_CAMPAIGN_URL = os.getenv("DOTMAILER_SEND_CAMPAIGN_URL", "")
 DOTMAILER_THANKS_FOR_STAYING_CAMPAIGN_ID = os.getenv(
@@ -297,6 +309,7 @@ if os.getenv("GAE_APPLICATION", None):
 IS_CLOUD_SCHEDULER_FUNCTION = is_cloud_scheduler
 CLOUD_STORAGE_PREFIX = "https://storage.googleapis.com/codeforlife-assets/"
 
+
 # Domain
 def domain():
     """Returns the full domain depending on whether it's local, dev, staging or prod."""
@@ -313,6 +326,7 @@ def domain():
 CSP_DEFAULT_SRC = ("self",)
 CSP_CONNECT_SRC = (
     "'self'",
+    "https://api.pwnedpasswords.com",
     "https://*.onetrust.com/",
     "https://euc-widget.freshworks.com/",
     "https://codeforlife.freshdesk.com/",
@@ -354,6 +368,7 @@ CSP_SCRIPT_SRC = (
     "https://pyodide-cdn2.iodide.io/v0.15.0/full/",
     f"{domain()}/static/portal/",
     f"{domain()}/static/common/",
+    "https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js",
 )
 CSP_STYLE_SRC = (
     "'self'",
@@ -394,7 +409,10 @@ CSP_IMG_SRC = (
     f"{domain()}/static/game/js/blockly/media/",
     f"{domain()}/static/icons/",
 )
-CSP_OBJECT_SRC = (f"{domain()}/static/common/img/", f"{domain()}/static/game/image/")
+CSP_OBJECT_SRC = (
+    f"{domain()}/static/common/img/",
+    f"{domain()}/static/game/image/",
+)
 CSP_MEDIA_SRC = (
     f"{domain()}/static/game/sound/",
     f"{domain()}/static/game/js/blockly/media/",

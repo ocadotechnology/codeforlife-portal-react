@@ -82,13 +82,14 @@ def teacher_or_indy_reset_password_tracker(request, activity_today, email):
     get_user = Teacher.objects.filter(
         new_user__email=email
     ) or Student.objects.filter(new_user__email=email)
-    user = get_user[0]
-    if blocked_and_not_expired(user):
-        if "teacher" in request.path:
-            activity_today.teacher_lockout_resets += 1
-        elif "student" in request.path:
-            activity_today.indy_lockout_resets += 1
-        activity_today.save()
+    if get_user.exists():
+        user = get_user[0]
+        if blocked_and_not_expired(user):
+            if "teacher" in request.path:
+                activity_today.teacher_lockout_resets += 1
+            elif "student" in request.path:
+                activity_today.indy_lockout_resets += 1
+            activity_today.save()
 
 
 def handle_reset_password_tracking(
