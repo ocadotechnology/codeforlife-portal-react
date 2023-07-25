@@ -23,7 +23,7 @@ const Login: React.FC<{
   }
 
   return (
-    <Page.Container>
+    <Page.Container padding={5}>
       <Page.Section maxWidth='md'>
         {form}
       </Page.Section>
