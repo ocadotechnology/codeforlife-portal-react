@@ -1,6 +1,6 @@
 import api from './api';
 import {
-  useSignUpMutation,
+  useSubscribeToNewsletterMutation,
   useConsentFormMutation
 } from './endpoints/dotmailer';
 import {
@@ -16,7 +16,7 @@ import {
 export default api;
 export {
   // dotmailer
-  useSignUpMutation,
+  useSubscribeToNewsletterMutation,
   useConsentFormMutation,
   // home
   useRegisterUserMutation,

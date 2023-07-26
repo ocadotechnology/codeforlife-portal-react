@@ -11,7 +11,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 
-import json
 
 @csrf_exempt
 def process_newsletter_form(request):

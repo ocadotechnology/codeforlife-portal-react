@@ -30,7 +30,6 @@ cfl-common = "==6.33.1"
 django-ratelimit = "==3.0.1"
 django-preventconcurrentlogins = "==0.8.2"
 django-csp = "==3.7"
-setuptools = "==62.1.0"  # upgrading this causes an error when publishing the cfl_common package to PyPI for some reason see https://github.com/ocadotechnology/codeforlife-portal/actions/runs/3883963564/jobs/6625894054
 django-import-export = "*"
 google-cloud-logging = "==1.*"
 google-auth = "==1.*"

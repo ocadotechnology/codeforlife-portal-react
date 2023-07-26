@@ -10,10 +10,10 @@ import {
   TextField
 } from 'codeforlife/lib/esm/components/form';
 
+import CflPasswordFields from '../../features/cflPasswordFields/CflPasswordFields';
+import { useRegisterUserMutation } from '../../app/api';
 import { paths } from '../../app/router';
 import BaseForm from './BaseForm';
-import CflPasswordFields from '../../components/CflPasswordFields';
-import { useRegisterUserMutation } from '../../app/api';
 
 // TODO: Once backend is modernised, rename the variables
 // to something more readable on both frontend and backend
