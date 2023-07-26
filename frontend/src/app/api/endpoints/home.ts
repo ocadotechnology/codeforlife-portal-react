@@ -14,7 +14,7 @@ const homeApi = api.injectEndpoints({
       dateOfBirth: Date;
       name: string;
       email: string;
-      consentTicked?: boolean;
+      consentTicked: boolean;
       newsletterTicked: boolean;
       password: string;
       confirmPassword: string;

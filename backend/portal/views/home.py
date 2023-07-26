@@ -231,12 +231,13 @@ def process_independent_student_signup_form(request, data):
             LOGGER.warning(
                 f"Ratelimit independent {RATELIMIT_USER_ALREADY_REGISTERED_EMAIL_GROUP}: {email}"
             )
-        return render(
-            request,
-            "portal/email_verification_needed.html",
-            {"usertype": "INDEP_STUDENT"},
-            status=302,
-        )
+        # return render(
+        #     request,
+        #     "portal/email_verification_needed.html",
+        #     {"usertype": "INDEP_STUDENT"},
+        #     status=302,
+        # )
+        return HttpResponse()
 
     student = Student.objects.independentStudentFactory(
         name=data["name"], email=data["email"], password=data["password"]
@@ -320,7 +321,7 @@ def process_independent_student_signup_form(request, data):
 #     )
 
 
-# TODO: use google analytics
+# TODO: look into using google analytics
 def download_student_pack(request, student_pack_type):
     # if request.method == "POST":
     count_student_pack_downloads_click(int(student_pack_type))
@@ -329,7 +330,7 @@ def download_student_pack(request, student_pack_type):
         if DownloadType(int(student_pack_type)) == DownloadType.PYTHON_PACK
         else cloud_storage("club_packs/PrimaryCodingClub.zip")
     )
-    return HttpResponseRedirect(link)
+    return JsonResponse({"link": link})
 
 
 # def home_learning(request):

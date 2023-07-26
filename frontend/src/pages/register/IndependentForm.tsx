@@ -3,11 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { Link, FormHelperText } from '@mui/material';
 import { ChevronRight as ChevronRightIcon } from '@mui/icons-material';
 
-import { paths } from '../../app/router';
-import BaseForm from './BaseForm';
-import DatePicker from '../../components/DatePicker';
-import CflPasswordFields from '../../features/cflPasswordFields/CflPasswordFields';
-
 import {
   Form,
   SubmitButton,
@@ -15,40 +10,78 @@ import {
   TextField,
   CheckboxField
 } from 'codeforlife/lib/esm/components/form';
+import { setFormErrors } from 'codeforlife/lib/esm/helpers/formik';
+
+import { paths } from '../../app/router';
+import { useRegisterUserMutation } from '../../app/api';
+import BaseForm from './BaseForm';
+import DatePicker from '../../components/DatePicker';
+import CflPasswordFields from '../../features/cflPasswordFields/CflPasswordFields';
+
+import { FormikHelpers } from 'formik';
+import { MutationTrigger } from '@reduxjs/toolkit/dist/query/react/buildHooks';
 
 interface IndependentFormValues {
-  fullName: string;
+  name: string;
   email: string;
-  termsOfUse: boolean;
-  receiveUpdates: boolean;
+  consentTicked: boolean;
+  newsletterTicked: boolean;
   password: string;
-  repeatPassword: string;
+  confirmPassword: string;
 }
 
 const initialValues: IndependentFormValues = {
-  fullName: '',
+  name: '',
   email: '',
-  termsOfUse: false,
-  receiveUpdates: false,
+  consentTicked: false,
+  newsletterTicked: false,
   password: '',
-  repeatPassword: ''
+  confirmPassword: ''
 };
 
 const IndependentForm: React.FC = () => {
   const navigate = useNavigate();
-  const [yearsOfAge, setYearsOfAge] = React.useState<number>();
+  const [registerUser] = useRegisterUserMutation();
+  const [dateOfBirth, setDateOfBirth] = React.useState<Date>();
 
   const EmailApplicableAge = 13;
   const ReceiveUpdateAge = 18;
 
-  function onDateOfBirthChange(dob: Date | undefined): void {
-    setYearsOfAge(
-      dob === undefined
-        ? undefined
-        : Math.floor(
-          (new Date().getTime() - dob.getTime()) / (1000 * 60 * 60 * 24 * 365)
-        )
+  const yearsOfAge = dateOfBirth === undefined
+    ? undefined
+    : Math.floor(
+      (new Date().getTime() - dateOfBirth.getTime()) /
+      (1000 * 60 * 60 * 24 * 365)
     );
+
+  function submitForm(
+    trigger: MutationTrigger<any>,
+    query: {
+      build?: (values: Record<string, any>) => Record<string, any>;
+      then: () => void;
+      catch?: (error: Error) => void;
+      finally?: () => void;
+    }
+  ): (
+    values: Record<string, any>,
+    helpers: FormikHelpers<any>
+  ) => void {
+    const {
+      build = (values) => values
+    } = query;
+
+    return (values, helpers) => {
+      trigger(build(values))
+        .unwrap()
+        .then(query.then)
+        .catch((error) => {
+          if (query.catch !== undefined) query.catch(error);
+          setFormErrors(error, helpers.setErrors);
+        })
+        .finally(() => {
+          if (query.finally !== undefined) query.finally();
+        });
+    };
   }
 
   return (
@@ -60,19 +93,32 @@ const IndependentForm: React.FC = () => {
     >
       <DatePicker
         helperText="Please enter your date of birth (we do not store this information)."
-        onChange={onDateOfBirthChange}
+        date={dateOfBirth}
+        onChange={(dob) => { setDateOfBirth(dob); }}
       />
       {yearsOfAge !== undefined && (
         <Form
           initialValues={initialValues}
-          onSubmit={(values, { setSubmitting }) => {
-            // TODO: to call backend
-            setSubmitting(false);
-          }}
+          // onSubmit={(values, { setErrors }) => {
+          //   registerUser({ ...values, dateOfBirth: dateOfBirth as Date })
+          //     .unwrap()
+          //     .then(() => {
+          //       navigate(paths.register.emailVerification.independent._);
+          //     })
+          //     .catch((error) => { setFormErrors(error, setErrors); });
+          // }}
+          onSubmit={submitForm(registerUser, {
+            build: (values) => ({
+              ...values, dateOfBirth: dateOfBirth as Date
+            }),
+            then: () => {
+              navigate(paths.register.emailVerification.independent._);
+            }
+          })}
         >
           <TextField
             required
-            name="fullName"
+            name="name"
             placeholder="Full name"
             helperText="Enter your full name"
           />
@@ -95,7 +141,7 @@ const IndependentForm: React.FC = () => {
           {yearsOfAge >= EmailApplicableAge && (
             <CheckboxField
               required
-              name="termsOfUse"
+              name="consentTicked"
               formControlLabelProps={{
                 label: <>
                   I have read and understood the &nbsp;
@@ -121,17 +167,23 @@ const IndependentForm: React.FC = () => {
           )}
           {yearsOfAge >= ReceiveUpdateAge && (
             <CheckboxField
-              name="receiveUpdates"
+              name="newsletterTicked"
               formControlLabelProps={{
                 label:
                   'Sign up to receive updates about Code for Life games and teaching resources.'
               }}
             />
           )}
-          <CflPasswordFields userType='independent' />
+          <CflPasswordFields
+            userType='independent'
+            repeatPasswordName='confirmPassword'
+          />
           <SubmitButton
             stackProps={{ alignItems: 'end' }}
             endIcon={<ChevronRightIcon />}
+            disabled={(form) =>
+              !(form.dirty && form.isValid) && dateOfBirth !== undefined
+            }
           >
             Register
           </SubmitButton>

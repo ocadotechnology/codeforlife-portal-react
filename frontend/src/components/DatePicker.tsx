@@ -5,7 +5,8 @@ import {
   SelectProps,
   MenuItem,
   FormHelperText,
-  FormHelperTextProps
+  FormHelperTextProps,
+  SelectChangeEvent
 } from '@mui/material';
 
 import { form } from 'codeforlife/lib/esm/theme/typography';
@@ -26,7 +27,7 @@ const monthOptions = [
 ];
 
 export interface DatePickerProps {
-  defaultsToToday?: boolean,
+  date?: Date,
   previousYears?: number,
   helperText?: string,
   formHelperTextProps?: FormHelperTextProps,
@@ -34,56 +35,57 @@ export interface DatePickerProps {
 }
 
 const DatePicker: React.FC<DatePickerProps> = ({
-  defaultsToToday = false,
+  date,
   previousYears = 150,
   helperText,
   formHelperTextProps,
   onChange
 }) => {
-  const now = new Date();
+  const [day, setDay] = React.useState(date?.getDay() ?? 0);
+  const [month, setMonth] = React.useState(date?.getMonth() ?? 0);
+  const [year, setYear] = React.useState(date?.getFullYear() ?? 0);
 
-  const [date, setDate] = React.useState((defaultsToToday)
-    ? { day: now.getDay(), month: now.getMonth(), year: now.getFullYear() }
-    : { day: 0, month: 0, year: 0 }
-  );
-
-  const dayIsDisabled = date.month === 0 || date.year === 0;
-
-  if ([date.day, date.month, date.year].every(n => n !== 0)) {
-    onChange(new Date(date.year, date.month, date.day));
-  }
+  React.useEffect(() => {
+    onChange([day, month, year].includes(0)
+      ? undefined
+      : new Date(year, month - 1, day)
+    );
+  }, [day, month, year]);
 
   function getLastDay(month: number, year: number): number {
     return new Date(year, month, 0).getDate();
   }
 
-  function _onChange(
-    key: 'day' | 'month' | 'year',
-    value: number | string
-  ): void {
-    const newDate = { ...date };
-    newDate[key] = Number(value);
+  function dispatchSelectChangeEvent(
+    dispatch: React.Dispatch<React.SetStateAction<number>>
+  ) {
+    return (event: SelectChangeEvent<number>) => {
+      const value = Number(event.target.value);
 
-    if (key !== 'day' &&
-      !dayIsDisabled &&
-      newDate.day > getLastDay(newDate.month, newDate.year)
-    ) {
-      newDate.day = 0;
-      onChange(undefined);
-    }
+      if (dispatch !== setDay && day !== 0) {
+        const [_month, _year] = dispatch === setMonth
+          ? [value, year]
+          : [month, value];
 
-    setDate(newDate);
+        if (_month !== 0 && _year !== 0 && day > getLastDay(_month, _year)) {
+          setDay(0);
+        }
+      }
+
+      dispatch(value);
+    };
   }
 
-  function getDayOptions(): number[] {
-    return Array
-      .from(Array(getLastDay(date.month, date.year)).keys())
+  const dayIsDisabled = month === 0 || year === 0;
+
+  const dayOptions = dayIsDisabled
+    ? []
+    : Array.from(Array(getLastDay(month, year)).keys())
       .map(day => day + 1);
-  }
 
   const yearOptions = Array
     .from(Array(previousYears).keys())
-    .map(year => year + 1 - previousYears + now.getFullYear())
+    .map(year => year + 1 - previousYears + (date ?? new Date()).getFullYear())
     .reverse();
 
   const commonSelectProps: SelectProps<number> = {
@@ -107,15 +109,15 @@ const DatePicker: React.FC<DatePickerProps> = ({
       <Grid xs={4}>
         <Select
           id='select-day'
-          value={date.day}
-          onChange={(event) => { _onChange('day', event.target.value); }}
+          value={day}
+          onChange={dispatchSelectChangeEvent(setDay)}
           disabled={dayIsDisabled}
           {...commonSelectProps}
         >
           <MenuItem className='header' value={0}>
             Day
           </MenuItem>
-          {!dayIsDisabled && getDayOptions().map((day) =>
+          {dayOptions.map((day) =>
             <MenuItem key={`day-${day}`} value={day} dense>
               {day}
             </MenuItem>
@@ -125,8 +127,8 @@ const DatePicker: React.FC<DatePickerProps> = ({
       <Grid xs={4}>
         <Select
           id='select-month'
-          value={date.month}
-          onChange={(event) => { _onChange('month', event.target.value); }}
+          value={month}
+          onChange={dispatchSelectChangeEvent(setMonth)}
           {...commonSelectProps}
         >
           <MenuItem className='header' value={0}>
@@ -142,8 +144,8 @@ const DatePicker: React.FC<DatePickerProps> = ({
       <Grid xs={4}>
         <Select
           id='select-year'
-          value={date.year}
-          onChange={(event) => { _onChange('year', event.target.value); }}
+          value={year}
+          onChange={dispatchSelectChangeEvent(setYear)}
           {...commonSelectProps}
         >
           <MenuItem className='header' value={0}>
