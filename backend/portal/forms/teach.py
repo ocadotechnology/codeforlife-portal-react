@@ -75,7 +75,7 @@ class TeacherSignupForm(InvitedTeacherForm):
         ),
     )
 
-    captcha = ReCaptchaField(widget=ReCaptchaV2Invisible)
+    # captcha = ReCaptchaField(widget=ReCaptchaV2Invisible)
 
 
 class TeacherEditAccountForm(forms.Form):

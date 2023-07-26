@@ -17,10 +17,11 @@ def resetEmailPasswordMessage(request, domain, uid, token, protocol):
 
 def emailVerificationNeededEmail(request, token):
     url = f"{request.build_absolute_uri(reverse('verify_email', kwargs={'token': token}))}"
-    terms_url = rf"{settings.FRONTEND_URL}/terms-of-use/terms-of-use"
+    terms_url = f"{settings.FRONTEND_URL}/terms-of-use/terms-of-use"
     privacy_notice_url = (
-        rf"{settings.FRONTEND_URL}/privacy-notice/privacy-notice"
+        f"{settings.FRONTEND_URL}/privacy-notice/privacy-notice"
     )
+
     return {
         "subject": f"Email verification ",
         "message": (

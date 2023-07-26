@@ -11,7 +11,6 @@ from . import has_user_lockout_expired
 from portal import handlers
 
 
-#
 class TeacherLoginView(LoginView):
     template_name = "portal/login/teacher.html"
     form_list = (
@@ -22,9 +21,7 @@ class TeacherLoginView(LoginView):
 
     def get_success_url(self):
         url = self.get_redirect_url()
-        return url or redirect_teacher_to_correct_page(
-            self.request, self.request.user.userprofile.teacher
-        )
+        return url or redirect_teacher_to_correct_page(self.request, self.request.user.userprofile.teacher)
 
     def post(self, request, *args, **kwargs):
         """

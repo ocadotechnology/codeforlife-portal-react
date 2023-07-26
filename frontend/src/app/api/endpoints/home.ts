@@ -6,12 +6,16 @@ const homeApi = api.injectEndpoints({
       teacherFirstName: string;
       teacherLastName: string;
       teacherEmail: string;
+      teacherPassword: string;
+      teacherConfirmPassword: string;
+      consentTicked: boolean;
+      newsletterTicked: boolean;
     } | {
       dateOfBirth: Date;
       name: string;
       email: string;
       consentTicked?: boolean;
-      newsletterTicked?: boolean;
+      newsletterTicked: boolean;
       password: string;
       confirmPassword: string;
     }>({

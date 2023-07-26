@@ -6,7 +6,10 @@ import {
 } from '@reduxjs/toolkit/query';
 import qs from 'qs';
 
-import { snakeCaseToCamelCase } from 'codeforlife/lib/esm/helpers';
+import {
+  camelCaseToSnakeCase,
+  snakeCaseToCamelCase
+} from 'codeforlife/lib/esm/helpers';
 
 import { paths } from '../router';
 
@@ -20,18 +23,19 @@ const baseQuery: BaseQueryFn<
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
   // Check if the request has a body and its content type is specified.
-  if (typeof args.body === 'object' &&
-    args.headers !== undefined &&
-    'Content-Type' in args.headers
-  ) {
-    // Stringify the request body based on its content type.
-    switch (args.headers['Content-Type']) {
-      case 'application/x-www-form-urlencoded':
-        args.body = qs.stringify(args.body);
-        break;
-      case 'application/json':
-        args.body = JSON.stringify(args.body);
-        break;
+  if (typeof args.body === 'object' && args.body !== null) {
+    camelCaseToSnakeCase(args.body);
+
+    if (args.headers !== undefined && 'Content-Type' in args.headers) {
+      // Stringify the request body based on its content type.
+      switch (args.headers['Content-Type']) {
+        case 'application/x-www-form-urlencoded':
+          args.body = qs.stringify(args.body);
+          break;
+        case 'application/json':
+          args.body = JSON.stringify(args.body);
+          break;
+      }
     }
   }
 

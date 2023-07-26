@@ -18,23 +18,23 @@ import { useRegisterUserMutation } from '../../app/api';
 // TODO: Once backend is modernised, rename the variables
 // to something more readable on both frontend and backend
 interface TeacherFormValues {
-  'teacher_signup-teacher_first_name': string;
-  'teacher_signup-teacher_last_name': string;
-  'teacher_signup-teacher_email': string;
-  'teacher_signup-teacher_password': string;
-  'teacher_signup-teacher_confirm_password': string;
-  'teacher_signup-consent_ticked': boolean;
-  'teacher_signup-newsletter_ticked': boolean;
+  teacherFirstName: string;
+  teacherLastName: string;
+  teacherEmail: string;
+  teacherPassword: string;
+  teacherConfirmPassword: string;
+  consentTicked: boolean;
+  newsletterTicked: boolean;
 }
 
 const initialValues: TeacherFormValues = {
-  'teacher_signup-teacher_first_name': '',
-  'teacher_signup-teacher_last_name': '',
-  'teacher_signup-teacher_email': '',
-  'teacher_signup-teacher_password': '',
-  'teacher_signup-teacher_confirm_password': '',
-  'teacher_signup-consent_ticked': false,
-  'teacher_signup-newsletter_ticked': false
+  teacherFirstName: '',
+  teacherLastName: '',
+  teacherEmail: '',
+  teacherPassword: '',
+  teacherConfirmPassword: '',
+  consentTicked: false,
+  newsletterTicked: false
 };
 
 // TODO: Follow up from above, once backend is modernised, please also
@@ -42,18 +42,6 @@ const initialValues: TeacherFormValues = {
 const TeacherForm: React.FC = () => {
   const navigate = useNavigate();
   const [registerUser] = useRegisterUserMutation();
-
-  const handleSubmit = (values: any): void => {
-    registerUser(values)
-      .unwrap()
-      .then(() => {
-        navigate('/register/email-verification/teacher');
-      })
-      .catch((error) => {
-        console.error(error);
-        // TODO: set errors in the form for any async from errors ?
-      });
-  };
 
   return (
     <BaseForm
@@ -64,32 +52,39 @@ const TeacherForm: React.FC = () => {
     >
       <Form
         initialValues={initialValues}
-        onSubmit={(values, event) => {
-          // TODO: to call backend
-          handleSubmit(values);
+        onSubmit={(values) => {
+          registerUser(values)
+            .unwrap()
+            .then(() => {
+              navigate(paths.register.emailVerification.teacher._);
+            })
+            .catch((error) => {
+              console.error(error);
+              // TODO: set errors in the form for any async from errors?
+            });
         }}
       >
         <TextField
           required
-          name="teacher_signup-teacher_first_name"
+          name="teacherFirstName"
           placeholder="First name"
           helperText="Enter your first name"
         />
         <TextField
           required
-          name="teacher_signup-teacher_last_name"
+          name="teacherLastName"
           placeholder="Last name"
           helperText="Enter your last name"
         />
         <TextField
           required
-          name="teacher_signup-teacher_email"
+          name="teacherEmail"
           placeholder="Email address"
           helperText="Enter your email address"
         />
         <CheckboxField
           required
-          name="teacher_signup-consent_ticked"
+          name="consentTicked"
           formControlLabelProps={{
             label: (
               <>
@@ -115,14 +110,18 @@ const TeacherForm: React.FC = () => {
           }}
         />
         <CheckboxField
-          name="teacher_signup-newsletter_ticked"
+          name="newsletterTicked"
           formControlLabelProps={{
             label:
               'Sign up to receive updates about Code for Life games and teaching resources.'
           }}
         />
         {/* TODO: Rename the fields here too! */}
-        <CflPasswordFields userType="teacher" />
+        <CflPasswordFields
+          userType="teacher"
+          passwordName='teacherPassword'
+          repeatPasswordName='teacherConfirmPassword'
+        />
         <SubmitButton
           stackProps={{ alignItems: 'end' }}
           endIcon={<ChevronRightIcon />}

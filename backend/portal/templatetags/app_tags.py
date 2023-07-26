@@ -11,7 +11,7 @@ from django.shortcuts import reverse
 from django.template.context import RequestContext
 from django.template.defaultfilters import stringfilter
 
-from portal import __version__, beta
+# from portal import __version__, beta
 
 register = template.Library()
 
@@ -47,9 +47,9 @@ def is_production(request):
     return common_app_settings.MODULE_NAME == "default"
 
 
-@register.filter
-def has_beta_access(request):
-    return beta.has_beta_access(request)
+# @register.filter
+# def has_beta_access(request):
+#     return beta.has_beta_access(request)
 
 
 @register.inclusion_tag("portal/partials/aimmo_games_table.html", takes_context=True)
@@ -148,9 +148,9 @@ def cloud_storage(e):
     return settings.CLOUD_STORAGE_PREFIX + e
 
 
-@register.filter(name="get_project_version")
-def get_project_version():
-    return __version__
+# @register.filter(name="get_project_version")
+# def get_project_version():
+#     return __version__
 
 
 @register.simple_tag(takes_context=True)

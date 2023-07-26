@@ -7,15 +7,17 @@ import { PasswordField } from 'codeforlife/lib/esm/components/form';
 
 export interface CflPasswordFieldsProps {
   userType: 'teacher' | 'independent' | 'student';
+  passwordName?: string;
+  repeatPasswordName?: string;
 }
 
-const CflPasswordFields: React.FC<CflPasswordFieldsProps> = ({ userType }) => {
+const CflPasswordFields: React.FC<CflPasswordFieldsProps> = ({
+  userType,
+  passwordName = 'password',
+  repeatPasswordName = 'repeatPassword'
+}) => {
   const [password, setPassword] = React.useState('');
-  const idPrefixes = userType === 'teacher' ? 'teacher' : 'independent';
-  const legacyDjangoPrefix =
-    userType === 'teacher'
-      ? 'teacher_signup-teacher_'
-      : 'independent_student_signup-';
+
   // TODO: Load from central storage.
   const mostUsed = ['Abcd1234', 'Password1', 'Qwerty123'];
 
@@ -59,8 +61,7 @@ const CflPasswordFields: React.FC<CflPasswordFieldsProps> = ({ userType }) => {
     <>
       <PasswordField
         required
-        name={`${legacyDjangoPrefix}password`}
-        id={`${idPrefixes}_password`}
+        name={passwordName}
         placeholder="Password"
         helperText="Enter a password"
         validate={Yup.string()
@@ -75,8 +76,7 @@ const CflPasswordFields: React.FC<CflPasswordFieldsProps> = ({ userType }) => {
           )}
         repeat={[
           {
-            name: `${legacyDjangoPrefix}confirm_password`,
-            id: `${idPrefixes}_confirm_password`,
+            name: repeatPasswordName,
             placeholder: 'Repeat password',
             helperText: 'Repeat password'
           }
