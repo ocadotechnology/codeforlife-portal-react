@@ -16,11 +16,15 @@ import {
 } from 'codeforlife/lib/esm/components/form';
 
 export interface CflPasswordFieldsProps {
-  userType: 'teacher' | 'independent' | 'student'
+  userType: 'teacher' | 'independent' | 'student';
+  passwordName?: string;
+  repeatPasswordName?: string;
 }
 
 const CflPasswordFields: React.FC<CflPasswordFieldsProps> = ({
-  userType
+  userType,
+  passwordName = 'password',
+  repeatPasswordName = 'repeatPassword'
 }) => {
   type ErrorType = 'tooWeak' | 'tooCommon' | 'required';
   type ErrorColor = '#FF0000' | '#DBA901';
@@ -114,6 +118,7 @@ const CflPasswordFields: React.FC<CflPasswordFieldsProps> = ({
   return <>
     <PasswordField
       required
+      name={passwordName}
       placeholder='Password'
       helperText='Enter a password'
       validate={async (password) => {
@@ -132,7 +137,7 @@ const CflPasswordFields: React.FC<CflPasswordFieldsProps> = ({
       }}
       repeat={[
         {
-          name: 'repeatPassword',
+          name: repeatPasswordName,
           placeholder: 'Repeat password',
           helperText: 'Repeat password'
         }

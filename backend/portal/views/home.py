@@ -2,35 +2,42 @@ import logging
 import math
 
 from common import email_messages
-from common.helpers.emails import (
-    NOTIFICATION_EMAIL,
-    # DotmailerUserType,
-    # add_to_dotmailer,
-    send_email,
-    send_verification_email,
-)
+
+# from common.helpers.emails import (
+#     NOTIFICATION_EMAIL,
+#     DotmailerUserType,
+#     add_to_dotmailer,
+#     send_email,
+#     send_verification_email,
+# )
 from common.models import Student, Teacher  # , DynamicElement
 
 # from common.permissions import logged_in_as_student, logged_in_as_teacher
-from common.utils import _using_two_factor
+# from common.utils import _using_two_factor
 from django.contrib import messages as messages
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
 
 # from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import redirect, render
-from django.urls import reverse, reverse_lazy
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+
+# from django.shortcuts import redirect, render
+# from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 
 # from django.utils.html import format_html
 # from django.views.decorators.cache import cache_control
-from django.conf import settings
+# from django.conf import settings
 from rest_framework import status
 
 # from deploy import captcha
 from portal.forms.play import IndependentStudentSignupForm
 from portal.forms.teach import TeacherSignupForm
+from ..emails import (
+    send_verification_email,
+    NOTIFICATION_EMAIL,
+    send_email,
+)
 
 # from portal.helpers.captcha import remove_captcha_from_forms
 from portal.helpers.ratelimit import (
@@ -88,7 +95,7 @@ def register_view(request):
 
 def logout_view(request):
     logout(request)
-    return HttpResponseRedirect(settings.FRONTEND_URL)
+    return HttpResponse()
     # return HttpResponseRedirect(reverse_lazy("home"))
 
 
@@ -114,7 +121,11 @@ def render_signup_form(request):
             if teacher_signup_form.is_valid():
                 data = teacher_signup_form.cleaned_data
                 return process_signup_form(request, data)
-
+            else:
+                return JsonResponse(
+                    teacher_signup_form.errors,
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
         else:
             independent_student_signup_form = IndependentStudentSignupForm(
                 request.POST,  # prefix="independent_student_signup"
@@ -123,6 +134,11 @@ def render_signup_form(request):
             if independent_student_signup_form.is_valid():
                 data = independent_student_signup_form.cleaned_data
                 return process_independent_student_signup_form(request, data)
+            else:
+                return JsonResponse(
+                    independent_student_signup_form.errors,
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
     # res = render(
     #     request,
@@ -232,12 +248,13 @@ def process_independent_student_signup_form(request, data):
 
     send_verification_email(request, student.new_user, data, age=age)
 
-    return render(
-        request,
-        "portal/email_verification_needed.html",
-        {"usertype": "INDEP_STUDENT"},
-        status=302,
-    )
+    # return render(
+    #     request,
+    #     "portal/email_verification_needed.html",
+    #     {"usertype": "INDEP_STUDENT"},
+    #     status=302,
+    # )
+    return HttpResponse()
 
 
 # def is_developer(request):

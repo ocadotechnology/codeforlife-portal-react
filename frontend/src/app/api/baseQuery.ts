@@ -43,17 +43,26 @@ const baseQuery: BaseQueryFn<
   const result = await fetch(args, api, extraOptions);
 
   // Handle error responses.
-  if (result.error && result.error.status !== 400) {
-    switch (result.error.status) {
-      case 403:
-        window.location.href = paths.error.forbidden._;
-        break;
-      case 404:
-        window.location.href = paths.error.pageNotFound._;
-        break;
-      default:
-        window.location.href = paths.error.internalServerError._;
-        break;
+  if (result.error !== undefined) {
+    // Parse the error's data from snake_case to camelCase.
+    if (result.error.status === 400 &&
+      typeof result.error.data === 'object' &&
+      result.error.data !== null
+    ) {
+      snakeCaseToCamelCase(result.error.data);
+    } else {
+      // Catch-all error pages by status-code.
+      switch (result.error.status) {
+        case 403:
+          window.location.href = paths.error.forbidden._;
+          break;
+        case 404:
+          window.location.href = paths.error.pageNotFound._;
+          break;
+        default:
+          window.location.href = paths.error.internalServerError._;
+          break;
+      }
     }
   }
 
