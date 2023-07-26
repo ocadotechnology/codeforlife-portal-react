@@ -64,7 +64,7 @@ const AccountFormButtons: React.FC = () => {
   const navigate = useNavigate();
 
   return <>
-    <Stack direction='row' spacing={2}>
+    <Stack direction='row' spacing={2} paddingY={1}>
       <Button
         variant='outlined'
         onClick={() => { navigate(-1); }}
