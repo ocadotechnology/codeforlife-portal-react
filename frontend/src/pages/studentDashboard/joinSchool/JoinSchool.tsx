@@ -82,7 +82,7 @@ const JoinSchool: React.FC = () => {
               required
             />
 
-            <Stack direction='row' spacing={2} paddingY={1}>
+            <Stack direction='row' spacing={2} paddingY={3}>
               <Button
                 variant='outlined'
                 onClick={() => { navigate(-1); }}
