@@ -190,7 +190,7 @@ def are_password_and_confirm_password_different(password, confirm_password):
 
 
 class IndependentStudentSignupForm(forms.Form):
-    date_of_birth = forms.DateField(
+    date_of_birth = forms.DateTimeField(
         help_text="Please enter your date of birth (we do not store this information).",
         widget=forms.SelectDateWidget(
             years=range(date.today().year, date.today().year - 100, -1), empty_label=("Year", "Month", "Day")

@@ -1,7 +1,7 @@
 import logging
 import math
 
-from common import email_messages
+from .. import email_messages
 
 # from common.helpers.emails import (
 #     NOTIFICATION_EMAIL,
@@ -244,7 +244,7 @@ def process_independent_student_signup_form(request, data):
     )
 
     dob = data["date_of_birth"]
-    age_in_days = timezone.now().date() - dob
+    age_in_days = timezone.now() - dob
     age = math.floor(age_in_days.days / 365.25)
 
     send_verification_email(request, student.new_user, data, age=age)
