@@ -10,16 +10,13 @@ import {
   TextField,
   CheckboxField
 } from 'codeforlife/lib/esm/components/form';
-import { setFormErrors } from 'codeforlife/lib/esm/helpers/formik';
+import { submitForm } from 'codeforlife/lib/esm/helpers/formik';
 
 import { paths } from '../../app/router';
 import { useRegisterUserMutation } from '../../app/api';
 import BaseForm from './BaseForm';
 import DatePicker from '../../components/DatePicker';
 import CflPasswordFields from '../../features/cflPasswordFields/CflPasswordFields';
-
-import { FormikHelpers } from 'formik';
-import { MutationTrigger } from '@reduxjs/toolkit/dist/query/react/buildHooks';
 
 interface IndependentFormValues {
   name: string;
@@ -54,36 +51,6 @@ const IndependentForm: React.FC = () => {
       (1000 * 60 * 60 * 24 * 365)
     );
 
-  function submitForm(
-    trigger: MutationTrigger<any>,
-    query: {
-      build?: (values: Record<string, any>) => Record<string, any>;
-      then: () => void;
-      catch?: (error: Error) => void;
-      finally?: () => void;
-    }
-  ): (
-    values: Record<string, any>,
-    helpers: FormikHelpers<any>
-  ) => void {
-    const {
-      build = (values) => values
-    } = query;
-
-    return (values, helpers) => {
-      trigger(build(values))
-        .unwrap()
-        .then(query.then)
-        .catch((error) => {
-          if (query.catch !== undefined) query.catch(error);
-          setFormErrors(error, helpers.setErrors);
-        })
-        .finally(() => {
-          if (query.finally !== undefined) query.finally();
-        });
-    };
-  }
-
   return (
     <BaseForm
       header="Independent learner"
@@ -99,14 +66,6 @@ const IndependentForm: React.FC = () => {
       {yearsOfAge !== undefined && (
         <Form
           initialValues={initialValues}
-          // onSubmit={(values, { setErrors }) => {
-          //   registerUser({ ...values, dateOfBirth: dateOfBirth as Date })
-          //     .unwrap()
-          //     .then(() => {
-          //       navigate(paths.register.emailVerification.independent._);
-          //     })
-          //     .catch((error) => { setFormErrors(error, setErrors); });
-          // }}
           onSubmit={submitForm(registerUser, {
             build: (values) => ({
               ...values, dateOfBirth: dateOfBirth as Date

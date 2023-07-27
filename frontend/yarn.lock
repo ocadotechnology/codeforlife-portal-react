@@ -4198,7 +4198,7 @@ coa@^2.0.2:
 
 "codeforlife@github:ocadotechnology/codeforlife-package-javascript#home_backend":
   version "1.25.13"
-  resolved "https://codeload.github.com/ocadotechnology/codeforlife-package-javascript/tar.gz/67476b525f500e043692ba072ec337f8c1be3aa8"
+  resolved "https://codeload.github.com/ocadotechnology/codeforlife-package-javascript/tar.gz/d232a1e778b10a4f584bb14cf464441ae490ca88"
   dependencies:
     "@emotion/react" "^11.10.6"
     "@emotion/styled" "^11.10.6"

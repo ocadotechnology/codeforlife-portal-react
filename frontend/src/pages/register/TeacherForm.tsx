@@ -9,7 +9,7 @@ import {
   CheckboxField,
   TextField
 } from 'codeforlife/lib/esm/components/form';
-import { setFormErrors } from 'codeforlife/lib/esm/helpers/formik';
+import { submitForm } from 'codeforlife/lib/esm/helpers/formik';
 
 import CflPasswordFields from '../../features/cflPasswordFields/CflPasswordFields';
 import { useRegisterUserMutation } from '../../app/api';
@@ -53,14 +53,9 @@ const TeacherForm: React.FC = () => {
     >
       <Form
         initialValues={initialValues}
-        onSubmit={(values, { setErrors }) => {
-          registerUser(values)
-            .unwrap()
-            .then(() => {
-              navigate(paths.register.emailVerification.teacher._);
-            })
-            .catch((error) => { setFormErrors(error, setErrors); });
-        }}
+        onSubmit={submitForm(registerUser, {
+          then: () => { navigate(paths.register.emailVerification.teacher._); }
+        })}
       >
         <TextField
           required
