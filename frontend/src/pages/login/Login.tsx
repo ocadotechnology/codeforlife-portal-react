@@ -33,6 +33,7 @@ const Login: React.FC<{
         .default(false)
     })
   );
+
   return (
     <Page.Container>
       {searchParams?.verifyEmail === true &&
