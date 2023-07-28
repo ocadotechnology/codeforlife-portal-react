@@ -54,6 +54,7 @@ const Setup2fa: React.FC = () => {
             // TODO: Replace image with generated QR code from backend library
             src={cflLogo}
             maxWidth='230px'
+            paddingY={3}
           />
           <Form
             initialValues={initialValues}
