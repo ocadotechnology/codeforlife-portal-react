@@ -46,7 +46,6 @@ export const CflTableCellElement: React.FC<CflTableCellProps> = ({
 };
 
 export const TableRowStyled = styled(TableRow)(({ theme }) => ({
-  backgroundColor: theme.palette.action.hover,
   // hide last border
   '&:last-child td, &:last-child th': {
     border: 0
