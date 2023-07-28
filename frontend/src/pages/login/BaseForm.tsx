@@ -32,7 +32,7 @@ const BaseForm = <Values extends FormikValues = FormikValues>({
         <Typography align='center' variant='h4'>
           {header}
         </Typography>
-        <Typography align='center' variant='h5'>
+        <Typography align='center' variant='h6'>
           {subheader}
         </Typography>
         <Form {...formProps} />
