@@ -5,7 +5,7 @@ from ..views.api import (
     last_connected_since,
     number_users_per_country
 )
-from portal.helpers.regexes import JWT_REGEX
+
 
 urlpatterns = [  
     re_path(
