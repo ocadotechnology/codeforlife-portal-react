@@ -12,7 +12,8 @@ const Quote: React.FC<{
       color: (theme) => theme.palette.primary.main,
       fontSize: '1.3rem !important',
       fontFamily: 'SpaceGrotesk',
-      lineHeight: '1.8rem'
+      lineHeight: '1.8rem',
+      fontWeight: '600'
     }}>
       “{children}”
     </Typography>
