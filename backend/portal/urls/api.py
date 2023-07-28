@@ -1,13 +1,31 @@
-from django.urls import re_path
+from django.urls import path, re_path
 
 from ..views.api import (
+    AnonymiseOrphanSchoolsView,
+    InactiveUsersView,
+    RemoveFakeAccounts,
     registered_users,
     last_connected_since,
     number_users_per_country
 )
 
 
-urlpatterns = [  
+urlpatterns = [ 
+    re_path(
+        rf"^schools/anonymise/(?P<start_id>\d+)/$",
+        AnonymiseOrphanSchoolsView,
+        name="anonymise_orphan_schools-users",
+    ),
+    path(
+        "users/inactive/",
+        InactiveUsersView,
+        name="inactive_users",
+    ),
+    path(
+        "removeFakeAccounts/",
+        RemoveFakeAccounts,
+        name="remove_fake_accounts",
+    ),
     re_path(
         rf"^registered/(?P<year>\d{4})/(?P<month>\d{2})/(?P<day>\d{2})/$",
         registered_users,
