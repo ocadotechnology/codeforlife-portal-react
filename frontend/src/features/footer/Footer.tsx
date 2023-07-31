@@ -7,6 +7,7 @@ import {
 } from '@mui/material';
 
 import { ThemedBox } from 'codeforlife/lib/esm/theme';
+import { primary } from 'codeforlife/lib/esm/theme/colors';
 
 import { themeOptions } from '../../app/theme';
 import Links from './Links';
@@ -22,6 +23,7 @@ const Footer: React.FC = () => {
       id='footer'
       userType='teacher'
       options={themeOptions}
+      bgcolor={primary[500]}
     >
       <Container sx={{ paddingY: (theme) => theme.spacing(6) }}>
         <Grid
