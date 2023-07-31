@@ -48,7 +48,7 @@ const RapidRouter: React.FC = () => {
           style={{ width: '40%' }}
         />
       </Grid>
-      <Grid xs={12} md={6}>
+      <Grid xs={12} md={6} paddingTop={4}>
         <Stack height='100%'>
           <Typography variant='h5'>
             Starting with Blockly
@@ -81,7 +81,7 @@ const RapidRouter: React.FC = () => {
           </Button>
         </Stack>
       </Grid>
-      <Grid xs={12} md={6} className='flex-center'>
+      <Grid xs={12} md={6} className='flex-center' paddingTop={4}>
         <YouTubeVideo src={process.env.REACT_APP_RAPID_ROUTER_YOUTUBE_VIDEO_SRC as string} />
       </Grid>
     </Grid >
