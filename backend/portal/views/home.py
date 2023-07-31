@@ -19,7 +19,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.models import User
 
 # from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpRequest
 
 # from django.shortcuts import redirect, render
 # from django.urls import reverse, reverse_lazy
@@ -77,10 +77,10 @@ LOGGER = logging.getLogger(__name__)
 #     return ""
 
 
-def register_view(request):
-    # if request.user.is_authenticated:
-    #     return redirect_user_to_dashboard(request)
-    # else:
+def register_view(request: HttpRequest):
+    if request.user.is_authenticated:
+        return HttpResponse(status=status.HTTP_409_CONFLICT)
+
     return render_signup_form(request)
 
 
