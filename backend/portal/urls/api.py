@@ -14,7 +14,7 @@ urlpatterns = [
     re_path(
         rf"^schools/anonymise/(?P<start_id>\d+)/$",
         AnonymiseOrphanSchoolsView,
-        name="anonymise_orphan_schools-users",
+        name="anonymise_orphan_schools",
     ),
     path(
         "users/inactive/",
