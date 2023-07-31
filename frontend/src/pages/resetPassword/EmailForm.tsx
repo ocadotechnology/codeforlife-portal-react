@@ -84,6 +84,7 @@ const EmailForm: React.FC<EmailFormProps> = ({
           direction='row'
           gap={5}
           justifyContent='center'
+          paddingY={3}
         >
           <Button
             variant='outlined'

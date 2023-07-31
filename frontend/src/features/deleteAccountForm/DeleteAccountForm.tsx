@@ -66,7 +66,7 @@ const DeleteAccountForm: React.FC<DeleteAccountFormProps> = ({
         });
       }}
     >
-      <Grid container columnSpacing={4}>
+      <Grid container columnSpacing={4} paddingBottom={3}>
         <Grid xs={12} sm={6}>
           <PasswordField
             placeholder='Current password'
