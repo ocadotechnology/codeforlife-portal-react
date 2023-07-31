@@ -414,6 +414,7 @@ CSP_OBJECT_SRC = (
     f"{domain()}/static/game/image/",
 )
 CSP_MEDIA_SRC = (
+    "'self'",
     f"{domain()}/static/game/sound/",
     f"{domain()}/static/game/js/blockly/media/",
     f"{domain()}/static/portal/video/",
