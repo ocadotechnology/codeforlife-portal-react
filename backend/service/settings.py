@@ -185,7 +185,9 @@ CLOUD_STORAGE_PREFIX = "https://storage.googleapis.com/codeforlife-assets/"
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
-    "handlers": {"console": {"level": "DEBUG", "class": "logging.StreamHandler"}},
+    "handlers": {
+        "console": {"level": "DEBUG", "class": "logging.StreamHandler"}
+    },
     "loggers": {"two_factor": {"handlers": ["console"], "level": "INFO"}},
 }
 # TODO: assess if still need and trim fat if not.
@@ -210,6 +212,6 @@ SITE_ID = 1
 
 PIPELINE = {}
 
-FRONTEND_URL = "http://localhost:3000"
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
 
 from common.csp_config import *

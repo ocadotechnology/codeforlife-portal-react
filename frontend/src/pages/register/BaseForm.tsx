@@ -12,14 +12,13 @@ const BaseForm: React.FC<ThemedBoxProps & {
   header: string,
   subheader: string,
   description: string,
-}> =
-  ({
-    header,
-    subheader,
-    description,
-    userType,
-    children
-  }) => (
+}> = ({
+  header,
+  subheader,
+  description,
+  userType,
+  children
+}) => (
     <ThemedBox
       options={themeOptions}
       userType={userType}

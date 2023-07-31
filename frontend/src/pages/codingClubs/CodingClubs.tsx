@@ -11,6 +11,7 @@ import {
 
 import Page from 'codeforlife/lib/esm/components/page';
 
+import { useDownloadStudentPackMutation } from '../../app/api';
 import CodeClubHeroImage from '../../images/coding_club_hero_hexagon.jpg';
 import AboutUsCFLImage from '../../images/about_us_cfl.jpg';
 import PythonClubImage from '../../images/coding_club_python_pack.png';
@@ -19,15 +20,28 @@ import Introduction from '../../components/Introduction';
 import ClubAim from './ClubAim';
 
 const DownloadButton: React.FC<{
-  children: string
-}> = ({ children }) => (
-  <Button
-    style={{ marginTop: 'auto' }}
-    endIcon={<DownloadIcon />}
-  >
-    {children}
-  </Button>
-);
+  children: string;
+  packId: 3 | 4;
+}> = ({ children, packId }) => {
+  const [downloadStudentPack] = useDownloadStudentPackMutation();
+
+  return (
+    <Button
+      style={{ marginTop: 'auto' }}
+      endIcon={<DownloadIcon />}
+      onClick={() => {
+        downloadStudentPack({ id: packId })
+          .unwrap()
+          .then(({ link }) => { window.open(link, '_blank'); })
+          .catch(() => {
+            alert('Failed to download pack. Please try again later.');
+          });
+      }}
+    >
+      {children}
+    </Button>
+  );
+};
 
 const CodingClubs: React.FC = () => {
   const theme = useTheme();
@@ -53,7 +67,7 @@ const CodingClubs: React.FC = () => {
           <Typography>
             View the resources <Link href={process.env.REACT_APP_PRIMARY_RESOURCE_HREF} color="inherit" underline="always" target="_blank">online here</Link>.
           </Typography>
-          <DownloadButton>
+          <DownloadButton packId={3}>
             Download the Primary coding club pack
           </DownloadButton>
         </Introduction>
@@ -70,7 +84,7 @@ const CodingClubs: React.FC = () => {
           <Typography>
             View the resources <Link href={process.env.REACT_APP_PYTHON_RESOURCE_HREF} color="inherit" underline="always" target="_blank">online here</Link>.
           </Typography>
-          <DownloadButton>
+          <DownloadButton packId={4}>
             Download the Python coding club pack
           </DownloadButton>
         </Introduction>

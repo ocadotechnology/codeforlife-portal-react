@@ -84,7 +84,13 @@ def clear_ratelimit_cache_for_user(user: str):
 
 
 def is_ratelimited(
-    request, group=None, fn=None, key=None, rate=None, method=ALL, increment=False
+    request,
+    group=None,
+    fn=None,
+    key=None,
+    rate=None,
+    method=ALL,
+    increment=False,
 ):
     """
     As in django-ratelimit. Calls "get_usage" defined below to enable the usage of
@@ -98,7 +104,13 @@ def is_ratelimited(
 
 
 def get_usage(
-    request, group=None, fn=None, key=None, rate=None, method=ALL, increment=False
+    request,
+    group=None,
+    fn=None,
+    key=None,
+    rate=None,
+    method=ALL,
+    increment=False,
 ):
     """
     As in django-ratelimit. Makes cache_key global so it can be called outside the scope
@@ -164,7 +176,9 @@ def get_usage(
         keyfn = import_string(key)
         value = keyfn(group, request)
     else:
-        raise ImproperlyConfigured("Could not understand ratelimit key: %s" % key)
+        raise ImproperlyConfigured(
+            "Could not understand ratelimit key: %s" % key
+        )
 
     window = _get_window(value, period)
     initial_value = 1 if increment else 0

@@ -24,7 +24,9 @@ THREE_YEARS_IN_DAYS = 1095
 def registered_users(request, year, month, day):
     try:
         nbr_reg = User.objects.filter(
-            date_joined__startswith=datetime.date(int(year), int(month), int(day))
+            date_joined__startswith=datetime.date(
+                int(year), int(month), int(day)
+            )
         ).count()
         return Response(nbr_reg)
     except ValueError:
@@ -73,7 +75,9 @@ class IsAdminOrGoogleAppEngine(permissions.IsAdminUser):
     """Checks whether the request is from a Google App Engine cron job."""
 
     def has_permission(self, request: HttpRequest, view):
-        is_admin = super(IsAdminOrGoogleAppEngine, self).has_permission(request, view)
+        is_admin = super(IsAdminOrGoogleAppEngine, self).has_permission(
+            request, view
+        )
         return IS_CLOUD_SCHEDULER_FUNCTION(request) or is_admin
 
 

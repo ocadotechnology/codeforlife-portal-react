@@ -6,7 +6,10 @@ import {
 } from '@reduxjs/toolkit/query';
 import qs from 'qs';
 
-import { snakeCaseToCamelCase } from 'codeforlife/lib/esm/helpers';
+import {
+  camelCaseToSnakeCase,
+  snakeCaseToCamelCase
+} from 'codeforlife/lib/esm/helpers';
 
 import { paths } from '../router';
 
@@ -20,18 +23,19 @@ const baseQuery: BaseQueryFn<
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
   // Check if the request has a body and its content type is specified.
-  if (typeof args.body === 'object' &&
-    args.headers !== undefined &&
-    'Content-Type' in args.headers
-  ) {
-    // Stringify the request body based on its content type.
-    switch (args.headers['Content-Type']) {
-      case 'application/x-www-form-urlencoded':
-        args.body = qs.stringify(args.body);
-        break;
-      case 'application/json':
-        args.body = JSON.stringify(args.body);
-        break;
+  if (typeof args.body === 'object' && args.body !== null) {
+    camelCaseToSnakeCase(args.body);
+
+    if (args.headers !== undefined && 'Content-Type' in args.headers) {
+      // Stringify the request body based on its content type.
+      switch (args.headers['Content-Type']) {
+        case 'application/x-www-form-urlencoded':
+          args.body = qs.stringify(args.body);
+          break;
+        case 'application/json':
+          args.body = JSON.stringify(args.body);
+          break;
+      }
     }
   }
 
@@ -39,17 +43,26 @@ const baseQuery: BaseQueryFn<
   const result = await fetch(args, api, extraOptions);
 
   // Handle error responses.
-  if (result.error && result.error.status !== 400) {
-    switch (result.error.status) {
-      case 403:
-        window.location.href = paths.error.forbidden._;
-        break;
-      case 404:
-        window.location.href = paths.error.pageNotFound._;
-        break;
-      default:
-        window.location.href = paths.error.internalServerError._;
-        break;
+  if (result.error !== undefined) {
+    // Parse the error's data from snake_case to camelCase.
+    if (result.error.status === 400 &&
+      typeof result.error.data === 'object' &&
+      result.error.data !== null
+    ) {
+      snakeCaseToCamelCase(result.error.data);
+    } else {
+      // Catch-all error pages by status-code.
+      switch (result.error.status) {
+        case 403:
+          window.location.href = paths.error.forbidden._;
+          break;
+        case 404:
+          window.location.href = paths.error.pageNotFound._;
+          break;
+        default:
+          window.location.href = paths.error.internalServerError._;
+          break;
+      }
     }
   }
 

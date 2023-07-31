@@ -1,4 +1,6 @@
+from django.conf import settings
 from django.urls import reverse, reverse_lazy
+import os
 
 
 def resetEmailPasswordMessage(request, domain, uid, token, protocol):
@@ -15,10 +17,11 @@ def resetEmailPasswordMessage(request, domain, uid, token, protocol):
 
 def emailVerificationNeededEmail(request, token):
     url = f"{request.build_absolute_uri(reverse('verify_email', kwargs={'token': token}))}"
+    terms_url = f"{settings.FRONTEND_URL}/terms-of-use/terms-of-use"
     privacy_notice_url = (
-        f"{request.build_absolute_uri(reverse('privacy_notice'))}"
+        f"{settings.FRONTEND_URL}/privacy-notice/privacy-notice"
     )
-    terms_url = f"{request.build_absolute_uri(reverse('terms'))}"
+
     return {
         "subject": f"Email verification ",
         "message": (
@@ -31,10 +34,10 @@ def emailVerificationNeededEmail(request, token):
 
 def parentsEmailVerificationNeededEmail(request, user, token):
     url = f"{request.build_absolute_uri(reverse('verify_email', kwargs={'token': token}))}"
+    terms_url = rf"{settings.FRONTEND_URL}/terms-of-use/terms-of-use"
     privacy_notice_url = (
-        f"{request.build_absolute_uri(reverse('privacy_notice'))}"
+        rf"{settings.FRONTEND_URL}/privacy-notice/privacy-notice"
     )
-    terms_url = f"{request.build_absolute_uri(reverse('terms'))}"
     return {
         "subject": f"Code for Life account request",
         "message": (
@@ -86,10 +89,11 @@ def emailChangeDuplicateNotificationEmail(request, email):
 
 
 def userAlreadyRegisteredEmail(request, email, is_independent_student=False):
-    if is_independent_student:
-        login_url = reverse("independent_student_login")
-    else:
-        login_url = reverse("teacher_login")
+    # if is_independent_student:
+    #     login_url = reverse("independent_student_login")
+    # else:
+    #     login_url = reverse("teacher_login")
+    login_url = rf"{settings.FRONTEND_URL}/login/{'independent' if is_independent_student else 'teacher'}"
 
     return {
         "subject": f"Duplicate account",

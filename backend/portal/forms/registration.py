@@ -15,26 +15,42 @@ from portal.helpers.password import PasswordStrength, form_clean_password
 
 class TeacherPasswordResetSetPasswordForm(django_auth_forms.SetPasswordForm):
     def __init__(self, user, *args, **kwargs):
-        super(TeacherPasswordResetSetPasswordForm, self).__init__(user, *args, **kwargs)
+        super(TeacherPasswordResetSetPasswordForm, self).__init__(
+            user, *args, **kwargs
+        )
         self.fields["new_password1"].help_text = "Enter your new password"
-        self.fields["new_password1"].widget.attrs["placeholder"] = "New password"
+        self.fields["new_password1"].widget.attrs[
+            "placeholder"
+        ] = "New password"
         self.fields["new_password2"].help_text = "Confirm your new password"
-        self.fields["new_password2"].widget.attrs["placeholder"] = "Confirm password"
+        self.fields["new_password2"].widget.attrs[
+            "placeholder"
+        ] = "Confirm password"
 
     def clean_new_password1(self):
-        return form_clean_password(self, "new_password1", PasswordStrength.TEACHER)
+        return form_clean_password(
+            self, "new_password1", PasswordStrength.TEACHER
+        )
 
 
 class StudentPasswordResetSetPasswordForm(django_auth_forms.SetPasswordForm):
     def __init__(self, user, *args, **kwargs):
-        super(StudentPasswordResetSetPasswordForm, self).__init__(user, *args, **kwargs)
+        super(StudentPasswordResetSetPasswordForm, self).__init__(
+            user, *args, **kwargs
+        )
         self.fields["new_password1"].help_text = "Enter your new password"
-        self.fields["new_password1"].widget.attrs["placeholder"] = "New password"
+        self.fields["new_password1"].widget.attrs[
+            "placeholder"
+        ] = "New password"
         self.fields["new_password2"].help_text = "Confirm your new password"
-        self.fields["new_password2"].widget.attrs["placeholder"] = "Confirm password"
+        self.fields["new_password2"].widget.attrs[
+            "placeholder"
+        ] = "Confirm password"
 
     def clean_new_password1(self):
-        return form_clean_password(self, "new_password1", PasswordStrength.INDEPENDENT)
+        return form_clean_password(
+            self, "new_password1", PasswordStrength.INDEPENDENT
+        )
 
 
 class PasswordResetForm(forms.Form):
