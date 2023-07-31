@@ -5,7 +5,8 @@ import {
   Typography,
   Button,
   Stack,
-  Link
+  Link,
+  useTheme
 } from '@mui/material';
 import {
   Launch as LaunchIcon,
@@ -20,6 +21,7 @@ import RapidRouterImage from '../../images/rapid_router_landing_hero.png';
 import RapidRouterIcon from '../../images/RR_logo.svg';
 
 const RapidRouter: React.FC = () => {
+  const theme = useTheme();
   const navigate = useNavigate();
 
   return (
@@ -48,7 +50,7 @@ const RapidRouter: React.FC = () => {
           style={{ width: '40%' }}
         />
       </Grid>
-      <Grid xs={12} md={6} paddingTop={4}>
+      <Grid xs={12} md={6} paddingTop={theme.spacing(4)}>
         <Stack height='100%'>
           <Typography variant='h5'>
             Starting with Blockly
@@ -81,7 +83,7 @@ const RapidRouter: React.FC = () => {
           </Button>
         </Stack>
       </Grid>
-      <Grid xs={12} md={6} className='flex-center' paddingTop={4}>
+      <Grid xs={12} md={6} className='flex-center' paddingTop={theme.spacing(4)}>
         <YouTubeVideo src={process.env.REACT_APP_RAPID_ROUTER_YOUTUBE_VIDEO_SRC as string} />
       </Grid>
     </Grid >
