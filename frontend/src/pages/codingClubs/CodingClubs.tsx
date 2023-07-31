@@ -67,7 +67,7 @@ const CodingClubs: React.FC = () => {
           <Typography>
             View the resources <Link href={process.env.REACT_APP_PRIMARY_RESOURCE_HREF} color="inherit" underline="always" target="_blank">online here</Link>.
           </Typography>
-          <DownloadButton packId={4}>
+          <DownloadButton packId={3}>
             Download the Primary coding club pack
           </DownloadButton>
         </Introduction>

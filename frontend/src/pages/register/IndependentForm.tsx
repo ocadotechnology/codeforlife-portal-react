@@ -84,7 +84,11 @@ const IndependentForm: React.FC = () => {
               />
               <EmailField
                 required
-                placeholder="Email address"
+                placeholder={
+                  yearsOfAge >= EmailApplicableAge
+                    ? 'Email address'
+                    : 'Parent\'s email address'
+                }
                 helperText={
                   yearsOfAge >= EmailApplicableAge
                     ? 'Enter your email address'

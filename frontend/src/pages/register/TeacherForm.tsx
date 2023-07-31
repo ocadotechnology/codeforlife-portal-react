@@ -7,7 +7,8 @@ import {
   Form,
   SubmitButton,
   CheckboxField,
-  TextField
+  TextField,
+  EmailField
 } from 'codeforlife/lib/esm/components/form';
 import { submitForm } from 'codeforlife/lib/esm/helpers/formik';
 
@@ -46,9 +47,9 @@ const TeacherForm: React.FC = () => {
 
   return (
     <BaseForm
+      header="Teacher/Tutor"
       subheader="Register below to create your school or club."
       description="You will have access to teaching resources, progress tracking and lesson plans for both Rapid Router and Kurono."
-      header="Teacher/Tutor"
       userType="teacher"
     >
       <Form
@@ -69,7 +70,7 @@ const TeacherForm: React.FC = () => {
           placeholder="Last name"
           helperText="Enter your last name"
         />
-        <TextField
+        <EmailField
           required
           name="teacherEmail"
           placeholder="Email address"
@@ -79,27 +80,25 @@ const TeacherForm: React.FC = () => {
           required
           name="consentTicked"
           formControlLabelProps={{
-            label: (
-              <>
-                I am over 18 years old have read and understood the&nbsp;
-                <Link
-                  href={paths.termsOfUse.termsOfUse._}
-                  target="_blank"
-                  color="inherit"
-                >
-                  Terms of use
-                </Link>
-                &nbsp;and the&nbsp;
-                <Link
-                  href={paths.privacyNotice.privacyNotice._}
-                  target="_blank"
-                  color="inherit"
-                >
-                  Privacy notice
-                </Link>
-                .
-              </>
-            )
+            label: <>
+              I am over 18 years old have read and understood the&nbsp;
+              <Link
+                href={paths.termsOfUse.termsOfUse._}
+                target="_blank"
+                color="inherit"
+              >
+                Terms of use
+              </Link>
+              &nbsp;and the&nbsp;
+              <Link
+                href={paths.privacyNotice.privacyNotice._}
+                target="_blank"
+                color="inherit"
+              >
+                Privacy notice
+              </Link>
+              .
+            </>
           }}
         />
         <CheckboxField
