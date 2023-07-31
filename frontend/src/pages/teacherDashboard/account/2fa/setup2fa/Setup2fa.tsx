@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Stack, Typography } from '@mui/material';
+import { Button, Stack, Typography, useTheme } from '@mui/material';
 import { Form, SubmitButton, TextField } from 'codeforlife/lib/esm/components/form';
 import { paths } from '../../../../../app/router';
 import { Image } from 'codeforlife/lib/esm/components';
@@ -17,6 +17,7 @@ const initialValues: Setup2faFormValues = {
 };
 
 const Setup2fa: React.FC = () => {
+  const theme = useTheme();
   const navigate = useNavigate();
   const [setupComplete, setSetupComplete] = React.useState<boolean>(false);
 
@@ -54,7 +55,7 @@ const Setup2fa: React.FC = () => {
             // TODO: Replace image with generated QR code from backend library
             src={cflLogo}
             maxWidth='230px'
-            paddingY={3}
+            paddingY={theme.spacing(3)}
           />
           <Form
             initialValues={initialValues}
