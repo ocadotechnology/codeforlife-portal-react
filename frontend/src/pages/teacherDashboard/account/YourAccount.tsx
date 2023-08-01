@@ -31,6 +31,7 @@ import { paths } from '../../../app/router';
 import DeleteAccountForm from '../../../features/deleteAccountForm/DeleteAccountForm';
 
 const TwoFactorAuthentication: React.FC = () => {
+  const theme = useTheme();
   const navigate = useNavigate();
 
   return (
@@ -40,11 +41,14 @@ const TwoFactorAuthentication: React.FC = () => {
         Use your smartphone or tablet to enhance your account&apos;s security by
         using an authenticator app.
       </Typography>
-      <Button onClick={() => { navigate(paths.teacher.dashboard.account.setup2FA._); }}>
+      <Button
+        onClick={() => { navigate(paths.teacher.dashboard.account.setup2FA._); }}
+        sx={{ marginTop: theme.spacing(2) }}
+      >
         Setup two factor authentication
       </Button>
       <Grid container>
-        <Grid sm={6}>
+        <Grid sm={6} marginTop={theme.spacing(4)}>
           <Typography variant="h6">Backup tokens</Typography>
           <Typography>
             If you don&apos;t have your smartphone or tablet with you, you can access your account using backup tokens.
@@ -54,6 +58,7 @@ const TwoFactorAuthentication: React.FC = () => {
           <Button
             className='body'
             onClick={() => { navigate(paths.teacher.dashboard.account.backupTokens._); }}
+            sx={{ marginTop: theme.spacing(2) }}
           >
             Manage backup tokens
           </Button>
@@ -66,7 +71,7 @@ const TwoFactorAuthentication: React.FC = () => {
             Note: Please make sure that you store any login details in a secure place.
           </Typography>
         </Grid>
-        <Grid sm={6}>
+        <Grid sm={6} marginTop={theme.spacing(4)}>
           <Typography variant="h6">Disable two factor authentication (2FA)</Typography>
           <Typography>
             We recommend you to continue using 2FA, however you can disable 2FA for your account using the button below.
@@ -74,7 +79,9 @@ const TwoFactorAuthentication: React.FC = () => {
           <Button
             // TODO: call backend and show confirmation popup
             className='alert'
-            endIcon={<ErrorOutlineOutlined />}>
+            endIcon={<ErrorOutlineOutlined />}
+            sx={{ marginTop: theme.spacing(2) }}
+          >
             Disable 2FA
           </Button>
         </Grid>
@@ -101,6 +108,8 @@ const YourAccountForm: React.FC = () => {
     repeatPassword: '',
     currentPassword: ''
   };
+
+  const theme = useTheme();
 
   return (
     <Form
@@ -176,7 +185,7 @@ const YourAccountForm: React.FC = () => {
           />
         </Grid>
       </Grid>
-      <SubmitButton>Update details</SubmitButton>
+      <SubmitButton sx={{ marginTop: theme.spacing(3) }}>Update details</SubmitButton>
     </Form>
   );
 };
