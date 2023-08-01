@@ -43,7 +43,7 @@ const TwoFactorAuthentication: React.FC = () => {
       </Typography>
       <Button
         onClick={() => { navigate(paths.teacher.dashboard.account.setup2FA._); }}
-        sx={{ marginTop: theme.spacing(2) }}
+        sx={{ marginTop: theme.spacing(3) }}
       >
         Setup two factor authentication
       </Button>
@@ -58,7 +58,7 @@ const TwoFactorAuthentication: React.FC = () => {
           <Button
             className='body'
             onClick={() => { navigate(paths.teacher.dashboard.account.backupTokens._); }}
-            sx={{ marginTop: theme.spacing(2) }}
+            sx={{ marginTop: theme.spacing(3) }}
           >
             Manage backup tokens
           </Button>
@@ -80,7 +80,7 @@ const TwoFactorAuthentication: React.FC = () => {
             // TODO: call backend and show confirmation popup
             className='alert'
             endIcon={<ErrorOutlineOutlined />}
-            sx={{ marginTop: theme.spacing(2) }}
+            sx={{ marginTop: theme.spacing(3) }}
           >
             Disable 2FA
           </Button>
