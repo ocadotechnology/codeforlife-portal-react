@@ -317,7 +317,7 @@ def domain():
 
     if MODULE_NAME == "local":
         domain_name = "localhost:8000"
-    elif MODULE_NAME == "staging" or MODULE_NAME == "dev":
+    elif MODULE_NAME == "staging" or MODULE_NAME == "development":
         domain_name = f"https://{MODULE_NAME}-dot-decent-digit-629.appspot.com"
 
     return domain_name
