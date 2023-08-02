@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "not-a-secret")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = bool(int(os.getenv("DEBUG", "1")))
 
 ALLOWED_HOSTS = ["*"]
 
@@ -171,6 +171,16 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
+# Sessions
+# https://docs.djangoproject.com/en/3.2/topics/http/sessions/
+
+# SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_COOKIE_AGE = 60 * 60
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+if not DEBUG:
+    SESSION_COOKIE_SECURE = True
 
 # Custom
 MEDIA_ROOT = os.path.join(STATIC_ROOT, "email_media/")
