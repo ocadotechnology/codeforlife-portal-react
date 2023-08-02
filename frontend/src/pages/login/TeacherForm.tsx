@@ -58,8 +58,8 @@ const BaseTeacherForm: React.FC = () => {
       header='Welcome'
       subheader='Please enter your login details.'
       initialValues={{
-        username: '',
-        password: '',
+        'auth-username': '',
+        'auth-password': '',
         currentStep: 'auth'
       }}
       onSubmit={submitForm(loginTeacher, {
@@ -69,11 +69,12 @@ const BaseTeacherForm: React.FC = () => {
     >
       <EmailField
         required
-        name='username'
+        name='auth-username'
         placeholder="Email address"
         helperText="Enter your email address"
       />
       <PasswordField
+        name='auth-password'
         placeholder="Password"
         helperText="Enter your password"
         required

@@ -3,8 +3,8 @@ import api from '../api';
 const loginApi = api.injectEndpoints({
   endpoints: (build) => ({
     loginTeacher: build.mutation<null, {
-      username: string;
-      password: string;
+      'auth-username': string;
+      'auth-password': string;
       currentStep: 'auth' | 'token';
     }>({
       query: (body) => ({
