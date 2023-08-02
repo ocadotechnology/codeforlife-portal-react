@@ -9,6 +9,11 @@ import {
   useDownloadStudentPackMutation
 } from './endpoints/home';
 import {
+  useLoginTeacherMutation,
+  useLoginDependentStudentMutation,
+  useLoginIndependentStudentMutation
+} from './endpoints/login';
+import {
   useRequestIndependentStudentPasswordResetMutation,
   useRequestTeacherPasswordResetMutation,
   useResetPasswordMutation,
@@ -24,6 +29,10 @@ export {
   useRegisterUserMutation,
   useLogoutUserMutation,
   useDownloadStudentPackMutation,
+  // login
+  useLoginTeacherMutation,
+  useLoginDependentStudentMutation,
+  useLoginIndependentStudentMutation,
   // registration
   useRequestIndependentStudentPasswordResetMutation,
   useRequestTeacherPasswordResetMutation,
