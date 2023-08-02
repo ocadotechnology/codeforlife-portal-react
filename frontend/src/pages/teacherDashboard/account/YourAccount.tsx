@@ -67,6 +67,7 @@ const TwoFactorAuthentication: React.FC = () => {
             fontWeight="bold"
             color="error"
             mb={0}
+            sx={{ marginTop: theme.spacing(3) }}
           >
             Note: Please make sure that you store any login details in a secure place.
           </Typography>
