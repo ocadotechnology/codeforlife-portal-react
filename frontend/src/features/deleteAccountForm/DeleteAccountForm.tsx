@@ -2,7 +2,8 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Unstable_Grid2 as Grid,
-  Typography
+  Typography,
+  useTheme
 } from '@mui/material';
 import {
   DeleteOutline as DeleteOutlineIcon
@@ -27,6 +28,7 @@ export interface DeleteAccountFormProps {
 const DeleteAccountForm: React.FC<DeleteAccountFormProps> = ({
   userType
 }) => {
+  const theme = useTheme();
   const navigate = useNavigate();
   const [deleteAccount] = useDeleteAccountMutation();
   const [dialog, setDialog] = React.useState<{
@@ -66,7 +68,7 @@ const DeleteAccountForm: React.FC<DeleteAccountFormProps> = ({
         });
       }}
     >
-      <Grid container columnSpacing={4} paddingBottom={3}>
+      <Grid container columnSpacing={4}>
         <Grid xs={12} sm={6}>
           <PasswordField
             placeholder='Current password'
@@ -86,6 +88,7 @@ const DeleteAccountForm: React.FC<DeleteAccountFormProps> = ({
       <SubmitButton
         className='alert'
         endIcon={<DeleteOutlineIcon />}
+        sx={{ marginTop: theme.spacing(3) }}
       >
         Delete account
       </SubmitButton>
