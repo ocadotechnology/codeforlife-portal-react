@@ -13,21 +13,13 @@ import {
   SubmitButton
 } from 'codeforlife/lib/esm/components/form';
 import { tryValidateSync } from 'codeforlife/lib/esm/helpers/yup';
+import { submitForm } from 'codeforlife/lib/esm/helpers/formik';
 
 import { paths } from '../../app/router';
+import { useLoginTeacherMutation } from '../../app/api';
 import BaseForm from './BaseForm';
 import Teacher2faBackupForm from './Teacher2faBackupForm';
 import Teacher2faForm from './Teacher2faForm';
-
-interface TeacherFormValues {
-  email: string;
-  password: string;
-}
-
-const initialValues: TeacherFormValues = {
-  email: '',
-  password: ''
-};
 
 const TeacherForm: React.FC = () => {
   const params = tryValidateSync(
@@ -58,21 +50,26 @@ const TeacherForm: React.FC = () => {
 
 const BaseTeacherForm: React.FC = () => {
   const navigate = useNavigate();
+  const [loginTeacher] = useLoginTeacherMutation();
 
   return (
     <BaseForm
       themedBoxProps={{ userType: 'teacher' }}
       header='Welcome'
       subheader='Please enter your login details.'
-      initialValues={initialValues}
-      onSubmit={(values, { setSubmitting }) => {
-        // TODO: Connect this to the backend
-        console.log(values);
-        setSubmitting(false);
+      initialValues={{
+        username: '',
+        password: '',
+        currentStep: 'auth'
       }}
+      onSubmit={submitForm(loginTeacher, {
+        // TODO: navigate(paths.login.teacher.twoFA._);
+        then: () => { navigate(paths.teacher.dashboard.school._); }
+      })}
     >
       <EmailField
         required
+        name='username'
         placeholder="Email address"
         helperText="Enter your email address"
       />
@@ -97,10 +94,7 @@ const BaseTeacherForm: React.FC = () => {
           .
         </Typography>
       </Stack>
-      <SubmitButton
-        stackProps={{ alignItems: 'end' }}
-        // TODO: Remove href and replace with submit functionality
-        onClick={() => { navigate(paths.login.teacher.twoFA._); }}>
+      <SubmitButton stackProps={{ alignItems: 'end' }}>
         Log in
       </SubmitButton>
     </BaseForm>

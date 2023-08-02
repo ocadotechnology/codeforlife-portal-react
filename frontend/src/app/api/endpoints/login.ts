@@ -5,6 +5,7 @@ const loginApi = api.injectEndpoints({
     loginTeacher: build.mutation<null, {
       username: string;
       password: string;
+      currentStep: 'auth' | 'token';
     }>({
       query: (body) => ({
         url: 'login/teacher',
