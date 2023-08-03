@@ -12,3 +12,6 @@ def old_login_form_redirect(request):
 
 def has_user_lockout_expired(user: Teacher or Student) -> bool:
     return datetime.now(tz=pytz.utc) - user.blocked_time > timedelta(hours=24)
+
+
+from .teacher import *

@@ -1,10 +1,12 @@
 from common.models import Teacher
-from django.shortcuts import render
+# from django.shortcuts import render
+from django.http import HttpResponse
 from two_factor.views import LoginView
 from two_factor.forms import AuthenticationTokenForm, BackupTokenForm
+from rest_framework import status
 
-from portal.forms.teach import TeacherLoginForm
-from portal.views.home import redirect_teacher_to_correct_page
+from ...forms.teach import TeacherLoginForm
+# from ...views.home import redirect_teacher_to_correct_page
 from . import has_user_lockout_expired
 
 # This import is required so that 2FA works properly
@@ -12,16 +14,18 @@ from portal import handlers
 
 
 class TeacherLoginView(LoginView):
-    template_name = "portal/login/teacher.html"
+    # template_name = "portal/login/teacher.html"
     form_list = (
         ("auth", TeacherLoginForm),
         ("token", AuthenticationTokenForm),
         ("backup", BackupTokenForm),
     )
 
-    def get_success_url(self):
-        url = self.get_redirect_url()
-        return url or redirect_teacher_to_correct_page(self.request, self.request.user.userprofile.teacher)
+    # def get_success_url(self):
+    #     url = self.get_redirect_url()
+    #     return url or redirect_teacher_to_correct_page(
+    #         self.request, self.request.user.userprofile.teacher
+    #     )
 
     def post(self, request, *args, **kwargs):
         """
@@ -29,7 +33,10 @@ class TeacherLoginView(LoginView):
         account, this redirects the user to the locked out page. However, if the lockout
         time is more than 24 hours before this is executed, the account is unlocked.
         """
-        wizard_step = self.request.POST.get("teacher_login_view-current_step", None)
+        wizard_step = self.request.POST.get(
+            # "teacher_login_view-current_step", None
+            "current_step"
+        )
 
         if wizard_step == "auth":
             email = request.POST.get("auth-username")
@@ -41,10 +48,13 @@ class TeacherLoginView(LoginView):
                         teacher.blocked_time = None
                         teacher.save()
                     else:
-                        return render(
-                            self.request,
-                            "portal/locked_out.html",
-                            {"is_teacher": True},
+                        # return render(
+                        #     self.request,
+                        #     "portal/locked_out.html",
+                        #     {"is_teacher": True},
+                        # )
+                        return HttpResponse(
+                            status=status.HTTP_429_TOO_MANY_REQUESTS
                         )
 
         return super(TeacherLoginView, self).post(request, *args, **kwargs)
