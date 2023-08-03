@@ -6,7 +6,8 @@ import {
   Grid,
   Stack,
   Button,
-  Link
+  Link,
+  Box
 } from '@mui/material';
 import { Formik, Form } from 'formik';
 import {
@@ -40,8 +41,9 @@ const currentDropdownOptions = [
 ];
 
 const ClassDetailsForm: React.FC<{
-  goBack: () => void
+  goBack: () => void;
 }> = ({ goBack }) => {
+  const theme = useTheme();
   return (
     <Formik
       initialValues={{
@@ -75,16 +77,20 @@ const ClassDetailsForm: React.FC<{
             </Grid>
             <Grid item xs={12}>
               <Stack gap={1}>
-                <Typography variant="h5">External requests setting</Typography>
+                <Typography marginTop={theme.spacing(5)} variant="h5">
+                  External requests setting
+                </Typography>
                 <Typography>
                   You can set up permissions for this class allowing students to
                   send requests asking to join your class from outside of your
                   school or club.
                 </Typography>
-                <Typography fontWeight="bold">
+                <Typography marginTop={theme.spacing(1)} fontWeight="bold">
                   This class is not current accepting external requests.
                 </Typography>
-                <Typography>Set up external requests to this class</Typography>
+                <Typography marginTop={theme.spacing(2)}>
+                  Set up external requests to this class
+                </Typography>
                 <Grid container>
                   <Grid item xs={6}>
                     <AutocompleteField
@@ -98,11 +104,13 @@ const ClassDetailsForm: React.FC<{
                   </Grid>
                   <Grid item xs={6}></Grid>
                 </Grid>
-                <Stack gap={3} direction="row" justifyContent="flex-start">
-                  <Button
-                    variant="outlined"
-                    onClick={goBack}
-                  >
+                <Stack
+                  gap={3}
+                  direction="row"
+                  justifyContent="flex-start"
+                  marginTop={theme.spacing(3)}
+                >
+                  <Button variant="outlined" onClick={goBack}>
                     Cancel
                   </Button>
                   <Button
@@ -120,12 +128,15 @@ const ClassDetailsForm: React.FC<{
     </Formik>
   );
 };
+const allLevelsChecked: string[] = Array.from({ length: 109 }, (_, i) =>
+  (i + 1).toString()
+);
 
 const RapidRouterAccessSettings: React.FC = () => {
   return (
     <Formik
       initialValues={{
-        levelsSubmitted: Array(109).fill('')
+        levelsSubmitted: allLevelsChecked
       }}
       onSubmit={(values) => {
         values.levelsSubmitted = values.levelsSubmitted.filter(
@@ -204,71 +215,89 @@ const RapidRouterAccessSettings: React.FC = () => {
 
 const TransferClassToAnotherTeacher: React.FC = () => {
   const options = ['Teacher 1', 'Teacher 2', 'Teacher 3'];
+  const theme = useTheme();
   return (
-    <Formik
-      initialValues={{
-        transferClassToAnotherTeacher: options[0]
-      }}
-      onSubmit={(values) => {
-        alert(JSON.stringify(values, null, 2));
+    <Box
+      sx={{
+        marginTop: theme.spacing(3)
       }}
     >
-      {(formik) => (
-        <Form>
-          <Stack>
-            <Typography variant="h5">
-              Transfer class to another teacher
-            </Typography>
-            <Typography>
-              Select a new teacher from your school or club to take over the
-              above class from the list below.
-            </Typography>
-            <Typography color="error" fontWeight="bold">
-              Warning: The class will move immediately to the new teacher.
-              Should you wish to undo this action, please contact that teacher.
-            </Typography>
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <Typography fontWeight="bold">
-                  New teacher to take over class
-                </Typography>
-                <AutocompleteField
-                  options={options}
-                  textFieldProps={{
-                    required: true,
-                    name: 'transferClassToAnotherTeacher',
-                    helperText: 'Select teacher',
-                    placeholder: options[0]
-                  }}
-                />
+      <Formik
+        initialValues={{
+          transferClassToAnotherTeacher: options[0]
+        }}
+        onSubmit={(values) => {
+          alert(JSON.stringify(values, null, 2));
+        }}
+      >
+        {(formik) => (
+          <Form>
+            <Stack>
+              <Typography marginBottom={theme.spacing(2.5)} variant="h5">
+                Transfer class to another teacher
+              </Typography>
+              <Typography>
+                Select a new teacher from your school or club to take over the
+                above class from the list below.
+              </Typography>
+              <Typography
+                color="error"
+                fontWeight="bold"
+                marginBottom={theme.spacing(5)}
+              >
+                Warning: The class will move immediately to the new teacher.
+                Should you wish to undo this action, please contact that
+                teacher.
+              </Typography>
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <Typography fontWeight="bold">
+                    New teacher to take over class
+                  </Typography>
+                  <AutocompleteField
+                    options={options}
+                    textFieldProps={{
+                      required: true,
+                      name: 'transferClassToAnotherTeacher',
+                      helperText: 'Select teacher',
+                      placeholder: options[0]
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={6}></Grid>
               </Grid>
-              <Grid item xs={6}></Grid>
-            </Grid>
-            <Stack direction="row" columnGap={3}>
-              <Button type="submit">Transfer class</Button>
+              <Stack
+                direction="row"
+                columnGap={3}
+                marginBottom={theme.spacing(2)}
+              >
+                <Button type="submit">Transfer class</Button>
+              </Stack>
             </Stack>
-          </Stack>
-        </Form>
-      )}
-    </Formik>
+          </Form>
+        )}
+      </Formik>
+    </Box>
   );
 };
 
 const AdditionalSettings: React.FC<{
   accessCode: string;
   goBack: () => void;
-}> = ({
-  accessCode,
-  goBack
-}) => {
-    const theme = useTheme();
+}> = ({ accessCode, goBack }) => {
+  const theme = useTheme();
 
-    return <>
-      <Page.Section>
+  return (
+    <>
+      <Page.Section
+        sx={{
+          my: theme.spacing(3)
+        }}
+      >
         <Typography variant="h4" align="center">
           Additional class settings class Class 1 ({accessCode})
         </Typography>
-        <Link className='back-to' onClick={goBack}>
+        <Link className="back-to" onClick={goBack}>
           Edit Class
         </Link>
         <Typography mb={0}>
@@ -278,15 +307,23 @@ const AdditionalSettings: React.FC<{
           to allow pupils to see their classmates&apos; progress.
         </Typography>
       </Page.Section>
-      <Page.Section gridProps={{ bgcolor: theme.palette.info.light }}>
-        <Typography variant="h5">Class details</Typography>
-        <ClassDetailsForm
-          goBack={goBack}
-        />
+      <Page.Section
+        sx={{ my: theme.spacing(2) }}
+        gridProps={{ bgcolor: theme.palette.info.light }}
+      >
+        <Typography marginTop={theme.spacing(4)} variant="h5">
+          Class details
+        </Typography>
+        <ClassDetailsForm goBack={goBack} />
       </Page.Section>
-      <Page.Section>
+      <Page.Section
+        sx={{
+          marginTop: theme.spacing(3.2),
+          marginBottom: theme.spacing(6)
+        }}
+      >
         <Typography variant="h5">Rapid Router access settings</Typography>
-        <Typography>
+        <Typography marginBottom={theme.spacing(3.5)}>
           You may control access to levels here by selecting what you wish to
           display to the students.
         </Typography>
@@ -295,7 +332,8 @@ const AdditionalSettings: React.FC<{
       <Page.Section gridProps={{ bgcolor: theme.palette.info.light }}>
         <TransferClassToAnotherTeacher />
       </Page.Section>
-    </>;
-  };
+    </>
+  );
+};
 
 export default AdditionalSettings;

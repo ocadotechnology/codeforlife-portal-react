@@ -27,7 +27,8 @@ const RapidRouterTabTitles: React.FC<RapidRouterTabTitlesProps> = ({
         sx={{
           cursor: 'default !important',
           paddingRight: '3rem',
-          paddingLeft: 0
+          paddingLeft: 0,
+          marginTop: theme.spacing(3)
         }}
       >
         <Stack
