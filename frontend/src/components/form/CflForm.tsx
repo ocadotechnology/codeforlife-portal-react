@@ -8,6 +8,7 @@ import {
   ButtonProps
 } from '@mui/material';
 import { Formik, FormikValues, FormikConfig, FormikProps, Form } from 'formik';
+import { theme } from 'codeforlife';
 
 export interface CflHorizontalFormProps<Values> extends FormikConfig<Values> {
   header?: string;
@@ -65,13 +66,13 @@ export const CflHorizontalForm = <Values extends FormikValues = FormikValues>({
                 }
               })}
               {cancelButton
-                ? <Grid xs={12} sm={4} item>
+                ? <Grid xs={12} sm={4} item marginTop={theme.spacing(3)}>
                   <Stack direction="row" spacing={2}>
                     {React.cloneElement(cancelButton)}
                     {React.cloneElement(submitButton)}
                   </Stack>
                 </Grid>
-                : <Grid item xs={12}>
+                : <Grid item xs={12} marginTop={theme.spacing(3)}>
                   {submitButton}
                 </Grid>
               }
