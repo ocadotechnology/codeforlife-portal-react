@@ -8,7 +8,7 @@ const loginApi = api.injectEndpoints({
       currentStep: 'auth' | 'token';
     }>({
       query: (body) => ({
-        url: 'login/teacher',
+        url: 'login/teacher/',
         method: 'POST',
         body,
         headers: {
@@ -24,7 +24,7 @@ const loginApi = api.injectEndpoints({
       }
     }>({
       query: ({ accessCode, body }) => ({
-        url: `login/student/${accessCode}`,
+        url: `login/student/${accessCode}/`,
         method: 'POST',
         body,
         headers: {
@@ -37,7 +37,7 @@ const loginApi = api.injectEndpoints({
       password: string;
     }>({
       query: (body) => ({
-        url: 'login/independent',
+        url: 'login/independent/',
         method: 'POST',
         body,
         headers: {

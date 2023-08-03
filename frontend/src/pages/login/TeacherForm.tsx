@@ -60,7 +60,7 @@ const BaseTeacherForm: React.FC = () => {
       initialValues={{
         'auth-username': '',
         'auth-password': '',
-        currentStep: 'auth'
+        currentStep: 'auth' as const
       }}
       onSubmit={submitForm(loginTeacher, {
         // TODO: navigate(paths.login.teacher.twoFA._);
