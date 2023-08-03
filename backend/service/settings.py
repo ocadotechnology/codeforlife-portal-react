@@ -28,6 +28,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+]
 
 # Application definition
 
@@ -57,14 +60,16 @@ INSTALLED_APPS = [
     "two_factor",
     "preventconcurrentlogins",
     # "codeforlife",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
     "deploy.middleware.admin_access.AdminAccessMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
+    # "django.middleware.csrf.CsrfViewMiddleware",
     "deploy.middleware.security.CustomSecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
@@ -180,7 +185,9 @@ CLOUD_STORAGE_PREFIX = "https://storage.googleapis.com/codeforlife-assets/"
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
-    "handlers": {"console": {"level": "DEBUG", "class": "logging.StreamHandler"}},
+    "handlers": {
+        "console": {"level": "DEBUG", "class": "logging.StreamHandler"}
+    },
     "loggers": {"two_factor": {"handlers": ["console"], "level": "INFO"}},
 }
 # TODO: assess if still need and trim fat if not.
@@ -204,5 +211,7 @@ AUTOCONFIG_INDEX_VIEW = "home"
 SITE_ID = 1
 
 PIPELINE = {}
+
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
 
 from common.csp_config import *

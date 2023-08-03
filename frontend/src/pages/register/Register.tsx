@@ -9,6 +9,10 @@ import TeacherForm from './TeacherForm';
 import IndependentForm from './IndependentForm';
 
 const Register: React.FC = () => {
+  // TODO: Check if the user is already logged in. If yes, then redirect the
+  //  user to their respective dashboard page. Maybe also display a notification
+  //  page saying something like: "You're already logged in"?
+
   return (
     <Page.Container>
       <Page.Section>

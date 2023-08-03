@@ -15,7 +15,6 @@ import { tableCellClasses } from '@mui/material/TableCell';
 export const TableCellElementStyled = styled(TableCell)(({ theme }) => ({
   outline: `1px solid ${theme.palette.common.white}`,
   [`&.${tableCellClasses.head}`]: {
-    background: theme.palette.info.dark,
     color: theme.palette.common.white
   }
 }));
@@ -47,7 +46,6 @@ export const CflTableCellElement: React.FC<CflTableCellProps> = ({
 };
 
 export const TableRowStyled = styled(TableRow)(({ theme }) => ({
-  backgroundColor: theme.palette.action.hover,
   // hide last border
   '&:last-child td, &:last-child th': {
     border: 0

@@ -29,7 +29,7 @@ const Statistics: React.FC = () => {
       </Typography>
       <Stack
         direction={{ xs: 'column', md: 'row' }}
-        spacing={3}
+        spacing={6}
         mt={3}
       >
         <Statistic

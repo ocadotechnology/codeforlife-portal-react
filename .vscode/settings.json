@@ -1,5 +1,9 @@
 {
     "editor.tabSize": 2,
     "javascript.preferences.quoteStyle": "single",
-    "typescript.preferences.quoteStyle": "single"
+    "typescript.preferences.quoteStyle": "single",
+    "black-formatter.args": [
+        "--config",
+        "backend/pyproject.toml"
+    ]
 }

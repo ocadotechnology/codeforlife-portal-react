@@ -22,7 +22,7 @@ import {
   TextField
 } from 'codeforlife/lib/esm/components/form';
 
-import DeleteAccountForm from '../../../features/DeleteAccountForm';
+import DeleteAccountForm from '../../../features/deleteAccountForm/DeleteAccountForm';
 import { paths } from '../../../app/router';
 
 const AccountFormPasswordFields: React.FC = () => {
@@ -64,7 +64,7 @@ const AccountFormButtons: React.FC = () => {
   const navigate = useNavigate();
 
   return <>
-    <Stack direction='row' spacing={2}>
+    <Stack direction='row' spacing={2} paddingY={3}>
       <Button
         variant='outlined'
         onClick={() => { navigate(-1); }}
@@ -197,7 +197,7 @@ const StudentAccount: React.FC<{
             </Button>
           </Page.Section>
           <Page.Section>
-            <DeleteAccountForm />
+            <DeleteAccountForm userType='independent' />
           </Page.Section>
         </>
         : <></>

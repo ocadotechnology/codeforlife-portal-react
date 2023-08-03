@@ -315,6 +315,7 @@ const AdditionalSettings: React.FC<{
           Class details
         </Typography>
         <ClassDetailsForm goBack={goBack} />
+
       </Page.Section>
       <Page.Section
         sx={{
@@ -329,7 +330,7 @@ const AdditionalSettings: React.FC<{
         </Typography>
         <RapidRouterAccessSettings />
       </Page.Section>
-      <Page.Section gridProps={{ bgcolor: theme.palette.info.light }}>
+      <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
         <TransferClassToAnotherTeacher />
       </Page.Section>
     </>

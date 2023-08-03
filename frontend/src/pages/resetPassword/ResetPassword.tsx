@@ -39,6 +39,7 @@ const ResetPassword: React.FC = () => {
   const searchParams = tryValidateSync(
     fromSearchParams(),
     yup.object({
+      userId: yup.string(),
       token: yup.string()
     })
   );
@@ -51,12 +52,16 @@ const ResetPassword: React.FC = () => {
           options={themeOptions}
           userType={params.userType}
         >
-          {searchParams?.token !== undefined
+          {searchParams?.userId !== undefined &&
+            searchParams?.token !== undefined
             ? <PasswordForm
               userType={params.userType}
+              userId={searchParams.userId}
               token={searchParams.token}
             />
-            : <EmailForm />
+            : <EmailForm
+              userType={params.userType}
+            />
           }
         </ThemedBox>
       </Page.Section>

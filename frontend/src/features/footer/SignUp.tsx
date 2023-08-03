@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Unstable_Grid2 as Grid,
   useTheme,
   useMediaQuery,
   Stack,
@@ -14,6 +13,14 @@ import {
   SubmitButton
 } from 'codeforlife/lib/esm/components/form';
 
+import { useNavigate } from 'react-router-dom';
+import { useSubscribeToNewsletterMutation } from '../../app/api';
+
+interface SignUpValues {
+  email: string;
+  over18: boolean;
+}
+
 const SignUp: React.FC = () => {
   const theme = useTheme();
   const onlyXS = useMediaQuery(theme.breakpoints.only('xs'));
@@ -26,6 +33,17 @@ const SignUp: React.FC = () => {
     over18: false
   };
 
+  const [signUp] = useSubscribeToNewsletterMutation();
+  const navigate = useNavigate();
+
+  const handleSubmit = (values: SignUpValues): void => {
+    signUp(values).unwrap()
+      .then((res) => {
+        navigate('/', { state: { signUpSuccess: res?.success } });
+      })
+      .catch((err) => { console.log('SignUp submit error: ', err); });
+  };
+
   return (
     <Stack>
       <FormHelperText style={{ textAlign: onlyXS ? 'center' : undefined }}>
@@ -33,10 +51,7 @@ const SignUp: React.FC = () => {
       </FormHelperText>
       <Form
         initialValues={initialValues}
-        onSubmit={(values, { setSubmitting }) => {
-          // TODO: to call backend
-          setSubmitting(false);
-        }}
+        onSubmit={handleSubmit}
       >
         <EmailField
           required

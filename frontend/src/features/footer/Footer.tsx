@@ -7,6 +7,7 @@ import {
 } from '@mui/material';
 
 import { ThemedBox } from 'codeforlife/lib/esm/theme';
+import { primary } from 'codeforlife/lib/esm/theme/colors';
 
 import { themeOptions } from '../../app/theme';
 import Links from './Links';
@@ -14,18 +15,24 @@ import Logos from './Logos';
 import SignUp from './SignUp';
 
 const Footer: React.FC = () => {
-  const spacing = 5;
+  const columnSpacing = 10;
+  const rowSpacing = 5;
 
   return (
     <ThemedBox
       id='footer'
       userType='teacher'
       options={themeOptions}
+      bgcolor={primary[500]}
     >
-      <Container>
-        <Grid container spacing={spacing}>
+      <Container sx={{ paddingY: (theme) => theme.spacing(6) }}>
+        <Grid
+          container
+          columnSpacing={columnSpacing}
+          rowSpacing={rowSpacing}
+        >
           <Grid xs={12} sm={8}>
-            <Stack spacing={spacing}>
+            <Stack spacing={rowSpacing}>
               <Links />
               <SignUp />
             </Stack>
@@ -37,6 +44,7 @@ const Footer: React.FC = () => {
             <Typography
               textAlign='center'
               variant='body2'
+              mb={0}
             >
               © Ocado Group {new Date().getFullYear()}
             </Typography>
