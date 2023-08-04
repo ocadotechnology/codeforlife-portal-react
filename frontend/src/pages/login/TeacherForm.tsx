@@ -58,9 +58,12 @@ const BaseTeacherForm: React.FC = () => {
       header='Welcome'
       subheader='Please enter your login details.'
       initialValues={{
-        'auth-username': '',
-        'auth-password': '',
-        currentStep: 'auth' as const
+        // TODO: fix teacher login endpoint
+        // 'auth-username': '',
+        // 'auth-password': '',
+        // currentStep: 'auth' as const
+        username: '',
+        password: ''
       }}
       onSubmit={submitForm(loginTeacher, {
         // TODO: navigate(paths.login.teacher.twoFA._);
@@ -69,12 +72,13 @@ const BaseTeacherForm: React.FC = () => {
     >
       <EmailField
         required
-        name='auth-username'
+        // name='auth-username'
+        name='username'
         placeholder="Email address"
         helperText="Enter your email address"
       />
       <PasswordField
-        name='auth-password'
+        // name='auth-password'
         placeholder="Password"
         helperText="Enter your password"
         required

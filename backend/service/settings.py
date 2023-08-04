@@ -16,6 +16,12 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Site (Custom)
+SITE_PROTOCOL = os.getenv("SITE_PROTOCOL", "http")
+SITE_DOMAIN = os.getenv("SITE_DOMAIN", "localhost")
+SITE_PORT = int(os.getenv("SITE_PORT", "8000"))
+SITE_BASE_URL = f"{SITE_PROTOCOL}://{SITE_DOMAIN}:{SITE_PORT}"
+SITE_API_URL = f"{SITE_BASE_URL}/api"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -27,10 +33,6 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "not-a-secret")
 DEBUG = bool(int(os.getenv("DEBUG", "1")))
 
 ALLOWED_HOSTS = ["*"]
-
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-]
 
 # Application definition
 
@@ -136,6 +138,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Auth
+# https://docs.djangoproject.com/en/3.2/topics/auth/default/
+
+LOGIN_URL = f"{SITE_API_URL}/login/session-expired/"
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
@@ -175,12 +181,59 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 # Sessions
 # https://docs.djangoproject.com/en/3.2/topics/http/sessions/
 
-# SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_COOKIE_AGE = 60 * 60
 SESSION_SAVE_EVERY_REQUEST = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-if not DEBUG:
-    SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SAMESITE = "None"
+
+# CSRF
+# https://docs.djangoproject.com/en/3.2/ref/csrf/
+
+# TODO: determine if the below is needed.
+# CSRF_COOKIE_SAMESITE = "None"
+# CSRF_COOKIE_SECURE = True
+# CSRF_COOKIE_HTTPONLY = True
+CSRF_USE_SESSIONS = True
+
+# CORS
+# https://pypi.org/project/django-cors-headers/
+
+CORS_ALLOW_ALL_ORIGINS = DEBUG
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = []
+
+# Logging
+# https://docs.djangoproject.com/en/3.2/topics/logging/
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "default": {
+            "format": "[%(asctime)s][%(name)s][%(levelname)s] %(message)s",
+            "style": "%",
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "default",
+        },
+    },
+    # TODO: check if this is needed
+    # "loggers": {
+    #     "two_factor": {
+    #         "handlers": ["console"],
+    #         "level": "INFO",
+    #     },
+    # },
+    "root": {
+        "level": os.getenv("LOG_LEVEL", "INFO"),
+        "handlers": ["console"],
+    },
+}
+
 
 # Custom
 MEDIA_ROOT = os.path.join(STATIC_ROOT, "email_media/")
@@ -192,14 +245,6 @@ MESSAGE_STORAGE = "django.contrib.messages.storage.session.SessionStorage"
 
 CODEFORLIFE_WEBSITE = "www.codeforlife.education"
 CLOUD_STORAGE_PREFIX = "https://storage.googleapis.com/codeforlife-assets/"
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "handlers": {
-        "console": {"level": "DEBUG", "class": "logging.StreamHandler"}
-    },
-    "loggers": {"two_factor": {"handlers": ["console"], "level": "INFO"}},
-}
 # TODO: assess if still need and trim fat if not.
 # RAPID_ROUTER_EARLY_ACCESS_FUNCTION_NAME = "portal.beta.has_beta_access"
 SECURE_CONTENT_TYPE_NOSNIFF = True

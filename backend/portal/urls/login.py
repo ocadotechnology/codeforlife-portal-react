@@ -1,17 +1,19 @@
 from django.urls import path, re_path
 
-from ..helpers.decorators import ratelimit
-from ..helpers.ratelimit import (
-    RATELIMIT_LOGIN_GROUP,
-    RATELIMIT_METHOD,
-    RATELIMIT_LOGIN_RATE,
-    # RATELIMIT_LOGIN_RATE_SCHOOL_STUDENT,
-    # school_student_key,
-)
-from ..helpers.regexes import ACCESS_CODE_REGEX
+# from ..helpers.decorators import ratelimit
+# from ..helpers.ratelimit import (
+#     RATELIMIT_LOGIN_GROUP,
+#     RATELIMIT_METHOD,
+#     RATELIMIT_LOGIN_RATE,
+#     RATELIMIT_LOGIN_RATE_SCHOOL_STUDENT,
+#     school_student_key,
+# )
+# from ..helpers.regexes import ACCESS_CODE_REGEX
 from ..views.login import (
+    session_expired_view,
     # old_login_form_redirect,
-    TeacherLoginView,
+    # TeacherLoginView,
+    teacher_login_view,
     # StudentLoginView,
     # StudentClassCodeView,
     # student_direct_login,
@@ -19,6 +21,11 @@ from ..views.login import (
 )
 
 urlpatterns = [
+    path(
+        "login/session-expired/",
+        session_expired_view,
+        name="session-expired",
+    ),
     # path(
     #     "login_form",
     #     old_login_form_redirect,
@@ -29,13 +36,14 @@ urlpatterns = [
         # The ratelimit decorator checks how often a POST request is performed on that view.
         # It checks against the username value specifically. If the number of requests
         # exceeds the specified rate, then the user will be blocked (if block = True).
-        ratelimit(
-            group=RATELIMIT_LOGIN_GROUP,
-            key="post:auth-username",
-            method=RATELIMIT_METHOD,
-            rate=RATELIMIT_LOGIN_RATE,
-            block=True,
-        )(TeacherLoginView.as_view()),
+        # ratelimit(
+        #     group=RATELIMIT_LOGIN_GROUP,
+        #     key="post:auth-username",
+        #     method=RATELIMIT_METHOD,
+        #     rate=RATELIMIT_LOGIN_RATE,
+        #     block=True,
+        # )(TeacherLoginView.as_view()),
+        teacher_login_view,
         name="teacher_login",
     ),
     # re_path(

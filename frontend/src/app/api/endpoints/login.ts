@@ -3,9 +3,12 @@ import api from '../api';
 const loginApi = api.injectEndpoints({
   endpoints: (build) => ({
     loginTeacher: build.mutation<null, {
-      'auth-username': string;
-      'auth-password': string;
-      currentStep: 'auth' | 'token';
+      // TODO: implement 2fs teacher login
+      // 'auth-username': string;
+      // 'auth-password': string;
+      // currentStep: 'auth' | 'token';
+      username: string;
+      password: string;
     }>({
       query: (body) => ({
         url: 'login/teacher/',

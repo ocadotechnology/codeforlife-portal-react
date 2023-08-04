@@ -11,6 +11,8 @@ import {
   LogoutOutlined as LogoutOutlinedIcon
 } from '@mui/icons-material';
 
+import { useLogoutUserMutation } from '../../../app/api';
+import { paths } from '../../../app/router';
 import {
   SummaryLoginSelect,
   SummaryLoginSelectProps
@@ -34,6 +36,7 @@ export const AuthenticatedSummary: React.FC<AuthenticatedSummaryProps> = ({
 }) => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const [logoutUser] = useLogoutUserMutation();
   const upLg = useMediaQuery(theme.breakpoints.up('lg'));
 
   // TODO: get from API.
@@ -60,7 +63,13 @@ export const AuthenticatedSummary: React.FC<AuthenticatedSummaryProps> = ({
       menuItemsProps={[
         {
           children: 'Log out',
-          icon: <LogoutOutlinedIcon />
+          icon: <LogoutOutlinedIcon />,
+          onClick: () => {
+            logoutUser(null)
+              .unwrap()
+              .then(() => { navigate(paths._); })
+              .catch(() => { alert('Logout failed.'); });
+          }
         },
         ...menuItemsProps
       ]}
