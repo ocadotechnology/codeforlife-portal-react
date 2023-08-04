@@ -163,7 +163,7 @@ const NewStudentsTable: React.FC<NewStudentsTableProps> = ({
               <TableCell width={nameCellWidth}>
                 <Typography>Name</Typography>
               </TableCell>
-              <TableCell sx={{}} width={passwordCellWidth}>
+              <TableCell width={passwordCellWidth}>
                 <Typography>Password</Typography>
               </TableCell>
             </HeadRowTableCell>
