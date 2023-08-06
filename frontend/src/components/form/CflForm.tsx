@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  useTheme,
   Grid,
   Stack,
   StackProps,
@@ -29,6 +30,7 @@ export const CflHorizontalForm = <Values extends FormikValues = FormikValues>({
   cancelButton,
   ...formikProps
 }: CflHorizontalFormProps<Values>): JSX.Element => {
+  const theme = useTheme();
   return (
     <Formik {...formikProps} validateOnMount={true}>
       {(formik) => (
@@ -38,7 +40,19 @@ export const CflHorizontalForm = <Values extends FormikValues = FormikValues>({
               {header}
             </Typography>
           )}
-          {subheader && <Typography>{subheader}</Typography>}
+          {subheader &&
+            subheader.split('\\n').map((item, i) => (
+              <Typography
+                key={i}
+                sx={{
+                  mt: i ? theme.spacing(0) : theme.spacing(4),
+                  mb: i ? theme.spacing(1) : theme.spacing(4)
+                }}
+              >
+                {item}
+              </Typography>
+            ))}
+
           {subheaderBold && (
             <Typography fontWeight="bold">{subheaderBold}</Typography>
           )}
@@ -47,7 +61,8 @@ export const CflHorizontalForm = <Values extends FormikValues = FormikValues>({
               {React.Children.map(children, (child, index) => {
                 if (Array.isArray(children)) {
                   // Allow last child components such as checkboxes to take up the full width
-                  const isLastChild = children && index === children?.length - 1;
+                  const isLastChild =
+                    children && index === children?.length - 1;
                   return (
                     <Grid xs={12} sm={isLastChild ? true : 4} item>
                       {child}
@@ -64,8 +79,8 @@ export const CflHorizontalForm = <Values extends FormikValues = FormikValues>({
                   );
                 }
               })}
-              {cancelButton
-                ? <Grid xs={12} sm={4} item>
+              {cancelButton ? (
+                <Grid xs={12} sm={4} item>
                   <Stack direction="row" spacing={2}>
                     {React.cloneElement(cancelButton)}
                     {React.cloneElement(submitButton, {
@@ -73,10 +88,11 @@ export const CflHorizontalForm = <Values extends FormikValues = FormikValues>({
                     })}
                   </Stack>
                 </Grid>
-                : <Grid item xs={12}>
-                {submitButton}
-              </Grid>
-              }
+              ) : (
+                <Grid marginTop={theme.spacing(1.5)} item xs={12}>
+                  {submitButton}
+                </Grid>
+              )}
             </Grid>
           </Form>
         </React.Fragment>
