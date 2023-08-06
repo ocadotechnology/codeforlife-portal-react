@@ -1,5 +1,10 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import {
+  useNavigate,
+  NavigateFunction
+} from 'react-router-dom';
+import { MutationDefinition } from '@reduxjs/toolkit/dist/query';
+import { MutationTrigger } from '@reduxjs/toolkit/dist/query/react/buildHooks';
 import {
   Typography,
   Link,
@@ -20,6 +25,18 @@ import {
 import {
   DetailsButton
 } from '../details';
+
+function handleLogout(
+  logoutUser: MutationTrigger<MutationDefinition<null, any, any, any>>,
+  navigate: NavigateFunction
+) {
+  return () => {
+    logoutUser(null)
+      .unwrap()
+      .then(() => { navigate(paths._); })
+      .catch(() => { alert('Logout failed.'); });
+  };
+}
 
 interface AuthenticatedSummaryProps {
   userType: string;
@@ -64,12 +81,7 @@ export const AuthenticatedSummary: React.FC<AuthenticatedSummaryProps> = ({
         {
           children: 'Log out',
           icon: <LogoutOutlinedIcon />,
-          onClick: () => {
-            logoutUser(null)
-              .unwrap()
-              .then(() => { navigate(paths._); })
-              .catch(() => { alert('Logout failed.'); });
-          }
+          onClick: handleLogout(logoutUser, navigate)
         },
         ...menuItemsProps
       ]}
@@ -86,6 +98,8 @@ export const AuthenticatedDetails: React.FC<AuthenticatedDetailsProps> = ({
   children
 }) => {
   const theme = useTheme();
+  const navigate = useNavigate();
+  const [logoutUser] = useLogoutUserMutation();
 
   // TODO: get from API.
   const userName = 'John Doe';
@@ -104,7 +118,7 @@ export const AuthenticatedDetails: React.FC<AuthenticatedDetailsProps> = ({
       {userName}
     </Typography>
     {children}
-    <DetailsButton onClick={() => { alert('TODO: logout user'); }}>
+    <DetailsButton onClick={handleLogout(logoutUser, navigate)}>
       Logout
     </DetailsButton>
   </>;
