@@ -47,7 +47,8 @@ export const CflHorizontalForm = <Values extends FormikValues = FormikValues>({
               {React.Children.map(children, (child, index) => {
                 if (Array.isArray(children)) {
                   // Allow last child components such as checkboxes to take up the full width
-                  const isLastChild = children && index === children?.length - 1;
+                  const isLastChild =
+                    children && index === children?.length - 1;
                   return (
                     <Grid xs={12} sm={isLastChild ? true : 4} item>
                       {child}
@@ -64,8 +65,8 @@ export const CflHorizontalForm = <Values extends FormikValues = FormikValues>({
                   );
                 }
               })}
-              {cancelButton
-                ? <Grid xs={12} sm={4} item>
+              {cancelButton ? (
+                <Grid xs={12} sm={4} item>
                   <Stack direction="row" spacing={2}>
                     {React.cloneElement(cancelButton)}
                     {React.cloneElement(submitButton, {
@@ -73,10 +74,11 @@ export const CflHorizontalForm = <Values extends FormikValues = FormikValues>({
                     })}
                   </Stack>
                 </Grid>
-                : <Grid item xs={12}>
-                {submitButton}
-              </Grid>
-              }
+              ) : (
+                <Grid item xs={12}>
+                  {submitButton}
+                </Grid>
+              )}
             </Grid>
           </Form>
         </React.Fragment>

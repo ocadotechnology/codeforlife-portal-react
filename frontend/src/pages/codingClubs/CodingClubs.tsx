@@ -1,13 +1,6 @@
 import React from 'react';
-import {
-  Button,
-  Link,
-  Typography,
-  useTheme
-} from '@mui/material';
-import {
-  Download as DownloadIcon
-} from '@mui/icons-material';
+import { Button, Link, Typography, useTheme } from '@mui/material';
+import { Download as DownloadIcon } from '@mui/icons-material';
 
 import Page from 'codeforlife/lib/esm/components/page';
 
@@ -32,7 +25,9 @@ const DownloadButton: React.FC<{
       onClick={() => {
         downloadStudentPack({ id: packId })
           .unwrap()
-          .then(({ link }) => { window.open(link, '_blank'); })
+          .then(({ link }) => {
+            window.open(link, '_blank');
+          })
           .catch(() => {
             alert('Failed to download pack. Please try again later.');
           });
@@ -46,43 +41,75 @@ const DownloadButton: React.FC<{
 const CodingClubs: React.FC = () => {
   const theme = useTheme();
 
+  const CODING_CLUBS_PADDING = {
+    py: theme.spacing(4)
+  };
   return (
     <Page.Container>
       <Page.Banner
         imageProps={{ alt: 'codeClubHero', src: CodeClubHeroImage }}
-        header='Coding clubs'
-        subheader='A FREE set of slides and guides to run your own coding clubs'
+        header="Coding clubs"
+        subheader="A FREE set of slides and guides to run your own coding clubs"
       />
       <Page.Section>
         <ClubAim />
       </Page.Section>
-      <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
+      <Page.Section
+        sx={CODING_CLUBS_PADDING}
+        gridProps={{ bgcolor: theme.palette.info.main }}
+      >
         <Introduction
-          header='Primary coding club'
+          header="Primary coding club"
           img={{ alt: 'aboutUsCFL', src: AboutUsCFLImage }}
         >
           <Typography>
-            Download your FREE coding club pack for students aged 7-11. This pack introduces students to the first principles of Python at a faster pace than the regular lesson plans. It is aimed at students already interested in learning coding and can be used in clubs, at home or in school, on or offline.
+            Download your FREE coding club pack for students aged 7-11. This
+            pack introduces students to the first principles of Python at a
+            faster pace than the regular lesson plans. It is aimed at students
+            already interested in learning coding and can be used in clubs, at
+            home or in school, on or offline.
           </Typography>
           <Typography>
-            View the resources <Link href={process.env.REACT_APP_PRIMARY_RESOURCE_HREF} color="inherit" underline="always" target="_blank">online here</Link>.
+            View the resources{' '}
+            <Link
+              href={process.env.REACT_APP_PRIMARY_RESOURCE_HREF}
+              color="inherit"
+              underline="always"
+              target="_blank"
+            >
+              online here
+            </Link>
+            .
           </Typography>
           <DownloadButton packId={3}>
             Download the Primary coding club pack
           </DownloadButton>
         </Introduction>
       </Page.Section>
-      <Page.Section>
+      <Page.Section sx={CODING_CLUBS_PADDING}>
         <Introduction
-          header='Python coding club'
+          header="Python coding club"
           img={{ alt: 'pythonCodingClub', src: PythonClubImage }}
-          direction='row-reverse'
+          direction="row-reverse"
         >
           <Typography>
-            Download your FREE coding club pack for students aged 12 and above. This pack is a fast paced introduction to Python. It is aimed at students already interested in learning coding, individuals looking to learn and run their own club, or adults wanting to try coding out. It is designed to be used in face-to-face or online clubs.
+            Download your FREE coding club pack for students aged 12 and above.
+            This pack is a fast paced introduction to Python. It is aimed at
+            students already interested in learning coding, individuals looking
+            to learn and run their own club, or adults wanting to try coding
+            out. It is designed to be used in face-to-face or online clubs.
           </Typography>
           <Typography>
-            View the resources <Link href={process.env.REACT_APP_PYTHON_RESOURCE_HREF} color="inherit" underline="always" target="_blank">online here</Link>.
+            View the resources{' '}
+            <Link
+              href={process.env.REACT_APP_PYTHON_RESOURCE_HREF}
+              color="inherit"
+              underline="always"
+              target="_blank"
+            >
+              online here
+            </Link>
+            .
           </Typography>
           <DownloadButton packId={4}>
             Download the Python coding club pack
