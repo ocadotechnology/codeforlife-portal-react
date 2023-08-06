@@ -8,16 +8,19 @@ from django.urls import path, re_path
 #     RATELIMIT_LOGIN_RATE_SCHOOL_STUDENT,
 #     school_student_key,
 # )
-# from ..helpers.regexes import ACCESS_CODE_REGEX
+
+from ..helpers.regexes import ACCESS_CODE_REGEX
 from ..views.login import (
     session_expired_view,
     # old_login_form_redirect,
     # TeacherLoginView,
     teacher_login_view,
     # StudentLoginView,
+    student_login_view,
     # StudentClassCodeView,
-    # student_direct_login,
+    student_direct_login,
     # IndependentStudentLoginView,
+    independent_student_login_view,
 )
 
 urlpatterns = [
@@ -46,38 +49,41 @@ urlpatterns = [
         teacher_login_view,
         name="teacher_login",
     ),
-    # re_path(
-    #     rf"^login/student/(?P<access_code>{ACCESS_CODE_REGEX})/(?:(?P<login_type>classform)/)?$",
-    #     ratelimit(
-    #         group=RATELIMIT_LOGIN_GROUP,
-    #         key=school_student_key,
-    #         method=RATELIMIT_METHOD,
-    #         rate=RATELIMIT_LOGIN_RATE_SCHOOL_STUDENT,
-    #         block=True,
-    #         is_teacher=False,
-    #     )(StudentLoginView.as_view()),
-    #     name="student_login",
-    # ),
+    re_path(
+        rf"^login/student/(?P<access_code>{ACCESS_CODE_REGEX})/$",  # (?:(?P<login_type>classform)/)?$",
+        # ratelimit(
+        #     group=RATELIMIT_LOGIN_GROUP,
+        #     key=school_student_key,
+        #     method=RATELIMIT_METHOD,
+        #     rate=RATELIMIT_LOGIN_RATE_SCHOOL_STUDENT,
+        #     block=True,
+        #     is_teacher=False,
+        # )(StudentLoginView.as_view()),
+        student_login_view,
+        name="student_login",
+    ),
     # path(
     #     "login/student/",
     #     StudentClassCodeView.as_view(),
     #     name="student_login_access_code",
     # ),
-    # re_path(
-    #     r"^u/(?P<user_id>[0-9]+)/(?P<login_id>[a-z0-9]+)/$",
-    #     student_direct_login,
-    #     name="student_direct_login",
-    # ),
-    # path(
-    #     "login/independent/",
-    #     ratelimit(
-    #         group=RATELIMIT_LOGIN_GROUP,
-    #         key="post:username",
-    #         method=RATELIMIT_METHOD,
-    #         rate=RATELIMIT_LOGIN_RATE,
-    #         block=True,
-    #         is_teacher=False,
-    #     )(IndependentStudentLoginView.as_view()),
-    #     name="independent_student_login",
-    # ),
+    re_path(
+        r"^u/(?P<user_id>[0-9]+)/(?P<login_id>[a-z0-9]+)/$",
+        student_direct_login,
+        name="student_direct_login",
+    ),
+    path(
+        "login/independent/",
+        # TODO
+        # ratelimit(
+        #     group=RATELIMIT_LOGIN_GROUP,
+        #     key="post:username",
+        #     method=RATELIMIT_METHOD,
+        #     rate=RATELIMIT_LOGIN_RATE,
+        #     block=True,
+        #     is_teacher=False,
+        # )(IndependentStudentLoginView.as_view()),
+        independent_student_login_view,
+        name="independent_student_login",
+    ),
 ]

@@ -21,18 +21,25 @@ const loginApi = api.injectEndpoints({
     }),
     loginDependentStudent: build.mutation<null, {
       accessCode: string;
-      body: {
-        username: string;
-        password: string;
-      }
+      username: string;
+      password: string;
     }>({
-      query: ({ accessCode, body }) => ({
+      query: ({ accessCode, ...body }) => ({
         url: `login/student/${accessCode}/`,
         method: 'POST',
         body,
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
+      })
+    }),
+    loginDependentStudentAutomatically: build.mutation<null, {
+      userId: string;
+      loginId: string;
+    }>({
+      query: ({ userId, loginId }) => ({
+        url: `u/${userId}/${loginId}/`,
+        method: 'POST'
       })
     }),
     loginIndependentStudent: build.mutation<null, {
@@ -55,5 +62,6 @@ export default loginApi;
 export const {
   useLoginTeacherMutation,
   useLoginDependentStudentMutation,
+  useLoginDependentStudentAutomaticallyMutation,
   useLoginIndependentStudentMutation
 } = loginApi;

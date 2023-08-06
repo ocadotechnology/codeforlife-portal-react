@@ -53,9 +53,8 @@ from django.http import HttpRequest, HttpResponse
 from django.contrib.auth import authenticate, login
 from rest_framework import status
 
-# from ...forms.teach import TeacherLoginForm
 
-
+# TODO: fix 2fa and use the above view instead.
 def teacher_login_view(request: HttpRequest):
     if request.method != "POST":
         return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
@@ -70,5 +69,15 @@ def teacher_login_view(request: HttpRequest):
     return HttpResponse()
 
 
+# TODO: remove this redirect view and return 401 directly.
 def session_expired_view(request: HttpRequest):
+    """
+    This view is used a temporary solution and should be removed when our auth
+    flow is restructured. Django's default behavior with the @login_required
+    decorator is to redirect users to the login template found in setting
+    LOGIN_URL. Because we're using a React frontend, I want to return a 401
+    Unauthorized whenever a user's session cookie expires so we can redirect
+    them to the login page. Therefore, all login redirects will direct a to this
+    view which will return the desired 401.
+    """
     return HttpResponse(status=status.HTTP_401_UNAUTHORIZED)
