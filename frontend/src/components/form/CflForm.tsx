@@ -40,18 +40,17 @@ export const CflHorizontalForm = <Values extends FormikValues = FormikValues>({
               {header}
             </Typography>
           )}
-          {subheader &&
-            subheader.split('\\n').map((item, i) => (
-              <Typography
-                key={i}
-                sx={{
-                  mt: i ? theme.spacing(0) : theme.spacing(4),
-                  mb: i ? theme.spacing(1) : theme.spacing(4)
-                }}
-              >
-                {item}
-              </Typography>
-            ))}
+          {subheader?.split('\\n').map((item, i) => (
+            <Typography
+              key={i}
+              sx={{
+                mt: i ? theme.spacing(0) : theme.spacing(4),
+                mb: i ? theme.spacing(1) : theme.spacing(4)
+              }}
+            >
+              {item}
+            </Typography>
+          ))}
 
           {subheaderBold && (
             <Typography fontWeight="bold">{subheaderBold}</Typography>
@@ -79,20 +78,23 @@ export const CflHorizontalForm = <Values extends FormikValues = FormikValues>({
                   );
                 }
               })}
-              {cancelButton ? (
-                <Grid xs={12} sm={4} item>
-                  <Stack direction="row" spacing={2}>
-                    {React.cloneElement(cancelButton)}
-                    {React.cloneElement(submitButton, {
-                      disabled: !formik.isValid
-                    })}
-                  </Stack>
-                </Grid>
-              ) : (
-                <Grid marginTop={theme.spacing(1.5)} item xs={12}>
-                  {submitButton}
-                </Grid>
-              )}
+              {cancelButton
+                ? <>
+                  <Grid xs={12} sm={4} item marginTop={theme.spacing(1.5)}>
+                    <Stack direction="row" spacing={2}>
+                      {React.cloneElement(cancelButton)}
+                      {React.cloneElement(submitButton, {
+                        disabled: !formik.isValid
+                      })}
+                    </Stack>
+                  </Grid>
+                </>
+               : <>
+                  <Grid marginTop={theme.spacing(1.5)} item xs={12}>
+                    {submitButton}
+                  </Grid>
+                </>
+              }
             </Grid>
           </Form>
         </React.Fragment>
