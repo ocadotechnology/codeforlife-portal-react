@@ -10,15 +10,17 @@ import {
   TableRowProps,
   TableCell,
   TableCellProps,
-  typographyClasses
+  typographyClasses,
+  useTheme,
+  Box
 } from '@mui/material';
 import {
   Print as PrintIcon,
   SaveAlt as SaveAltIcon
 } from '@mui/icons-material';
 
-import { CopyIconButton } from 'codeforlife/lib/esm/components';
 import { primary } from 'codeforlife/lib/esm/theme/colors';
+import CopyToClipboardIcon from '../../components/CopyToClipboardIcon';
 
 const WhiteTableCell: React.FC<TableCellProps> = ({
   style,
@@ -34,13 +36,15 @@ const WhiteTableCell: React.FC<TableCellProps> = ({
 );
 
 const HeadRowTableCell: React.FC<TableRowProps> = (props) => (
-  <TableCell padding='none'>
-    <Table style={{
-      marginBottom: 0,
-      tableLayout: 'fixed',
-      height: '100%'
-    }}>
-      <TableHead className='light'>
+  <TableCell padding="none">
+    <Table
+      style={{
+        marginBottom: 0,
+        tableLayout: 'fixed',
+        height: '100%'
+      }}
+    >
+      <TableHead className="light">
         <TableRow {...props} />
       </TableHead>
     </Table>
@@ -48,12 +52,14 @@ const HeadRowTableCell: React.FC<TableRowProps> = (props) => (
 );
 
 const BodyRowTableCell: React.FC<TableRowProps> = (props) => (
-  <TableCell padding='none'>
-    <Table style={{
-      marginBottom: 0,
-      tableLayout: 'fixed',
-      height: '100%'
-    }}>
+  <TableCell padding="none">
+    <Table
+      style={{
+        marginBottom: 0,
+        tableLayout: 'fixed',
+        height: '100%'
+      }}
+    >
       <TableBody>
         <TableRow {...props} />
       </TableBody>
@@ -77,158 +83,152 @@ const NewStudentsTable: React.FC<NewStudentsTableProps> = ({
   const nameCellWidth = '40%';
   const passwordCellWidth = '60%';
 
-  return <>
-    <Typography>
-      The following credentials have been created for your class. When they log in for the first time, you may want students to change their passwords to something more memorable. You can reset these details for them at any time.
-    </Typography>
-    <Typography>
-      To log on, they will need to enter their name and passwords. Alternatively, you can provide them with a direct access link from the table below.
-    </Typography>
-    <Typography color='red' fontWeight='bold'>
-      You will not be shown this page again, so please make sure you retain a copy of the passwords for your records. You can print the reminder cards from the button below. Please ensure you share student passwords securely.
-    </Typography>
-    <Table
-      sx={{
-        height: '100%',
-        tableLayout: 'fixed',
-        [`.${typographyClasses.root}`]: {
-          marginBottom: 0
-        }
-      }}
-      className='body'
-    >
-      <TableHead>
-        <TableRow>
-          <TableCell width='45%'>
-            <Typography>
-              Option 1 Login details
-            </Typography>
-          </TableCell>
-          <WhiteTableCell width='10%' />
-          <TableCell width='45%'>
-            <Typography>
-              Option 2 Login links
-            </Typography>
-          </TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        <TableRow>
-          <TableCell>
-            <Stack
-              direction='row'
-              width='100%'
-              alignItems='center'
-            >
-              <Typography marginRight={2}>
-                Class link:
-              </Typography>
-              <Typography className='nowrap-ellipsis'>
-                {classLink}
-              </Typography>
-              <CopyIconButton
-                content={classLink}
-                style={{ marginLeft: 'auto' }}
-              />
-            </Stack>
-          </TableCell>
-          <WhiteTableCell>
-            <Typography style={{
-              color: 'white',
-              backgroundColor: primary[500],
-              borderRadius: '50%',
-              padding: 10,
-              width: 'fit-content',
-              margin: 'auto'
-            }}>
-              OR
-            </Typography>
-          </WhiteTableCell>
-          <TableCell>
-            <Typography fontWeight='bold'>
-              No class code or password required
-            </Typography>
-          </TableCell>
-        </TableRow>
-        <TableRow>
-          <HeadRowTableCell>
-            <TableCell width={nameCellWidth}>
-              <Typography>
-                Name
-              </Typography>
+  const theme = useTheme();
+  return (
+    <Box marginBottom={theme.spacing(2)}>
+      <Box marginBottom={theme.spacing(6)}>
+        <Typography>
+          The following credentials have been created for your class. When they
+          log in for the first time, you may want students to change their
+          passwords to something more memorable. You can reset these details for
+          them at any time.
+        </Typography>
+        <Typography>
+          To log on, they will need to enter their name and passwords.
+          Alternatively, you can provide them with a direct access link from the
+          table below.
+        </Typography>
+        <Typography color="red" fontWeight="bold">
+          You will not be shown this page again, so please make sure you retain
+          a copy of the passwords for your records. You can print the reminder
+          cards from the button below. Please ensure you share student passwords
+          securely.
+        </Typography>
+      </Box>
+      <Table
+        sx={{
+          height: '100%',
+          tableLayout: 'fixed',
+          [`.${typographyClasses.root}`]: {
+            marginBottom: 0
+          }
+        }}
+        className="body"
+      >
+        <TableHead>
+          <TableRow>
+            <TableCell width="45%">
+              <Typography>Option 1 Login details</Typography>
             </TableCell>
-            <TableCell width={passwordCellWidth}>
-              <Typography>
-                Password
-              </Typography>
+            <WhiteTableCell width="10%" />
+            <TableCell width="45%">
+              <Typography>Option 2 Login links</Typography>
             </TableCell>
-          </HeadRowTableCell>
-          <WhiteTableCell />
-          <HeadRowTableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          <TableRow>
             <TableCell>
-              <Typography>
-                Copy the links below and share with the student
+              <Stack direction="row" width="100%" alignItems="center">
+                <Typography marginRight={2}>Class link:</Typography>
+                <Typography className="nowrap-ellipsis">{classLink}</Typography>
+                <CopyToClipboardIcon
+                  stringToCopy={classLink}
+                  sx={{ marginLeft: 'auto' }}
+                />
+              </Stack>
+            </TableCell>
+            <WhiteTableCell>
+              <Typography
+                style={{
+                  color: 'white',
+                  backgroundColor: primary[500],
+                  borderRadius: '50%',
+                  padding: 10,
+                  width: 'fit-content',
+                  margin: 'auto'
+                }}
+              >
+                OR
+              </Typography>
+            </WhiteTableCell>
+            <TableCell>
+              <Typography fontWeight="bold">
+                No class code or password required
               </Typography>
             </TableCell>
-          </HeadRowTableCell>
-        </TableRow>
-        {students.map((student) => (
-          <TableRow key={student.name}>
-            <BodyRowTableCell>
+          </TableRow>
+          <TableRow>
+            <HeadRowTableCell>
               <TableCell width={nameCellWidth}>
-                <Typography>
-                  {student.name}
-                </Typography>
+                <Typography>Name</Typography>
               </TableCell>
               <TableCell width={passwordCellWidth}>
+                <Typography>Password</Typography>
+              </TableCell>
+            </HeadRowTableCell>
+            <WhiteTableCell />
+            <HeadRowTableCell>
+              <TableCell>
                 <Typography>
-                  {student.password}
+                  Copy the links below and share with the student
                 </Typography>
               </TableCell>
-            </BodyRowTableCell>
-            <WhiteTableCell />
-            <BodyRowTableCell>
-              <TableCell>
-                <Stack
-                  direction='row'
-                  width='100%'
-                  alignItems='center'
-                >
-                  <Typography className='nowrap-ellipsis'>
-                    {student.link}
-                  </Typography>
-                  <CopyIconButton
-                    content={student.link}
-                    style={{ marginLeft: 'auto' }}
-                  />
-                </Stack>
-              </TableCell>
-            </BodyRowTableCell>
+            </HeadRowTableCell>
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-    {/* TODO: fix margin bottom */}
-    <Stack
-      direction='row'
-      justifyContent='space-between'
-    >
-      <Button
-        endIcon={<PrintIcon />}
-        onClick={() => { alert('TODO: call api'); }}
-        className='body'
-      >
-        Print password reminder cards
-      </Button>
-      <Button
-        endIcon={<SaveAltIcon />}
-        onClick={() => { alert('TODO: call api'); }}
-        className='body'
-      >
-        Download CSV
-      </Button>
-    </Stack>
-  </>;
+          {students.map((student) => (
+            <TableRow key={student.name}>
+              <BodyRowTableCell>
+                <TableCell width={nameCellWidth}>
+                  <Typography>{student.name}</Typography>
+                </TableCell>
+                <TableCell width={passwordCellWidth}>
+                  <Typography>{student.password}</Typography>
+                </TableCell>
+              </BodyRowTableCell>
+              <WhiteTableCell />
+              <BodyRowTableCell>
+                <TableCell>
+                  <Stack direction="row" width="100%" alignItems="center">
+                    <Typography className="nowrap-ellipsis">
+                      {student.link}
+                    </Typography>
+                    <CopyToClipboardIcon
+                      stringToCopy={student.link}
+                      sx={{
+                        marginLeft: 'auto'
+                      }}
+                    />
+                  </Stack>
+                </TableCell>
+              </BodyRowTableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+      {/* TODO: fix margin bottom */}
+      <Stack direction="row" justifyContent="space-between">
+        <Button
+          endIcon={<PrintIcon />}
+          onClick={() => {
+            alert('TODO: call api');
+          }}
+          className="body"
+        >
+          Print password reminder cards
+        </Button>
+        <Button
+          endIcon={<SaveAltIcon />}
+          onClick={() => {
+            alert('TODO: call api');
+          }}
+          className="body"
+        >
+          Download CSV
+        </Button>
+      </Stack>
+    </Box>
+  );
 };
 
 export default NewStudentsTable;
