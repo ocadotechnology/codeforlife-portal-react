@@ -133,6 +133,7 @@ const allLevelsChecked: string[] = Array.from({ length: 109 }, (_, i) =>
 );
 
 const RapidRouterAccessSettings: React.FC = () => {
+  const theme = useTheme();
   return (
     <Formik
       initialValues={{
@@ -203,7 +204,7 @@ const RapidRouterAccessSettings: React.FC = () => {
               episode={RapidRouterGameTabs.python}
               formik={formik}
             />
-            <Button type="submit" style={{ marginTop: 20 }}>
+            <Button type="submit" sx={{ marginTop: theme.spacing(3) }}>
               Save level settings
             </Button>
           </Stack>
@@ -269,6 +270,7 @@ const TransferClassToAnotherTeacher: React.FC = () => {
               <Stack
                 direction="row"
                 columnGap={3}
+                marginTop={theme.spacing(3)}
                 marginBottom={theme.spacing(2)}
               >
                 <Button type="submit">Transfer class</Button>
@@ -289,11 +291,7 @@ const AdditionalSettings: React.FC<{
 
   return (
     <>
-      <Page.Section
-        sx={{
-          my: theme.spacing(3)
-        }}
-      >
+      <Page.Section>
         <Typography variant="h4" align="center">
           Additional class settings class Class 1 ({accessCode})
         </Typography>
@@ -315,11 +313,10 @@ const AdditionalSettings: React.FC<{
           Class details
         </Typography>
         <ClassDetailsForm goBack={goBack} />
-
       </Page.Section>
       <Page.Section
         sx={{
-          marginTop: theme.spacing(3.2),
+          marginTop: theme.spacing(3.5),
           marginBottom: theme.spacing(6)
         }}
       >
