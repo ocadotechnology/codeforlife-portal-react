@@ -1,14 +1,13 @@
 import React from 'react';
-import {
-  useParams,
-  useNavigate,
-  generatePath
-} from 'react-router-dom';
+import { useParams, useNavigate, generatePath } from 'react-router-dom';
 import { Button, Typography, useTheme } from '@mui/material';
 import { Add, Create, DoNotDisturb } from '@mui/icons-material';
 import * as Yup from 'yup';
 
-import { AutocompleteField, SubmitButton } from 'codeforlife/lib/esm/components/form';
+import {
+  AutocompleteField,
+  SubmitButton
+} from 'codeforlife/lib/esm/components/form';
 import Page from 'codeforlife/lib/esm/components/page';
 import { tryValidateSync } from 'codeforlife/lib/esm/helpers/yup';
 
@@ -56,7 +55,7 @@ const ClassTable: React.FC = () => {
             alignItems="center"
           >
             {accessCode}
-            <CopyToClipboardIcon accessCode={accessCode} />
+            <CopyToClipboardIcon stringToCopy={accessCode} />
           </CflTableCellElement>
           <CflTableCellElement>
             {teacher === `${firstName} ${lastName}` ? 'You' : teacher}
@@ -64,10 +63,11 @@ const ClassTable: React.FC = () => {
           <CflTableCellElement justifyContent="center">
             <Button
               onClick={() => {
-                navigate(generatePath(
-                  paths.teacher.dashboard.classes.editClass._,
-                  { accessCode }
-                ));
+                navigate(
+                  generatePath(paths.teacher.dashboard.classes.editClass._, {
+                    accessCode
+                  })
+                );
               }}
               endIcon={<Create />}
             >
@@ -84,10 +84,7 @@ const ExternalStudentsJoiningRequestsActions: React.FC = () => {
   return (
     <>
       <Button endIcon={<Add />}>Add to class</Button>
-      <Button
-        className="alert"
-        endIcon={<DoNotDisturb />}
-      >
+      <Button className="alert" endIcon={<DoNotDisturb />}>
         Reject
       </Button>
     </>
@@ -98,7 +95,7 @@ const ExternalStudentsJoiningRequestsTable: React.FC = () => {
   const teacherData = getTeachersData();
   return (
     <CflTable
-      className='body'
+      className="body"
       titles={['Name', 'Email address', 'Class', 'Actions']}
     >
       {teacherData.map(
@@ -188,23 +185,23 @@ const Classes: React.FC = () => {
   );
 
   if (params?.accessCode !== undefined) {
-    return <EditClass
-      accessCode={params.accessCode}
-    />;
+    return <EditClass accessCode={params.accessCode} />;
   }
 
-  return <>
-    <Page.Section>
-      <_YourClasses />
-      <ClassTable />
-    </Page.Section>
-    <Page.Section>
-      <ExternalStudentsJoiningRequests />
-    </Page.Section>
-    <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
-      <CreateNewClassForm />
-    </Page.Section>
-  </>;
+  return (
+    <>
+      <Page.Section>
+        <_YourClasses />
+        <ClassTable />
+      </Page.Section>
+      <Page.Section>
+        <ExternalStudentsJoiningRequests />
+      </Page.Section>
+      <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
+        <CreateNewClassForm />
+      </Page.Section>
+    </>
+  );
 };
 
 export default Classes;

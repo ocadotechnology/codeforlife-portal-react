@@ -2,7 +2,7 @@ import { ContentCopy } from '@mui/icons-material';
 import React from 'react';
 import { styled } from '@mui/material/styles';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { Tooltip } from '@mui/material';
+import { Tooltip, Box, BoxProps } from '@mui/material';
 
 const CopyContentIconStyled = styled(ContentCopy)(({ theme }) => ({
   color: theme.palette.info.dark,
@@ -14,8 +14,9 @@ const CopyContentIconStyled = styled(ContentCopy)(({ theme }) => ({
 }));
 
 const CopyToClipboardIcon: React.FC<{
-  accessCode: string;
-}> = ({ accessCode }) => {
+  stringToCopy: string;
+  sx?: BoxProps;
+}> = ({ stringToCopy, sx }) => {
   const [copiedMessage, setCopiedMessage] = React.useState('Copy to clipboard');
   const handleCopy: () => void = () => {
     setCopiedMessage('Copied to clipboard!');
@@ -24,11 +25,13 @@ const CopyToClipboardIcon: React.FC<{
     setCopiedMessage('Copy to clipboard');
   };
   return (
-    <CopyToClipboard text={accessCode} onCopy={handleCopy}>
-      <Tooltip title={copiedMessage} placement="bottom">
-        <CopyContentIconStyled onMouseEnter={resetMessage} />
-      </Tooltip>
-    </CopyToClipboard>
+    <Box sx={sx}>
+      <CopyToClipboard text={stringToCopy} onCopy={handleCopy}>
+        <Tooltip title={copiedMessage} placement="bottom">
+          <CopyContentIconStyled onMouseEnter={resetMessage} />
+        </Tooltip>
+      </CopyToClipboard>
+    </Box>
   );
 };
 
