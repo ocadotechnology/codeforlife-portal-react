@@ -73,6 +73,8 @@ from django.http import HttpRequest, HttpResponse
 from django.contrib.auth import authenticate, login
 from rest_framework import status
 
+from common.models import UserSession
+
 
 def independent_student_login_view(request: HttpRequest):
     if request.method != "POST":
@@ -83,6 +85,9 @@ def independent_student_login_view(request: HttpRequest):
     user = authenticate(request, username=username, password=password)
     if user is None:
         return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
+
+    # TODO: use google analytics
+    UserSession.objects.create(user=user)
 
     login(request, user)
     return HttpResponse()
