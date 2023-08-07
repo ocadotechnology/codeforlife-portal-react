@@ -305,10 +305,7 @@ const AdditionalSettings: React.FC<{
           to allow pupils to see their classmates&apos; progress.
         </Typography>
       </Page.Section>
-      <Page.Section
-        sx={{ my: theme.spacing(2) }}
-        gridProps={{ bgcolor: theme.palette.info.light }}
-      >
+      <Page.Section sx={{ my: theme.spacing(2) }}>
         <Typography marginTop={theme.spacing(4)} variant="h5">
           Class details
         </Typography>
