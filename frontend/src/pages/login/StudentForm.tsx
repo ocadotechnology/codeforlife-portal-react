@@ -23,7 +23,7 @@ import { submitForm } from 'codeforlife/lib/esm/helpers/formik';
 
 import {
   useLoginDependentStudentMutation,
-  useLoginDependentStudentAutomaticallyMutation
+  useLoginDependentStudentDirectlyMutation
 } from '../../app/api';
 import { paths } from '../../app/router';
 
@@ -106,8 +106,8 @@ const CredentialsForm: React.FC<{
 
 const StudentForm: React.FC = () => {
   const navigate = useNavigate();
-  const [loginDependentStudentAutomatically] =
-    useLoginDependentStudentAutomaticallyMutation();
+  const [loginDependentStudentDirectly] =
+    useLoginDependentStudentDirectlyMutation();
 
   const searchParams = tryValidateSync(
     fromSearchParams(),
@@ -123,7 +123,7 @@ const StudentForm: React.FC = () => {
   )?.accessCode;
 
   if (searchParams !== undefined) {
-    loginDependentStudentAutomatically(searchParams)
+    loginDependentStudentDirectly(searchParams)
       .unwrap()
       .then(() => { navigate(paths.student.dashboard.dependent._); })
       .catch(() => {

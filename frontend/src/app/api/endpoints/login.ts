@@ -33,7 +33,7 @@ const loginApi = api.injectEndpoints({
         }
       })
     }),
-    loginDependentStudentAutomatically: build.mutation<null, {
+    loginDependentStudentDirectly: build.mutation<null, {
       userId: string;
       loginId: string;
     }>({
@@ -62,6 +62,6 @@ export default loginApi;
 export const {
   useLoginTeacherMutation,
   useLoginDependentStudentMutation,
-  useLoginDependentStudentAutomaticallyMutation,
+  useLoginDependentStudentDirectlyMutation,
   useLoginIndependentStudentMutation
 } = loginApi;

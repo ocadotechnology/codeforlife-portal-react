@@ -26,6 +26,7 @@ import {
   DetailsButton
 } from '../details';
 
+// TODO: call logout on inactive session timeout popup.
 function handleLogout(
   logoutUser: MutationTrigger<MutationDefinition<null, any, any, any>>,
   navigate: NavigateFunction

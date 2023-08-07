@@ -172,10 +172,11 @@ def student_direct_login(request, user_id, login_id):
     if user:
         # Log the login time and class
         student = Student.objects.get(new_user=user)
-        session = UserSession(
-            user=user, class_field=student.class_field, login_type="direct"
+        UserSession.objects.create(
+            user=user,
+            class_field=student.class_field,
+            login_type="direct",
         )
-        session.save()
 
         login(request, user)
         # return HttpResponseRedirect(reverse_lazy("student_details"))

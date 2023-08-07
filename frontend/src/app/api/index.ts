@@ -11,7 +11,7 @@ import {
 import {
   useLoginTeacherMutation,
   useLoginDependentStudentMutation,
-  useLoginDependentStudentAutomaticallyMutation,
+  useLoginDependentStudentDirectlyMutation,
   useLoginIndependentStudentMutation
 } from './endpoints/login';
 import {
@@ -33,7 +33,7 @@ export {
   // login
   useLoginTeacherMutation,
   useLoginDependentStudentMutation,
-  useLoginDependentStudentAutomaticallyMutation,
+  useLoginDependentStudentDirectlyMutation,
   useLoginIndependentStudentMutation,
   // registration
   useRequestIndependentStudentPasswordResetMutation,

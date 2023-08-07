@@ -12,7 +12,6 @@ from django.urls import path, re_path
 from ..helpers.regexes import ACCESS_CODE_REGEX
 from ..views.login import (
     session_expired_view,
-    # old_login_form_redirect,
     # TeacherLoginView,
     teacher_login_view,
     # StudentLoginView,
@@ -29,11 +28,6 @@ urlpatterns = [
         session_expired_view,
         name="session-expired",
     ),
-    # path(
-    #     "login_form",
-    #     old_login_form_redirect,
-    #     name="old_login_form",
-    # ),
     path(
         "login/teacher/",
         # The ratelimit decorator checks how often a POST request is performed on that view.

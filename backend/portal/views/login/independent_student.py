@@ -76,6 +76,7 @@ from rest_framework import status
 from common.models import UserSession
 
 
+# TODO: fix 2fa and CSRF and use the above view instead.
 def independent_student_login_view(request: HttpRequest):
     if request.method != "POST":
         return HttpResponse(status=status.HTTP_400_BAD_REQUEST)

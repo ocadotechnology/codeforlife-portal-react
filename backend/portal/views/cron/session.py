@@ -19,6 +19,8 @@ class ClearSessionsViewSet(viewsets.ReadOnlyModelViewSet):
         before_session_count = queryset.count()
         logging.info(f"Session count before clearance: {before_session_count}")
 
+        # Clears expired sessions.
+        # https://docs.djangoproject.com/en/3.2/ref/django-admin/#clearsessions
         call_command("clearsessions")
 
         after_session_count = queryset.count()
