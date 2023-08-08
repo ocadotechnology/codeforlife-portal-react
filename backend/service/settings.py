@@ -269,7 +269,7 @@ PIPELINE = {}
 
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
 
-MODULE_NAME = os.getenv("MODULE_NAME")
+MODULE_NAME = os.getenv("BRANCH", "local")
 
 # Domain
 def domain():
@@ -280,7 +280,7 @@ def domain():
         domain_name = "localhost:8000"
     elif MODULE_NAME == "staging":
         domain_name = f"https://staging-dot-decent-digit-629.appspot.com"
-    elif MODULE_NAME == "dev":
+    elif MODULE_NAME == "development":
         domain_name = f"https://development-portal-dot-decent-digit-629.appspot.com"
 
     return domain_name
