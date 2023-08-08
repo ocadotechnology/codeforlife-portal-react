@@ -269,7 +269,7 @@ PIPELINE = {}
 
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
 
-MODULE_NAME = os.getenv("BRANCH", "local")
+MODULE_NAME = os.getenv("MODULE_NAME")
 
 # Domain
 def domain():

@@ -11,3 +11,4 @@ env_variables:
   SITE_PROTOCOL: "https"
   SITE_DOMAIN: "REPLACE_ME"
   SITE_PORT: "443"
+  MODULE_NAME: "REPLACE_ME"
