@@ -135,7 +135,8 @@ jobs:
           cmd: |
             yq -i '
               .service = "${{ env.BRANCH }}-${{ env.SERVICE }}" |
-              .env_variables.SITE_DOMAIN = "${{ env.BRANCH }}-portal-dot-decent-digit-629.appspot.com"
+              .env_variables.SITE_DOMAIN = "${{ env.BRANCH }}-portal-dot-decent-digit-629.appspot.com" |
+              .env_variables.MODULE_NAME = "${{ env.BRANCH }}"
             ' backend/app.yaml
 
       - name: 🚀 Deploy App on GCloud
