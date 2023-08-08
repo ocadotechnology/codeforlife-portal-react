@@ -258,11 +258,6 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
 
-SESSION_ENGINE = "django.contrib.sessions.backends.cache"
-SESSION_COOKIE_AGE = 60 * 60
-SESSION_SAVE_EVERY_REQUEST = True
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
     "portal.backends.StudentLoginBackend",
@@ -303,7 +298,6 @@ if os.getenv("GAE_APPLICATION", None):
     SOCIAL_AUTH_PANDASSO_REDIRECT_IS_HTTPS = True
     PANDASSO_URL = os.getenv("PANDASSO_URL")
 
-    SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
 
 IS_CLOUD_SCHEDULER_FUNCTION = is_cloud_scheduler

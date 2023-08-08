@@ -128,10 +128,15 @@ jobs:
         working-directory: ./backend
         run: pipenv run python ./manage.py collectstatic --noinput --clear
 
+      # https://mikefarah.gitbook.io/yq/
       - name: 🖊️ Configure App Deployment
         uses: mikefarah/yq@master
         with:
-          cmd: yq -i '.service = "${{ env.BRANCH }}-${{ env.SERVICE }}"' backend/app.yaml
+          cmd: |
+            yq -i '
+              .service = "${{ env.BRANCH }}-${{ env.SERVICE }}" |
+              .env_variables.SITE_DOMAIN = "${{ env.BRANCH }}-portal-dot-decent-digit-629.appspot.com"
+            ' backend/app.yaml
 
       - name: 🚀 Deploy App on GCloud
         working-directory: ./backend
