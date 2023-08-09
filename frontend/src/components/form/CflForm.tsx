@@ -41,13 +41,7 @@ export const CflHorizontalForm = <Values extends FormikValues = FormikValues>({
             </Typography>
           )}
           {subheader?.split('\\n').map((item, i) => (
-            <Typography
-              key={i}
-              sx={{
-                mt: i ? theme.spacing(0) : theme.spacing(4),
-                mb: i ? theme.spacing(1) : theme.spacing(4)
-              }}
-            >
+            <Typography key={i}>
               {item}
             </Typography>
           ))}
@@ -55,7 +49,7 @@ export const CflHorizontalForm = <Values extends FormikValues = FormikValues>({
           {subheaderBold && (
             <Typography fontWeight="bold">{subheaderBold}</Typography>
           )}
-          <Form>
+          <Form style={{ marginTop: theme.spacing(4)}}>
             <Grid {...gridProps}>
               {React.Children.map(children, (child, index) => {
                 if (Array.isArray(children)) {
