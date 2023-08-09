@@ -1,4 +1,4 @@
-# codeforlife-service-template
+# codeforlife-portal-react
 
 This repo contains Code for Life's portal service. Portal is our main website where we advertise our work and allow users to register/manage their accounts.
 
