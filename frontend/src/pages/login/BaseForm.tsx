@@ -1,12 +1,11 @@
 import React from 'react';
-import { Stack, Typography } from '@mui/material';
+import { Stack, Typography, useTheme } from '@mui/material';
 import { FormikValues } from 'formik';
 
-import theme, { ThemedBox, ThemedBoxProps } from 'codeforlife/lib/esm/theme';
+import { ThemedBox, ThemedBoxProps } from 'codeforlife/lib/esm/theme';
 import { Form, FormProps } from 'codeforlife/lib/esm/components/form';
 
 import { themeOptions } from '../../app/theme';
-import { useTheme } from '@mui/material';
 
 export interface BaseFormProps<Values> extends FormProps<Values> {
   themedBoxProps: Omit<ThemedBoxProps, 'withShapes'>;

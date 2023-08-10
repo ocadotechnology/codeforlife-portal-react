@@ -4,8 +4,7 @@ import { paths } from '../../app/router';
 import BaseForm from './BaseForm';
 import { SubmitButton, TextField } from 'codeforlife/lib/esm/components/form';
 import * as Yup from 'yup';
-import { Button, Stack, Typography } from '@mui/material';
-import { useTheme } from '@mui/material';
+import { Button, Stack, Typography, useTheme } from '@mui/material';
 
 interface Login2faBackupFormValues {
   backupToken: string;
