@@ -144,13 +144,12 @@ const TeachersTableActions: React.FC<{
     return (
       <>
         <Button endIcon={<Add />}>Make admin </Button>
-        {twoFactorAuthentication ? (
-          <Button endIcon={<DoDisturbOnOutlined />} className="alert">
+        {twoFactorAuthentication
+          ? <Button endIcon={<DoDisturbOnOutlined />} className="alert">
             Disable 2FA
           </Button>
-        ) : (
-          <></>
-        )}
+         : <></>
+        }
       </>
     );
   }
@@ -213,8 +212,7 @@ const YourSchool: React.FC = () => {
       <Page.Section
         sx={{
           paddingTop: theme.spacing(6),
-          paddingBottom: theme.spacing(1),
-          border: '1px dashed red'
+          paddingBottom: theme.spacing(1)
         }}
       >
         <Typography align="center" variant="h4">
@@ -231,7 +229,6 @@ const YourSchool: React.FC = () => {
       </Page.Section>
       <Page.Section
         sx={{
-          border: '1px dashed orange',
           paddingTop: theme.spacing(2.5),
           paddingBottom: theme.spacing(1)
         }}
@@ -240,7 +237,6 @@ const YourSchool: React.FC = () => {
       </Page.Section>
       <Page.Section
         sx={{
-          border: '1px dashed lime',
           marginTop: theme.spacing(2),
           paddingBottom: theme.spacing(1)
         }}
