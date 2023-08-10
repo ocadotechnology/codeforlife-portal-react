@@ -1,7 +1,7 @@
 # https://cloud.google.com/appengine/docs/flexible/scheduling-jobs-with-cron-yaml#about
 cron:
   - description: "clear sessions"
-    url: /api/cron/clear-sessions/
+    url: /api/cron/session/clear-expired/
     schedule: every day 00:00
     timezone: Europe/London
 
