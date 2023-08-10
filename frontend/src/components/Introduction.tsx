@@ -25,9 +25,7 @@ const Introduction: React.FC<{
       >
         <Grid xs={12} md={6}>
           <Stack sx={{ height: '100%' }}>
-            <Typography sx={{ lineHeight: 0.7 }} variant="h5">
-              {header}
-            </Typography>
+            <Typography variant="h5">{header}</Typography>
             {children}
           </Stack>
         </Grid>
