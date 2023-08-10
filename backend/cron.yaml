@@ -4,3 +4,18 @@ cron:
     url: /api/cron/clear-sessions/
     schedule: every day 00:00
     timezone: Europe/London
+
+  - description: "first verify email reminder"
+    url: /cron/user/unverified/send-first-reminder/
+    schedule: every 24 hours
+    timezone: Europe/London
+
+  - description: "second verify email reminder"
+    url: /cron/user/unverified/send-second-reminder/
+    schedule: every 24 hours
+    timezone: Europe/London
+
+  - description: "delete unverified users"
+    url: /cron/user/unverified/delete/
+    schedule: every 24 hours
+    timezone: Europe/London
