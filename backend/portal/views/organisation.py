@@ -9,8 +9,8 @@ from django.urls import reverse_lazy
 from portal.forms.organisation import OrganisationForm
 
 
-@login_required(login_url=reverse_lazy("teacher_login"))
-@user_passes_test(permissions.logged_in_as_teacher, login_url=reverse_lazy("teacher_login"))
+@login_required(login_url=reverse_lazy("session-expired"))
+@user_passes_test(permissions.logged_in_as_teacher, login_url=reverse_lazy("session-expired"))
 def organisation_create(request):
 
     teacher = request.user.new_teacher
@@ -40,8 +40,8 @@ def organisation_create(request):
     return res
 
 
-@login_required(login_url=reverse_lazy("teacher_login"))
-@user_passes_test(permissions.logged_in_as_teacher, login_url=reverse_lazy("teacher_login"))
+@login_required(login_url=reverse_lazy("session-expired"))
+@user_passes_test(permissions.logged_in_as_teacher, login_url=reverse_lazy("session-expired"))
 def organisation_leave(request):
     teacher = request.user.new_teacher
 
