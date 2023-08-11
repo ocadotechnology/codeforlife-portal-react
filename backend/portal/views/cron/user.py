@@ -1,18 +1,14 @@
 import logging
 from datetime import timedelta
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.utils import timezone
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from common.helpers.emails import (
-    NOTIFICATION_EMAIL,
-    generate_token_for_email,
-    send_email,
-)
-
+from ...emails import NOTIFICATION_EMAIL, generate_token_for_email, send_email
 from ...mixins import CronMixin
 
 # TODO: move email templates to DotDigital.
@@ -52,11 +48,6 @@ class FirstVerifyEmailReminderView(CronMixin, APIView):
         logging.info(f"{len(emails)} emails unverified.")
 
         if emails:
-            terms_url = request.build_absolute_uri(reverse("terms"))
-            privacy_notice_url = request.build_absolute_uri(
-                reverse("privacy_notice")
-            )
-
             sent_email_count = 0
             for email in emails:
                 try:
@@ -74,8 +65,8 @@ class FirstVerifyEmailReminderView(CronMixin, APIView):
                                     },
                                 )
                             ),
-                            terms_url=terms_url,
-                            privacy_notice_url=privacy_notice_url,
+                            terms_url=f"{settings.FRONTEND_URL}/terms-of-use/terms-of-use",
+                            privacy_notice_url=f"{settings.FRONTEND_URL}/privacy-notice/privacy-notice",
                         ),
                     )
 
@@ -94,20 +85,15 @@ class SecondVerifyEmailReminderView(CronMixin, APIView):
 
         emails = User.objects.filter(
             userprofile__is_verified=False,
-            date_joined__gte=now
+            date_joined__lte=now
             - timedelta(days=USER_2ND_VERIFY_EMAIL_REMINDER_DAYS),
-            date_joined__lt=now
+            date_joined__gt=now
             - timedelta(days=USER_2ND_VERIFY_EMAIL_REMINDER_DAYS + 1),
         ).values_list("email", flat=True)
 
         logging.info(f"{len(emails)} emails unverified.")
 
         if emails:
-            terms_url = request.build_absolute_uri(reverse("terms"))
-            privacy_notice_url = request.build_absolute_uri(
-                reverse("privacy_notice")
-            )
-
             sent_email_count = 0
             for email in emails:
                 try:
@@ -125,8 +111,8 @@ class SecondVerifyEmailReminderView(CronMixin, APIView):
                                     },
                                 )
                             ),
-                            terms_url=terms_url,
-                            privacy_notice_url=privacy_notice_url,
+                            terms_url=f"{settings.FRONTEND_URL}/terms-of-use/terms-of-use",
+                            privacy_notice_url=f"{settings.FRONTEND_URL}/privacy-notice/privacy-notice",
                         ),
                     )
 
