@@ -158,8 +158,8 @@ const TeachersTableActions: React.FC<{
           <Button endIcon={<Add />}>Make admin </Button>
           {twoFactorAuthentication
             ? <Button endIcon={<DoDisturbOnOutlined />} className='alert'>
-                Disable 2FA
-              </Button>
+              Disable 2FA
+            </Button>
             : <></>
           }
         </>
@@ -219,6 +219,7 @@ const YourSchool: React.FC = () => {
   const { schoolName, schoolPostcode } = getSchool();
   const theme = useTheme();
 
+  // TODO: add non-admin contents
   return <>
     <Page.Section>
       <Typography align="center" variant="h4">

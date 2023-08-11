@@ -2,11 +2,9 @@ import common.permissions as permissions
 from common.models import School, Teacher, Class
 from django.contrib import messages as messages
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.http import Http404, HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
-
-from portal.forms.organisation import OrganisationForm
 
 
 @login_required(login_url=reverse_lazy("session-expired"))
@@ -15,29 +13,23 @@ def organisation_create(request):
 
     teacher = request.user.new_teacher
 
-    create_form = OrganisationForm(user=request.user)
-
     if request.method == "POST":
-        create_form = OrganisationForm(request.POST, user=request.user)
-        if create_form.is_valid():
-            data = create_form.cleaned_data
-            name = data.get("name", "")
-            postcode = data.get("postcode", "").upper()
-            country = data.get("country", "")
+        form_data = request.POST
+        name = form_data["name"]
+        postcode = form_data["postcode"].upper()
+        country = form_data["country"]
 
-            school = School.objects.create(name=name, postcode=postcode, country=country)
+        school = School.objects.create(name=name, postcode=postcode, country=country)
 
-            teacher.school = school
-            teacher.is_admin = True
-            teacher.save()
+        teacher.school = school
+        teacher.is_admin = True
+        teacher.save()
 
-            messages.success(request, "The school or club '" + teacher.school.name + "' has been successfully added.")
+        # TODO: add message to FE: "The school or club '" + teacher.school.name + "' has been successfully added.")
+        # TODO: find FE callpoint
+        return HttpResponseRedirect(reverse_lazy("onboarding-classes"))
 
-            return HttpResponseRedirect(reverse_lazy("onboarding-classes"))
-
-    res = render(request, "portal/teach/onboarding_school.html", {"create_form": create_form, "teacher": teacher})
-
-    return res
+    return HttpResponse(status=405)
 
 
 @login_required(login_url=reverse_lazy("session-expired"))
@@ -60,29 +52,29 @@ def organisation_leave(request):
         teachers = Teacher.objects.filter(school=teacher.school).exclude(id=teacher.id)
 
         if classes.exists():
-            messages.info(
-                request,
-                "You still have classes, you must first move them to another teacher within your school or club.",
-            )
-            return render(
-                request,
-                "portal/teach/teacher_move_all_classes.html",
-                {
-                    "original_teacher": teacher,
-                    "classes": classes,
-                    "teachers": teachers,
-                    "submit_button_text": "Move classes and leave",
-                },
-            )
+            # TODO: add message to FE: "You still have classes, you must first move them to another teacher within your school or club."
+            # TODO: redirect to teacher_move_all_classes.html
+            # return render(
+            #     request,
+            #     "portal/teach/teacher_move_all_classes.html",
+            #     {
+            #         "original_teacher": teacher,
+            #         "classes": classes,
+            #         "teachers": teachers,
+            #         "submit_button_text": "Move classes and leave",
+            #     },
+            # )
+            pass
 
         teacher.school = None
         teacher.save()
 
-        messages.success(request, "You have successfully left the school or club.")
-
+        # TODO: add message to FE: "You have successfully left the school or club."
+        # TODO: find FE callpoint
         return HttpResponseRedirect(reverse_lazy("onboarding-organisation"))
 
+    return HttpResponse(status=405)
 
 def check_teacher_is_not_admin(teacher):
     if teacher.is_admin:
-        raise Http404
+        return HttpResponse(status=404)
