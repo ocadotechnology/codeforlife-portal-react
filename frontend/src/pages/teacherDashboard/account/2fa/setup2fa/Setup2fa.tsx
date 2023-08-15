@@ -62,9 +62,8 @@ const Setup2fa: React.FC = () => {
           />
           <Form
             initialValues={initialValues}
-            onSubmit={(values, { setSubmitting }) => {
+            onSubmit={(values) => {
               // TODO: to call backend
-              setSubmitting(false);
             }}>
             <TextField
               required
