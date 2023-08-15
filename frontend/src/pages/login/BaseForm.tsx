@@ -15,7 +15,6 @@ export interface BaseFormProps<Values> extends FormProps<Values> {
   header: string;
   subheader: string;
 }
-
 const BaseForm = <Values extends FormikValues = FormikValues>({
   themedBoxProps,
   header,
@@ -40,5 +39,4 @@ const BaseForm = <Values extends FormikValues = FormikValues>({
     </ThemedBox>
   );
 };
-
 export default BaseForm;
