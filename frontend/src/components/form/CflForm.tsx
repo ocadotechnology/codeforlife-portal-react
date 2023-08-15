@@ -5,10 +5,10 @@ import {
   StackProps,
   Typography,
   GridProps,
-  ButtonProps
+  ButtonProps,
+  useTheme
 } from '@mui/material';
 import { Formik, FormikValues, FormikConfig, FormikProps, Form } from 'formik';
-import { theme } from 'codeforlife';
 
 export interface CflHorizontalFormProps<Values> extends FormikConfig<Values> {
   header?: string;
@@ -30,6 +30,8 @@ export const CflHorizontalForm = <Values extends FormikValues = FormikValues>({
   cancelButton,
   ...formikProps
 }: CflHorizontalFormProps<Values>): JSX.Element => {
+  const theme = useTheme();
+
   return (
     <Formik {...formikProps} validateOnMount={true}>
       {(formik) => (
