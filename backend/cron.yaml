@@ -1,0 +1,6 @@
+# https://cloud.google.com/appengine/docs/flexible/scheduling-jobs-with-cron-yaml#about
+cron:
+  - description: "clear sessions"
+    url: /api/cron/clear-sessions/
+    schedule: every day 00:00
+    timezone: Europe/London

@@ -16,29 +16,26 @@ import BaseForm from './BaseForm';
 import {
   SubmitButton,
   TextField,
-  EmailField,
   PasswordField
 } from 'codeforlife/lib/esm/components/form';
+import { fromSearchParams } from 'codeforlife/lib/esm/hooks';
+import { submitForm } from 'codeforlife/lib/esm/helpers/formik';
 
+import {
+  useLoginDependentStudentMutation,
+  useLoginDependentStudentDirectlyMutation
+} from '../../app/api';
 import { paths } from '../../app/router';
 
 const AccessCodeForm: React.FC = () => {
   const navigate = useNavigate();
-
-  interface Values {
-    accessCode: string;
-  }
-
-  const initialValues: Values = {
-    accessCode: ''
-  };
 
   return (
     <BaseForm
       themedBoxProps={{ userType: 'student' }}
       header="Welcome"
       subheader="Please enter your class code."
-      initialValues={initialValues}
+      initialValues={{ accessCode: '' }}
       onSubmit={({ accessCode }) => {
         navigate(generatePath(
           paths.login.student.class._,
@@ -69,28 +66,25 @@ const AccessCodeForm: React.FC = () => {
 const CredentialsForm: React.FC<{
   accessCode: string;
 }> = ({ accessCode }) => {
-  interface Values {
-    email: string;
-    password: string;
-  }
-
-  const initialValues: Values = {
-    email: '',
-    password: ''
-  };
+  const navigate = useNavigate();
+  const [loginDependentStudent] = useLoginDependentStudentMutation();
 
   return (
     <BaseForm
       themedBoxProps={{ userType: 'student' }}
       header={`Welcome to class: ${accessCode}`}
       subheader="Please enter your login details."
-      initialValues={initialValues}
-      onSubmit={(values, errors) => {
-        alert(JSON.stringify(values));
-        // TODO: Connect this to the backend
+      initialValues={{
+        username: '',
+        password: '',
+        accessCode
       }}
+      onSubmit={submitForm(loginDependentStudent, {
+        then: () => { navigate(paths.student.dashboard.dependent._); }
+      })}
     >
-      <EmailField
+      <TextField
+        name="username"
         placeholder="Username"
         helperText="Enter your username"
         required
@@ -111,10 +105,33 @@ const CredentialsForm: React.FC<{
 };
 
 const StudentForm: React.FC = () => {
+  const navigate = useNavigate();
+  const [loginDependentStudentDirectly] =
+    useLoginDependentStudentDirectlyMutation();
+
+  const searchParams = tryValidateSync(
+    fromSearchParams(),
+    Yup.object({
+      userId: Yup.string().required(),
+      loginId: Yup.string().required()
+    })
+  );
+
   const accessCode = tryValidateSync(
     useParams(),
     Yup.object({ accessCode: accessCodeSchema })
   )?.accessCode;
+
+  if (searchParams !== undefined) {
+    loginDependentStudentDirectly(searchParams)
+      .unwrap()
+      .then(() => { navigate(paths.student.dashboard.dependent._); })
+      .catch(() => {
+        alert(
+          'Failed to automatically log in student. Please log in manually.'
+        );
+      });
+  }
 
   return accessCode === undefined
     ? <AccessCodeForm />

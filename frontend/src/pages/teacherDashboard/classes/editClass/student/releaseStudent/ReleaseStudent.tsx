@@ -31,7 +31,7 @@ const ReleaseStudentsForm: React.FC<{
               <StudentNameField
                 name={`original${String(index)}`}
                 helperText='Original student name'
-                readOnly={true}
+                disabled={true}
                 style={{ backgroundColor: theme.palette.info.main }}
               />
             </Grid>

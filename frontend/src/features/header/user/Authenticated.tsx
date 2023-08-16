@@ -1,5 +1,10 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import {
+  useNavigate,
+  NavigateFunction
+} from 'react-router-dom';
+import { MutationDefinition } from '@reduxjs/toolkit/dist/query';
+import { MutationTrigger } from '@reduxjs/toolkit/dist/query/react/buildHooks';
 import {
   Typography,
   Link,
@@ -11,6 +16,8 @@ import {
   LogoutOutlined as LogoutOutlinedIcon
 } from '@mui/icons-material';
 
+import { useLogoutUserMutation } from '../../../app/api';
+import { paths } from '../../../app/router';
 import {
   SummaryLoginSelect,
   SummaryLoginSelectProps
@@ -18,6 +25,19 @@ import {
 import {
   DetailsButton
 } from '../details';
+
+// TODO: call logout on inactive session timeout popup.
+function handleLogout(
+  logoutUser: MutationTrigger<MutationDefinition<null, any, any, any>>,
+  navigate: NavigateFunction
+) {
+  return () => {
+    logoutUser(null)
+      .unwrap()
+      .then(() => { navigate(paths._); })
+      .catch(() => { alert('Logout failed.'); });
+  };
+}
 
 interface AuthenticatedSummaryProps {
   userType: string;
@@ -34,6 +54,7 @@ export const AuthenticatedSummary: React.FC<AuthenticatedSummaryProps> = ({
 }) => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const [logoutUser] = useLogoutUserMutation();
   const upLg = useMediaQuery(theme.breakpoints.up('lg'));
 
   // TODO: get from API.
@@ -60,7 +81,8 @@ export const AuthenticatedSummary: React.FC<AuthenticatedSummaryProps> = ({
       menuItemsProps={[
         {
           children: 'Log out',
-          icon: <LogoutOutlinedIcon />
+          icon: <LogoutOutlinedIcon />,
+          onClick: handleLogout(logoutUser, navigate)
         },
         ...menuItemsProps
       ]}
@@ -77,6 +99,8 @@ export const AuthenticatedDetails: React.FC<AuthenticatedDetailsProps> = ({
   children
 }) => {
   const theme = useTheme();
+  const navigate = useNavigate();
+  const [logoutUser] = useLogoutUserMutation();
 
   // TODO: get from API.
   const userName = 'John Doe';
@@ -95,7 +119,7 @@ export const AuthenticatedDetails: React.FC<AuthenticatedDetailsProps> = ({
       {userName}
     </Typography>
     {children}
-    <DetailsButton onClick={() => { alert('TODO: logout user'); }}>
+    <DetailsButton onClick={handleLogout(logoutUser, navigate)}>
       Logout
     </DetailsButton>
   </>;

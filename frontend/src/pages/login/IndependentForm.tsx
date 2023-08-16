@@ -6,41 +6,37 @@ import {
   Typography
 } from '@mui/material';
 
-import { paths } from '../../app/router';
-import BaseForm from './BaseForm';
-
 import {
   EmailField,
   PasswordField,
   SubmitButton
 } from 'codeforlife/lib/esm/components/form';
+import { submitForm } from 'codeforlife/lib/esm/helpers/formik';
 
-interface IndependentFormValues {
-  email: string;
-  password: string;
-}
-
-const initialValues: IndependentFormValues = {
-  email: '',
-  password: ''
-};
+import { useLoginIndependentStudentMutation } from '../../app/api';
+import { paths } from '../../app/router';
+import BaseForm from './BaseForm';
 
 const IndependentForm: React.FC = () => {
   const navigate = useNavigate();
+  const [loginIndependentStudent] = useLoginIndependentStudentMutation();
 
   return (
     <BaseForm
       themedBoxProps={{ userType: 'independent' }}
       header='Welcome'
       subheader='Please enter your login details.'
-      initialValues={initialValues}
-      onSubmit={(values, errors) => {
-        alert(JSON.stringify(values));
-        // TODO: Connect this to the backend
+      initialValues={{
+        username: '',
+        password: ''
       }}
+      onSubmit={submitForm(loginIndependentStudent, {
+        then: () => { navigate(paths.student.dashboard.independent._); }
+      })}
     >
       <EmailField
         required
+        name="username"
         placeholder="Email address"
         helperText="Enter your email address"
       />
