@@ -11,6 +11,7 @@ import {
 import SchoolNameField from '../../components/form/SchoolNameField';
 import SchoolPostcodeField from '../../components/form/SchoolPostcodeField';
 import SchoolCountryField from '../../components/form/SchoolCountryField';
+import { useCreateOrganisationMutation } from '../../app/api/endpoints/organisation';
 
 const SchoolForm: React.FC<{
   onSubmit: () => void
@@ -29,17 +30,20 @@ const SchoolForm: React.FC<{
       country: ''
     };
 
+    const [createOrganisation] = useCreateOrganisationMutation();
+
     return <>
       <Typography>
         As the first person from your school or club to register for Code for Life, by default, you become the organisation&apos;s administrator.
       </Typography>
       <Form
         initialValues={initialValues}
-        onSubmit={(values, { setSubmitting }) => {
-          // TODO: call backend
-          console.log(values);
-          setSubmitting(false);
-          onSubmit();
+        onSubmit={(values) => {
+          createOrganisation(values).unwrap()
+            .then((res) => {
+              onSubmit();
+            })
+            .catch((err) => { console.log('CreateOrganisation submit error: ', err); });
         }}
         stackProps={{
           width: { xs: '100%', md: '50%' }

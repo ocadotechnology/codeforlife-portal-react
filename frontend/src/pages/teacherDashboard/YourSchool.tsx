@@ -3,7 +3,8 @@ import {
   Typography,
   Button,
   useTheme,
-  InputAdornment
+  InputAdornment,
+  Stack
 } from '@mui/material';
 import React from 'react';
 import {
@@ -31,6 +32,7 @@ import Page from 'codeforlife/lib/esm/components/page';
 import SchoolNameField from '../../components/form/SchoolNameField';
 import SchoolPostcodeField from '../../components/form/SchoolPostcodeField';
 import SchoolCountryField from '../../components/form/SchoolCountryField';
+import { useLeaveOrganisationMutation } from '../../app/api/endpoints/organisation';
 
 const InviteTeacherForm: React.FC = () => {
   return (
@@ -158,8 +160,8 @@ const TeachersTableActions: React.FC<{
           <Button endIcon={<Add />}>Make admin </Button>
           {twoFactorAuthentication
             ? <Button endIcon={<DoDisturbOnOutlined />} className='alert'>
-                Disable 2FA
-              </Button>
+              Disable 2FA
+            </Button>
             : <></>
           }
         </>
@@ -181,6 +183,7 @@ const TeachersTable: React.FC = () => {
       className='body'
       titles={['Name', 'Administrator status', 'Actions']}
     >
+      {/* TODO: hide Actions if teacher is not admin */}
       {teachersData.map(
         ({ teacherName, isTeacherAdmin, teacherEmail }, keyIdx: number) => (
           <CflTableBody key={`${keyIdx}`}>
@@ -218,49 +221,78 @@ const TeachersTable: React.FC = () => {
 const YourSchool: React.FC = () => {
   const { schoolName, schoolPostcode } = getSchool();
   const theme = useTheme();
+  const isAdmin = true; // TODO: get this from backend
+  const [leaveOrganisation] = useLeaveOrganisationMutation();
 
   return <>
     <Page.Section>
       <Typography align="center" variant="h4">
         Your school: {schoolName} ({schoolPostcode})
       </Typography>
-      <Typography mb={0}>
-        As an administrator of your school or club, you can select other
-        teachers to whom you can provide or revoke administrative rights. You
-        can also add and remove teachers from your school or club. As
-        administrator, you have the ability to see and amend other
-        teachers&apos; classes. Please bear this in mind when assigning admin
-        rights to other teachers.
-      </Typography>
     </Page.Section>
-    <Page.Section>
-      <InviteTeacherForm />
-    </Page.Section>
+    <Page.Section sx={{ paddingTop: 0 }}>
+      {isAdmin
+        ? <>
+          <Typography mb={0}>
+            As an administrator of your school or club, you can select other
+            teachers to whom you can provide or revoke administrative rights. You
+            can also add and remove teachers from your school or club. As
+            administrator, you have the ability to see and amend other
+            teachers&apos; classes. Please bear this in mind when assigning admin
+            rights to other teachers.
+          </Typography>
+          <Page.Section sx={{ paddingBottom: 0 }}>
+            <InviteTeacherForm />
+          </Page.Section>
+        </>
+        : <Stack alignItems="center">
+          <Typography variant="h5" marginTop={0} marginBottom={theme.spacing(5)}>
+            You can see which other teachers in your school or club are registered here.
+            Should you need to leave the school or club, you can do so below.
+          </Typography>
+          <Button
+            onClick={() => {
+              leaveOrganisation().unwrap()
+                .then((res) => {
+                })
+                .catch((err) => { console.log('LeaveOrganisation submit error: ', err); });
+            }
+            }
+          >
+            Leave school or club
+          </Button>
+        </Stack>
+      }
+    </Page.Section >
     <Page.Section>
       <Typography variant="h5">
         These teachers are already part of your school or club
       </Typography>
       <TeachersTable />
-      <Grid container columnSpacing={5}>
-        <Grid item sm={6}>
-          <Typography mb={0}>
-            Select &apos;Delete&apos; to delete a teacher from your school or
-            club. You will be able to move any existing classes assigned to
-            that teacher to other teachers in your school or club.
-          </Typography>
+      {isAdmin &&
+        <Grid container columnSpacing={5}>
+          <Grid item sm={6}>
+            <Typography mb={0}>
+              Select &apos;Delete&apos; to delete a teacher from your school or
+              club. You will be able to move any existing classes assigned to
+              that teacher to other teachers in your school or club.
+            </Typography>
+          </Grid>
+          <Grid item sm={6}>
+            <Typography fontWeight="bold" color="error" mb={0}>
+              We strongly recommend that administrators who are using 2FA ensure
+              there is another administrator who will be able to disable their
+              2FA should they have problems with their smartphone or tablet.
+            </Typography>
+          </Grid>
         </Grid>
-        <Grid item sm={6}>
-          <Typography fontWeight="bold" color="error" mb={0}>
-            We strongly recommend that administrators who are using 2FA ensure
-            there is another administrator who will be able to disable their
-            2FA should they have problems with their smartphone or tablet.
-          </Typography>
-        </Grid>
-      </Grid>
+      }
     </Page.Section>
-    <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
-      <UpdateSchoolDetailsForm />
-    </Page.Section>
+    {isAdmin &&
+      <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
+        <UpdateSchoolDetailsForm />
+      </Page.Section>
+    }
   </>;
 };
 
