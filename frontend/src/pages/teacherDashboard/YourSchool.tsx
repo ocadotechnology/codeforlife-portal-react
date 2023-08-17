@@ -169,7 +169,9 @@ const TeachersTableActions: React.FC<{
     }
   };
 
-const TeachersTable: React.FC = () => {
+const TeachersTable: React.FC<{
+  isAdmin: boolean;
+}> = ({ isAdmin }) => {
   const { email } = getUser();
   const teachersData = getTeachersData();
   const youText = (
@@ -181,9 +183,8 @@ const TeachersTable: React.FC = () => {
   return (
     <CflTable
       className='body'
-      titles={['Name', 'Administrator status', 'Actions']}
+      titles={isAdmin ? ['Name', 'Administrator status', 'Actions'] : ['Name', 'Administrator statuus']}
     >
-      {/* TODO: hide Actions if teacher is not admin */}
       {teachersData.map(
         ({ teacherName, isTeacherAdmin, teacherEmail }, keyIdx: number) => (
           <CflTableBody key={`${keyIdx}`}>
@@ -202,15 +203,17 @@ const TeachersTable: React.FC = () => {
               </Typography>
               <Typography variant="subtitle1">({teacherEmail}) </Typography>
             </CflTableCellElement>
-            <CflTableCellElement justifyContent="center">
-              <TeachersTableActions
-                {...{
-                  teacherEmail,
-                  userEmail: email,
-                  isTeacherAdmin
-                }}
-              />
-            </CflTableCellElement>
+            {isAdmin &&
+              <CflTableCellElement justifyContent="center">
+                <TeachersTableActions
+                  {...{
+                    teacherEmail,
+                    userEmail: email,
+                    isTeacherAdmin
+                  }}
+                />
+              </CflTableCellElement>
+            }
           </CflTableBody>
         )
       )}
@@ -268,7 +271,7 @@ const YourSchool: React.FC = () => {
       <Typography variant="h5">
         These teachers are already part of your school or club
       </Typography>
-      <TeachersTable />
+      <TeachersTable isAdmin={isAdmin} />
       {isAdmin &&
         <Grid container columnSpacing={5}>
           <Grid item sm={6}>
