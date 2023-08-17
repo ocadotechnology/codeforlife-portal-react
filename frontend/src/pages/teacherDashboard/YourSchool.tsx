@@ -33,6 +33,8 @@ import SchoolNameField from '../../components/form/SchoolNameField';
 import SchoolPostcodeField from '../../components/form/SchoolPostcodeField';
 import SchoolCountryField from '../../components/form/SchoolCountryField';
 import { useLeaveOrganisationMutation } from '../../app/api/endpoints/organisation';
+import { useNavigate } from 'react-router-dom';
+import { paths } from '../../app/router';
 
 const InviteTeacherForm: React.FC = () => {
   return (
@@ -224,8 +226,20 @@ const TeachersTable: React.FC<{
 const YourSchool: React.FC = () => {
   const { schoolName, schoolPostcode } = getSchool();
   const theme = useTheme();
-  const isAdmin = true; // TODO: get this from backend
   const [leaveOrganisation] = useLeaveOrganisationMutation();
+  const navigate = useNavigate();
+  const isAdmin = false; // TODO: get this from backend
+  const stillHasClasses = true; // TODO: get this from backend
+
+  const onLeaveOrganisation = (): void => {
+    if (stillHasClasses) {
+      navigate(paths.teacher.dashboard.school.leave._);
+    } else {
+      leaveOrganisation().unwrap()
+        .then(() => { navigate(paths.teacher.onboarding._); })
+        .catch((err) => { console.log('LeaveOrganisation error: ', err); });
+    }
+  };
 
   return <>
     <Page.Section>
@@ -253,15 +267,7 @@ const YourSchool: React.FC = () => {
             You can see which other teachers in your school or club are registered here.
             Should you need to leave the school or club, you can do so below.
           </Typography>
-          <Button
-            onClick={() => {
-              leaveOrganisation().unwrap()
-                .then((res) => {
-                })
-                .catch((err) => { console.log('LeaveOrganisation submit error: ', err); });
-            }
-            }
-          >
+          <Button onClick={onLeaveOrganisation}>
             Leave school or club
           </Button>
         </Stack>
@@ -291,7 +297,8 @@ const YourSchool: React.FC = () => {
         </Grid>
       }
     </Page.Section>
-    {isAdmin &&
+    {
+      isAdmin &&
       <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
         <UpdateSchoolDetailsForm />
       </Page.Section>

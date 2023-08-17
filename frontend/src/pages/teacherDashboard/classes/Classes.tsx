@@ -176,9 +176,24 @@ const CreateNewClassForm: React.FC = () => {
   );
 };
 
-const Classes: React.FC = () => {
-  const theme = useTheme();
+const MoveClasses: React.FC = () => {
+  // teacher_move_all_classes.html
+  // Message: "You still have classes, you must first move them to another teacher within your school or club."
+  // TODO: get userName & data from BE
+  const userName = 'John Doe';
+  return (
+    <Page.Section>
+      <Typography variant='h5'>
+        Move all classes for teacher {userName}
+      </Typography>
+    </Page.Section>
+  );
+};
 
+const Classes: React.FC<{
+  movingClass: boolean;
+}> = ({ movingClass }) => {
+  const theme = useTheme();
   const params = tryValidateSync(
     useParams(),
     Yup.object({ accessCode: accessCodeSchema })
@@ -190,16 +205,21 @@ const Classes: React.FC = () => {
 
   return (
     <>
-      <Page.Section>
-        <_YourClasses />
-        <ClassTable />
-      </Page.Section>
-      <Page.Section>
-        <ExternalStudentsJoiningRequests />
-      </Page.Section>
-      <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
-        <CreateNewClassForm />
-      </Page.Section>
+      {movingClass
+        ? <MoveClasses />
+        : <>
+          <Page.Section>
+            <_YourClasses />
+            <ClassTable />
+          </Page.Section >
+          <Page.Section>
+            <ExternalStudentsJoiningRequests />
+          </Page.Section>
+          <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
+            <CreateNewClassForm />
+          </Page.Section>
+        </>
+      }
     </>
   );
 };
