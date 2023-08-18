@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams, useNavigate, generatePath } from 'react-router-dom';
-import { Button, Typography, useTheme } from '@mui/material';
+import { Button, Typography, useTheme, Link, Select, MenuItem } from '@mui/material';
 import { Add, Create, DoNotDisturb } from '@mui/icons-material';
 import * as Yup from 'yup';
 
@@ -23,6 +23,7 @@ import { CflHorizontalForm } from '../../../components/form/CflForm';
 import ClassNameField from '../../../components/form/ClassNameField';
 import SeeClassmatesProgressField from '../../../components/form/SeeClassmatesProgressField';
 import EditClass from './editClass/EditClass';
+import { useLeaveOrganisationMutation } from '../../../app/api/endpoints/organisation';
 
 const _YourClasses: React.FC = () => {
   return (
@@ -176,17 +177,85 @@ const CreateNewClassForm: React.FC = () => {
   );
 };
 
-const MoveClasses: React.FC = () => {
-  // teacher_move_all_classes.html
-  // Message: "You still have classes, you must first move them to another teacher within your school or club."
-  // TODO: get userName & data from BE
-  const userName = 'John Doe';
+const MoveClassTeacherForm: React.FC = () => {
+  // TODO: get data from BE and rewrite this to a form
+  const classesData = getClassesData();
+  const theme = useTheme();
+  const [leaveOrganisation] = useLeaveOrganisationMutation();
+  const navigate = useNavigate();
+
+  const onLeaveOrganisation = (): void => {
+    // TODO: call API to handover classes to new teachers
+    leaveOrganisation().unwrap()
+      .then(() => { navigate(paths.teacher.onboarding._, { state: { leftOrganisation: true } }); })
+      .catch((err) => { console.log('LeaveOrganisation error: ', err); });
+  };
+
   return (
-    <Page.Section>
-      <Typography variant='h5'>
-        Move all classes for teacher {userName}
+    <>
+      <Typography marginY={theme.spacing(3)}>
+        Please specify which teacher you would like the classes below to be moved to.
       </Typography>
-    </Page.Section>
+      <CflTable
+        className='body'
+        titles={['Class name', 'New teacher']}
+      >
+        {classesData.map(
+          ({ className }, keyIdx: number) => (
+            <CflTableBody key={`${keyIdx}`}>
+              <CflTableCellElement>
+                <Typography variant="subtitle1">
+                  {className}
+                </Typography>
+              </CflTableCellElement>
+              <CflTableCellElement
+                direction="column"
+                alignItems="flex-start"
+              >
+                <Select defaultValue={1}>
+                  <MenuItem value={1}> New Teacher 1 </MenuItem>
+                  <MenuItem value={2}> New Teacher 2 </MenuItem>
+                </Select>
+              </CflTableCellElement>
+            </CflTableBody>
+          ))}
+      </CflTable>
+      <Button variant='outlined'>
+        Cancel
+      </Button>
+      <Button
+        onClick={onLeaveOrganisation}
+        sx={{ marginLeft: theme.spacing(3) }}
+      >
+        Move classes and leave
+      </Button>
+    </>
+  );
+};
+
+const MoveClasses: React.FC = () => {
+  // TODO: get data from BE
+  const userName = 'John Doe';
+  const navigate = useNavigate();
+  const theme = useTheme();
+
+  return (
+    <>
+      <Page.Notification>
+        You still have classes, you must first move them to another teacher within your school or club.
+      </Page.Notification>
+      <Page.Section>
+        <Typography variant="h4" align="center" marginBottom={theme.spacing(5)}>
+          Move all classes for teacher {userName}
+        </Typography>
+        <Link className="back-to" onClick={() => {
+          navigate(paths.teacher.dashboard.school._);
+        }}>
+          dashboard
+        </Link>
+        <MoveClassTeacherForm />
+      </Page.Section >
+    </>
   );
 };
 
