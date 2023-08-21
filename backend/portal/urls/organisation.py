@@ -8,12 +8,12 @@ from ..views.organisation import (
 
 urlpatterns = [
     path(
-        "teach/onboarding-organisation/",
+        "teacher/onboarding-organisation/",
         organisation_create,
         name="organisation_create",
     ),
     path(
-        "teach/dashboard/school/leave/",
+        "teacher/leave-organisation/",
         organisation_leave,
         name="organisation_leave",
     ),

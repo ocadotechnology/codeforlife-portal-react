@@ -19,13 +19,13 @@ const SchoolForm: React.FC<{
   onSubmit
 }) => {
     interface Values {
-      school: string;
+      name: string;
       postcode: string;
       country: string;
     }
 
     const initialValues: Values = {
-      school: '',
+      name: '',
       postcode: '',
       country: ''
     };

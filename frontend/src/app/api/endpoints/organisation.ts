@@ -5,12 +5,12 @@ const organisationApi = api.injectEndpoints({
     createOrganisation: build.mutation<null | {
       success: boolean
     }, {
-      school: string;
+      name: string;
       postcode: string;
       country: string;
     }>({
       query: (body) => ({
-        url: 'teach/onboarding-organisation/',
+        url: 'teacher/onboarding-organisation/',
         method: 'POST',
         body,
         headers: {
@@ -20,7 +20,7 @@ const organisationApi = api.injectEndpoints({
     }),
     leaveOrganisation: build.mutation<void, void>({
       query: () => ({
-        url: 'teach/dashboard/school/leave/',
+        url: 'teacher/leave-organisation/',
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
