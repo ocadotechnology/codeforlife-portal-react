@@ -4,7 +4,7 @@ import { paths } from '../../app/router';
 import BaseForm from './BaseForm';
 import { SubmitButton, TextField } from 'codeforlife/lib/esm/components/form';
 import * as Yup from 'yup';
-import { Button, Stack, Typography } from '@mui/material';
+import { Button, Stack, Typography, useTheme } from '@mui/material';
 
 interface Login2faBackupFormValues {
   backupToken: string;
@@ -15,7 +15,7 @@ const initialValues: Login2faBackupFormValues = {
 
 const Teacher2faBackupForm: React.FC = () => {
   const navigate = useNavigate();
-
+  const theme = useTheme();
   return (
     <BaseForm
       themedBoxProps={{ userType: 'teacher' }}
@@ -28,7 +28,7 @@ const Teacher2faBackupForm: React.FC = () => {
         setSubmitting(false);
       }}
     >
-      <Typography>
+      <Typography marginBottom={theme.spacing(6)}>
         Use this form for entering backup tokens for logging in. These tokens
         have been generated for you to print and keep safe. Please enter one of
         these backup tokens to login to your account.
@@ -40,7 +40,13 @@ const Teacher2faBackupForm: React.FC = () => {
         validate={Yup.string().matches(/^[a-z0-9]{8}$/, 'Invalid token')}
         required
       />
-      <Stack direction="row" spacing={2} justifyContent="space-between">
+      <Stack
+        marginTop={theme.spacing(3.5)}
+        marginBottom={theme.spacing(1)}
+        direction="row"
+        spacing={2}
+        justifyContent="space-between"
+      >
         <Button
           onClick={() => {
             navigate(paths.login.teacher._);

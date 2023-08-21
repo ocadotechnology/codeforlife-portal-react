@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-  Stack,
-  Typography
-} from '@mui/material';
+import { Stack, Typography, useTheme } from '@mui/material';
 import { FormikValues } from 'formik';
 
 import { ThemedBox, ThemedBoxProps } from 'codeforlife/lib/esm/theme';
@@ -21,17 +18,19 @@ const BaseForm = <Values extends FormikValues = FormikValues>({
   subheader,
   ...formProps
 }: BaseFormProps<Values>): JSX.Element => {
+  const theme = useTheme();
   return (
-    <ThemedBox
-      withShapes
-      options={themeOptions}
-      {...themedBoxProps}
-    >
-      <Stack>
-        <Typography align='center' variant='h4'>
+    <ThemedBox withShapes options={themeOptions} {...themedBoxProps}>
+      <Stack
+        sx={{
+          paddingY: theme.spacing(1.5),
+          paddingX: theme.spacing(3)
+        }}
+      >
+        <Typography align="center" variant="h4">
           {header}
         </Typography>
-        <Typography align='center' variant='h6'>
+        <Typography align="center" variant="h6">
           {subheader}
         </Typography>
         <Form {...formProps} />
