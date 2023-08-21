@@ -229,16 +229,18 @@ const YourSchool: React.FC = () => {
   const [leaveOrganisation] = useLeaveOrganisationMutation();
   const navigate = useNavigate();
   const isAdmin = false; // TODO: retrieve from backend
-  const stillHasClasses = true; // TODO: retrieve from backend
 
   const onLeaveOrganisation = (): void => {
-    if (stillHasClasses) {
-      navigate(paths.teacher.dashboard.school.leave._);
-    } else {
-      leaveOrganisation().unwrap()
-        .then(() => { navigate(paths.teacher.onboarding._, { state: { leftOrganisation: true } }); })
-        .catch((err) => { console.log('LeaveOrganisation error: ', err); });
-    }
+    leaveOrganisation().unwrap()
+      .then((res) => {
+        console.log('res', res);
+        if (res.hasClasses) {
+          navigate(paths.teacher.dashboard.school.leave._, { state: { classes: res.classes, teachers: res.teachers } });
+        } else {
+          navigate(paths.teacher.onboarding._, { state: { leftOrganisation: true } });
+        }
+      })
+      .catch((err) => { console.log('LeaveOrganisation error: ', err); });
   };
 
   return <>

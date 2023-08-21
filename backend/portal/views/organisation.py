@@ -2,7 +2,7 @@ import common.permissions as permissions
 from common.models import School, Teacher, Class
 from django.contrib import messages as messages
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from rest_framework import status
@@ -34,33 +34,28 @@ def organisation_create(request):
 def organisation_leave(request):
     teacher = request.user.new_teacher
 
-    check_teacher_is_not_admin(teacher)
+    # check teacher is not admin 
+    if teacher.is_admin:
+        return HttpResponse(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == "POST":
-        # TODO: check its FE callpoint
-        # classes = Class.objects.filter(teacher=teacher)
-        # for klass in classes:
-        #     teacher_id = request.POST.get(klass.access_code, None)
-        #     if teacher_id:
-        #         new_teacher = get_object_or_404(Teacher, id=teacher_id)
-        #         klass.teacher = new_teacher
-        #         klass.save()
-
         classes = Class.objects.filter(teacher=teacher)
-        teachers = Teacher.objects.filter(school=teacher.school).exclude(id=teacher.id)
+        for klass in classes:
+            teacher_id = request.POST.get(klass.access_code, None)
+            if teacher_id:
+                new_teacher = get_object_or_404(Teacher, id=teacher_id)
+                klass.teacher = new_teacher
+                klass.save()
 
+        classes = Class.objects.filter(teacher=teacher).values("id", "name", "access_code")
+        teachers = Teacher.objects.filter(school=teacher.school).exclude(id=teacher.id).values("id", "new_user_id__first_name", "new_user_id__last_name")
+        
         if classes.exists():
-            # TODO: return new teachers to FE
-            pass
+            return JsonResponse(status=status.HTTP_200_OK, data={'hasClasses': True, 'classes': list(classes), 'teachers': list(teachers)})
         else:
             teacher.school = None
             teacher.save()
 
-        return HttpResponse(status=status.HTTP_204_NO_CONTENT)
+        return JsonResponse(status=status.HTTP_204_NO_CONTENT, data={'hasClasses': False})
 
     return HttpResponse(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-
-
-def check_teacher_is_not_admin(teacher):
-    if teacher.is_admin:
-        return HttpResponse(status=status.HTTP_404_NOT_FOUND)

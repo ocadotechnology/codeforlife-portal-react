@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams, useNavigate, generatePath } from 'react-router-dom';
+import { useParams, useNavigate, generatePath, useLocation } from 'react-router-dom';
 import { Button, Typography, useTheme, Link, Select, MenuItem } from '@mui/material';
 import { Add, Create, DoNotDisturb } from '@mui/icons-material';
 import * as Yup from 'yup';
@@ -178,48 +178,48 @@ const CreateNewClassForm: React.FC = () => {
 };
 
 const MoveClassTeacherForm: React.FC = () => {
-  // TODO: get data from BE and rewrite this to a form
-  const classesData = getClassesData();
+  const location = useLocation();
+  const state = location.state;
   const theme = useTheme();
   const [leaveOrganisation] = useLeaveOrganisationMutation();
   const navigate = useNavigate();
 
   const onLeaveOrganisation = (): void => {
-    // TODO: call API to handover classes to new teachers
     leaveOrganisation().unwrap()
       .then(() => { navigate(paths.teacher.onboarding._, { state: { leftOrganisation: true } }); })
       .catch((err) => { console.log('LeaveOrganisation error: ', err); });
   };
-
+  console.log('state', state);
   return (
     <>
       <Typography marginY={theme.spacing(3)}>
         Please specify which teacher you would like the classes below to be moved to.
       </Typography>
+      {/* TODO: re-write to a form */}
       <CflTable
         className='body'
         titles={['Class name', 'New teacher']}
       >
-        {classesData.map(
-          ({ className }, keyIdx: number) => (
-            <CflTableBody key={`${keyIdx}`}>
-              <CflTableCellElement>
-                <Typography variant="subtitle1">
-                  {className}
-                </Typography>
-              </CflTableCellElement>
-              <CflTableCellElement
-                direction="column"
-                alignItems="flex-start"
-              >
-                <Select defaultValue={1}>
-                  <MenuItem value={1}> New Teacher 1 </MenuItem>
-                  <MenuItem value={2}> New Teacher 2 </MenuItem>
-                </Select>
-              </CflTableCellElement>
-            </CflTableBody>
-          ))}
-      </CflTable>
+        {state.classes.map((c: any) =>
+          <CflTableBody key={c.id}>
+            <CflTableCellElement>
+              <Typography variant="subtitle1">
+                {c.name}
+              </Typography>
+            </CflTableCellElement>
+            <CflTableCellElement
+              direction="column"
+              alignItems="flex-start"
+            >
+              <Select>
+                {state.teachers.map((t: any) =>
+                  <MenuItem key={t.id} value={t.id}>{t.newUserIdFirstName} {t.newUserIdLastName}</MenuItem>
+                )}
+              </Select>
+            </CflTableCellElement>
+          </CflTableBody>
+        )}
+      </CflTable >
       <Button variant='outlined'>
         Cancel
       </Button>

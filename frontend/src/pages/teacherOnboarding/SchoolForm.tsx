@@ -40,7 +40,7 @@ const SchoolForm: React.FC<{
         initialValues={initialValues}
         onSubmit={(values) => {
           createOrganisation(values).unwrap()
-            .then((res) => {
+            .then(() => {
               onSubmit();
             })
             .catch((err) => { console.log('CreateOrganisation submit error: ', err); });

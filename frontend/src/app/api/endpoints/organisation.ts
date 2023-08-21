@@ -2,9 +2,7 @@ import api from '../api';
 
 const organisationApi = api.injectEndpoints({
   endpoints: (build) => ({
-    createOrganisation: build.mutation<null | {
-      success: boolean
-    }, {
+    createOrganisation: build.mutation<void, {
       name: string;
       postcode: string;
       country: string;
@@ -18,7 +16,11 @@ const organisationApi = api.injectEndpoints({
         }
       })
     }),
-    leaveOrganisation: build.mutation<void, void>({
+    leaveOrganisation: build.mutation<{
+      hasClasses: boolean,
+      classes?: any,
+      teachers?: any
+    }, void>({
       query: () => ({
         url: 'teacher/leave-organisation/',
         method: 'POST',
