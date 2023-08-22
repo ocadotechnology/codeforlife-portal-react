@@ -1,5 +1,17 @@
 import api from '../api';
 
+export interface classType {
+  id: number,
+  name: string,
+  accessCode: string
+};
+
+export interface teacherType {
+  id: number,
+  newUserIdFirstName: string,
+  newUserIdLastName: string
+};
+
 const organisationApi = api.injectEndpoints({
   endpoints: (build) => ({
     createOrganisation: build.mutation<void, {
@@ -18,12 +30,14 @@ const organisationApi = api.injectEndpoints({
     }),
     leaveOrganisation: build.mutation<{
       hasClasses: boolean,
-      classes?: any,
-      teachers?: any
-    }, void>({
-      query: () => ({
+      classes?: classType[],
+      teachers?: teacherType[]
+    }, void | object
+    >({
+      query: (body) => ({
         url: 'teacher/leave-organisation/',
         method: 'POST',
+        body,
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         }

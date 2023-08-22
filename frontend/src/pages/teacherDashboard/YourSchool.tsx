@@ -233,8 +233,7 @@ const YourSchool: React.FC = () => {
   const onLeaveOrganisation = (): void => {
     leaveOrganisation().unwrap()
       .then((res) => {
-        console.log('res', res);
-        if (res.hasClasses) {
+        if (res?.hasClasses) {
           navigate(paths.teacher.dashboard.school.leave._, { state: { classes: res.classes, teachers: res.teachers } });
         } else {
           navigate(paths.teacher.onboarding._, { state: { leftOrganisation: true } });

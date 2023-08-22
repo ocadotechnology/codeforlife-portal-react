@@ -41,7 +41,8 @@ def organisation_leave(request):
     if request.method == "POST":
         classes = Class.objects.filter(teacher=teacher)
         for klass in classes:
-            teacher_id = request.POST.get(klass.access_code, None)
+            teacher_id = request.POST.get(klass.access_code.lower(), None)
+            teacher_id = int(teacher_id) if teacher_id else None
             if teacher_id:
                 new_teacher = get_object_or_404(Teacher, id=teacher_id)
                 klass.teacher = new_teacher
