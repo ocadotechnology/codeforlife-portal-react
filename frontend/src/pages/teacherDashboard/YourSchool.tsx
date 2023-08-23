@@ -25,7 +25,8 @@ import CflTable, {
 import { getSchool, getTeachersData, getUser } from './dummyMethods';
 import {
   TextField,
-  CheckboxField, SubmitButton
+  CheckboxField,
+  SubmitButton
 } from 'codeforlife/lib/esm/components/form';
 import { CflHorizontalForm } from '../../components/form/CflForm';
 import Page from 'codeforlife/lib/esm/components/page';
@@ -45,9 +46,7 @@ const InviteTeacherForm: React.FC = () => {
       onSubmit={(values) => {
         alert(JSON.stringify(values, null, 2));
       }}
-      submitButton={
-        <SubmitButton >Invite teacher</SubmitButton>
-      }
+      submitButton={<SubmitButton>Invite teacher</SubmitButton>}
     >
       <TextField
         placeholder="First name of teacher"
@@ -111,9 +110,7 @@ const UpdateSchoolDetailsForm: React.FC = () => {
       onSubmit={(values) => {
         alert(JSON.stringify(values, null, 2));
       }}
-      submitButton={
-        <SubmitButton>Update details</SubmitButton>
-      }
+      submitButton={<SubmitButton>Update details</SubmitButton>}
     >
       <SchoolNameField />
       <SchoolPostcodeField />
@@ -127,49 +124,40 @@ const TeachersTableActions: React.FC<{
   userEmail: string;
   isTeacherAdmin: boolean;
   twoFactorAuthentication?: boolean;
-}> = ({
-  teacherEmail,
-  userEmail,
-  isTeacherAdmin,
-  twoFactorAuthentication
-}) => {
-    if (teacherEmail === userEmail) {
-      return (
-        <>
-          <Button endIcon={<Create />}>
-            Update details
+}> = ({ teacherEmail, userEmail, isTeacherAdmin, twoFactorAuthentication }) => {
+  if (teacherEmail === userEmail) {
+    return (
+      <>
+        <Button endIcon={<Create />}>Update details</Button>
+        {/* This button below will be used for pending invites  */}
+        <Button endIcon={<EmailOutlined />}>Resend invite</Button>
+      </>
+    );
+  } else if (isTeacherAdmin) {
+    return (
+      <>
+        <Button className="alert" endIcon={<DoNotDisturb />}>
+          Revoke admin
+        </Button>
+        <Button className="alert" endIcon={<DeleteOutline />}>
+          Delete
+        </Button>
+      </>
+    );
+  } else {
+    return (
+      <>
+        <Button endIcon={<Add />}>Make admin</Button>
+        {twoFactorAuthentication
+          ? <Button endIcon={<DoDisturbOnOutlined />} className="alert">
+            Disable 2FA
           </Button>
-          {/* This button below will be used for pending invites  */}
-          <Button endIcon={<EmailOutlined />}>
-            Resend invite
-          </Button>
-        </>
-      );
-    } else if (isTeacherAdmin) {
-      return (
-        <>
-          <Button className='alert' endIcon={<DoNotDisturb />}>
-            Revoke admin
-          </Button>
-          <Button className='alert' endIcon={<DeleteOutline />}>
-            Delete
-          </Button>
-        </>
-      );
-    } else {
-      return (
-        <>
-          <Button endIcon={<Add />}>Make admin </Button>
-          {twoFactorAuthentication
-            ? <Button endIcon={<DoDisturbOnOutlined />} className='alert'>
-              Disable 2FA
-            </Button>
-            : <></>
-          }
-        </>
-      );
-    }
-  };
+          : <></>
+        }
+      </>
+    );
+  }
+};
 
 const TeachersTable: React.FC<{
   isAdmin: boolean;
@@ -184,8 +172,8 @@ const TeachersTable: React.FC<{
 
   return (
     <CflTable
-      className='body'
-      titles={isAdmin ? ['Name', 'Administrator status', 'Actions'] : ['Name', 'Administrator statuus']}
+      className="body"
+      titles={isAdmin ? ['Name', 'Administrator status', 'Actions'] : ['Name', 'Administrator status']}
     >
       {teachersData.map(
         ({ teacherName, isTeacherAdmin, teacherEmail }, keyIdx: number) => (
@@ -228,7 +216,7 @@ const YourSchool: React.FC = () => {
   const theme = useTheme();
   const [leaveOrganisation] = useLeaveOrganisationMutation();
   const navigate = useNavigate();
-  const isAdmin = false; // TODO: retrieve from backend
+  const isAdmin = true; // TODO: retrieve from backend or redux
 
   const onLeaveOrganisation = (): void => {
     leaveOrganisation().unwrap()
@@ -298,8 +286,7 @@ const YourSchool: React.FC = () => {
         </Grid>
       }
     </Page.Section>
-    {
-      isAdmin &&
+    {isAdmin &&
       <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
         <UpdateSchoolDetailsForm />
       </Page.Section>
