@@ -20,7 +20,7 @@ const organisationApi = api.injectEndpoints({
       country: string;
     }>({
       query: (body) => ({
-        url: 'teacher/onboarding-organisation/',
+        url: 'teach/onboarding-organisation/',
         method: 'POST',
         body,
         headers: {
@@ -35,7 +35,7 @@ const organisationApi = api.injectEndpoints({
     }, void | object
     >({
       query: (body) => ({
-        url: 'teacher/leave-organisation/',
+        url: 'teach/leave-organisation/',
         method: 'POST',
         body,
         headers: {
