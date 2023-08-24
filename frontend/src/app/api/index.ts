@@ -21,6 +21,8 @@ import {
   useDeleteAccountMutation
 } from './endpoints/registration';
 
+import { useGetStudentScoreQuery } from './endpoints/student';
+
 export default api;
 export {
   // dotmailer
@@ -39,5 +41,7 @@ export {
   useRequestIndependentStudentPasswordResetMutation,
   useRequestTeacherPasswordResetMutation,
   useResetPasswordMutation,
-  useDeleteAccountMutation
+  useDeleteAccountMutation,
+  // student
+  useGetStudentScoreQuery
 };

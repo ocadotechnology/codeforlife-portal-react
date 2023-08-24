@@ -6,6 +6,7 @@ from .email import urlpatterns as email_urlpatterns
 from .home import urlpatterns as home_urlpatterns
 from .login import urlpatterns as login_urlpatterns
 from .registration import urlpatterns as registration_urlpatterns
+from .student import urlpatterns as student_urlpatterns
 
 
 urlpatterns = [
@@ -15,4 +16,5 @@ urlpatterns = [
     *home_urlpatterns,
     *login_urlpatterns,
     *registration_urlpatterns,
+    *student_urlpatterns
 ]

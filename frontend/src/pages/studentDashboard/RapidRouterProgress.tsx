@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Button,
   Stack,
@@ -10,15 +10,34 @@ import {
 import { Image } from 'codeforlife/lib/esm/components';
 import RRLogoImage from '../../images/RR_logo.svg';
 import { paths } from '../../app/router';
+import { useGetStudentScoreQuery } from '../../app/api';
+
+
+const GetScores = () => {
+  const { data, error, isLoading } = useGetStudentScoreQuery(null);
+
+  if (isLoading) return <Typography variant='h4'>Loading...</Typography>
+  else if (!data) return <Typography variant='h4'>Error while loading your scores...</Typography>
+
+  return (
+    <>
+      <Typography variant='h4'>
+        You have completed {data.numCompleted} Rapid Router levels!
+      </Typography>
+      <Typography variant='h4'>
+        You have {data.numTopScores} top scores!
+      </Typography>
+      <Typography variant='h4'>
+        You have a score of {data.totalScore}. There are {data.totalAvailableScore} available points.
+      </Typography>
+    </>
+  )
+}
+
 
 const RapidRouterProgress: React.FC<{
   isDependent: boolean
 }> = ({ isDependent }) => {
-  // TODO: get this from api store.
-  const completedLevels = 0;
-  const topScores = 0;
-  const score = 0;
-  const availablePoints = 2070;
 
   return (
     <Stack
@@ -30,15 +49,7 @@ const RapidRouterProgress: React.FC<{
         src={RRLogoImage}
         maxWidth='200px'
       />
-      <Typography variant='h4'>
-        You have completed {completedLevels} Rapid Router levels!
-      </Typography>
-      <Typography variant='h4'>
-        You have {topScores} top scores!
-      </Typography>
-      <Typography variant='h4'>
-        You have a score of {score}. There are {availablePoints} available points.
-      </Typography>
+      <GetScores />
       {isDependent &&
         <Button
           style={{ marginTop: 20 }}
