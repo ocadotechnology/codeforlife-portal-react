@@ -8,7 +8,8 @@ import YourAccount from './account/YourAccount';
 
 const TeacherDashboard: React.FC<{
   tab: number;
-}> = ({ tab }) => {
+  movingClass?: boolean
+}> = ({ tab, movingClass = false }) => {
   // TODO: get from API.
   const userName = 'John Doe';
 
@@ -26,7 +27,7 @@ const TeacherDashboard: React.FC<{
           },
           {
             label: 'Your classes',
-            children: <Classes />,
+            children: <Classes movingClass={movingClass} />,
             path: 'classes'
           },
           {

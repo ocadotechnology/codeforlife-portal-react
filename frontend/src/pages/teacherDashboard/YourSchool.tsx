@@ -3,7 +3,8 @@ import {
   Typography,
   Button,
   useTheme,
-  InputAdornment
+  InputAdornment,
+  Stack
 } from '@mui/material';
 import React from 'react';
 import {
@@ -32,6 +33,9 @@ import Page from 'codeforlife/lib/esm/components/page';
 import SchoolNameField from '../../components/form/SchoolNameField';
 import SchoolPostcodeField from '../../components/form/SchoolPostcodeField';
 import SchoolCountryField from '../../components/form/SchoolCountryField';
+import { useLeaveOrganisationMutation } from '../../app/api/endpoints/organisation';
+import { useNavigate } from 'react-router-dom';
+import { paths } from '../../app/router';
 
 const InviteTeacherForm: React.FC = () => {
   return (
@@ -143,19 +147,21 @@ const TeachersTableActions: React.FC<{
   } else {
     return (
       <>
-        <Button endIcon={<Add />}>Make admin </Button>
+        <Button endIcon={<Add />}>Make admin</Button>
         {twoFactorAuthentication
           ? <Button endIcon={<DoDisturbOnOutlined />} className="alert">
             Disable 2FA
           </Button>
-         : <></>
+          : <></>
         }
       </>
     );
   }
 };
 
-const TeachersTable: React.FC = () => {
+const TeachersTable: React.FC<{
+  isAdmin: boolean;
+}> = ({ isAdmin }) => {
   const { email } = getUser();
   const teachersData = getTeachersData();
   const youText = (
@@ -167,7 +173,7 @@ const TeachersTable: React.FC = () => {
   return (
     <CflTable
       className="body"
-      titles={['Name', 'Administrator status', 'Actions']}
+      titles={isAdmin ? ['Name', 'Administrator status', 'Actions'] : ['Name', 'Administrator status']}
     >
       {teachersData.map(
         ({ teacherName, isTeacherAdmin, teacherEmail }, keyIdx: number) => (
@@ -187,15 +193,17 @@ const TeachersTable: React.FC = () => {
               </Typography>
               <Typography variant="subtitle1">({teacherEmail}) </Typography>
             </CflTableCellElement>
-            <CflTableCellElement justifyContent="center">
-              <TeachersTableActions
-                {...{
-                  teacherEmail,
-                  userEmail: email,
-                  isTeacherAdmin
-                }}
-              />
-            </CflTableCellElement>
+            {isAdmin &&
+              <CflTableCellElement justifyContent="center">
+                <TeachersTableActions
+                  {...{
+                    teacherEmail,
+                    userEmail: email,
+                    isTeacherAdmin
+                  }}
+                />
+              </CflTableCellElement>
+            }
           </CflTableBody>
         )
       )}
@@ -206,50 +214,61 @@ const TeachersTable: React.FC = () => {
 const YourSchool: React.FC = () => {
   const { schoolName, schoolPostcode } = getSchool();
   const theme = useTheme();
+  const [leaveOrganisation] = useLeaveOrganisationMutation();
+  const navigate = useNavigate();
+  const isAdmin = true; // TODO: retrieve from backend or redux
 
-  return (
-    <>
-      <Page.Section
-        sx={{
-          paddingTop: theme.spacing(6),
-          paddingBottom: theme.spacing(1)
-        }}
-      >
-        <Typography align="center" variant="h4">
-          Your school: {schoolName} ({schoolPostcode})
-        </Typography>
-        <Typography mb={0}>
-          As an administrator of your school or club, you can select other
-          teachers to whom you can provide or revoke administrative rights. You
-          can also add and remove teachers from your school or club. As
-          administrator, you have the ability to see and amend other
-          teachers&apos; classes. Please bear this in mind when assigning admin
-          rights to other teachers.
-        </Typography>
-      </Page.Section>
-      <Page.Section
-        sx={{
-          paddingTop: theme.spacing(2.5),
-          paddingBottom: theme.spacing(1)
-        }}
-      >
-        <InviteTeacherForm />
-      </Page.Section>
-      <Page.Section
-        sx={{
-          marginTop: theme.spacing(2),
-          paddingBottom: theme.spacing(1)
-        }}
-      >
-        <Typography variant="h5" marginTop={theme.spacing(1)}>
-          These teachers are already part of your school or club
-        </Typography>
-        <TeachersTable />
-        <Grid
-          sx={{ marginTop: theme.spacing(0.5) }}
-          container
-          columnSpacing={5}
-        >
+  const onLeaveOrganisation = (): void => {
+    leaveOrganisation().unwrap()
+      .then((res) => {
+        if (res?.hasClasses) {
+          navigate(paths.teacher.dashboard.school.leave._, { state: { classes: res.classes, teachers: res.teachers } });
+        } else {
+          navigate(paths.teacher.onboarding._, { state: { leftOrganisation: true } });
+        }
+      })
+      .catch((err) => { console.log('LeaveOrganisation error: ', err); });
+  };
+
+  return <>
+    <Page.Section>
+      <Typography align="center" variant="h4">
+        Your school: {schoolName} ({schoolPostcode})
+      </Typography>
+    </Page.Section>
+    <Page.Section sx={{ paddingTop: 0 }}>
+      {isAdmin
+        ? <>
+          <Typography mb={0}>
+            As an administrator of your school or club, you can select other
+            teachers to whom you can provide or revoke administrative rights. You
+            can also add and remove teachers from your school or club. As
+            administrator, you have the ability to see and amend other
+            teachers&apos; classes. Please bear this in mind when assigning admin
+            rights to other teachers.
+          </Typography>
+          <Page.Section sx={{ paddingBottom: 0 }}>
+            <InviteTeacherForm />
+          </Page.Section>
+        </>
+        : <Stack alignItems="center">
+          <Typography variant="h5" marginTop={0} marginBottom={theme.spacing(5)}>
+            You can see which other teachers in your school or club are registered here.
+            Should you need to leave the school or club, you can do so below.
+          </Typography>
+          <Button onClick={onLeaveOrganisation}>
+            Leave school or club
+          </Button>
+        </Stack>
+      }
+    </Page.Section >
+    <Page.Section>
+      <Typography variant="h5">
+        These teachers are already part of your school or club
+      </Typography>
+      <TeachersTable isAdmin={isAdmin} />
+      {isAdmin &&
+        <Grid container columnSpacing={5}>
           <Grid item sm={6}>
             <Typography mb={0}>
               Select &apos;Delete&apos; to delete a teacher from your school or
@@ -265,17 +284,14 @@ const YourSchool: React.FC = () => {
             </Typography>
           </Grid>
         </Grid>
-      </Page.Section>
-      <Page.Section
-        sx={{
-          marginBottom: theme.spacing(2)
-        }}
-        gridProps={{ bgcolor: theme.palette.info.main }}
-      >
+      }
+    </Page.Section>
+    {isAdmin &&
+      <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
         <UpdateSchoolDetailsForm />
       </Page.Section>
-    </>
-  );
+    }
+  </>;
 };
 
 export default YourSchool;
