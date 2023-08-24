@@ -1,16 +1,11 @@
 import React from 'react';
-import { overwrite, getNames } from 'country-list';
+import { getNames } from 'country-list';
 
 import {
   AutocompleteField
 } from 'codeforlife/lib/esm/components/form';
 
 const SchoolCountryField: React.FC = () => {
-  overwrite([{
-    code: 'TW',
-    name: 'Taiwan'
-  }]);
-
   return (
     <AutocompleteField
       options={getNames()}

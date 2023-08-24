@@ -197,7 +197,7 @@ const MoveClassTeacherForm: React.FC = () => {
   const onLeaveOrganisation = (info: any): void => {
     leaveOrganisation(info).unwrap()
       .then(() => { navigate(paths.teacher.onboarding._, { state: { leftOrganisation: true } }); })
-      .catch((err) => { console.log('LeaveOrganisation error: ', err); });
+      .catch((err) => { console.error('LeaveOrganisation error: ', err); });
   };
 
   // initialValues: form value

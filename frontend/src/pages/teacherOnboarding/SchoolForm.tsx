@@ -43,7 +43,7 @@ const SchoolForm: React.FC<{
             .then(() => {
               onSubmit();
             })
-            .catch((err) => { console.log('CreateOrganisation submit error: ', err); });
+            .catch((err) => { console.error('CreateOrganisation submit error: ', err); });
         }}
         stackProps={{
           width: { xs: '100%', md: '50%' }
