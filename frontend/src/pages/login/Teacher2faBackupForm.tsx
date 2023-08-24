@@ -19,7 +19,7 @@ const Teacher2faBackupForm: React.FC = () => {
   return (
     <BaseForm
       themedBoxProps={{ userType: 'teacher' }}
-      header="Welcome"
+      header="Login as a teacher"
       subheader=""
       initialValues={initialValues}
       onSubmit={(values, { setSubmitting }) => {
