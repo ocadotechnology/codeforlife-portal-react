@@ -18,7 +18,9 @@ const paths = _('', {
   teacher: _('/teacher', {
     onboarding: _('/onboarding'),
     dashboard: _('/dashboard', {
-      school: _('/school'),
+      school: _('/school', {
+        leave: _('/leave')
+      }),
       classes: _('/classes', {
         editClass: _('/:accessCode', {
           additional: _('/additional'),

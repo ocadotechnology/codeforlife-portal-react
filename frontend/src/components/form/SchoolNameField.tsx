@@ -14,7 +14,7 @@ const SchoolNameField: React.FC = () => {
   return (
     <TextField
       required
-      name='school'
+      name='name'
       helperText='Name of school or club'
       placeholder='Name of school or club'
       InputProps={{

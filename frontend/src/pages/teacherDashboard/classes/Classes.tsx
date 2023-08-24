@@ -1,6 +1,6 @@
 import React from 'react';
-import { useParams, useNavigate, generatePath } from 'react-router-dom';
-import { Button, Typography, useTheme } from '@mui/material';
+import { useParams, useNavigate, generatePath, useLocation } from 'react-router-dom';
+import { Button, Typography, useTheme, Link, Stack } from '@mui/material';
 import { Add, Create, DoNotDisturb } from '@mui/icons-material';
 import * as Yup from 'yup';
 
@@ -23,6 +23,8 @@ import { CflHorizontalForm } from '../../../components/form/CflForm';
 import ClassNameField from '../../../components/form/ClassNameField';
 import SeeClassmatesProgressField from '../../../components/form/SeeClassmatesProgressField';
 import EditClass from './editClass/EditClass';
+import { classType, teacherType, useLeaveOrganisationMutation } from '../../../app/api/endpoints/organisation';
+import { FieldArray, Form, Formik } from 'formik';
 
 const _YourClasses: React.FC = () => {
   return (
@@ -176,9 +178,144 @@ const CreateNewClassForm: React.FC = () => {
   );
 };
 
-const Classes: React.FC = () => {
+const MoveClassTeacherForm: React.FC = () => {
+  interface classFormDataType extends classType {
+    newTeacher: string
+  };
+
+  interface teacherListType {
+    id: number,
+    fullName: string
+  };
+
+  const location = useLocation();
+  const state = location.state;
+  const theme = useTheme();
+  const [leaveOrganisation] = useLeaveOrganisationMutation();
+  const navigate = useNavigate();
+
+  const onLeaveOrganisation = (info: any): void => {
+    leaveOrganisation(info).unwrap()
+      .then(() => { navigate(paths.teacher.onboarding._, { state: { leftOrganisation: true } }); })
+      .catch((err) => { console.error('LeaveOrganisation error: ', err); });
+  };
+
+  // initialValues: form value
+  // teacherList: for finding newTeacher ID (by findNewTeacherId)
+  // teacherOptions: showing form options
+  // Data type passed to backend would be {accessCode: newTeacherId} (e.g. {'ab124': '3', 'ab125': '4'})
+  const initialValues = state.classes.map((c: classType) => ({ ...c, newTeacher: '' }));
+  const teacherList = state.teachers.map((t: teacherType) => ({
+    id: t.id,
+    fullName: `${t.newUserIdFirstName} ${t.newUserIdLastName}`
+  }));
+  const teacherOptions = teacherList.map((t: teacherListType) => t.fullName);
+  const findNewTeacherId = (name: string): number => {
+    return teacherList.find((t: teacherListType) => (t.fullName === name)).id;
+  };
+
+  return (
+    <>
+      <Typography marginY={theme.spacing(3)}>
+        Please specify which teacher you would like the classes below to be moved to.
+      </Typography>
+      <Formik
+        initialValues={initialValues}
+        onSubmit={values => {
+          const info = Object.create(null);
+          values.forEach((v: classFormDataType) => {
+            info[v.accessCode.toLowerCase()] = findNewTeacherId(v.newTeacher);
+          });
+          onLeaveOrganisation(info);
+        }}
+      >
+        {() => (
+          <Form>
+            <FieldArray
+              name="classes"
+              render={() => (
+                <>
+                  <CflTable
+                    className='body'
+                    titles={['Class name', 'New teacher']}
+                  >
+                    {state.classes.map((c: any, index: number) =>
+                      <CflTableBody key={c.id}>
+                        <CflTableCellElement>
+                          <Typography variant="subtitle1">
+                            {c.name}
+                          </Typography>
+                        </CflTableCellElement>
+                        <CflTableCellElement
+                          direction="column"
+                          alignItems="flex-start"
+                        >
+                          <AutocompleteField
+                            options={teacherOptions}
+                            textFieldProps={{
+                              required: true,
+                              name: `${index}.newTeacher`
+                            }}
+                            freeSolo={true}
+                            forcePopupIcon={true}
+                            sx={{ width: 200 }}
+                          />
+                        </CflTableCellElement>
+                      </CflTableBody>
+                    )}
+                  </CflTable >
+                  <Stack direction="row" spacing={2}>
+                    <Button variant='outlined' onClick={() => {
+                      navigate(paths.teacher.dashboard.school._);
+                    }}>
+                      Cancel
+                    </Button>
+                    <Button
+                      type="submit"
+                    >
+                      Move classes and leave
+                    </Button>
+                  </Stack>
+                </>
+              )}
+            />
+          </Form>
+        )}
+      </Formik >
+    </>
+  );
+};
+
+const MoveClasses: React.FC = () => {
+  // TODO: get data from BE
+  const userName = 'John Doe';
+  const navigate = useNavigate();
   const theme = useTheme();
 
+  return (
+    <>
+      <Page.Notification>
+        You still have classes, you must first move them to another teacher within your school or club.
+      </Page.Notification>
+      <Page.Section>
+        <Typography variant="h4" align="center" marginBottom={theme.spacing(5)}>
+          Move all classes for teacher {userName}
+        </Typography>
+        <Link className="back-to" onClick={() => {
+          navigate(paths.teacher.dashboard.school._);
+        }}>
+          dashboard
+        </Link>
+        <MoveClassTeacherForm />
+      </Page.Section >
+    </>
+  );
+};
+
+const Classes: React.FC<{
+  movingClass: boolean;
+}> = ({ movingClass }) => {
+  const theme = useTheme();
   const params = tryValidateSync(
     useParams(),
     Yup.object({ accessCode: accessCodeSchema })
@@ -190,16 +327,21 @@ const Classes: React.FC = () => {
 
   return (
     <>
-      <Page.Section>
-        <_YourClasses />
-        <ClassTable />
-      </Page.Section>
-      <Page.Section>
-        <ExternalStudentsJoiningRequests />
-      </Page.Section>
-      <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
-        <CreateNewClassForm />
-      </Page.Section>
+      {movingClass
+        ? <MoveClasses />
+        : <>
+          <Page.Section>
+            <_YourClasses />
+            <ClassTable />
+          </Page.Section >
+          <Page.Section>
+            <ExternalStudentsJoiningRequests />
+          </Page.Section>
+          <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
+            <CreateNewClassForm />
+          </Page.Section>
+        </>
+      }
     </>
   );
 };
