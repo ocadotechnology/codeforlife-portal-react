@@ -8,6 +8,7 @@ from .login import urlpatterns as login_urlpatterns
 from .registration import urlpatterns as registration_urlpatterns
 from .admin import urlpatterns as admin_urlpatterns
 from .organisation import urlpatterns as organisation_urlpatterns
+from .teacher.dashboard import urlpatterns as teach_dashboard_urlpatterns
 
 urlpatterns = [
     path("cron/", include(cron_router.urls)),
@@ -18,4 +19,5 @@ urlpatterns = [
     *registration_urlpatterns,
     *admin_urlpatterns,
     *organisation_urlpatterns
+    *teach_dashboard_urlpatterns,
 ]
