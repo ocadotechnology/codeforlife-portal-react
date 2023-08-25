@@ -18,7 +18,7 @@ urlpatterns = [
     *home_urlpatterns,
     *login_urlpatterns,
     *registration_urlpatterns,
-    *student_urlpatterns
+    *student_urlpatterns,
     *admin_urlpatterns,
     *organisation_urlpatterns
 ]

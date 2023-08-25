@@ -21,7 +21,10 @@ import {
   useDeleteAccountMutation
 } from './endpoints/registration';
 
-import { useGetStudentScoreQuery } from './endpoints/student';
+import {
+  useGetStudentScoreQuery,
+  useGetStudentKuronoGameDataQuery
+} from './endpoints/student';
 
 export default api;
 export {
@@ -43,5 +46,6 @@ export {
   useResetPasswordMutation,
   useDeleteAccountMutation,
   // student
-  useGetStudentScoreQuery
+  useGetStudentScoreQuery,
+  useGetStudentKuronoGameDataQuery
 };

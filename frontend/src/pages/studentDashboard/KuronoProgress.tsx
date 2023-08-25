@@ -7,6 +7,49 @@ import {
 import { Image } from 'codeforlife/lib/esm/components';
 
 import KuronoLogoImage from '../../images/kurono_logo.svg';
+import { useGetStudentKuronoGameDataQuery } from '../../app/api';
+
+const GetKuronoGameData = () => {
+  const { data, isLoading } = useGetStudentKuronoGameDataQuery(null)
+
+  if (isLoading) return <Typography variant='h4'>Loading...</Typography>
+  else if (!data) return <Typography variant='h4'>Error while loading your scores...</Typography>
+
+  if (data.worksheetId === 0) {
+    return <>
+      <Typography variant='h4'>
+
+        You do not have any Kurono games yet.
+      </Typography>
+      <video
+        loop
+        autoPlay
+        muted
+        width='100%'
+      >
+        <source
+          src={require('../../videos/aimmo_play_now_background_video.mp4')}
+          type="video/mp4"
+        />
+      </video>
+    </>
+  }
+  else {
+    return (
+      <>
+        <Typography>
+          You are exploring Challenge {data.worksheetId} with your class!
+        </Typography>
+        <Image
+          title="Kurono active game"
+          alt="Kurono active game"
+          src={data.worksheetImage}
+          maxWidth='800px'
+        />
+      </>
+    )
+  }
+}
 
 const KuronoProgress: React.FC<{
   isDependent: boolean,
@@ -24,31 +67,7 @@ const KuronoProgress: React.FC<{
         src={KuronoLogoImage}
         maxWidth='300px'
       />
-      <Typography variant='h4' textAlign='center'>
-        {isDependent
-          ? `You are exploring Challenge ${challengeLevel} with your class!`
-          : 'Kurono is only available as part of a school or club. Your teacher, parent or guardian can set up a club for you and create a class.'
-        }
-      </Typography>
-      {isDependent
-        ? <Image
-          title="Kurono active game"
-          alt="Kurono active game"
-          src="https://storage.googleapis.com/codeforlife-assets/images/worksheets/future.jpg"
-          maxWidth='800px'
-        />
-        : <video
-          loop
-          autoPlay
-          muted
-          width='100%'
-        >
-          <source
-            src={require('../../videos/aimmo_play_now_background_video.mp4')}
-            type="video/mp4"
-          />
-        </video>
-      }
+      <GetKuronoGameData />
     </Stack>
   );
 };

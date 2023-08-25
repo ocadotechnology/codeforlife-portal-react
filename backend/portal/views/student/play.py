@@ -24,46 +24,46 @@ from portal.forms.play import StudentJoinOrganisationForm
 from django.views.generic.edit import FormView
 
 
-class SchoolStudentDashboard(LoginRequiredNoErrorMixin, UserPassesTestMixin, TemplateView):
-    template_name = "portal/play/student_dashboard.html"
-    login_url = reverse_lazy("student_login_access_code")
+# class SchoolStudentDashboard(LoginRequiredNoErrorMixin, UserPassesTestMixin, TemplateView):
+#     template_name = "portal/play/student_dashboard.html"
+#     login_url = reverse_lazy("student_login_access_code")
 
-    def test_func(self) -> Optional[bool]:
-        return logged_in_as_school_student(self.request.user)
+#     def test_func(self) -> Optional[bool]:
+#         return logged_in_as_school_student(self.request.user)
 
-    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
-        """
-        Gathers the context data required by the template. First, the student's scores
-        for the original Rapid Router levels is gathered, second, the student's scores
-        for any levels shared with them by their teacher, and third, the student's
-        Kurono game information if they have one.
-        """
-        # Get score data for all original levels
-        levels = Level.objects.sorted_levels()
-        student = self.request.user.new_student
+#     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+#         """
+#         Gathers the context data required by the template. First, the student's scores
+#         for the original Rapid Router levels is gathered, second, the student's scores
+#         for any levels shared with them by their teacher, and third, the student's
+#         Kurono game information if they have one.
+#         """
+#         # Get score data for all original levels
+#         levels = Level.objects.sorted_levels()
+#         student = self.request.user.new_student
 
-        context_data = _compute_rapid_router_scores(student, levels)
+#         context_data = _compute_rapid_router_scores(student, levels)
 
-        # Find any custom levels created by the teacher and shared with the student
-        klass = student.class_field
-        teacher = klass.teacher.user
-        custom_levels = student.new_user.shared.filter(owner=teacher)
+#         # Find any custom levels created by the teacher and shared with the student
+#         klass = student.class_field
+#         teacher = klass.teacher.user
+#         custom_levels = student.new_user.shared.filter(owner=teacher)
 
-        if custom_levels:
-            custom_levels_data = _compute_rapid_router_scores(student, custom_levels)
+#         if custom_levels:
+#             custom_levels_data = _compute_rapid_router_scores(student, custom_levels)
 
-            context_data["total_custom_score"] = custom_levels_data["total_score"]
-            context_data["total_custom_available_score"] = custom_levels_data["total_available_score"]
+#             context_data["total_custom_score"] = custom_levels_data["total_score"]
+#             context_data["total_custom_available_score"] = custom_levels_data["total_available_score"]
 
         # Get Kurono game info if the class has a game linked to it
-        aimmo_game = klass.active_game
-        if aimmo_game:
-            active_worksheet = aimmo_game.worksheet
+        # aimmo_game = klass.active_game
+        # if aimmo_game:
+        #     active_worksheet = aimmo_game.worksheet
 
-            context_data["worksheet_id"] = active_worksheet.id
-            context_data["worksheet_image"] = active_worksheet.image_path
+        #     context_data["worksheet_id"] = active_worksheet.id
+        #     context_data["worksheet_image"] = active_worksheet.image_path
 
-        return context_data
+        # return context_data
 
 
 # class IndependentStudentDashboard(LoginRequiredNoErrorMixin, UserPassesTestMixin, TemplateView, FormView):

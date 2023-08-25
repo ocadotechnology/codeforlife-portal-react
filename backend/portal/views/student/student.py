@@ -3,7 +3,7 @@ from typing import Any, Dict, Optional, List
 from aimmo.models import Game
 from common import email_messages
 from common.helpers.emails import NOTIFICATION_EMAIL, send_email
-from common.models import Student
+from common.models import Student, Class
 from common.permissions import (
     logged_in_as_independent_student,
     logged_in_as_school_student,
@@ -36,6 +36,19 @@ def handle_rapid_router_scores(request):
     
     # Compute scores for the found student
     return compute_rapid_router_scores(student, levels)
+
+
+@login_required(login_url=reverse_lazy("student_login"))
+def handle_kurono_game_data(request):
+    student = get_object_or_404(Student, new_user=request.user.id)
+    klass = Class.objects.get(id=student.class_field_id)
+    aimmo_game = klass.active_game
+    response_data = {
+        "worksheet_id": aimmo_game.worksheet.id if aimmo_game else 0,
+        "worksheet_image": aimmo_game.worksheet.image_path if aimmo_game else ""
+    }
+    return JsonResponse(response_data)
+
 
 def compute_rapid_router_scores(student: Student, levels: List[Level] or QuerySet) -> Dict[str, int]:
     """

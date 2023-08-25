@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   Button,
   Stack,
@@ -13,11 +13,11 @@ import { paths } from '../../app/router';
 import { useGetStudentScoreQuery } from '../../app/api';
 
 
-const GetScores = () => {
+const GetRapidRouterScores = () => {
   const { data, error, isLoading } = useGetStudentScoreQuery(null);
 
   if (isLoading) return <Typography variant='h4'>Loading...</Typography>
-  else if (!data) return <Typography variant='h4'>Error while loading your scores...</Typography>
+  else if (error || !data) return <Typography variant='h4'>Error while loading your scores...</Typography>
 
   return (
     <>
@@ -49,16 +49,14 @@ const RapidRouterProgress: React.FC<{
         src={RRLogoImage}
         maxWidth='200px'
       />
-      <GetScores />
-      {isDependent &&
-        <Button
-          style={{ marginTop: 20 }}
-          endIcon={<ChevronRightIcon />}
-          href={paths.rapidRouter._}
-        >
-          Check scoreboard
-        </Button>
-      }
+      <GetRapidRouterScores />
+      <Button
+        style={{ marginTop: 20 }}
+        endIcon={<ChevronRightIcon />}
+        href={paths.rapidRouter._}
+      >
+        Check scoreboard
+      </Button>
     </Stack>
   );
 };
