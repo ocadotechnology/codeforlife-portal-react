@@ -5,8 +5,7 @@ import {
 } from './endpoints/dotmailer';
 import {
   useRegisterUserMutation,
-  useLogoutUserMutation,
-  useDownloadStudentPackMutation
+  useLogoutUserMutation
 } from './endpoints/home';
 import {
   useLoginTeacherMutation,
@@ -29,7 +28,6 @@ export {
   // home
   useRegisterUserMutation,
   useLogoutUserMutation,
-  useDownloadStudentPackMutation,
   // login
   useLoginTeacherMutation,
   useLoginDependentStudentMutation,
