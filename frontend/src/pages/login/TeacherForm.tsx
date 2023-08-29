@@ -51,7 +51,6 @@ const TeacherForm: React.FC = () => {
 const BaseTeacherForm: React.FC = () => {
   const navigate = useNavigate();
   const [loginTeacher] = useLoginTeacherMutation();
-
   return (
     <BaseForm
       themedBoxProps={{ userType: 'teacher' }}

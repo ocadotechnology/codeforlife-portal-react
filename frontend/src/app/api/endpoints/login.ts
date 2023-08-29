@@ -1,58 +1,81 @@
+import { Cookie } from '@mui/icons-material';
 import api from '../api';
+import Cookies from 'js-cookie';
 
 const loginApi = api.injectEndpoints({
   endpoints: (build) => ({
-    loginTeacher: build.mutation<null, {
-      // TODO: implement 2fs teacher login
-      // 'auth-username': string;
-      // 'auth-password': string;
-      // currentStep: 'auth' | 'token';
-      username: string;
-      password: string;
-    }>({
+    loginTeacher: build.mutation<
+      null,
+      {
+        // TODO: implement 2fs teacher login
+        // 'auth-username': string;
+        // 'auth-password': string;
+        // currentStep: 'auth' | 'token';
+        username: string;
+        password: string;
+      }
+    >({
       query: (body) => ({
         url: 'login/teacher/',
         method: 'POST',
-        body,
+        body: { ...body, csrfmiddlewaretoken: Cookies.get('csrftoken') },
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
+          'Content-Type': 'application/x-www-form-urlencoded',
+          XCSRFToken: Cookies.get('csrftoken')
         }
       })
     }),
-    loginDependentStudent: build.mutation<null, {
-      accessCode: string;
-      username: string;
-      password: string;
-    }>({
+    loginDependentStudent: build.mutation<
+      null,
+      {
+        accessCode: string;
+        username: string;
+        password: string;
+      }
+    >({
       query: ({ accessCode, ...body }) => ({
         url: `login/student/${accessCode}/`,
+        body: { ...body, csrfmiddlewaretoken: Cookies.get('csrftoken') },
         method: 'POST',
-        body,
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
+          'Content-Type': 'application/x-www-form-urlencoded',
+          XCSRFToken: Cookies.get('csrftoken')
         }
       })
     }),
-    loginDependentStudentDirectly: build.mutation<null, {
-      userId: string;
-      loginId: string;
-    }>({
+    loginDependentStudentDirectly: build.mutation<
+      null,
+      {
+        userId: string;
+        loginId: string;
+      }
+    >({
       query: ({ userId, loginId }) => ({
         url: `u/${userId}/${loginId}/`,
         method: 'POST'
       })
     }),
-    loginIndependentStudent: build.mutation<null, {
-      username: string;
-      password: string;
-    }>({
+    loginIndependentStudent: build.mutation<
+      null,
+      {
+        username: string;
+        password: string;
+      }
+    >({
       query: (body) => ({
         url: 'login/independent/',
         method: 'POST',
-        body,
+        body: { ...body, csrfmiddlewaretoken: Cookies.get('csrftoken') },
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
+          'Content-Type': 'application/x-www-form-urlencoded',
+          XCSRFToken: Cookies.get('csrftoken')
         }
+      })
+    }),
+    getCookies: build.query<{ userType: null | string }, null>({
+      query: () => ({
+        url: 'set-csrf/',
+        method: 'GET'
       })
     })
   })
@@ -63,5 +86,6 @@ export const {
   useLoginTeacherMutation,
   useLoginDependentStudentMutation,
   useLoginDependentStudentDirectlyMutation,
-  useLoginIndependentStudentMutation
+  useLoginIndependentStudentMutation,
+  useGetCookiesQuery
 } = loginApi;

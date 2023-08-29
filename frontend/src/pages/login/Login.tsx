@@ -9,10 +9,34 @@ import StudentForm from './StudentForm';
 import IndependentForm from './IndependentForm';
 
 import * as yup from 'yup';
+import { useGetCookiesQuery } from '../../app/api';
+import { useNavigate } from 'react-router-dom';
+import { paths } from '../../app/router';
+
+interface DataProps {
+  userType: null | string;
+}
 
 const Login: React.FC<{
   userType: 'teacher' | 'student' | 'independent'
 }> = ({ userType }) => {
+  const { data } = useGetCookiesQuery(null);
+  const navigate = useNavigate()
+  console.log(data)
+  if (data) {
+    const { userType } = data
+    switch (userType) {
+      case 'teacher':
+        navigate(paths.teacher.dashboard.school._)
+        break;
+      case 'school_student':
+        navigate(paths.student.dashboard.dependent._)
+        break;
+      case 'independent_student':
+        navigate(paths.student.dashboard.independent._)
+        break;
+    }
+  }
   let form: React.ReactElement<BaseFormProps<any>>;
   switch (userType) {
     case 'teacher':

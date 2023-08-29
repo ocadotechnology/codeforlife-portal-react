@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import os
 
 from pathlib import Path
+from corsheaders.defaults import default_headers
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -71,7 +72,7 @@ MIDDLEWARE = [
     "django.middleware.locale.LocaleMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
-    # "django.middleware.csrf.CsrfViewMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
     "deploy.middleware.security.CustomSecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
@@ -201,6 +202,7 @@ CSRF_USE_SESSIONS = True
 
 CORS_ALLOW_ALL_ORIGINS = DEBUG
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = list(default_headers) + ["xcsrftoken"]
 CORS_ALLOWED_ORIGINS = []
 
 # Logging
@@ -271,6 +273,7 @@ FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
 
 MODULE_NAME = os.getenv("MODULE_NAME")
 
+
 # Domain
 def domain():
     """Returns the full domain depending on whether it's local, dev, staging or prod."""
@@ -281,7 +284,9 @@ def domain():
     elif MODULE_NAME == "staging":
         domain_name = f"https://staging-dot-decent-digit-629.appspot.com"
     elif MODULE_NAME == "development":
-        domain_name = f"https://development-portal-dot-decent-digit-629.appspot.com"
+        domain_name = (
+            f"https://development-portal-dot-decent-digit-629.appspot.com"
+        )
 
     return domain_name
 

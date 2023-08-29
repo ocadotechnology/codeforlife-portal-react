@@ -1,10 +1,44 @@
 import logging
-
+from common.models import Student, Teacher
 from django.contrib.sessions.models import Session, SessionManager
 from django.core.management import call_command
+from django.http import HttpResponse, JsonResponse
+from django.middleware.csrf import get_token
+import datetime
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework import viewsets
+from rest_framework import viewsets, status
+
+
+def get_user_type(user):
+    found_teacher = Teacher.objects.filter(new_user=user)
+    found_school_student = Student.objects.filter(new_user=user).exclude(
+        class_field=None
+    )
+    found_independent_student = Student.objects.filter(
+        new_user=user, class_field=None
+    )
+
+    if found_teacher:
+        return "teacher"
+    elif found_school_student:
+        return "school_student"
+    elif found_independent_student:
+        return "independent_student"
+
+
+def get_csrf_token(request):
+    if request.user.is_authenticated:
+        return JsonResponse(
+            {"user_type": get_user_type(request.user)},
+        )
+    response = HttpResponse()
+    max_age = 7 * 24 * 60 * 60  # 7 days in seconds
+    expires = datetime.datetime.utcnow() + datetime.timedelta(days=7)
+    response.set_cookie(
+        "csrftoken", get_token(request), max_age=max_age, expires=expires
+    )
+    return response
 
 
 class ClearSessionsViewSet(viewsets.ReadOnlyModelViewSet):

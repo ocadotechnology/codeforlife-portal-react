@@ -143,7 +143,7 @@ def student_login_view(request: HttpRequest, access_code: str):
 
     try:
         user = User.objects.get(
-            username=request.POST["username"],
+            first_name=request.POST["username"],
             new_student__class_field__access_code=access_code,
         )
     except User.DoesNotExist:

@@ -20,6 +20,7 @@ from django.contrib import admin
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include("portal.urls")),
+    # TODO: regex should not account for endpoints that have an api/ there
     re_path(
         r".*",
         lambda request: render(request, "portal.html"),

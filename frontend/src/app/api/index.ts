@@ -12,7 +12,8 @@ import {
   useLoginTeacherMutation,
   useLoginDependentStudentMutation,
   useLoginDependentStudentDirectlyMutation,
-  useLoginIndependentStudentMutation
+  useLoginIndependentStudentMutation,
+  useGetCookiesQuery
 } from './endpoints/login';
 import {
   useRequestIndependentStudentPasswordResetMutation,
@@ -35,6 +36,7 @@ export {
   useLoginDependentStudentMutation,
   useLoginDependentStudentDirectlyMutation,
   useLoginIndependentStudentMutation,
+  useGetCookiesQuery,
   // registration
   useRequestIndependentStudentPasswordResetMutation,
   useRequestTeacherPasswordResetMutation,
