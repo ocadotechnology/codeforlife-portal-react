@@ -117,17 +117,27 @@ class TestUser(CronTestCase):
             is_verified: bool,
             assert_exists: bool,
         ):
-            self.user.date_joined = timezone.now() - timedelta(
-                days=days, hours=12
+            user = User.objects.create_user(
+                username="expireduser",
+                email="expired.user@codeforlife.com",
+                password="password",
+                first_name="Expired",
+                last_name="User",
+                date_joined=timezone.now() - timedelta(days=days, hours=12),
             )
-            self.user.save()
-            self.user_profile.is_verified = is_verified
+            UserProfile.objects.create(
+                user=user,
+                is_verified=is_verified,
+            )
 
             self.client.get(reverse("delete-unverified-accounts"))
 
+            user_exists = User.objects.filter(id=user.id).exists()
             (self.assertTrue if assert_exists else self.assertFalse)(
-                User.objects.filter(id=self.user.id).exists()
+                user_exists
             )
+            if user_exists:
+                user.delete()
 
         delete_unverified_users(
             days=18,
@@ -147,5 +157,5 @@ class TestUser(CronTestCase):
         delete_unverified_users(
             days=20,
             is_verified=False,
-            assert_exists=True,
+            assert_exists=False,
         )
