@@ -18,6 +18,6 @@ urlpatterns = [
     *login_urlpatterns,
     *registration_urlpatterns,
     *admin_urlpatterns,
-    *organisation_urlpatterns
+    *organisation_urlpatterns,
     *teach_dashboard_urlpatterns,
 ]

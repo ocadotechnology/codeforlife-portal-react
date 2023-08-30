@@ -19,7 +19,7 @@ from django.contrib import messages as messages
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -44,7 +44,7 @@ from portal.helpers.ratelimit import (
     RATELIMIT_METHOD,
     clear_ratelimit_cache_for_user,
 )
-from .teach import create_class
+from .teach import create_class, teacher_view_class
 
 
 def _get_update_account_rate(group, request):
@@ -85,24 +85,26 @@ def dashboard_teacher_view(request, is_admin):
     update_school_form = None
 
     if school:
-        coworkers = Teacher.objects.filter(school=school).order_by("new_user__last_name", "new_user__first_name")
-
+        # coworkers = Teacher.objects.filter(school=school).order_by("new_user__last_name", "new_user__first_name")
+        from django.core import serializers
+        coworkers = Teacher.objects.order_by("new_user__last_name", "new_user__first_name")
+        coworkers_json = serializers.serialize('json', coworkers)
         sent_invites = SchoolTeacherInvitation.objects.filter(school=school) if teacher.is_admin else []
 
-        update_school_form = OrganisationForm(user=request.user, current_school=school)
-        update_school_form.fields["name"].initial = school.name
-        update_school_form.fields["postcode"].initial = school.postcode
-        update_school_form.fields["country"].initial = school.country
+    #     update_school_form = OrganisationForm(user=request.user, current_school=school)
+    #     update_school_form.fields["name"].initial = school.name
+    #     update_school_form.fields["postcode"].initial = school.postcode
+    #     update_school_form.fields["country"].initial = school.country
 
-    invite_teacher_form = InviteTeacherForm()
+    # invite_teacher_form = InviteTeacherForm()
 
-    create_class_form = ClassCreationForm(teacher=teacher)
+    # create_class_form = ClassCreationForm(teacher=teacher)
 
-    update_account_form = TeacherEditAccountForm(request.user)
-    update_account_form.fields["first_name"].initial = request.user.first_name
-    update_account_form.fields["last_name"].initial = request.user.last_name
+    # update_account_form = TeacherEditAccountForm(request.user)
+    # update_account_form.fields["first_name"].initial = request.user.first_name
+    # update_account_form.fields["last_name"].initial = request.user.last_name
 
-    delete_account_form = DeleteAccountForm(request.user)
+    # delete_account_form = DeleteAccountForm(request.user)
     delete_account_confirm = False
 
     anchor = ""
@@ -112,10 +114,17 @@ def dashboard_teacher_view(request, is_admin):
     show_onboarding_complete = False
 
     if request.method == "POST":
+        form_data = request.POST
         if can_process_update_school_form(request, is_admin):
-            anchor = "school-details"
-            update_school_form = OrganisationForm(request.POST, user=request.user, current_school=school)
-            anchor = process_update_school_form(request, school, anchor)
+            # anchor = "school-details"
+            # update_school_form = OrganisationForm(request.POST, user=request.user, current_school=school)
+            # anchor = process_update_school_form(request, school, anchor)
+            school.name = form_data["name"]
+            school.postcode = form_data["postcode"].upper()
+            school.country = form_data["country"]
+            school.save()
+
+            # TODO: messages.success(request, "You have updated the details for your school or club successfully.")
 
         elif "create_class" in request.POST:
             anchor = "new-class"
@@ -130,50 +139,78 @@ def dashboard_teacher_view(request, is_admin):
                     request,
                     "The class '{className}' has been created successfully.".format(className=created_class.name),
                 )
-                return HttpResponseRedirect(
-                    reverse_lazy("view_class", kwargs={"access_code": created_class.access_code})
-                )
+                return teacher_view_class(request, created_class.access_code)
+                # return HttpResponseRedirect(
+                #     reverse_lazy("view_class", kwargs={"access_code": created_class.access_code})
+                # )
+                
 
         elif request.POST.get("show_onboarding_complete") == "1":
             show_onboarding_complete = True
 
         elif "invite_teacher" in request.POST:
-            invite_teacher_form = InviteTeacherForm(request.POST)
-            if invite_teacher_form.is_valid():
-                data = invite_teacher_form.cleaned_data
-                invited_teacher_first_name = data["teacher_first_name"]
-                invited_teacher_last_name = data["teacher_last_name"]
-                invited_teacher_email = data["teacher_email"]
-                invited_teacher_is_admin = data["make_admin_ticked"]
+            invited_teacher_first_name = form_data["teacher_first_name"]
+            invited_teacher_last_name = form_data["teacher_last_name"]
+            invited_teacher_email = form_data["teacher_email"]
+            invited_teacher_is_admin = form_data["make_admin_ticked"]
+            token = uuid4().hex
+            SchoolTeacherInvitation.objects.create(
+                token=token,
+                school=school,
+                from_teacher=teacher,
+                invited_teacher_first_name=invited_teacher_first_name,
+                invited_teacher_last_name=invited_teacher_last_name,
+                invited_teacher_email=invited_teacher_email,
+                invited_teacher_is_admin=invited_teacher_is_admin,
+                expiry=timezone.now() + timedelta(days=30),
+            )
+            account_exists = User.objects.filter(email=invited_teacher_email).exists()
+            message = email_messages.inviteTeacherEmail(request, school.name, token, account_exists)
+            send_email(
+                INVITE_FROM, [invited_teacher_email], message["subject"], message["message"], message["subject"]
+            )
+            messages.success(
+                request,
+                f"You have invited {invited_teacher_first_name} {invited_teacher_last_name} to your school.",
+            )
 
-                token = uuid4().hex
-                SchoolTeacherInvitation.objects.create(
-                    token=token,
-                    school=school,
-                    from_teacher=teacher,
-                    invited_teacher_first_name=invited_teacher_first_name,
-                    invited_teacher_last_name=invited_teacher_last_name,
-                    invited_teacher_email=invited_teacher_email,
-                    invited_teacher_is_admin=invited_teacher_is_admin,
-                    expiry=timezone.now() + timedelta(days=30),
-                )
+            # invte_teacher_form = InviteTeacherForm(request.POST)
+            # if invite_teacher_form.is_valid():
+            #     data = invite_teacher_form.cleaned_data
+            #     invited_teacher_first_name = data["teacher_first_name"]
+            #     invited_teacher_last_name = data["teacher_last_name"]
+            #     invited_teacher_email = data["teacher_email"]
+            #     invited_teacher_is_admin = data["make_admin_ticked"]
 
-                account_exists = User.objects.filter(email=invited_teacher_email).exists()
-                message = email_messages.inviteTeacherEmail(request, school.name, token, account_exists)
-                send_email(
-                    INVITE_FROM, [invited_teacher_email], message["subject"], message["message"], message["subject"]
-                )
+            #     token = uuid4().hex
+            #     SchoolTeacherInvitation.objects.create(
+            #         token=token,
+            #         school=school,
+            #         from_teacher=teacher,
+            #         invited_teacher_first_name=invited_teacher_first_name,
+            #         invited_teacher_last_name=invited_teacher_last_name,
+            #         invited_teacher_email=invited_teacher_email,
+            #         invited_teacher_is_admin=invited_teacher_is_admin,
+            #         expiry=timezone.now() + timedelta(days=30),
+            #     )
 
-                messages.success(
-                    request,
-                    f"You have invited {invited_teacher_first_name} {invited_teacher_last_name} to your school.",
-                )
+            #     account_exists = User.objects.filter(email=invited_teacher_email).exists()
+            #     message = email_messages.inviteTeacherEmail(request, school.name, token, account_exists)
+            #     send_email(
+            #         INVITE_FROM, [invited_teacher_email], message["subject"], message["message"], message["subject"]
+            #     )
 
-                # Clear form
-                invite_teacher_form = InviteTeacherForm()
+            #     messages.success(
+            #         request,
+            #         f"You have invited {invited_teacher_first_name} {invited_teacher_last_name} to your school.",
+            #     )
+
+            #     # Clear form
+            #     invite_teacher_form = InviteTeacherForm()
 
         elif "delete_account" in request.POST:
             delete_account_form = DeleteAccountForm(request.user, request.POST)
+            # TODO: check form validation
             if not delete_account_form.is_valid():
                 messages.warning(request, "Your account was not deleted due to incorrect password.")
             else:
@@ -213,7 +250,7 @@ def dashboard_teacher_view(request, is_admin):
     else:
         classes = Class.objects.filter(teacher=teacher)
         requests = Student.objects.filter(pending_class_request__teacher=teacher)
-
+    return JsonResponse(data={"is_admin": True, "coworkers": coworkers_json})
     return render(
         request,
         "portal/teach/dashboard.html",
@@ -253,26 +290,26 @@ def check_backup_tokens(request):
     return backup_tokens
 
 
-def process_update_school_form(request, school, old_anchor):
-    update_school_form = OrganisationForm(request.POST, user=request.user, current_school=school)
-    if update_school_form.is_valid():
-        data = update_school_form.cleaned_data
-        name = data.get("name", "")
-        postcode = data.get("postcode", "")
-        country = data.get("country", "")
+# def process_update_school_form(request, school, old_anchor):
+#     update_school_form = OrganisationForm(request.POST, user=request.user, current_school=school)
+#     if update_school_form.is_valid():
+#         data = update_school_form.cleaned_data
+#         name = data.get("name", "")
+#         postcode = data.get("postcode", "")
+#         country = data.get("country", "")
 
-        school.name = name
-        school.postcode = postcode
-        school.country = country
-        school.save()
+#         school.name = name
+#         school.postcode = postcode
+#         school.country = country
+#         school.save()
 
-        anchor = "#"
+#         anchor = "#"
 
-        messages.success(request, "You have updated the details for your school or club successfully.")
-    else:
-        anchor = old_anchor
+#         messages.success(request, "You have updated the details for your school or club successfully.")
+#     else:
+#         anchor = old_anchor
 
-    return anchor
+#     return anchor
 
 
 def process_update_account_form(request, teacher, old_anchor):
@@ -311,10 +348,10 @@ def process_update_account_form(request, teacher, old_anchor):
 def dashboard_manage(request):
     teacher = request.user.new_teacher
 
-    if teacher.school or request.GET.get("account") == "true":
+    if teacher.school:
         return dashboard_teacher_view(request, teacher.is_admin)
     else:
-        return HttpResponseRedirect(reverse_lazy("onboarding-organisation"))
+        return JsonResponse(status=200, data={"redirect": "onboarding"})
 
 
 def check_teacher_is_authorised(teacher, user):

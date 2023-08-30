@@ -211,12 +211,13 @@ const TeachersTable: React.FC<{
   );
 };
 
-const YourSchool: React.FC = () => {
+const YourSchool: React.FC<{
+  isAdmin: boolean;
+}> = ({ isAdmin }) => {
   const { schoolName, schoolPostcode } = getSchool();
   const theme = useTheme();
   const [leaveOrganisation] = useLeaveOrganisationMutation();
   const navigate = useNavigate();
-  const isAdmin = true; // TODO: retrieve from backend or redux
 
   const onLeaveOrganisation = (): void => {
     leaveOrganisation().unwrap()

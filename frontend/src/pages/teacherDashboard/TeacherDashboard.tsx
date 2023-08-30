@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import Page from 'codeforlife/lib/esm/components/page';
 
 import YourSchool from './YourSchool';
 import Classes from './classes/Classes';
 import YourAccount from './account/YourAccount';
+import { useLazyGetTeacherDashboardQuery } from '../../app/api/endpoints/teacher/dashboard';
+import { useNavigate } from 'react-router-dom';
+import { paths } from '../../app/router';
 
 const TeacherDashboard: React.FC<{
   tab: number;
@@ -12,7 +15,23 @@ const TeacherDashboard: React.FC<{
 }> = ({ tab, movingClass = false }) => {
   // TODO: get from API.
   const userName = 'John Doe';
+  const [isAdmin, setIsAdmin] = useState(true);
+  const [getTeacherDashboard] = useLazyGetTeacherDashboardQuery();
+  const navigate = useNavigate();
+  useEffect(() => {
+    getTeacherDashboard('').unwrap()
+      .then((res) => {
+        console.log('getTeacherDashboard', res);
+        switch (res.redirect) {
+          case 'onboarding':
+            navigate(paths.teacher.onboarding._);
+            break;
+        }
 
+        setIsAdmin(res.isAdmin);
+      })
+      .catch((err) => { console.error(err); });
+  }, []);
   return (
     <Page.Container>
       <Page.TabBar
@@ -22,7 +41,7 @@ const TeacherDashboard: React.FC<{
         tabs={[
           {
             label: 'Your school',
-            children: <YourSchool />,
+            children: <YourSchool isAdmin={isAdmin} />,
             path: 'school'
           },
           {
