@@ -11,6 +11,7 @@ import {
 import SchoolNameField from '../../components/form/SchoolNameField';
 import SchoolPostcodeField from '../../components/form/SchoolPostcodeField';
 import SchoolCountryField from '../../components/form/SchoolCountryField';
+import { useCreateOrganisationMutation } from '../../app/api/endpoints/organisation';
 
 const SchoolForm: React.FC<{
   onSubmit: () => void
@@ -18,16 +19,18 @@ const SchoolForm: React.FC<{
   onSubmit
 }) => {
     interface Values {
-      school: string;
+      name: string;
       postcode: string;
       country: string;
     }
 
     const initialValues: Values = {
-      school: '',
+      name: '',
       postcode: '',
       country: ''
     };
+
+    const [createOrganisation] = useCreateOrganisationMutation();
 
     return <>
       <Typography>
@@ -35,11 +38,12 @@ const SchoolForm: React.FC<{
       </Typography>
       <Form
         initialValues={initialValues}
-        onSubmit={(values, { setSubmitting }) => {
-          // TODO: call backend
-          console.log(values);
-          setSubmitting(false);
-          onSubmit();
+        onSubmit={(values) => {
+          createOrganisation(values).unwrap()
+            .then(() => {
+              onSubmit();
+            })
+            .catch((err) => { console.error('CreateOrganisation submit error: ', err); });
         }}
         stackProps={{
           width: { xs: '100%', md: '50%' }

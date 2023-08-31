@@ -12,10 +12,11 @@ import AddStudentsForm from '../../features/addStudentsForm/AddStudentsForm';
 import SchoolForm from './SchoolForm';
 import ClassForm from './ClassForm';
 import ClassCredentials from './ClassCredentials';
+import { useLocation } from 'react-router-dom';
 
 const TeacherOnboarding: React.FC = () => {
   const [activeStep, setActiveStep] = React.useState(0);
-
+  const location = useLocation();
   // TODO: check if user has completed onboarding.
   const userName = 'Stefan Kairinos';
 
@@ -35,6 +36,11 @@ const TeacherOnboarding: React.FC = () => {
         header={`Welcome, ${userName}`}
         subheader={'Everything you need to start coding with your class is here. Let\'s set you up.'}
       />
+      {location.state?.leftOrganisation &&
+        <Page.Notification>
+          You have successfully left the school or club.
+        </Page.Notification>
+      }
       <Page.Section>
         <Stack>
           <Typography variant='h4'>

@@ -41,7 +41,7 @@ const SignUp: React.FC = () => {
       .then((res) => {
         navigate('/', { state: { signUpSuccess: res?.success } });
       })
-      .catch((err) => { console.log('SignUp submit error: ', err); });
+      .catch((err) => { console.error('SignUp submit error: ', err); });
   };
 
   return (

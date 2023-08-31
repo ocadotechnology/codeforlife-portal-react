@@ -30,7 +30,7 @@ const CommunicationPreferences: React.FC = () => {
           setNotificationOpen(true);
         }
       })
-      .catch((err) => { console.log('CommunicationPreferences submit error: ', err); });
+      .catch((err) => { console.error('CommunicationPreferences submit error: ', err); });
   };
 
   return (
