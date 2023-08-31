@@ -6,11 +6,27 @@ const teacherDashboardApi = api.injectEndpoints({
       query: () => ({
         url: 'teach/dashboard/'
       })
+    }),
+    inviteTeacher: build.mutation<void, {
+      teacherFirstName: string;
+      teacherLastName: string;
+      teacherEmail: string;
+      isAdmin: boolean;
+    }>({
+      query: (body) => ({
+        url: 'teach/invite/',
+        method: 'POST',
+        body,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      })
     })
   })
 });
 
 export default teacherDashboardApi;
 export const {
-  useLazyGetTeacherDashboardQuery
+  useLazyGetTeacherDashboardQuery,
+  useInviteTeacherMutation
 } = teacherDashboardApi;

@@ -36,15 +36,23 @@ import SchoolCountryField from '../../components/form/SchoolCountryField';
 import { useLeaveOrganisationMutation } from '../../app/api/endpoints/organisation';
 import { useNavigate } from 'react-router-dom';
 import { paths } from '../../app/router';
+import { useInviteTeacherMutation } from '../../app/api/endpoints/teacher/dashboard';
 
 const InviteTeacherForm: React.FC = () => {
+  const [inviteTeacher] = useInviteTeacherMutation();
   return (
     <CflHorizontalForm
       header="Invite a teacher to your school"
       initialValues={INVITE_TEACHER_INITIAL_VALUES}
       validationSchema={INVITE_TEACHER_SCHEMA}
       onSubmit={(values) => {
-        alert(JSON.stringify(values, null, 2));
+        const firstName = values.teacherFirstName;
+        const lastName = values.teacherLastName;
+        inviteTeacher(values).unwrap()
+          .then(() => {
+            alert(`You have invited ${firstName} ${lastName} to your school.`);
+          })
+          .catch((err) => { console.error('InviteTeacher error', err); });
       }}
       submitButton={<SubmitButton>Invite teacher</SubmitButton>}
     >

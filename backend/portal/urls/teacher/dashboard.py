@@ -9,7 +9,9 @@ from ...views.teacher.dashboard import (
     teacher_reject_student_request,
     resend_invite_teacher,
     invite_toggle_admin,
-    delete_teacher_invite
+    delete_teacher_invite,
+    invite_teacher,
+    invited_teacher
 )
 
 
@@ -18,6 +20,16 @@ urlpatterns = [
         "teach/dashboard/",
         dashboard_manage,
         name="dashboard"
+    ),
+    path(
+        "teach/invite/",
+        invite_teacher,
+        name="invite_teacher"
+    ),
+    re_path(
+        r"^invited_teacher/(?P<token>[0-9a-f]+)/$", 
+        invited_teacher, 
+        name="invited_teacher"
     ),
     re_path(
         r"^teach/dashboard/kick/(?P<pk>[0-9]+)/$", 

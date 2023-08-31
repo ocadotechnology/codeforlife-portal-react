@@ -27,7 +27,9 @@ const TeacherDashboard: React.FC<{
             navigate(paths.teacher.onboarding._);
             break;
         }
-
+        // TODO: pre-fill update_school_form
+        console.log('t', JSON.parse(res.teacher));
+        console.log('s', JSON.parse(res.school));
         setIsAdmin(res.isAdmin);
       })
       .catch((err) => { console.error(err); });

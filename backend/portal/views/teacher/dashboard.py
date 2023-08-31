@@ -15,6 +15,7 @@ from common.helpers.generators import get_random_username
 from common.models import Class, JoinReleaseStudent, SchoolTeacherInvitation, Student, Teacher
 from common.permissions import logged_in_as_teacher, check_teacher_authorised
 from common.utils import using_two_factor
+from django.core import serializers
 from django.contrib import messages as messages
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -69,6 +70,17 @@ def _get_update_account_ratelimit_key(group, request):
 
 @login_required(login_url=reverse_lazy("session-expired"))
 @user_passes_test(logged_in_as_teacher, login_url=reverse_lazy("session-expired"))
+def dashboard_manage(request):
+    teacher = request.user.new_teacher
+
+    if teacher.school:
+        return dashboard_teacher_view(request, teacher.is_admin)
+    else:
+        return JsonResponse(status=200, data={"redirect": "onboarding"})
+
+
+@login_required(login_url=reverse_lazy("session-expired"))
+@user_passes_test(logged_in_as_teacher, login_url=reverse_lazy("session-expired"))
 @ratelimit(
     group=RATELIMIT_LOGIN_GROUP,
     key=_get_update_account_ratelimit_key,
@@ -85,29 +97,12 @@ def dashboard_teacher_view(request, is_admin):
     update_school_form = None
 
     if school:
-        # coworkers = Teacher.objects.filter(school=school).order_by("new_user__last_name", "new_user__first_name")
-        from django.core import serializers
         coworkers = Teacher.objects.order_by("new_user__last_name", "new_user__first_name")
-        coworkers_json = serializers.serialize('json', coworkers)
+        # coworkers = Teacher.objects.filter(school=school).order_by("new_user__last_name", "new_user__first_name")
+        coworkers_json = serializers.serialize("json", coworkers)
+        teacher_json = serializers.serialize("json", [teacher])
+        school_json = serializers.serialize("json", [school])
         sent_invites = SchoolTeacherInvitation.objects.filter(school=school) if teacher.is_admin else []
-
-    #     update_school_form = OrganisationForm(user=request.user, current_school=school)
-    #     update_school_form.fields["name"].initial = school.name
-    #     update_school_form.fields["postcode"].initial = school.postcode
-    #     update_school_form.fields["country"].initial = school.country
-
-    # invite_teacher_form = InviteTeacherForm()
-
-    # create_class_form = ClassCreationForm(teacher=teacher)
-
-    # update_account_form = TeacherEditAccountForm(request.user)
-    # update_account_form.fields["first_name"].initial = request.user.first_name
-    # update_account_form.fields["last_name"].initial = request.user.last_name
-
-    # delete_account_form = DeleteAccountForm(request.user)
-    delete_account_confirm = False
-
-    anchor = ""
 
     backup_tokens = check_backup_tokens(request)
 
@@ -143,78 +138,7 @@ def dashboard_teacher_view(request, is_admin):
                 # return HttpResponseRedirect(
                 #     reverse_lazy("view_class", kwargs={"access_code": created_class.access_code})
                 # )
-                
 
-        elif request.POST.get("show_onboarding_complete") == "1":
-            show_onboarding_complete = True
-
-        elif "invite_teacher" in request.POST:
-            invited_teacher_first_name = form_data["teacher_first_name"]
-            invited_teacher_last_name = form_data["teacher_last_name"]
-            invited_teacher_email = form_data["teacher_email"]
-            invited_teacher_is_admin = form_data["make_admin_ticked"]
-            token = uuid4().hex
-            SchoolTeacherInvitation.objects.create(
-                token=token,
-                school=school,
-                from_teacher=teacher,
-                invited_teacher_first_name=invited_teacher_first_name,
-                invited_teacher_last_name=invited_teacher_last_name,
-                invited_teacher_email=invited_teacher_email,
-                invited_teacher_is_admin=invited_teacher_is_admin,
-                expiry=timezone.now() + timedelta(days=30),
-            )
-            account_exists = User.objects.filter(email=invited_teacher_email).exists()
-            message = email_messages.inviteTeacherEmail(request, school.name, token, account_exists)
-            send_email(
-                INVITE_FROM, [invited_teacher_email], message["subject"], message["message"], message["subject"]
-            )
-            messages.success(
-                request,
-                f"You have invited {invited_teacher_first_name} {invited_teacher_last_name} to your school.",
-            )
-
-            # invte_teacher_form = InviteTeacherForm(request.POST)
-            # if invite_teacher_form.is_valid():
-            #     data = invite_teacher_form.cleaned_data
-            #     invited_teacher_first_name = data["teacher_first_name"]
-            #     invited_teacher_last_name = data["teacher_last_name"]
-            #     invited_teacher_email = data["teacher_email"]
-            #     invited_teacher_is_admin = data["make_admin_ticked"]
-
-            #     token = uuid4().hex
-            #     SchoolTeacherInvitation.objects.create(
-            #         token=token,
-            #         school=school,
-            #         from_teacher=teacher,
-            #         invited_teacher_first_name=invited_teacher_first_name,
-            #         invited_teacher_last_name=invited_teacher_last_name,
-            #         invited_teacher_email=invited_teacher_email,
-            #         invited_teacher_is_admin=invited_teacher_is_admin,
-            #         expiry=timezone.now() + timedelta(days=30),
-            #     )
-
-            #     account_exists = User.objects.filter(email=invited_teacher_email).exists()
-            #     message = email_messages.inviteTeacherEmail(request, school.name, token, account_exists)
-            #     send_email(
-            #         INVITE_FROM, [invited_teacher_email], message["subject"], message["message"], message["subject"]
-            #     )
-
-            #     messages.success(
-            #         request,
-            #         f"You have invited {invited_teacher_first_name} {invited_teacher_last_name} to your school.",
-            #     )
-
-            #     # Clear form
-            #     invite_teacher_form = InviteTeacherForm()
-
-        elif "delete_account" in request.POST:
-            delete_account_form = DeleteAccountForm(request.user, request.POST)
-            # TODO: check form validation
-            if not delete_account_form.is_valid():
-                messages.warning(request, "Your account was not deleted due to incorrect password.")
-            else:
-                delete_account_confirm = True
         else:
             anchor = "account"
             update_account_form = TeacherEditAccountForm(request.user, request.POST)
@@ -250,28 +174,16 @@ def dashboard_teacher_view(request, is_admin):
     else:
         classes = Class.objects.filter(teacher=teacher)
         requests = Student.objects.filter(pending_class_request__teacher=teacher)
-    return JsonResponse(data={"is_admin": True, "coworkers": coworkers_json})
-    return render(
-        request,
-        "portal/teach/dashboard.html",
-        {
-            "teacher": teacher,
-            "classes": classes,
-            "is_admin": is_admin,
-            "coworkers": coworkers,
-            "requests": requests,
-            "invite_teacher_form": invite_teacher_form,
-            "update_school_form": update_school_form,
-            "create_class_form": create_class_form,
-            "update_account_form": update_account_form,
-            "delete_account_form": delete_account_form,
-            "delete_account_confirm": delete_account_confirm,
-            "anchor": anchor,
-            "backup_tokens": backup_tokens,
-            "show_onboarding_complete": show_onboarding_complete,
-            "sent_invites": sent_invites,
-        },
-    )
+
+    return JsonResponse(data={
+        "is_admin": teacher.is_admin, 
+        "teacher": teacher_json, 
+        "school": school_json,
+        "coworkers": coworkers_json,
+        # "sent_invites": sent_invites, # TODO
+        # "requests": requests, # requests is for classes tab
+        # "backup_tokens": backup_tokens # backup_tokens is for account tab
+    })
 
 
 def can_process_update_school_form(request, is_admin):
@@ -342,16 +254,39 @@ def process_update_account_form(request, teacher, old_anchor):
 
     return changing_email, new_email, changing_password, anchor
 
-
+@require_POST
 @login_required(login_url=reverse_lazy("session-expired"))
 @user_passes_test(logged_in_as_teacher, login_url=reverse_lazy("session-expired"))
-def dashboard_manage(request):
+def invite_teacher(request):
     teacher = request.user.new_teacher
+    school = teacher.school
 
-    if teacher.school:
-        return dashboard_teacher_view(request, teacher.is_admin)
-    else:
-        return JsonResponse(status=200, data={"redirect": "onboarding"})
+    form_data = request.POST
+    invited_teacher_first_name = form_data["teacher_first_name"]
+    invited_teacher_last_name = form_data["teacher_last_name"]
+    invited_teacher_email = form_data["teacher_email"]
+    invited_teacher_is_admin = form_data["is_admin"]
+    invited_teacher_is_admin = (invited_teacher_is_admin == 'true')
+
+    token = uuid4().hex
+    SchoolTeacherInvitation.objects.create(
+        token=token,
+        school=school,
+        from_teacher=teacher,
+        invited_teacher_first_name=invited_teacher_first_name,
+        invited_teacher_last_name=invited_teacher_last_name,
+        invited_teacher_email=invited_teacher_email,
+        invited_teacher_is_admin=invited_teacher_is_admin,
+        expiry=timezone.now() + timedelta(days=30),
+    )
+    account_exists = User.objects.filter(email=invited_teacher_email).exists()
+    message = email_messages.inviteTeacherEmail(request, school.name, token, account_exists)
+
+    send_email(
+        INVITE_FROM, [invited_teacher_email], message["subject"], message["message"], message["subject"]
+    )
+
+    return HttpResponse()
 
 
 def check_teacher_is_authorised(teacher, user):
