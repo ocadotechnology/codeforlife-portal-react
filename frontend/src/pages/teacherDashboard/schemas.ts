@@ -2,9 +2,9 @@ import { boolean, object, ref, string } from 'yup';
 import { getNames } from 'country-list';
 
 export const SCHOOL_DETAILS_UPDATE_SCHEMA = object({
-  schoolName: string().required('School name is required'),
-  schoolPostcode: string().required('School postcode is required'),
-  schoolCountry: string()
+  name: string().required('School name is required'),
+  postcode: string().required('School postcode is required'),
+  country: string()
     .required('School country is required')
     .test('is-country', 'Country is invalid', (value) =>
       getNames().includes(value)

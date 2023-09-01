@@ -11,7 +11,8 @@ from ...views.teacher.dashboard import (
     invite_toggle_admin,
     delete_teacher_invite,
     invite_teacher,
-    invited_teacher
+    invited_teacher,
+    update_school,
 )
 
 
@@ -25,6 +26,11 @@ urlpatterns = [
         "teach/invite/",
         invite_teacher,
         name="invite_teacher"
+    ),
+    path(
+        "teach/update_school/",
+        update_school,
+        name="update_school"
     ),
     re_path(
         r"^invited_teacher/(?P<token>[0-9a-f]+)/$", 

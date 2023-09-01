@@ -36,7 +36,7 @@ import SchoolCountryField from '../../components/form/SchoolCountryField';
 import { useLeaveOrganisationMutation } from '../../app/api/endpoints/organisation';
 import { useNavigate } from 'react-router-dom';
 import { paths } from '../../app/router';
-import { useInviteTeacherMutation } from '../../app/api/endpoints/teacher/dashboard';
+import { useInviteTeacherMutation, useUpdateSchoolMutation } from '../../app/api/endpoints/teacher/dashboard';
 
 const InviteTeacherForm: React.FC = () => {
   const [inviteTeacher] = useInviteTeacherMutation();
@@ -102,20 +102,28 @@ const InviteTeacherForm: React.FC = () => {
   );
 };
 
-const UpdateSchoolDetailsForm: React.FC = () => {
-  // TODO: Prepopulate with current school data
-  const { schoolName, schoolPostcode, schoolCountry } = getSchool();
+const UpdateSchoolDetailsForm: React.FC<{
+  schoolData: any;
+}> = ({ schoolData }) => {
+  const schoolName = schoolData.name;
+  const schoolPostcode = schoolData.postcode;
+  const schoolCountry = schoolData.country;
+  const [updateSchool] = useUpdateSchoolMutation();
   return (
     <CflHorizontalForm
       header="Update details of your school or club"
       subheader="Update your school or club's name and/or postcode"
       initialValues={{
-        schoolCountry,
-        schoolPostcode,
-        schoolName
+        name: schoolName,
+        postcode: schoolPostcode,
+        country: schoolCountry
       }}
       validationSchema={SCHOOL_DETAILS_UPDATE_SCHEMA}
       onSubmit={(values) => {
+        // TODO: messages: "You have updated the details for your school or club successfully.")
+        updateSchool(values).unwrap()
+          .then()
+          .catch((err) => { console.error('UpdateSchool error: ', err); });
         alert(JSON.stringify(values, null, 2));
       }}
       submitButton={<SubmitButton>Update details</SubmitButton>}
@@ -168,8 +176,9 @@ const TeachersTableActions: React.FC<{
 };
 
 const TeachersTable: React.FC<{
-  isAdmin: boolean;
-}> = ({ isAdmin }) => {
+  isUserAdmin: boolean;
+  coworkers: any
+}> = ({ isUserAdmin, coworkers }) => {
   const { email } = getUser();
   const teachersData = getTeachersData();
   const youText = (
@@ -181,8 +190,40 @@ const TeachersTable: React.FC<{
   return (
     <CflTable
       className="body"
-      titles={isAdmin ? ['Name', 'Administrator status', 'Actions'] : ['Name', 'Administrator status']}
+      titles={isUserAdmin ? ['Name', 'Administrator status', 'Actions'] : ['Name', 'Administrator status']}
     >
+      {coworkers.map(
+        ({ teacherFirstName, teacherLastName, teacherEmail, isTeacherAdmin }: any, keyIdx: number) => (
+          <CflTableBody key={`${keyIdx}`}>
+            <CflTableCellElement>
+              <Typography variant="subtitle1">
+                {teacherFirstName} {teacherLastName} {teacherEmail === email ? youText : ''}{' '}
+              </Typography>
+            </CflTableCellElement>
+            <CflTableCellElement
+              direction="column"
+              alignItems="flex-start"
+              justifyContent="flex-start"
+            >
+              <Typography variant="subtitle1">
+                {isTeacherAdmin ? 'Teacher Administrator' : 'Standard Teacher'}
+              </Typography>
+              <Typography variant="subtitle1">({teacherEmail}) </Typography>
+            </CflTableCellElement>
+            {isUserAdmin &&
+              <CflTableCellElement justifyContent="center">
+                <TeachersTableActions
+                  {...{
+                    teacherEmail,
+                    userEmail: email,
+                    isTeacherAdmin
+                  }}
+                />
+              </CflTableCellElement>
+            }
+          </CflTableBody>
+        )
+      )}
       {teachersData.map(
         ({ teacherName, isTeacherAdmin, teacherEmail }, keyIdx: number) => (
           <CflTableBody key={`${keyIdx}`}>
@@ -201,7 +242,7 @@ const TeachersTable: React.FC<{
               </Typography>
               <Typography variant="subtitle1">({teacherEmail}) </Typography>
             </CflTableCellElement>
-            {isAdmin &&
+            {isUserAdmin &&
               <CflTableCellElement justifyContent="center">
                 <TeachersTableActions
                   {...{
@@ -220,13 +261,13 @@ const TeachersTable: React.FC<{
 };
 
 const YourSchool: React.FC<{
-  isAdmin: boolean;
-}> = ({ isAdmin }) => {
-  const { schoolName, schoolPostcode } = getSchool();
+  data: any;
+}> = ({ data }) => {
   const theme = useTheme();
   const [leaveOrganisation] = useLeaveOrganisationMutation();
   const navigate = useNavigate();
-
+  const isAdmin = true;
+  // const isAdmin = data.is_admin;
   const onLeaveOrganisation = (): void => {
     leaveOrganisation().unwrap()
       .then((res) => {
@@ -238,11 +279,11 @@ const YourSchool: React.FC<{
       })
       .catch((err) => { console.log('LeaveOrganisation error: ', err); });
   };
-
+  console.log('dataaaaa', data);
   return <>
     <Page.Section>
       <Typography align="center" variant="h4">
-        Your school: {schoolName} ({schoolPostcode})
+        Your school: {data.school.name} ({data.school.postcode})
       </Typography>
     </Page.Section>
     <Page.Section sx={{ paddingTop: 0 }}>
@@ -275,7 +316,7 @@ const YourSchool: React.FC<{
       <Typography variant="h5">
         These teachers are already part of your school or club
       </Typography>
-      <TeachersTable isAdmin={isAdmin} />
+      <TeachersTable isUserAdmin={isAdmin} coworkers={data.coworkers} />
       {isAdmin &&
         <Grid container columnSpacing={5}>
           <Grid item sm={6}>
@@ -297,7 +338,7 @@ const YourSchool: React.FC<{
     </Page.Section>
     {isAdmin &&
       <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
-        <UpdateSchoolDetailsForm />
+        <UpdateSchoolDetailsForm schoolData={data.school} />
       </Page.Section>
     }
   </>;

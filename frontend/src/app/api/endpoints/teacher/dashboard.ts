@@ -2,10 +2,16 @@ import api from '../../api';
 
 const teacherDashboardApi = api.injectEndpoints({
   endpoints: (build) => ({
-    getTeacherDashboard: build.query({
+    getTeacherData: build.query({
       query: () => ({
         url: 'teach/dashboard/'
-      })
+      }),
+      transformResponse: (response: any) => {
+        const rtn = { school: null, coworkers: response.coworkers, is_admin: response.is_admin };
+        console.log('resp', response);
+        rtn.school = JSON.parse(response.school)[0].fields;
+        return rtn;
+      }
     }),
     inviteTeacher: build.mutation<void, {
       teacherFirstName: string;
@@ -21,12 +27,27 @@ const teacherDashboardApi = api.injectEndpoints({
           'Content-Type': 'application/x-www-form-urlencoded'
         }
       })
+    }),
+    updateSchool: build.mutation<void, {
+      name: string;
+      postcode: string;
+      country: string;
+    }>({
+      query: (body) => ({
+        url: 'teach/update_school/',
+        method: 'POST',
+        body,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      })
     })
   })
 });
 
 export default teacherDashboardApi;
 export const {
-  useLazyGetTeacherDashboardQuery,
-  useInviteTeacherMutation
+  useGetTeacherDataQuery,
+  useInviteTeacherMutation,
+  useUpdateSchoolMutation
 } = teacherDashboardApi;

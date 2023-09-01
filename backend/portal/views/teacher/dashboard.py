@@ -20,6 +20,7 @@ from django.contrib import messages as messages
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
+from django.db.models import F
 from django.http import Http404, HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
@@ -27,6 +28,7 @@ from django.utils import timezone
 from django.views.decorators.http import require_POST
 from game.level_management import levels_shared_with, unshare_level
 from two_factor.utils import devices_for_user
+from rest_framework import status
 
 from portal.forms.invite_teacher import InviteTeacherForm
 from portal.forms.organisation import OrganisationForm
@@ -97,10 +99,15 @@ def dashboard_teacher_view(request, is_admin):
     update_school_form = None
 
     if school:
-        coworkers = Teacher.objects.order_by("new_user__last_name", "new_user__first_name")
+        coworkers = Teacher.objects.values(
+            "id",
+            is_teacher_admin=F("is_admin"),
+            teacher_first_name=F("new_user__first_name"),
+            teacher_last_name=F("new_user__last_name"),
+            teacher_email=F("new_user__email"),
+        ).order_by("teacher_last_name", "teacher_first_name")
         # coworkers = Teacher.objects.filter(school=school).order_by("new_user__last_name", "new_user__first_name")
-        coworkers_json = serializers.serialize("json", coworkers)
-        teacher_json = serializers.serialize("json", [teacher])
+        coworkers_json = list(coworkers)
         school_json = serializers.serialize("json", [school])
         sent_invites = SchoolTeacherInvitation.objects.filter(school=school) if teacher.is_admin else []
 
@@ -110,18 +117,8 @@ def dashboard_teacher_view(request, is_admin):
 
     if request.method == "POST":
         form_data = request.POST
-        if can_process_update_school_form(request, is_admin):
-            # anchor = "school-details"
-            # update_school_form = OrganisationForm(request.POST, user=request.user, current_school=school)
-            # anchor = process_update_school_form(request, school, anchor)
-            school.name = form_data["name"]
-            school.postcode = form_data["postcode"].upper()
-            school.country = form_data["country"]
-            school.save()
 
-            # TODO: messages.success(request, "You have updated the details for your school or club successfully.")
-
-        elif "create_class" in request.POST:
+        if "create_class" in request.POST:
             anchor = "new-class"
             create_class_form = ClassCreationForm(request.POST, teacher=teacher)
             if create_class_form.is_valid():
@@ -177,7 +174,7 @@ def dashboard_teacher_view(request, is_admin):
 
     return JsonResponse(data={
         "is_admin": teacher.is_admin, 
-        "teacher": teacher_json, 
+        # "teacher": teacher_json, 
         "school": school_json,
         "coworkers": coworkers_json,
         # "sent_invites": sent_invites, # TODO
@@ -185,9 +182,20 @@ def dashboard_teacher_view(request, is_admin):
         # "backup_tokens": backup_tokens # backup_tokens is for account tab
     })
 
-
-def can_process_update_school_form(request, is_admin):
-    return "update_school" in request.POST and is_admin
+@login_required(login_url=reverse_lazy("session-expired"))
+@user_passes_test(logged_in_as_teacher, login_url=reverse_lazy("session-expired"))
+def update_school(request):
+    teacher = request.user.new_teacher
+    if teacher.is_admin:
+        form_data = request.POST
+        school = teacher.school
+        school.name = form_data["name"]
+        school.postcode = form_data["postcode"].upper()
+        school.country = form_data["country"]
+        school.save()
+        return HttpResponse()
+    else:
+        return HttpResponse(status=status.HTTP_401_UNAUTHORIZED)
 
 
 def check_backup_tokens(request):
