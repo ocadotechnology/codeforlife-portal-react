@@ -1,9 +1,9 @@
 import logging
 from datetime import timedelta
 from itertools import chain
+from typing import List
 
 from common.models import Teacher, Student
-from django.conf import settings
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.utils import timezone
@@ -27,7 +27,7 @@ USER_2ND_VERIFY_EMAIL_REMINDER_DAYS = 14
 USER_2ND_VERIFY_EMAIL_REMINDER_TEXT = (
     "Please go to the link below to verify your email address:"
     "\n{email_verification_url}."
-    "You will not be able to use your account until it is verified."
+    "\nYou will not be able to use your account until it is verified."
     "\n\nBy activating the account you confirm that you have read and agreed to"
     " our terms ({terms_url}) and our privacy notice ({privacy_notice_url}). If"
     " your account is not verified within 5 days we will delete it."
@@ -35,7 +35,7 @@ USER_2ND_VERIFY_EMAIL_REMINDER_TEXT = (
 USER_DELETE_UNVERIFIED_ACCOUNT_DAYS = 19
 
 
-def get_unverified_emails(days: int):
+def get_unverified_emails(days: int) -> List[str]:
     now = timezone.now()
 
     teacher_emails = Teacher.objects.filter(
@@ -54,6 +54,18 @@ def get_unverified_emails(days: int):
     return list(chain(teacher_emails, student_emails))
 
 
+def build_absolute_google_uri(request, location: str) -> str:
+    """
+    This is needed specifically for emails sent by cron jobs as the protocol for cron jobs is HTTP
+    and the service name is wrongly parsed.
+    """
+    url = request.build_absolute_uri(location)
+    url = url.replace("http", "https")
+    url = url.replace(".decent", "-dot-decent")
+
+    return url
+
+
 class FirstVerifyEmailReminderView(CronMixin, APIView):
     def get(self, request):
         emails = get_unverified_emails(USER_1ST_VERIFY_EMAIL_REMINDER_DAYS)
@@ -61,6 +73,9 @@ class FirstVerifyEmailReminderView(CronMixin, APIView):
         logging.info(f"{len(emails)} emails unverified.")
 
         if emails:
+            terms_url = build_absolute_google_uri(request, reverse("terms"))
+            privacy_notice_url = build_absolute_google_uri(request, reverse("privacy_notice"))
+
             sent_email_count = 0
             for email in emails:
                 try:
@@ -70,16 +85,15 @@ class FirstVerifyEmailReminderView(CronMixin, APIView):
                         subject="Awaiting verification",
                         title="Awaiting verification",
                         text_content=USER_1ST_VERIFY_EMAIL_REMINDER_TEXT.format(
-                            email_verification_url=request.build_absolute_uri(
+                            email_verification_url=build_absolute_google_uri(
+                                request,
                                 reverse(
                                     "verify_email",
-                                    kwargs={
-                                        "token": generate_token_for_email(email)
-                                    },
-                                )
+                                    kwargs={"token": generate_token_for_email(email)},
+                                ),
                             ),
-                            terms_url=f"{settings.FRONTEND_URL}/terms-of-use/terms-of-use",
-                            privacy_notice_url=f"{settings.FRONTEND_URL}/privacy-notice/privacy-notice",
+                            terms_url=terms_url,
+                            privacy_notice_url=privacy_notice_url,
                         ),
                     )
 
@@ -99,6 +113,9 @@ class SecondVerifyEmailReminderView(CronMixin, APIView):
         logging.info(f"{len(emails)} emails unverified.")
 
         if emails:
+            terms_url = build_absolute_google_uri(request, reverse("terms"))
+            privacy_notice_url = build_absolute_google_uri(request, reverse("privacy_notice"))
+
             sent_email_count = 0
             for email in emails:
                 try:
@@ -108,16 +125,15 @@ class SecondVerifyEmailReminderView(CronMixin, APIView):
                         subject="Your account needs verification",
                         title="Your account needs verification",
                         text_content=USER_2ND_VERIFY_EMAIL_REMINDER_TEXT.format(
-                            email_verification_url=request.build_absolute_uri(
+                            email_verification_url=build_absolute_google_uri(
+                                request,
                                 reverse(
                                     "verify_email",
-                                    kwargs={
-                                        "token": generate_token_for_email(email)
-                                    },
-                                )
+                                    kwargs={"token": generate_token_for_email(email)},
+                                ),
                             ),
-                            terms_url=f"{settings.FRONTEND_URL}/terms-of-use/terms-of-use",
-                            privacy_notice_url=f"{settings.FRONTEND_URL}/privacy-notice/privacy-notice",
+                            terms_url=terms_url,
+                            privacy_notice_url=privacy_notice_url,
                         ),
                     )
 
