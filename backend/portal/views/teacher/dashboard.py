@@ -195,7 +195,7 @@ def update_school(request):
         school.save()
         return HttpResponse()
     else:
-        return HttpResponse(status=status.HTTP_401_UNAUTHORIZED)
+        return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
 
 
 def check_backup_tokens(request):
@@ -208,28 +208,6 @@ def check_backup_tokens(request):
             backup_tokens = 0
 
     return backup_tokens
-
-
-# def process_update_school_form(request, school, old_anchor):
-#     update_school_form = OrganisationForm(request.POST, user=request.user, current_school=school)
-#     if update_school_form.is_valid():
-#         data = update_school_form.cleaned_data
-#         name = data.get("name", "")
-#         postcode = data.get("postcode", "")
-#         country = data.get("country", "")
-
-#         school.name = name
-#         school.postcode = postcode
-#         school.country = country
-#         school.save()
-
-#         anchor = "#"
-
-#         messages.success(request, "You have updated the details for your school or club successfully.")
-#     else:
-#         anchor = old_anchor
-
-#     return anchor
 
 
 def process_update_account_form(request, teacher, old_anchor):
@@ -299,7 +277,7 @@ def invite_teacher(request):
 
 def check_teacher_is_authorised(teacher, user):
     if teacher == user or (teacher.school != user.school or not user.is_admin):
-        raise Http404
+        return False
 
 
 @require_POST
@@ -309,8 +287,9 @@ def organisation_kick(request, pk):
     teacher = get_object_or_404(Teacher, id=pk)
     user = request.user.new_teacher
 
-    check_teacher_is_authorised(teacher, user)
-
+    if not check_teacher_is_authorised(teacher, user):
+        return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
+    
     success_message = "The teacher has been successfully removed from your school or club."
 
     classes = Class.objects.filter(teacher=teacher)
@@ -395,13 +374,13 @@ def organisation_toggle_admin(request, pk):
     teacher = get_object_or_404(Teacher, id=pk)
     user = request.user.new_teacher
 
-    check_teacher_is_authorised(teacher, user)
+    if not check_teacher_is_authorised(teacher, user):
+        return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
 
     teacher.is_admin = not teacher.is_admin
     teacher.save()
 
     if teacher.is_admin:
-        messages.success(request, "Administrator status has been given successfully.")
         email_message = email_messages.adminGivenEmail(request, teacher.school.name)
     else:
         # Remove access to all levels that are from other teachers' students
@@ -410,7 +389,6 @@ def organisation_toggle_admin(request, pk):
             for level in levels_shared_with(teacher.new_user)
             if hasattr(level.owner, "student") and not teacher.teaches(level.owner)
         ]
-        messages.success(request, "Administrator status has been revoked successfully.")
         email_message = email_messages.adminRevokedEmail(request, teacher.school.name)
 
     send_email(
@@ -420,8 +398,7 @@ def organisation_toggle_admin(request, pk):
         email_message["message"],
         email_message["subject"],
     )
-
-    return HttpResponseRedirect(reverse_lazy("dashboard"))
+    return HttpResponse()
 
 
 @login_required(login_url=reverse_lazy("session-expired"))

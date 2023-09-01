@@ -41,6 +41,14 @@ const teacherDashboardApi = api.injectEndpoints({
           'Content-Type': 'application/x-www-form-urlencoded'
         }
       })
+    }),
+    toggleAdmin: build.mutation<void, {
+      id: number
+    }>({
+      query: ({ id }) => ({
+        url: `teach/dashboard/toggle_admin/${id}/`,
+        method: 'POST'
+      })
     })
   })
 });
@@ -49,5 +57,6 @@ export default teacherDashboardApi;
 export const {
   useGetTeacherDataQuery,
   useInviteTeacherMutation,
-  useUpdateSchoolMutation
+  useUpdateSchoolMutation,
+  useToggleAdminMutation
 } = teacherDashboardApi;

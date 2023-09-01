@@ -22,7 +22,6 @@ import CflTable, {
   CflTableBody,
   CflTableCellElement
 } from '../../components/CflTable';
-import { getSchool, getTeachersData, getUser } from './dummyMethods';
 import {
   TextField,
   CheckboxField,
@@ -36,7 +35,7 @@ import SchoolCountryField from '../../components/form/SchoolCountryField';
 import { useLeaveOrganisationMutation } from '../../app/api/endpoints/organisation';
 import { useNavigate } from 'react-router-dom';
 import { paths } from '../../app/router';
-import { useInviteTeacherMutation, useUpdateSchoolMutation } from '../../app/api/endpoints/teacher/dashboard';
+import { useInviteTeacherMutation, useToggleAdminMutation, useUpdateSchoolMutation } from '../../app/api/endpoints/teacher/dashboard';
 
 const InviteTeacherForm: React.FC = () => {
   const [inviteTeacher] = useInviteTeacherMutation();
@@ -139,8 +138,18 @@ const TeachersTableActions: React.FC<{
   teacherEmail: string;
   userEmail: string;
   isTeacherAdmin: boolean;
+  id: number;
   twoFactorAuthentication?: boolean;
-}> = ({ teacherEmail, userEmail, isTeacherAdmin, twoFactorAuthentication }) => {
+}> = ({ teacherEmail, userEmail, isTeacherAdmin, id, twoFactorAuthentication }) => {
+  const [toggleAdmin] = useToggleAdminMutation();
+  const handleToggleAdmin = (id: number) => () => {
+    // TODO: messages.success(request, "Administrator status has been given successfully.")
+    //      messages.success(request, "Administrator status has been revoked successfully.")
+    toggleAdmin({ id }).unwrap()
+      .then()
+      .catch((err) => { console.log('ToggleAdmin error: ', err); });
+  };
+
   if (teacherEmail === userEmail) {
     return (
       <>
@@ -152,7 +161,7 @@ const TeachersTableActions: React.FC<{
   } else if (isTeacherAdmin) {
     return (
       <>
-        <Button className="alert" endIcon={<DoNotDisturb />}>
+        <Button className="alert" endIcon={<DoNotDisturb />} onClick={handleToggleAdmin(id)}>
           Revoke admin
         </Button>
         <Button className="alert" endIcon={<DeleteOutline />}>
@@ -163,7 +172,7 @@ const TeachersTableActions: React.FC<{
   } else {
     return (
       <>
-        <Button endIcon={<Add />}>Make admin</Button>
+        <Button endIcon={<Add />} onClick={handleToggleAdmin(id)}>Make admin</Button>
         {twoFactorAuthentication
           ? <Button endIcon={<DoDisturbOnOutlined />} className="alert">
             Disable 2FA
@@ -177,10 +186,10 @@ const TeachersTableActions: React.FC<{
 
 const TeachersTable: React.FC<{
   isUserAdmin: boolean;
-  coworkers: any
-}> = ({ isUserAdmin, coworkers }) => {
-  const { email } = getUser();
-  const teachersData = getTeachersData();
+  teachersData: any
+}> = ({ isUserAdmin, teachersData }) => {
+  // TODO: const { email } = getUser();
+  const email = 'alberteinstein@codeforlife.com';
   const youText = (
     <Typography variant="body2" fontWeight="bold">
       (you)
@@ -192,9 +201,9 @@ const TeachersTable: React.FC<{
       className="body"
       titles={isUserAdmin ? ['Name', 'Administrator status', 'Actions'] : ['Name', 'Administrator status']}
     >
-      {coworkers.map(
-        ({ teacherFirstName, teacherLastName, teacherEmail, isTeacherAdmin }: any, keyIdx: number) => (
-          <CflTableBody key={`${keyIdx}`}>
+      {teachersData.map(
+        ({ teacherFirstName, teacherLastName, teacherEmail, isTeacherAdmin, id }: any) => (
+          <CflTableBody key={id}>
             <CflTableCellElement>
               <Typography variant="subtitle1">
                 {teacherFirstName} {teacherLastName} {teacherEmail === email ? youText : ''}{' '}
@@ -216,39 +225,8 @@ const TeachersTable: React.FC<{
                   {...{
                     teacherEmail,
                     userEmail: email,
-                    isTeacherAdmin
-                  }}
-                />
-              </CflTableCellElement>
-            }
-          </CflTableBody>
-        )
-      )}
-      {teachersData.map(
-        ({ teacherName, isTeacherAdmin, teacherEmail }, keyIdx: number) => (
-          <CflTableBody key={`${keyIdx}`}>
-            <CflTableCellElement>
-              <Typography variant="subtitle1">
-                {teacherName} {teacherEmail === email ? youText : ''}{' '}
-              </Typography>
-            </CflTableCellElement>
-            <CflTableCellElement
-              direction="column"
-              alignItems="flex-start"
-              justifyContent="flex-start"
-            >
-              <Typography variant="subtitle1">
-                {isTeacherAdmin ? 'Teacher Administrator' : 'Standard Teacher'}
-              </Typography>
-              <Typography variant="subtitle1">({teacherEmail}) </Typography>
-            </CflTableCellElement>
-            {isUserAdmin &&
-              <CflTableCellElement justifyContent="center">
-                <TeachersTableActions
-                  {...{
-                    teacherEmail,
-                    userEmail: email,
-                    isTeacherAdmin
+                    isTeacherAdmin,
+                    id
                   }}
                 />
               </CflTableCellElement>
@@ -267,7 +245,7 @@ const YourSchool: React.FC<{
   const [leaveOrganisation] = useLeaveOrganisationMutation();
   const navigate = useNavigate();
   const isAdmin = true;
-  // const isAdmin = data.is_admin;
+  // TODO: const isAdmin = data.is_admin;
   const onLeaveOrganisation = (): void => {
     leaveOrganisation().unwrap()
       .then((res) => {
@@ -279,7 +257,7 @@ const YourSchool: React.FC<{
       })
       .catch((err) => { console.log('LeaveOrganisation error: ', err); });
   };
-  console.log('dataaaaa', data);
+
   return <>
     <Page.Section>
       <Typography align="center" variant="h4">
@@ -316,7 +294,7 @@ const YourSchool: React.FC<{
       <Typography variant="h5">
         These teachers are already part of your school or club
       </Typography>
-      <TeachersTable isUserAdmin={isAdmin} coworkers={data.coworkers} />
+      <TeachersTable isUserAdmin={isAdmin} teachersData={data.coworkers} />
       {isAdmin &&
         <Grid container columnSpacing={5}>
           <Grid item sm={6}>
