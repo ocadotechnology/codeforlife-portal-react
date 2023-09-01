@@ -4208,9 +4208,9 @@ coa@^2.0.2:
     chalk "^2.4.1"
     q "^1.1.2"
 
-"codeforlife@github:ocadotechnology/codeforlife-package-javascript#v1.26.2":
-  version "1.26.2"
-  resolved "https://codeload.github.com/ocadotechnology/codeforlife-package-javascript/tar.gz/29d6e7736102863135f69a5052e27e5d47a6fd82"
+"codeforlife@github:ocadotechnology/codeforlife-package-javascript#base_api":
+  version "1.26.1"
+  resolved "https://codeload.github.com/ocadotechnology/codeforlife-package-javascript/tar.gz/6ab380169247f4da02b98f6702bb58da0387b974"
   dependencies:
     "@emotion/react" "^11.10.6"
     "@emotion/styled" "^11.10.6"
@@ -4218,6 +4218,8 @@ coa@^2.0.2:
     "@mui/material" "^5.11.12"
     "@reduxjs/toolkit" "^1.9.3"
     formik "^2.2.9"
+    js-cookie "^3.0.5"
+    qs "^6.11.2"
     yup "^1.1.1"
 
 collect-v8-coverage@^1.0.0:

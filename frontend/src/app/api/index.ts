@@ -1,27 +1,29 @@
-import api from './api';
 import {
   useSubscribeToNewsletterMutation,
   useConsentFormMutation
-} from './endpoints/dotmailer';
+} from './dotmailer';
 import {
   useRegisterUserMutation,
   useLogoutUserMutation,
   useDownloadStudentPackMutation
-} from './endpoints/home';
+} from './home';
 import {
   useLoginTeacherMutation,
   useLoginDependentStudentMutation,
   useLoginDependentStudentDirectlyMutation,
   useLoginIndependentStudentMutation
-} from './endpoints/login';
+} from './login';
+import {
+  useCreateOrganisationMutation,
+  useLeaveOrganisationMutation
+} from './organisation';
 import {
   useRequestIndependentStudentPasswordResetMutation,
   useRequestTeacherPasswordResetMutation,
   useResetPasswordMutation,
   useDeleteAccountMutation
-} from './endpoints/registration';
+} from './registration';
 
-export default api;
 export {
   // dotmailer
   useSubscribeToNewsletterMutation,
@@ -35,6 +37,9 @@ export {
   useLoginDependentStudentMutation,
   useLoginDependentStudentDirectlyMutation,
   useLoginIndependentStudentMutation,
+  // organisation
+  useCreateOrganisationMutation,
+  useLeaveOrganisationMutation,
   // registration
   useRequestIndependentStudentPasswordResetMutation,
   useRequestTeacherPasswordResetMutation,

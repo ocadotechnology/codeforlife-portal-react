@@ -23,7 +23,7 @@ import { CflHorizontalForm } from '../../../components/form/CflForm';
 import ClassNameField from '../../../components/form/ClassNameField';
 import SeeClassmatesProgressField from '../../../components/form/SeeClassmatesProgressField';
 import EditClass from './editClass/EditClass';
-import { classType, teacherType, useLeaveOrganisationMutation } from '../../../app/api/endpoints/organisation';
+import { classType, teacherType, useLeaveOrganisationMutation } from '../../../app/api/organisation';
 import { FieldArray, Form, Formik } from 'formik';
 
 const _YourClasses: React.FC = () => {
@@ -200,6 +200,7 @@ const MoveClassTeacherForm: React.FC = () => {
       .catch((err) => { console.error('LeaveOrganisation error: ', err); });
   };
 
+  // TODO: clean this up
   // initialValues: form value
   // teacherList: for finding newTeacher ID (by findNewTeacherId)
   // teacherOptions: showing form options
