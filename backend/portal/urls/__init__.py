@@ -1,6 +1,6 @@
 from django.urls import path, include
 
-from .cron import router as cron_router
+from .cron import urlpatterns as cron_urlpatterns
 from .dotmailer import urlpatterns as dotmailer_urlpatterns
 from .email import urlpatterns as email_urlpatterns
 from .home import urlpatterns as home_urlpatterns
@@ -10,7 +10,7 @@ from .admin import urlpatterns as admin_urlpatterns
 from .organisation import urlpatterns as organisation_urlpatterns
 
 urlpatterns = [
-    path("cron/", include(cron_router.urls)),
+    path("cron/", include(cron_urlpatterns)),
     *dotmailer_urlpatterns,
     *email_urlpatterns,
     *home_urlpatterns,
