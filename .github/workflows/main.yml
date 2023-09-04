@@ -64,7 +64,7 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     # needs: [test-chrome]
-    if: github.ref_name == 'production' || github.ref_name == 'development' || github.ref_name == 'staging'
+    # if: github.ref_name == 'production' || github.ref_name == 'development' || github.ref_name == 'staging'
     environment: development
     steps:
       - name: 🛫 Checkout
