@@ -6,13 +6,9 @@ inbound_services:
   - warmup
 
 env_variables:
-  # Backend
   DEBUG: "0"
   DJANGO_SETTINGS_MODULE: "service.settings"
   SITE_PROTOCOL: "https"
   SITE_DOMAIN: "REPLACE_ME"
   SITE_PORT: "443"
   MODULE_NAME: "REPLACE_ME"
-
-  # Frontend
-  REACT_APP_PORTAL_BASE_URL: "REPLACE_ME"
