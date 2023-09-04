@@ -1,4 +1,3 @@
-import { Build } from '@mui/icons-material';
 import api from '../api';
 
 interface StudentScoreProps {
@@ -11,6 +10,10 @@ interface StudentScoreProps {
 interface StudentKuronoGameDataProps {
   worksheetId: number;
   worksheetImage: string;
+}
+
+interface NotificationResponseProps {
+  notification: string[];
 }
 
 const studentApi = api.injectEndpoints({
@@ -26,10 +29,50 @@ const studentApi = api.injectEndpoints({
         url: 'student/kurono_game_data/',
         method: 'GET'
       })
+    }),
+    updateStudentDetails: build.mutation<
+      NotificationResponseProps,
+      {
+        name: string;
+        email: string;
+        newPassword: string;
+        repeatPassword: string;
+        currentPassword: string;
+      }
+    >({
+      query: (body) => ({
+        url: 'independent/edit-details/',
+        method: 'POST',
+        body,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      })
+    }),
+    updateSchoolStudentDetails: build.mutation<
+      NotificationResponseProps,
+      {
+        newPassword: string;
+        repeatPassword: string;
+        currentPassword: string;
+      }
+    >({
+      query: (body) => ({
+        url: 'school-student/edit-details/',
+        method: 'POST',
+        body,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      })
     })
   })
 });
 
 export default studentApi;
-export const { useGetStudentScoreQuery, useGetStudentKuronoGameDataQuery } =
-  studentApi;
+export const {
+  useGetStudentScoreQuery,
+  useGetStudentKuronoGameDataQuery,
+  useUpdateStudentDetailsMutation,
+  useUpdateSchoolStudentDetailsMutation
+} = studentApi;

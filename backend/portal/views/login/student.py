@@ -142,10 +142,16 @@ def student_login_view(request: HttpRequest, access_code: str):
         return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
 
     try:
-        user = User.objects.get(
-            first_name=request.POST["username"],
-            new_student__class_field__access_code=access_code,
-        )
+        if access_code:
+            user = User.objects.get(
+                first_name=request.POST["username"],
+                new_student__class_field__access_code=access_code,
+            )
+        else:
+            user = User.objects.get(
+                username=request.POST["username"],
+                new_student__class_field__access_code=access_code,
+            )
     except User.DoesNotExist:
         return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
 

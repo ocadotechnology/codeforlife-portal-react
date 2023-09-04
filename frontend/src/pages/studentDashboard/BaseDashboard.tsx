@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import {
   useTheme,
   Link
@@ -27,7 +27,7 @@ const BaseDashboard: React.FC<BaseDashboardProps> = ({
 }) => {
   const theme = useTheme();
   const navigate = useNavigate();
-
+  const location = useLocation();
   const params = tryValidateSync(
     useParams(),
     yup.object({
@@ -49,6 +49,15 @@ const BaseDashboard: React.FC<BaseDashboardProps> = ({
     }
   }, [params]);
 
+  const handleClose = (notificationMessage: string): void => {
+    const { notification } = location.state || {};
+
+    if (notification) {
+      const updatedNotifications = notification.filter((message: string) => message !== notificationMessage);
+      navigate(location.pathname, { state: { notification: updatedNotifications } });
+    }
+  };
+
   let view: React.ReactElement<PageSectionProps, typeof Page.Section> | undefined;
   switch (params?.view) {
     case 'account':
@@ -58,11 +67,10 @@ const BaseDashboard: React.FC<BaseDashboardProps> = ({
       view = <JoinSchool />;
       break;
   }
-
   return <>
     <Page.Banner
       header={`Welcome, ${name}`}
-      subheader={(view === undefined) ? 'This is where you can access your games' : ''}
+      subheader={(view === undefined) ? 'This is where you can access your games' + `${JSON.stringify(location.state)}` : ''}
       textAlign='center'
       bgcolor={isDependent ? 'tertiary' : 'secondary'}
     />
@@ -74,7 +82,7 @@ const BaseDashboard: React.FC<BaseDashboardProps> = ({
             ? <>You are logged in to class: {classCode}</>
             : <>
               You are logged in as an independent student.
-              If you want to join a school, you need to&nbsp;
+              If you want to join a school,you need to&nbsp;
               <Link onClick={() => { navigate(paths.student.dashboard.independent.joinSchool._); }} color="inherit">
                 request to join one
               </Link>
@@ -82,6 +90,16 @@ const BaseDashboard: React.FC<BaseDashboardProps> = ({
             </>
           }
         </Page.Notification>
+        {
+          <>
+
+            {location.state
+              ? location.state.notification.map(
+                (notificationMessage: string, idx: number) => <Page.Notification onClose={() => { handleClose(notificationMessage); }} key={`notification-${idx}`}>{notificationMessage}</Page.Notification>
+              )
+              : null}
+          </>
+        }
         <Page.Section>
           <Games isDependent={isDependent} />
         </Page.Section>

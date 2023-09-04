@@ -24,6 +24,8 @@ import {
 
 import DeleteAccountForm from '../../../features/deleteAccountForm/DeleteAccountForm';
 import { paths } from '../../../app/router';
+import { submitForm } from 'codeforlife/lib/esm/helpers/formik';
+import { useUpdateSchoolStudentDetailsMutation, useUpdateStudentDetailsMutation } from '../../../app/api';
 
 const AccountFormPasswordFields: React.FC = () => {
   return <>
@@ -82,41 +84,22 @@ const AccountFormButtons: React.FC = () => {
 const AccountForm: React.FC<{
   isDependent: boolean;
 }> = ({ isDependent }) => {
+  interface SchoolStudentValues {
+    newPassword: string;
+    repeatPassword: string;
+    currentPassword: string;
+  }
+  interface IndependentValues extends SchoolStudentValues {
+    name: string;
+    email: string;
+  }
+
+  type Values = SchoolStudentValues | IndependentValues;
+  const navigate = useNavigate();
+
   if (isDependent) {
-    interface Values {
-      newPassword: string;
-      repeatPassword: string;
-      currentPassword: string;
-    }
-
-    const initialValues: Values = {
-      newPassword: '',
-      repeatPassword: '',
-      currentPassword: ''
-    };
-
-    return (
-      <Form
-        initialValues={initialValues}
-        onSubmit={(values) => {
-          alert(JSON.stringify(values, null, 2));
-        }}
-      >
-        <Grid container spacing={2}>
-          <AccountFormPasswordFields />
-        </Grid>
-        <AccountFormButtons />
-      </Form>
-    );
-  } else {
-    interface Values {
-      name: string;
-      email: string;
-      newPassword: string;
-      repeatPassword: string;
-      currentPassword: string;
-    }
-
+    // Form complains about the initial values when type
+    // does not have name and email
     const initialValues: Values = {
       name: '',
       email: '',
@@ -125,12 +108,41 @@ const AccountForm: React.FC<{
       currentPassword: ''
     };
 
+    const [updateSchoolStudent] = useUpdateSchoolStudentDetailsMutation();
+
     return (
       <Form
         initialValues={initialValues}
-        onSubmit={(values) => {
-          alert(JSON.stringify(values, null, 2));
-        }}
+        onSubmit={submitForm(updateSchoolStudent, {
+          then: (res) => {
+            navigate(paths.student.dashboard.dependent._, { state: { notification: res?.notification } });
+          }
+        })}
+      >
+        <Grid container spacing={2}>
+          <AccountFormPasswordFields />
+        </Grid>
+        <AccountFormButtons />
+      </Form>
+    );
+  } else {
+    const initialValues: Values = {
+      name: '',
+      email: '',
+      newPassword: '',
+      repeatPassword: '',
+      currentPassword: ''
+    };
+    const [updateStudent] = useUpdateStudentDetailsMutation();
+    return (
+      <Form
+        initialValues={initialValues}
+        onSubmit={submitForm(updateStudent, {
+          then: (res) => {
+            navigate(paths.student.dashboard.independent._, { state: { notification: res?.notification } });
+          }
+        })
+        }
       >
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>

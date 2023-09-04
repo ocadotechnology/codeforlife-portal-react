@@ -27,30 +27,40 @@ from django.shortcuts import render, get_object_or_404
 from rest_framework import status
 
 
-
 # @require_POST
 @login_required(login_url=reverse_lazy("independent_student_login"))
 def handle_rapid_router_scores(request):
     levels = Level.objects.all()
     student = get_object_or_404(Student, new_user=request.user.id)
-    
+
     # Compute scores for the found student
     return compute_rapid_router_scores(student, levels)
 
 
-@login_required(login_url=reverse_lazy("student_login"))
+@login_required(login_url=reverse_lazy("independent_student_login"))
 def handle_kurono_game_data(request):
-    student = get_object_or_404(Student, new_user=request.user.id)
-    klass = Class.objects.get(id=student.class_field_id)
-    aimmo_game = klass.active_game
+    try:
+        student = Student.objects.get(
+            new_user=request.user.id, class_field_id__isnull=False
+        )
+        klass = Class.objects.get(id=student.class_field_id)
+        aimmo_game = klass.active_game
+        worksheet_id = aimmo_game.worksheet.id if aimmo_game else 0
+        worksheet_image = aimmo_game.worksheet.image_path if aimmo_game else ""
+    except (Student.DoesNotExist, Class.DoesNotExist, AttributeError):
+        worksheet_id = 0
+        worksheet_image = ""
+
     response_data = {
-        "worksheet_id": aimmo_game.worksheet.id if aimmo_game else 0,
-        "worksheet_image": aimmo_game.worksheet.image_path if aimmo_game else ""
+        "worksheet_id": worksheet_id,
+        "worksheet_image": worksheet_image,
     }
     return JsonResponse(response_data)
 
 
-def compute_rapid_router_scores(student: Student, levels: List[Level] or QuerySet) -> Dict[str, int]:
+def compute_rapid_router_scores(
+    student: Student, levels: List[Level] or QuerySet
+) -> Dict[str, int]:
     """
     Finds Rapid Router progress and score data for a specific student and a specific
     set of levels. This is used to show quick score data to the student on their
@@ -68,9 +78,9 @@ def compute_rapid_router_scores(student: Student, levels: List[Level] or QuerySe
     num_completed = num_top_scores = total_available_score = 0
     total_score = 0.0
     # Get a QuerySet of best attempts for each level
-    best_attempts = Attempt.objects.filter(level__in=levels, student=student, is_best_attempt=True).select_related(
-        "level"
-    )
+    best_attempts = Attempt.objects.filter(
+        level__in=levels, student=student, is_best_attempt=True
+    ).select_related("level")
 
     # Calculate total available score. A level has a max score of 20 by default unless
     # its route score is disabled or it is a custom level (not in an episode)
@@ -81,9 +91,14 @@ def compute_rapid_router_scores(student: Student, levels: List[Level] or QuerySe
     # For each level, compare best attempt's score with level's max score and increment
     # variables as needed
     if best_attempts:
-        attempts_dict = {best_attempt.level.id: best_attempt for best_attempt in best_attempts}
+        attempts_dict = {
+            best_attempt.level.id: best_attempt
+            for best_attempt in best_attempts
+        }
         for level in levels:
-            max_score = 10 if level.disable_route_score or not level.episode else 20
+            max_score = (
+                10 if level.disable_route_score or not level.episode else 20
+            )
             attempt = attempts_dict.get(level.id)
 
             if attempt and attempt.score:
@@ -93,9 +108,11 @@ def compute_rapid_router_scores(student: Student, levels: List[Level] or QuerySe
 
                 total_score += attempt.score
 
-    return JsonResponse({
-        "num_completed": num_completed,
-        "num_top_scores": num_top_scores,
-        "total_score": int(total_score),
-        "total_available_score": total_available_score,
-    })
+    return JsonResponse(
+        {
+            "num_completed": num_completed,
+            "num_top_scores": num_top_scores,
+            "total_score": int(total_score),
+            "total_available_score": total_available_score,
+        }
+    )

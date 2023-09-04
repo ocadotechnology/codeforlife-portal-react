@@ -23,7 +23,9 @@ import {
 
 import {
   useGetStudentScoreQuery,
-  useGetStudentKuronoGameDataQuery
+  useGetStudentKuronoGameDataQuery,
+  useUpdateStudentDetailsMutation,
+  useUpdateSchoolStudentDetailsMutation
 } from './endpoints/student';
 
 export default api;
@@ -47,5 +49,7 @@ export {
   useDeleteAccountMutation,
   // student
   useGetStudentScoreQuery,
-  useGetStudentKuronoGameDataQuery
+  useGetStudentKuronoGameDataQuery,
+  useUpdateStudentDetailsMutation,
+  useUpdateSchoolStudentDetailsMutation
 };
