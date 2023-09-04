@@ -106,6 +106,8 @@ jobs:
         run: node djangoBundler.js
         env:
           NODE_ENV: production
+          REACT_APP_API_BASE_URL: ${{ vars.REACT_APP_API_BASE_URL }}
+          REACT_APP_PORTAL_BASE_URL: ${{ vars.REACT_APP_PORTAL_BASE_URL }}
 
       - name: 🛠 Install Backend Dependencies
         working-directory: ./backend
@@ -134,8 +136,7 @@ jobs:
             yq -i '
               .service = "development-${{ env.SERVICE }}" |
               .env_variables.SITE_DOMAIN = "development-portal-dot-decent-digit-629.appspot.com" |
-              .env_variables.MODULE_NAME = "development" |
-              .env_variables.REACT_APP_PORTAL_BASE_URL = "${{ vars.REACT_APP_PORTAL_BASE_URL }}"
+              .env_variables.MODULE_NAME = "development"
             ' backend/app.yaml
 
       - name: 🚀 Deploy App on GCloud
