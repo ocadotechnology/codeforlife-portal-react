@@ -17,7 +17,11 @@ const TeacherDashboard: React.FC<{
   const userName = 'John Doe';
   const { data, error, isLoading } = useGetTeacherDataQuery('');
   const navigate = useNavigate();
-  // TODO: redirect to onbaording page if no school
+
+  if (data && !data.school) {
+    navigate(paths.teacher.onboarding._);
+  }
+
   return <>
     {error
       ? (<>There was an error</>)
