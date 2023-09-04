@@ -10,12 +10,12 @@ on:
       - ".vscode"
   workflow_dispatch:
 
-# env:
-#   CYPRESS_WAIT_ON: http://localhost:8000
-#   CYPRESS_WAIT_ON_TIMEOUT: 600
-#   CYPRESS_SPEC: cypress/e2e/**/*.cy.ts
-#   SERVICE: portal
-#   PYTHON_VERSION: 3.8
+env:
+  CYPRESS_WAIT_ON: http://localhost:8000
+  CYPRESS_WAIT_ON_TIMEOUT: 600
+  CYPRESS_SPEC: cypress/e2e/**/*.cy.ts
+  SERVICE: portal
+  PYTHON_VERSION: 3.8
 
 jobs:
   test:
