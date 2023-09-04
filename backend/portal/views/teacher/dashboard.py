@@ -96,7 +96,6 @@ def dashboard_teacher_view(request, is_admin):
 
     coworkers = None
     sent_invites = []
-    update_school_form = None
 
     if school:
         coworkers = Teacher.objects.values(
@@ -109,78 +108,88 @@ def dashboard_teacher_view(request, is_admin):
         # coworkers = Teacher.objects.filter(school=school).order_by("new_user__last_name", "new_user__first_name")
         coworkers_json = list(coworkers)
         school_json = serializers.serialize("json", [school])
-        sent_invites = SchoolTeacherInvitation.objects.filter(school=school) if teacher.is_admin else []
-
-    backup_tokens = check_backup_tokens(request)
-
-    show_onboarding_complete = False
-
-    if request.method == "POST":
-        form_data = request.POST
-
-        if "create_class" in request.POST:
-            anchor = "new-class"
-            create_class_form = ClassCreationForm(request.POST, teacher=teacher)
-            if create_class_form.is_valid():
-                class_teacher = teacher
-                # If the logged in teacher is an admin, then get the class teacher from the selected dropdown
-                if teacher.is_admin:
-                    class_teacher = get_object_or_404(Teacher, id=create_class_form.cleaned_data["teacher"])
-                created_class = create_class(create_class_form, class_teacher, class_creator=teacher)
-                messages.success(
-                    request,
-                    "The class '{className}' has been created successfully.".format(className=created_class.name),
-                )
-                return teacher_view_class(request, created_class.access_code)
-                # return HttpResponseRedirect(
-                #     reverse_lazy("view_class", kwargs={"access_code": created_class.access_code})
-                # )
-
-        else:
-            anchor = "account"
-            update_account_form = TeacherEditAccountForm(request.user, request.POST)
-            (changing_email, new_email, changing_password, anchor) = process_update_account_form(
-                request, teacher, anchor
-            )
-            if changing_email:
-                logout(request)
-                messages.success(
-                    request,
-                    "Your email will be changed once you have verified it, until then "
-                    "you can still log in with your old email.",
-                )
-                return render(request, "portal/email_verification_needed.html", {"usertype": "TEACHER"})
-
-            if changing_password:
-                logout(request)
-                messages.success(request, "Please login using your new password.")
-                return HttpResponseRedirect(reverse_lazy("session-expired"))
-
-    if teacher.is_admin:
-        # Making sure the current teacher classes come up first
-        classes = school.classes()
-        [classes.insert(0, classes.pop(i)) for i in range(len(classes)) if classes[i].teacher.id == teacher.id]
-
-        requests = list(Student.objects.filter(pending_class_request__teacher__school=school))
-        [
-            requests.insert(0, requests.pop(i))
-            for i in range(len(requests))
-            if requests[i].pending_class_request.teacher.id == teacher.id
-        ]
-
-    else:
-        classes = Class.objects.filter(teacher=teacher)
-        requests = Student.objects.filter(pending_class_request__teacher=teacher)
+        sent_invites = SchoolTeacherInvitation.objects.filter(school=school).values(
+            "id",
+            "invited_teacher_first_name",
+            "invited_teacher_last_name",
+            "invited_teacher_email",
+            "invited_teacher_is_admin",
+            "expiry",
+            "token"  
+        ) if teacher.is_admin else []
+        sent_invites_json = list(sent_invites)
 
     return JsonResponse(data={
         "is_admin": teacher.is_admin, 
-        # "teacher": teacher_json, 
+        # "teacher": teacher, 
         "school": school_json,
         "coworkers": coworkers_json,
-        # "sent_invites": sent_invites, # TODO
+        "sent_invites": sent_invites_json,
         # "requests": requests, # requests is for classes tab
         # "backup_tokens": backup_tokens # backup_tokens is for account tab
     })
+
+    # backup_tokens = check_backup_tokens(request)
+
+    # show_onboarding_complete = False
+
+    # if request.method == "POST":
+    #     form_data = request.POST
+
+    #     if "create_class" in request.POST:
+    #         anchor = "new-class"
+    #         create_class_form = ClassCreationForm(request.POST, teacher=teacher)
+    #         if create_class_form.is_valid():
+    #             class_teacher = teacher
+    #             # If the logged in teacher is an admin, then get the class teacher from the selected dropdown
+    #             if teacher.is_admin:
+    #                 class_teacher = get_object_or_404(Teacher, id=create_class_form.cleaned_data["teacher"])
+    #             created_class = create_class(create_class_form, class_teacher, class_creator=teacher)
+    #             messages.success(
+    #                 request,
+    #                 "The class '{className}' has been created successfully.".format(className=created_class.name),
+    #             )
+    #             return teacher_view_class(request, created_class.access_code)
+    #             # return HttpResponseRedirect(
+    #             #     reverse_lazy("view_class", kwargs={"access_code": created_class.access_code})
+    #             # )
+
+    #     else:
+    #         anchor = "account"
+    #         update_account_form = TeacherEditAccountForm(request.user, request.POST)
+    #         (changing_email, new_email, changing_password, anchor) = process_update_account_form(
+    #             request, teacher, anchor
+    #         )
+    #         if changing_email:
+    #             logout(request)
+    #             messages.success(
+    #                 request,
+    #                 "Your email will be changed once you have verified it, until then "
+    #                 "you can still log in with your old email.",
+    #             )
+    #             return render(request, "portal/email_verification_needed.html", {"usertype": "TEACHER"})
+
+    #         if changing_password:
+    #             logout(request)
+    #             messages.success(request, "Please login using your new password.")
+    #             return HttpResponseRedirect(reverse_lazy("session-expired"))
+
+    # if teacher.is_admin:
+    #     # Making sure the current teacher classes come up first
+    #     classes = school.classes()
+    #     [classes.insert(0, classes.pop(i)) for i in range(len(classes)) if classes[i].teacher.id == teacher.id]
+
+    #     requests = list(Student.objects.filter(pending_class_request__teacher__school=school))
+    #     [
+    #         requests.insert(0, requests.pop(i))
+    #         for i in range(len(requests))
+    #         if requests[i].pending_class_request.teacher.id == teacher.id
+    #     ]
+
+    # else:
+    #     classes = Class.objects.filter(teacher=teacher)
+    #     requests = Student.objects.filter(pending_class_request__teacher=teacher)
+
 
 @login_required(login_url=reverse_lazy("session-expired"))
 @user_passes_test(logged_in_as_teacher, login_url=reverse_lazy("session-expired"))
@@ -348,12 +357,9 @@ def invite_toggle_admin(request, invite_id):
     invite.invited_teacher_is_admin = not invite.invited_teacher_is_admin
     invite.save()
 
-    if invite.invited_teacher_is_admin:
-        messages.success(request, "Administrator invite status has been given successfully")
+    if invite.invited_teacher_is_admin: 
         emailMessage = email_messages.adminGivenEmail(request, invite.school)
-
     else:
-        messages.success(request, "Administrator invite status has been revoked successfully")
         emailMessage = email_messages.adminRevokedEmail(request, invite.school)
 
     send_email(
@@ -364,7 +370,7 @@ def invite_toggle_admin(request, invite_id):
         emailMessage["subject"],
     )
 
-    return HttpResponseRedirect(reverse_lazy("dashboard"))
+    return HttpResponse()
 
 
 @require_POST
@@ -398,6 +404,47 @@ def organisation_toggle_admin(request, pk):
         email_message["message"],
         email_message["subject"],
     )
+    return HttpResponse()
+
+
+@login_required(login_url=reverse_lazy("session-expired"))
+def resend_invite_teacher(request, token):
+    try:
+        invite = SchoolTeacherInvitation.objects.get(token=token)
+    except SchoolTeacherInvitation.DoesNotExist:
+        invite = None
+    teacher = request.user.new_teacher
+
+    # auth the user before re-invitation
+    if invite is None or teacher.school != invite.school:
+        # messages.error(request, "You do not have permission to perform this action or the invite does not exist")
+        return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
+    else:
+        invite.expiry = timezone.now() + timedelta(days=30)
+        invite.save()
+        teacher = Teacher.objects.filter(id=invite.from_teacher.id)[0]
+
+        message = email_messages.inviteTeacherEmail(request, invite.school, token, not (invite.is_expired))
+        send_email(
+            INVITE_FROM, [invite.invited_teacher_email], message["subject"], message["message"], message["subject"]
+        )
+    return HttpResponse()
+
+
+@login_required(login_url=reverse_lazy("session-expired"))
+def delete_teacher_invite(request, token):
+    try:
+        invite = SchoolTeacherInvitation.objects.get(token=token)
+    except SchoolTeacherInvitation.DoesNotExist:
+        invite = None
+    teacher = request.user.new_teacher
+
+    # auth the user before deletion
+    if invite is None or teacher.school != invite.school:
+        # messages.error(request, "You do not have permission to perform this action or the invite does not exist")
+        return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
+    else:
+        invite.anonymise()
     return HttpResponse()
 
 
@@ -497,48 +544,6 @@ def teacher_reject_student_request(request, pk):
 
     messages.success(request, "Request from external/independent student has been rejected successfully.")
 
-    return HttpResponseRedirect(reverse_lazy("dashboard"))
-
-
-@login_required(login_url=reverse_lazy("session-expired"))
-def delete_teacher_invite(request, token):
-    try:
-        invite = SchoolTeacherInvitation.objects.get(token=token)
-    except SchoolTeacherInvitation.DoesNotExist:
-        invite = None
-    teacher = request.user.new_teacher
-
-    # auth the user before deletion
-    if invite is None or teacher.school != invite.school:
-        messages.error(request, "You do not have permission to perform this action or the invite does not exist")
-    else:
-        invite_teacher_first_name = invite.invited_teacher_first_name
-        invite.anonymise()
-        messages.success(request, f"Invite for {invite_teacher_first_name} successfully deleted")
-    return HttpResponseRedirect(reverse_lazy("dashboard"))
-
-
-@login_required(login_url=reverse_lazy("session-expired"))
-def resend_invite_teacher(request, token):
-    try:
-        invite = SchoolTeacherInvitation.objects.get(token=token)
-    except SchoolTeacherInvitation.DoesNotExist:
-        invite = None
-    teacher = request.user.new_teacher
-
-    # auth the user before deletion
-    if invite is None or teacher.school != invite.school:
-        messages.error(request, "You do not have permission to perform this action or the invite does not exist")
-    else:
-        invite.expiry = timezone.now() + timedelta(days=30)
-        invite.save()
-        teacher = Teacher.objects.filter(id=invite.from_teacher.id)[0]
-
-        messages.success(request, "Teacher re-invited!")
-        message = email_messages.inviteTeacherEmail(request, invite.school, token, not (invite.is_expired))
-        send_email(
-            INVITE_FROM, [invite.invited_teacher_email], message["subject"], message["message"], message["subject"]
-        )
     return HttpResponseRedirect(reverse_lazy("dashboard"))
 
 

@@ -7,9 +7,18 @@ const teacherDashboardApi = api.injectEndpoints({
         url: 'teach/dashboard/'
       }),
       transformResponse: (response: any) => {
-        const rtn = { school: null, coworkers: response.coworkers, is_admin: response.is_admin };
         console.log('resp', response);
+        const rtn = {
+          school: null,
+          coworkers: response.coworkers,
+          isAdmin: response.is_admin,
+          sentInvites: response.sentInvites
+        };
+        rtn.sentInvites.forEach((s: any) => {
+          s.isExpired = Date.parse(s.expiry) < Date.now();
+        });
         rtn.school = JSON.parse(response.school)[0].fields;
+        console.log('rtn', rtn);
         return rtn;
       }
     }),
@@ -43,10 +52,34 @@ const teacherDashboardApi = api.injectEndpoints({
       })
     }),
     toggleAdmin: build.mutation<void, {
-      id: number
+      id: string
     }>({
       query: ({ id }) => ({
         url: `teach/dashboard/toggle_admin/${id}/`,
+        method: 'POST'
+      })
+    }),
+    inviteToggleAdmin: build.mutation<void, {
+      id: string
+    }>({
+      query: ({ id }) => ({
+        url: `teach/dashboard/invite_toggle_admin/${id}/`,
+        method: 'POST'
+      })
+    }),
+    resendInvite: build.mutation<void, {
+      token: string
+    }>({
+      query: ({ token }) => ({
+        url: `teach/dashboard/resend_invite/${token}/`,
+        method: 'POST'
+      })
+    }),
+    deleteInvite: build.mutation<void, {
+      token: string
+    }>({
+      query: ({ token }) => ({
+        url: `teach/dashboard/delete_invite/${token}/`,
         method: 'POST'
       })
     })
@@ -58,5 +91,8 @@ export const {
   useGetTeacherDataQuery,
   useInviteTeacherMutation,
   useUpdateSchoolMutation,
-  useToggleAdminMutation
+  useToggleAdminMutation,
+  useInviteToggleAdminMutation,
+  useResendInviteMutation,
+  useDeleteInviteMutation
 } = teacherDashboardApi;

@@ -35,7 +35,14 @@ import SchoolCountryField from '../../components/form/SchoolCountryField';
 import { useLeaveOrganisationMutation } from '../../app/api/endpoints/organisation';
 import { useNavigate } from 'react-router-dom';
 import { paths } from '../../app/router';
-import { useInviteTeacherMutation, useToggleAdminMutation, useUpdateSchoolMutation } from '../../app/api/endpoints/teacher/dashboard';
+import {
+  useDeleteInviteMutation,
+  useInviteTeacherMutation,
+  useInviteToggleAdminMutation,
+  useResendInviteMutation,
+  useToggleAdminMutation,
+  useUpdateSchoolMutation
+} from '../../app/api/endpoints/teacher/dashboard';
 
 const InviteTeacherForm: React.FC = () => {
   const [inviteTeacher] = useInviteTeacherMutation();
@@ -135,64 +142,110 @@ const UpdateSchoolDetailsForm: React.FC<{
 };
 
 const TeachersTableActions: React.FC<{
+  isInvite: boolean;
   teacherEmail: string;
   userEmail: string;
   isTeacherAdmin: boolean;
-  id: number;
+  id: string;
+  token?: string;
   twoFactorAuthentication?: boolean;
-}> = ({ teacherEmail, userEmail, isTeacherAdmin, id, twoFactorAuthentication }) => {
+}> = ({ isInvite, teacherEmail, userEmail, isTeacherAdmin, id, token, twoFactorAuthentication }) => {
   const [toggleAdmin] = useToggleAdminMutation();
-  const handleToggleAdmin = (id: number) => () => {
+  const [inviteToggleAdmin] = useInviteToggleAdminMutation();
+  const [resendInvite] = useResendInviteMutation();
+  const [deleteInvite] = useDeleteInviteMutation();
+
+  const onToggleAdmin = (id: string) => () => {
     // TODO: messages.success(request, "Administrator status has been given successfully.")
     //      messages.success(request, "Administrator status has been revoked successfully.")
     toggleAdmin({ id }).unwrap()
       .then()
-      .catch((err) => { console.log('ToggleAdmin error: ', err); });
+      .catch((err) => { console.error('ToggleAdmin error: ', err); });
   };
 
-  if (teacherEmail === userEmail) {
+  const onInviteToggleAdmin = (id: string) => () => {
+    // TODO: messages.success(request, "Administrator invite status has been given successfully")
+    //       messages.success(request, "Administrator invite status has been revoked successfully")
+    inviteToggleAdmin({ id }).unwrap()
+      .then()
+      .catch((err) => { console.error('InviteToggleAdmin error: ', err); });
+  };
+
+  const onResendInvite = (token: string) => () => {
+    // messages.success(request, "Teacher re-invited!")
+    resendInvite({ token }).unwrap()
+      .then()
+      .catch((err) => { console.error('ResendInvite error: ', err); });
+  };
+
+  const onDeleteInvite = (token: string) => () => {
+    // messages.success(request, f"Invite for {invite_teacher_first_name} successfully deleted")
+    deleteInvite({ token }).unwrap()
+      .then()
+      .catch((err) => { console.error('DeleteInvite error: ', err); });
+  };
+
+  if (isInvite) {
     return (
       <>
-        <Button endIcon={<Create />}>Update details</Button>
-        {/* This button below will be used for pending invites  */}
-        <Button endIcon={<EmailOutlined />}>Resend invite</Button>
-      </>
-    );
-  } else if (isTeacherAdmin) {
-    return (
-      <>
-        <Button className="alert" endIcon={<DoNotDisturb />} onClick={handleToggleAdmin(id)}>
-          Revoke admin
-        </Button>
-        <Button className="alert" endIcon={<DeleteOutline />}>
-          Delete
-        </Button>
+        {isTeacherAdmin
+          ? <Button className={isTeacherAdmin && 'alert'} endIcon={<DoNotDisturb />} onClick={onInviteToggleAdmin(id)}>
+            Revoke admin
+          </Button>
+          : <Button endIcon={<Add />} onClick={onInviteToggleAdmin(id)}>
+            Make admin
+          </Button>
+        }
+        <Button endIcon={<EmailOutlined />} onClick={onResendInvite(token as string)}>Resend invite</Button>
+        <Button className="alert" endIcon={<DeleteOutline />} onClick={onDeleteInvite(token as string)}>Delete</Button>
       </>
     );
   } else {
-    return (
-      <>
-        <Button endIcon={<Add />} onClick={handleToggleAdmin(id)}>Make admin</Button>
-        {twoFactorAuthentication
-          ? <Button endIcon={<DoDisturbOnOutlined />} className="alert">
-            Disable 2FA
+    if (teacherEmail === userEmail) {
+      return (
+        <>
+          <Button endIcon={<Create />}>Update details</Button>
+          {/* This button below will be used for pending invites  */}
+          <Button endIcon={<EmailOutlined />}>Resend invite</Button>
+        </>
+      );
+    } else if (isTeacherAdmin) {
+      return (
+        <>
+          <Button className="alert" endIcon={<DoNotDisturb />} onClick={onToggleAdmin(id)}>
+            Revoke admin
           </Button>
-          : <></>
-        }
-      </>
-    );
+          <Button className="alert" endIcon={<DeleteOutline />}>
+            Delete
+          </Button>
+        </>
+      );
+    } else {
+      return (
+        <>
+          <Button endIcon={<Add />} onClick={onToggleAdmin(id)}>Make admin</Button>
+          {twoFactorAuthentication
+            ? <Button endIcon={<DoDisturbOnOutlined />} className="alert">
+              Disable 2FA
+            </Button>
+            : <></>
+          }
+        </>
+      );
+    }
   }
 };
 
 const TeachersTable: React.FC<{
   isUserAdmin: boolean;
-  teachersData: any
-}> = ({ isUserAdmin, teachersData }) => {
+  teachersData: any;
+  sentInvites: any;
+}> = ({ isUserAdmin, teachersData, sentInvites }) => {
   // TODO: const { email } = getUser();
   const email = 'alberteinstein@codeforlife.com';
-  const youText = (
+  const boldText: React.FC<string> = (str: string) => (
     <Typography variant="body2" fontWeight="bold">
-      (you)
+      ({str})
     </Typography>
   );
 
@@ -206,7 +259,7 @@ const TeachersTable: React.FC<{
           <CflTableBody key={id}>
             <CflTableCellElement>
               <Typography variant="subtitle1">
-                {teacherFirstName} {teacherLastName} {teacherEmail === email ? youText : ''}{' '}
+                {teacherFirstName} {teacherLastName} {teacherEmail === email ? boldText('you') : ''}{' '}
               </Typography>
             </CflTableCellElement>
             <CflTableCellElement
@@ -223,10 +276,46 @@ const TeachersTable: React.FC<{
               <CflTableCellElement justifyContent="center">
                 <TeachersTableActions
                   {...{
+                    isInvite: false,
                     teacherEmail,
                     userEmail: email,
                     isTeacherAdmin,
                     id
+                  }}
+                />
+              </CflTableCellElement>
+            }
+          </CflTableBody>
+        )
+      )}
+      {sentInvites.map(
+        ({ invitedTeacherFirstName, invitedTeacherLastName, invitedTeacherEmail, invitedTeacherIsAdmin, isExpired, id, token }: any) => (
+          <CflTableBody key={token}>
+            <CflTableCellElement>
+              <Typography variant="subtitle1">
+                {invitedTeacherFirstName} {invitedTeacherLastName} {isExpired ? boldText('expired') : boldText('pending')}{' '}
+              </Typography>
+            </CflTableCellElement>
+            <CflTableCellElement
+              direction="column"
+              alignItems="flex-start"
+              justifyContent="flex-start"
+            >
+              <Typography variant="subtitle1">
+                {invitedTeacherIsAdmin ? 'Teacher Administrator' : 'Standard Teacher'}
+              </Typography>
+              <Typography variant="subtitle1">({invitedTeacherEmail}) </Typography>
+            </CflTableCellElement>
+            {isUserAdmin &&
+              <CflTableCellElement justifyContent="center">
+                <TeachersTableActions
+                  {...{
+                    isInvite: true,
+                    teacherEmail: invitedTeacherEmail,
+                    userEmail: email,
+                    isTeacherAdmin: invitedTeacherIsAdmin,
+                    id,
+                    token
                   }}
                 />
               </CflTableCellElement>
@@ -245,7 +334,7 @@ const YourSchool: React.FC<{
   const [leaveOrganisation] = useLeaveOrganisationMutation();
   const navigate = useNavigate();
   const isAdmin = true;
-  // TODO: const isAdmin = data.is_admin;
+  // TODO: const isAdmin = data.isAdmin;
   const onLeaveOrganisation = (): void => {
     leaveOrganisation().unwrap()
       .then((res) => {
@@ -294,7 +383,7 @@ const YourSchool: React.FC<{
       <Typography variant="h5">
         These teachers are already part of your school or club
       </Typography>
-      <TeachersTable isUserAdmin={isAdmin} teachersData={data.coworkers} />
+      <TeachersTable isUserAdmin={isAdmin} teachersData={data.coworkers} sentInvites={data.sentInvites} />
       {isAdmin &&
         <Grid container columnSpacing={5}>
           <Grid item sm={6}>

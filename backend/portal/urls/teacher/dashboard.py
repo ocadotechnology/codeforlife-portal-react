@@ -48,6 +48,21 @@ urlpatterns = [
         name="organisation_toggle_admin"
     ),
     re_path(
+        r"^teach/dashboard/invite_toggle_admin/(?P<invite_id>[0-9]+)/$", 
+        invite_toggle_admin, 
+        name="invite_toggle_admin"
+    ),
+    re_path(
+        r"^teach/dashboard/resend_invite/(?P<token>[0-9a-f]+)/$", 
+        resend_invite_teacher, 
+        name="resend_invite_teacher"
+    ),
+    re_path(
+        r"^teach/dashboard/delete_invite/(?P<token>[0-9a-f]+)/$",
+        delete_teacher_invite,
+        name="delete_teacher_invite",
+    ),
+    re_path(
         r"^teach/dashboard/disable_2FA/(?P<pk>[0-9]+)/$", 
         teacher_disable_2FA, 
         name="teacher_disable_2FA"
@@ -62,19 +77,4 @@ urlpatterns = [
         teacher_reject_student_request,
         name="teacher_reject_student_request",
     ),
-    re_path(
-        r"^teach/dashboard/resend_invite/(?P<token>[0-9a-f]+)/$", 
-        resend_invite_teacher, 
-        name="resend_invite_teacher"
-    ),
-    re_path(
-        r"^teach/dashboard/toggle_admin_invite/(?P<invite_id>[0-9]+)/$", 
-        invite_toggle_admin, 
-        name="invite_toggle_admin"
-    ),
-    re_path(
-        r"^teach/dashboard/delete_teacher_invite/(?P<token>[0-9a-f]+)$",
-        delete_teacher_invite,
-        name="delete_teacher_invite",
-    )
 ]
