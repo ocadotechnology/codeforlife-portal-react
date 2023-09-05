@@ -33,7 +33,7 @@ import Page from 'codeforlife/lib/esm/components/page';
 import SchoolNameField from '../../components/form/SchoolNameField';
 import SchoolPostcodeField from '../../components/form/SchoolPostcodeField';
 import SchoolCountryField from '../../components/form/SchoolCountryField';
-import { useLeaveOrganisationMutation } from '../../app/api/endpoints/organisation';
+import { useLeaveOrganisationMutation } from '../../app/api';
 import { useNavigate } from 'react-router-dom';
 import { paths } from '../../app/router';
 

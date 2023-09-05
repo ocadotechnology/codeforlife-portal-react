@@ -7,7 +7,7 @@ import {
 } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 
-import api from '../app/api';
+import api from 'codeforlife/lib/esm/api';
 
 const store = configureStore({
   reducer: {

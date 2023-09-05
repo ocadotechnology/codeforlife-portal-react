@@ -1,5 +1,6 @@
-import api from '../api';
+import api from 'codeforlife/lib/esm/api';
 
+// TODO: clean this up
 export interface classType {
   id: number,
   name: string,
