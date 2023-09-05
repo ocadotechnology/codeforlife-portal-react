@@ -75,6 +75,7 @@ const TeacherSlides: React.FC = () => {
           color: '#F6BE00'
         }
       }}
+      interval={8000}
     >
       {
         items.map((item, i) => <Item key={i} img={item.image} description={item.description} />)

@@ -32,8 +32,8 @@ import Page from 'codeforlife/lib/esm/components/page';
 import SchoolNameField from '../../components/form/SchoolNameField';
 import SchoolPostcodeField from '../../components/form/SchoolPostcodeField';
 import SchoolCountryField from '../../components/form/SchoolCountryField';
-import { useLeaveOrganisationMutation } from '../../app/api/endpoints/organisation';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useLeaveOrganisationMutation } from '../../app/api';
 import { paths } from '../../app/router';
 import {
   useDeleteInviteMutation,
@@ -43,7 +43,7 @@ import {
   useResendInviteMutation,
   useToggleAdminMutation,
   useUpdateSchoolMutation
-} from '../../app/api/endpoints/teacher/dashboard';
+} from '../../app/api/teacher/dashboard';
 
 const InviteTeacherForm: React.FC = () => {
   const navigate = useNavigate();

@@ -5,7 +5,7 @@ import Page from 'codeforlife/lib/esm/components/page';
 import YourSchool from './YourSchool';
 import Classes from './classes/Classes';
 import YourAccount from './account/YourAccount';
-import { useGetTeacherDataQuery } from '../../app/api/endpoints/teacher/dashboard';
+import { useGetTeacherDataQuery } from '../../app/api/teacher/dashboard';
 import { useNavigate } from 'react-router-dom';
 import { paths } from '../../app/router';
 
@@ -15,7 +15,7 @@ const TeacherDashboard: React.FC<{
 }> = ({ tab, movingClass = false }) => {
   // TODO: get from API.
   const userName = 'John Doe';
-  const { data, error, isLoading } = useGetTeacherDataQuery('');
+  const { data, error, isLoading } = useGetTeacherDataQuery();
   const navigate = useNavigate();
 
   if (data && !data.school) {

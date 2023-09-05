@@ -22,6 +22,15 @@
         "runserver",
         "localhost:8000"
       ]
+    },
+    {
+      "name": "Pytest",
+      "type": "python",
+      "request": "test",
+      "justMyCode": false,
+      "presentation": {
+        "hidden": true
+      }
     }
   ]
 }

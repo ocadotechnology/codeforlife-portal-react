@@ -1,4 +1,4 @@
-import api from '../api';
+import api from 'codeforlife/lib/esm/api';
 
 const dotmailerApi = api.injectEndpoints({
   endpoints: (build) => ({

@@ -11,7 +11,7 @@ import {
 import SchoolNameField from '../../components/form/SchoolNameField';
 import SchoolPostcodeField from '../../components/form/SchoolPostcodeField';
 import SchoolCountryField from '../../components/form/SchoolCountryField';
-import { useCreateOrganisationMutation } from '../../app/api/endpoints/organisation';
+import { useCreateOrganisationMutation } from '../../app/api';
 
 const SchoolForm: React.FC<{
   onSubmit: () => void

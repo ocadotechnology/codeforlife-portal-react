@@ -53,6 +53,7 @@ pyvirtualdisplay = "*"
 pytest-mock = "*"
 PyPDF2 = "==2.10.6"
 black = "*"
+pytest-env = "==0.8.2"
 
 [requires]
 python_version = "3.8"

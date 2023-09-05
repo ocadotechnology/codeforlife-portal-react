@@ -77,7 +77,8 @@ const Error: React.FC = () => {
   }
 
   return (
-    <Page.Container>
+    // Error page should not make HTTP requests.
+    <Page.Container getCsrfCookie={false}>
       <Page.Section>
         <Grid container>
           <Grid

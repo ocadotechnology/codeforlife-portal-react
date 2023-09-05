@@ -4,7 +4,8 @@ import {
   Unstable_Grid2 as Grid,
   Stack,
   Typography,
-  Button
+  Button,
+  Link
 } from '@mui/material';
 import {
   ChevronRight as ChevronRightIcon
@@ -21,8 +22,8 @@ import GlobeIcon from '../../images/icon_globe.png';
 
 const Column: React.FC<{
   img: { alt: string, src: string },
-  text: string
-}> = ({ img, text }) => (
+  children: React.ReactNode,
+}> = ({ img, children }) => (
   <Grid xs={12} sm={6} md={3}>
     <Stack alignItems='center'>
       <Image
@@ -30,9 +31,7 @@ const Column: React.FC<{
         src={img.src}
         maxWidth='200px'
       />
-      <Typography textAlign='center'>
-        {text}
-      </Typography>
+      {children}
     </Stack>
   </Grid>
 );
@@ -47,22 +46,28 @@ const AboutUs: React.FC = () => {
           Giving everyone the ability to shape technology&apos;s future
         </Typography>
       </Grid>
-      <Column
-        img={{ alt: 'pie chart', src: PieChartIcon }}
-        text="Just 16% of university computer science graduates (2018/19) in the UK were women*, we want to change that."
-      />
-      <Column
-        img={{ alt: 'game controller', src: ControllerIcon }}
-        text="Gamification helps children learn whilst having fun!"
-      />
-      <Column
-        img={{ alt: 'free ticket', src: TicketIcon }}
-        text="That's right, free forever: our gift to you! We're also Open Source."
-      />
-      <Column
-        img={{ alt: 'earth', src: GlobeIcon }}
-        text="Code for Life has over 350,000 registered users across the world."
-      />
+      <Column img={{ alt: 'pie chart', src: PieChartIcon }}>
+        <Typography textAlign='center'>
+          Just 16% of university computer science graduates (2018/19) in the UK were women
+          <Link href={process.env.REACT_APP_STEM_WOMEN_GRADUATE_HREF} color="inherit" underline="always" target="_blank">*</Link>
+          , we want to change that.
+        </Typography>
+      </Column>
+      <Column img={{ alt: 'game controller', src: ControllerIcon }}>
+        <Typography textAlign='center'>
+          Gamification helps children learn whilst having fun!
+        </Typography>
+      </Column>
+      <Column img={{ alt: 'free ticket', src: TicketIcon }}>
+        <Typography textAlign='center'>
+          That&apos;s right, free forever: our gift to you! We&apos;re also Open Source.
+        </Typography>
+      </Column>
+      <Column img={{ alt: 'earth', src: GlobeIcon }}>
+        <Typography textAlign='center'>
+          Code for Life has over 350,000 registered users across the world.
+        </Typography>
+      </Column>
       <Grid xs={12} display='flex' justifyContent='end'>
         <Button
           onClick={() => { navigate(paths.aboutUs._); }}

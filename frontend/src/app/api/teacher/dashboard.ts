@@ -1,19 +1,47 @@
-import api from '../../api';
+import api from 'codeforlife/lib/esm/api';
+import { classType, teacherType } from '../organisation';
+
+interface coworkersType {
+  id: number,
+  isTeacherAdmin: boolean,
+  teacherEmail: string,
+  teacherFirstName: string,
+  teacherLastName: string,
+};
+
+interface sentInvitesType {
+  id: number,
+  isTeacherAdmin: boolean,
+  invitedTeacherEmail: string,
+  invitedTeacherFirstName: string,
+  invitedTeacherLastName: string,
+  token: string,
+  isExpired: boolean,
+  expiry: string,
+};
 
 const teacherDashboardApi = api.injectEndpoints({
   endpoints: (build) => ({
-    getTeacherData: build.query({
+    getTeacherData: build.query<{
+      school: string;
+      coworkers: coworkersType[];
+      isAdmin: boolean;
+      sentInvites: sentInvitesType[];
+    }, void
+    >({
       query: () => ({
-        url: 'teach/dashboard/'
+        url: 'teach/dashboard/',
+        method: 'GET'
       }),
       transformResponse: (response: any) => {
+        console.log('resp', response);
         const rtn = {
-          school: null,
+          school: '',
           coworkers: response.coworkers,
           isAdmin: response.isAdmin,
           sentInvites: response.sentInvites
         };
-        rtn.sentInvites.forEach((s: any) => {
+        rtn.sentInvites.forEach((s: sentInvitesType) => {
           s.isExpired = Date.parse(s.expiry) < Date.now();
         });
         rtn.school = JSON.parse(response.school)[0].fields;
@@ -61,8 +89,8 @@ const teacherDashboardApi = api.injectEndpoints({
     }),
     organisationKick: build.mutation<{
       source?: string,
-      classes?: any,
-      teachers?: any
+      classes?: classType,
+      teachers?: teacherType,
     }, {
       id: string
       info?: any
