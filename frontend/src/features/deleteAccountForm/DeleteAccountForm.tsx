@@ -15,7 +15,7 @@ import {
   PasswordField,
   SubmitButton
 } from 'codeforlife/lib/esm/components/form';
-import { setFormErrors } from 'codeforlife/lib/esm/helpers/formik';
+import { submitForm } from 'codeforlife/lib/esm/helpers/formik';
 
 import { paths } from '../../app/router';
 import { useDeleteAccountMutation } from '../../app/api';
@@ -51,22 +51,27 @@ const DeleteAccountForm: React.FC<DeleteAccountFormProps> = ({
         password: '',
         unsubscribeNewsletter: false
       }}
-      onSubmit={(values, { setErrors }) => {
-        // TODO: validate if teacher has classes. If not, delete account immediately.
-        setDialog({
-          open: true,
-          onDeleteAccount: () => {
-            deleteAccount(values)
-              .unwrap()
-              // TODO: ensure user is logged out.
-              .then(() => { navigate(paths._); })
-              .catch((error) => {
-                setFormErrors(error, setErrors);
-                setDialog({ open: false });
-              });
-          }
-        });
-      }}
+      onSubmit={submitForm(deleteAccount, {
+        then: () => {
+          const redirectPath = location.pathname.includes('teacher') ? paths.login.teacher._ : paths.login.independent._;
+          navigate(redirectPath, { state: { notification: 'Your account was successfully deleted' } });
+        }
+      })}
+    // TODO: validate if teacher has classes. If not, delete account immediately.
+    //   setDialog({
+    //     open: true,
+    //     onDeleteAccount: () => {
+    //       deleteAccount(values)
+    //         .unwrap()
+    //         // TODO: ensure user is logged out.
+    //         .then(() => { navigate(paths._); })
+    //         .catch((error) => {
+    //           setFormErrors(error, setErrors);
+    //           setDialog({ open: false });
+    //         });
+    //     }
+    //   });
+    // }}
     >
       <Grid container columnSpacing={4}>
         <Grid xs={12} sm={6}>

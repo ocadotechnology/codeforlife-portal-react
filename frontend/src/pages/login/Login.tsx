@@ -9,6 +9,7 @@ import StudentForm from './StudentForm';
 import IndependentForm from './IndependentForm';
 
 import * as yup from 'yup';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Login: React.FC<{
   userType: 'teacher' | 'student' | 'independent'
@@ -33,9 +34,19 @@ const Login: React.FC<{
         .default(false)
     })
   );
-
+  const navigate = useNavigate();
+  const location = useLocation();
   return (
     <Page.Container>
+      {
+        location.state?.notification &&
+        <Page.Notification onClose={() => {
+          delete location.state.notification;
+          navigate(location.pathname, location.state);
+        }}>
+          {location.state.notification}
+        </Page.Notification>
+      }
       {searchParams?.verifyEmail === true &&
         <Page.Notification>
           Your email address was successfully verified, please log in.
