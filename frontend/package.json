@@ -28,7 +28,7 @@
     "@mui/icons-material": "^5.11.11",
     "@mui/material": "^5.11.12",
     "@reduxjs/toolkit": "^1.9.3",
-    "codeforlife": "github:ocadotechnology/codeforlife-package-javascript#v1.27.0",
+    "codeforlife": "github:ocadotechnology/codeforlife-package-javascript#v1.27.1",
     "country-list": "^2.3.0",
     "crypto-js": "^4.1.1",
     "formik": "^2.2.9",
