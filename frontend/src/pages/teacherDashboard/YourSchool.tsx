@@ -33,12 +33,13 @@ import SchoolNameField from '../../components/form/SchoolNameField';
 import SchoolPostcodeField from '../../components/form/SchoolPostcodeField';
 import SchoolCountryField from '../../components/form/SchoolCountryField';
 import { useLeaveOrganisationMutation } from '../../app/api/endpoints/organisation';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { paths } from '../../app/router';
 import {
   useDeleteInviteMutation,
   useInviteTeacherMutation,
   useInviteToggleAdminMutation,
+  useOrganisationKickMutation,
   useResendInviteMutation,
   useToggleAdminMutation,
   useUpdateSchoolMutation
@@ -150,38 +151,90 @@ const TeachersTableActions: React.FC<{
   token?: string;
   twoFactorAuthentication?: boolean;
 }> = ({ isInvite, teacherEmail, userEmail, isTeacherAdmin, id, token, twoFactorAuthentication }) => {
+  const navigate = useNavigate();
   const [toggleAdmin] = useToggleAdminMutation();
+  const [organisationKick] = useOrganisationKickMutation();
   const [inviteToggleAdmin] = useInviteToggleAdminMutation();
   const [resendInvite] = useResendInviteMutation();
   const [deleteInvite] = useDeleteInviteMutation();
 
   const onToggleAdmin = (id: string) => () => {
-    // TODO: messages.success(request, "Administrator status has been given successfully.")
-    //      messages.success(request, "Administrator status has been revoked successfully.")
     toggleAdmin({ id }).unwrap()
-      .then()
+      .then((res) => {
+        navigate(paths.teacher.dashboard.school._, {
+          state: {
+            message: res.isAdminNow
+              ? 'Administrator status has been given successfully.'
+              : 'Administrator status has been revoked successfully.'
+          }
+        });
+        navigate(0);
+      })
       .catch((err) => { console.error('ToggleAdmin error: ', err); });
   };
 
+  const onOrganisationKick = (id: string) => () => {
+    organisationKick({ id }).unwrap()
+      .then((res) => {
+        if (res?.classes) {
+          navigate(paths.teacher.dashboard.school.leave._, {
+            state: {
+              source: res.source,
+              classes: res.classes,
+              teachers: res.teachers,
+              teacherId: id
+            }
+          });
+        } else {
+          navigate(paths.teacher.dashboard.school._, {
+            state: {
+              message: 'The teacher has been successfully removed from your school or club.'
+            }
+          });
+          navigate(0);
+        }
+      })
+      .catch((err) => { console.error('OrganisationKick error: ', err); });
+  };
+
   const onInviteToggleAdmin = (id: string) => () => {
-    // TODO: messages.success(request, "Administrator invite status has been given successfully")
-    //       messages.success(request, "Administrator invite status has been revoked successfully")
     inviteToggleAdmin({ id }).unwrap()
-      .then()
+      .then((res) => {
+        navigate(paths.teacher.dashboard.school._, {
+          state: {
+            message: res.isAdminNow
+              ? 'Administrator invite status has been given successfully.'
+              : 'Administrator invite status has been revoked successfully.'
+          }
+        });
+        navigate(0);
+      })
       .catch((err) => { console.error('InviteToggleAdmin error: ', err); });
   };
 
   const onResendInvite = (token: string) => () => {
-    // messages.success(request, "Teacher re-invited!")
     resendInvite({ token }).unwrap()
-      .then()
+      .then(() => {
+        navigate(paths.teacher.dashboard.school._, {
+          state: {
+            message: 'Teacher re-invited!'
+          }
+        });
+        navigate(0);
+      })
       .catch((err) => { console.error('ResendInvite error: ', err); });
   };
 
   const onDeleteInvite = (token: string) => () => {
-    // messages.success(request, f"Invite for {invite_teacher_first_name} successfully deleted")
     deleteInvite({ token }).unwrap()
-      .then()
+      .then(() => {
+        navigate(paths.teacher.dashboard.school._, {
+          state: {
+            message: 'Invitation successfully deleted.'
+          }
+        });
+        navigate(0);
+      })
       .catch((err) => { console.error('DeleteInvite error: ', err); });
   };
 
@@ -204,7 +257,7 @@ const TeachersTableActions: React.FC<{
     if (teacherEmail === userEmail) {
       return (
         <>
-          <Button endIcon={<Create />}>Update details</Button>
+          <Button endIcon={<Create />} onClick={() => { navigate(paths.teacher.dashboard.account._); }}>Update details</Button>
           {/* This button below will be used for pending invites  */}
           <Button endIcon={<EmailOutlined />}>Resend invite</Button>
         </>
@@ -215,7 +268,7 @@ const TeachersTableActions: React.FC<{
           <Button className="alert" endIcon={<DoNotDisturb />} onClick={onToggleAdmin(id)}>
             Revoke admin
           </Button>
-          <Button className="alert" endIcon={<DeleteOutline />}>
+          <Button className="alert" endIcon={<DeleteOutline />} onClick={onOrganisationKick(id)}>
             Delete
           </Button>
         </>
@@ -304,7 +357,7 @@ const TeachersTable: React.FC<{
               <Typography variant="subtitle1">
                 {invitedTeacherIsAdmin ? 'Teacher Administrator' : 'Standard Teacher'}
               </Typography>
-              <Typography variant="subtitle1">({invitedTeacherEmail}) </Typography>
+              <Typography variant="subtitle1">({invitedTeacherEmail})</Typography>
             </CflTableCellElement>
             {isUserAdmin &&
               <CflTableCellElement justifyContent="center">
@@ -333,13 +386,20 @@ const YourSchool: React.FC<{
   const theme = useTheme();
   const [leaveOrganisation] = useLeaveOrganisationMutation();
   const navigate = useNavigate();
-  const isAdmin = true;
-  // TODO: const isAdmin = data.isAdmin;
+  const location = useLocation();
+  const isAdmin = data.isAdmin;
+
   const onLeaveOrganisation = (): void => {
     leaveOrganisation().unwrap()
       .then((res) => {
-        if (res?.hasClasses) {
-          navigate(paths.teacher.dashboard.school.leave._, { state: { classes: res.classes, teachers: res.teachers } });
+        if (res?.classes) {
+          navigate(paths.teacher.dashboard.school.leave._, {
+            state: {
+              source: res.source,
+              classes: res.classes,
+              teachers: res.teachers
+            }
+          });
         } else {
           navigate(paths.teacher.onboarding._, { state: { leftOrganisation: true } });
         }
@@ -348,6 +408,11 @@ const YourSchool: React.FC<{
   };
 
   return <>
+    {location.state?.message &&
+      <Page.Notification>
+        {location.state.message}
+      </Page.Notification>
+    }
     <Page.Section>
       <Typography align="center" variant="h4">
         Your school: {data.school.name} ({data.school.postcode})
@@ -383,7 +448,11 @@ const YourSchool: React.FC<{
       <Typography variant="h5">
         These teachers are already part of your school or club
       </Typography>
-      <TeachersTable isUserAdmin={isAdmin} teachersData={data.coworkers} sentInvites={data.sentInvites} />
+      <TeachersTable
+        isUserAdmin={isAdmin}
+        teachersData={data.coworkers}
+        sentInvites={data.sentInvites}
+      />
       {isAdmin &&
         <Grid container columnSpacing={5}>
           <Grid item sm={6}>

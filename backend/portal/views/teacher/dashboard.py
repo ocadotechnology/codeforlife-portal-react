@@ -98,14 +98,14 @@ def dashboard_teacher_view(request, is_admin):
     sent_invites = []
 
     if school:
-        coworkers = Teacher.objects.values(
+        coworkers = Teacher.objects.filter(school=school).values(
             "id",
             is_teacher_admin=F("is_admin"),
             teacher_first_name=F("new_user__first_name"),
             teacher_last_name=F("new_user__last_name"),
             teacher_email=F("new_user__email"),
         ).order_by("teacher_last_name", "teacher_first_name")
-        # coworkers = Teacher.objects.filter(school=school).order_by("new_user__last_name", "new_user__first_name")
+        
         coworkers_json = list(coworkers)
         school_json = serializers.serialize("json", [school])
         sent_invites = SchoolTeacherInvitation.objects.filter(school=school).values(
@@ -298,43 +298,24 @@ def organisation_kick(request, pk):
 
     if not check_teacher_is_authorised(teacher, user):
         return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
-    
-    success_message = "The teacher has been successfully removed from your school or club."
 
     classes = Class.objects.filter(teacher=teacher)
     for klass in classes:
-        teacher_id = request.POST.get(klass.access_code, None)
+        teacher_id = request.POST.get(klass.access_code.lower(), None)
+        teacher_id = int(teacher_id) if teacher_id else None
         if teacher_id:
             new_teacher = get_object_or_404(Teacher, id=teacher_id)
             klass.teacher = new_teacher
             klass.save()
 
-            success_message = success_message.replace(".", " and their classes were successfully transferred.")
-
-    classes = Class.objects.filter(teacher=teacher)
-    teachers = Teacher.objects.filter(school=teacher.school).exclude(id=teacher.id)
-
+    classes = Class.objects.filter(teacher=teacher).values("id", "name", "access_code")
+    teachers = Teacher.objects.filter(school=teacher.school).exclude(id=teacher.id).values("id", "new_user_id__first_name", "new_user_id__last_name")
+    
     if classes.exists():
-        messages.info(
-            request,
-            "This teacher still has classes assigned to them. You must first move them "
-            "to another teacher in your school or club.",
-        )
-        return render(
-            request,
-            "portal/teach/teacher_move_all_classes.html",
-            {
-                "original_teacher": teacher,
-                "classes": classes,
-                "teachers": teachers,
-                "submit_button_text": "Move classes and remove teacher",
-            },
-        )
+        return JsonResponse(status=status.HTTP_200_OK, data={'source': 'organisationKick', 'classes': list(classes), 'teachers': list(teachers)})
 
     teacher.school = None
     teacher.save()
-
-    messages.success(request, success_message)
 
     emailMessage = email_messages.kickedEmail(request, user.school.name)
 
@@ -346,7 +327,7 @@ def organisation_kick(request, pk):
         emailMessage["subject"],
     )
 
-    return HttpResponseRedirect(reverse_lazy("dashboard"))
+    return HttpResponse()
 
 
 @require_POST
@@ -370,7 +351,7 @@ def invite_toggle_admin(request, invite_id):
         emailMessage["subject"],
     )
 
-    return HttpResponse()
+    return JsonResponse(status=status.HTTP_200_OK, data={'isAdminNow': invite.invited_teacher_is_admin})
 
 
 @require_POST
@@ -404,7 +385,7 @@ def organisation_toggle_admin(request, pk):
         email_message["message"],
         email_message["subject"],
     )
-    return HttpResponse()
+    return JsonResponse(status=status.HTTP_200_OK, data={'isAdminNow': teacher.is_admin})
 
 
 @login_required(login_url=reverse_lazy("session-expired"))

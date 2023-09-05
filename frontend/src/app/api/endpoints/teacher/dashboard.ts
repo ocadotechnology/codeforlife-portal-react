@@ -7,18 +7,16 @@ const teacherDashboardApi = api.injectEndpoints({
         url: 'teach/dashboard/'
       }),
       transformResponse: (response: any) => {
-        console.log('resp', response);
         const rtn = {
           school: null,
           coworkers: response.coworkers,
-          isAdmin: response.is_admin,
+          isAdmin: response.isAdmin,
           sentInvites: response.sentInvites
         };
         rtn.sentInvites.forEach((s: any) => {
           s.isExpired = Date.parse(s.expiry) < Date.now();
         });
         rtn.school = JSON.parse(response.school)[0].fields;
-        console.log('rtn', rtn);
         return rtn;
       }
     }),
@@ -51,7 +49,9 @@ const teacherDashboardApi = api.injectEndpoints({
         }
       })
     }),
-    toggleAdmin: build.mutation<void, {
+    toggleAdmin: build.mutation<{
+      isAdminNow: boolean
+    }, {
       id: string
     }>({
       query: ({ id }) => ({
@@ -59,7 +59,26 @@ const teacherDashboardApi = api.injectEndpoints({
         method: 'POST'
       })
     }),
-    inviteToggleAdmin: build.mutation<void, {
+    organisationKick: build.mutation<{
+      source?: string,
+      classes?: any,
+      teachers?: any
+    }, {
+      id: string
+      info?: any
+    }>({
+      query: (body) => ({
+        url: `teach/dashboard/kick/${body.id}/`,
+        method: 'POST',
+        body,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      })
+    }),
+    inviteToggleAdmin: build.mutation<{
+      isAdminNow: boolean
+    }, {
       id: string
     }>({
       query: ({ id }) => ({
@@ -92,6 +111,7 @@ export const {
   useInviteTeacherMutation,
   useUpdateSchoolMutation,
   useToggleAdminMutation,
+  useOrganisationKickMutation,
   useInviteToggleAdminMutation,
   useResendInviteMutation,
   useDeleteInviteMutation

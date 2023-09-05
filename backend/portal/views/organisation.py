@@ -36,7 +36,7 @@ def organisation_leave(request):
 
     # check teacher is not admin 
     if teacher.is_admin:
-        return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+        return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
 
     if request.method == "POST":
         classes = Class.objects.filter(teacher=teacher)
@@ -52,11 +52,11 @@ def organisation_leave(request):
         teachers = Teacher.objects.filter(school=teacher.school).exclude(id=teacher.id).values("id", "new_user_id__first_name", "new_user_id__last_name")
         
         if classes.exists():
-            return JsonResponse(status=status.HTTP_200_OK, data={'hasClasses': True, 'classes': list(classes), 'teachers': list(teachers)})
+            return JsonResponse(status=status.HTTP_200_OK, data={'source': 'organisationLeave', 'classes': list(classes), 'teachers': list(teachers)})
         else:
             teacher.school = None
             teacher.save()
 
-        return JsonResponse(status=status.HTTP_204_NO_CONTENT, data={'hasClasses': False})
+        return HttpResponse(status=status.HTTP_204_NO_CONTENT)
 
     return HttpResponse(status=status.HTTP_405_METHOD_NOT_ALLOWED)

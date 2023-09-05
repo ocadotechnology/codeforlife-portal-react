@@ -11,7 +11,7 @@ import { paths } from '../../app/router';
 
 const TeacherDashboard: React.FC<{
   tab: number;
-  movingClass?: boolean
+  movingClass?: boolean;
 }> = ({ tab, movingClass = false }) => {
   // TODO: get from API.
   const userName = 'John Doe';

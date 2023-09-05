@@ -25,6 +25,7 @@ import SeeClassmatesProgressField from '../../../components/form/SeeClassmatesPr
 import EditClass from './editClass/EditClass';
 import { classType, teacherType, useLeaveOrganisationMutation } from '../../../app/api/endpoints/organisation';
 import { FieldArray, Form, Formik } from 'formik';
+import { useOrganisationKickMutation } from '../../../app/api/endpoints/teacher/dashboard';
 
 const _YourClasses: React.FC = () => {
   return (
@@ -178,7 +179,12 @@ const CreateNewClassForm: React.FC = () => {
   );
 };
 
-const MoveClassTeacherForm: React.FC = () => {
+const MoveClassTeacherForm: React.FC<{
+  source: string;
+  classes: classType[];
+  teachers: teacherType[];
+  teacherId: string;
+}> = ({ source, classes, teachers, teacherId }) => {
   interface classFormDataType extends classType {
     newTeacher: string
   };
@@ -188,30 +194,42 @@ const MoveClassTeacherForm: React.FC = () => {
     fullName: string
   };
 
-  const location = useLocation();
-  const state = location.state;
   const theme = useTheme();
   const [leaveOrganisation] = useLeaveOrganisationMutation();
+  const [organisationKick] = useOrganisationKickMutation();
   const navigate = useNavigate();
 
   const onLeaveOrganisation = (info: any): void => {
     leaveOrganisation(info).unwrap()
-      .then(() => { navigate(paths.teacher.onboarding._, { state: { leftOrganisation: true } }); })
+      .then(() => {
+        navigate(paths.teacher.onboarding._, { state: { leftOrganisation: true } });
+      })
       .catch((err) => { console.error('LeaveOrganisation error: ', err); });
+  };
+
+  const onOrganisationKick = (info: any): void => {
+    info.id = teacherId;
+    organisationKick(info).unwrap()
+      .then(() => {
+        // The teacher has been successfully removed from your school or club, and their classes were successfully transferred.")
+        navigate(paths.teacher.dashboard.school._);
+      })
+      .catch((err) => { console.error('OrganisationKick error: ', err); });
   };
 
   // initialValues: form value
   // teacherList: for finding newTeacher ID (by findNewTeacherId)
   // teacherOptions: showing form options
   // Data type passed to backend would be {accessCode: newTeacherId} (e.g. {'ab124': '3', 'ab125': '4'})
-  const initialValues = state.classes.map((c: classType) => ({ ...c, newTeacher: '' }));
-  const teacherList = state.teachers.map((t: teacherType) => ({
+  const initialValues = classes.map((c: classType) => ({ ...c, newTeacher: '' }));
+  const teacherList = teachers.map((t: teacherType) => ({
     id: t.id,
     fullName: `${t.newUserIdFirstName} ${t.newUserIdLastName}`
   }));
   const teacherOptions = teacherList.map((t: teacherListType) => t.fullName);
   const findNewTeacherId = (name: string): number => {
-    return teacherList.find((t: teacherListType) => (t.fullName === name)).id;
+    const t = teacherList.find((t: teacherListType) => (t.fullName === name));
+    return t ? (t.id) : -1;
   };
 
   return (
@@ -226,7 +244,7 @@ const MoveClassTeacherForm: React.FC = () => {
           values.forEach((v: classFormDataType) => {
             info[v.accessCode.toLowerCase()] = findNewTeacherId(v.newTeacher);
           });
-          onLeaveOrganisation(info);
+          (source === 'organisationLeave') ? onLeaveOrganisation(info) : onOrganisationKick(info);
         }}
       >
         {() => (
@@ -239,7 +257,7 @@ const MoveClassTeacherForm: React.FC = () => {
                     className='body'
                     titles={['Class name', 'New teacher']}
                   >
-                    {state.classes.map((c: any, index: number) =>
+                    {classes.map((c: any, index: number) =>
                       <CflTableBody key={c.id}>
                         <CflTableCellElement>
                           <Typography variant="subtitle1">
@@ -273,7 +291,7 @@ const MoveClassTeacherForm: React.FC = () => {
                     <Button
                       type="submit"
                     >
-                      Move classes and leave
+                      {source === 'organisationKick' ? 'Move classes and remove teacher' : 'Move classes and leave'}
                     </Button>
                   </Stack>
                 </>
@@ -281,7 +299,7 @@ const MoveClassTeacherForm: React.FC = () => {
             />
           </Form>
         )}
-      </Formik >
+      </Formik>
     </>
   );
 };
@@ -291,11 +309,15 @@ const MoveClasses: React.FC = () => {
   const userName = 'John Doe';
   const navigate = useNavigate();
   const theme = useTheme();
+  const location = useLocation();
 
   return (
     <>
       <Page.Notification>
-        You still have classes, you must first move them to another teacher within your school or club.
+        {location.state.source === 'organisationKick'
+          ? 'This teacher still has classes assigned to them. You must first move them to another teacher in your school or club.'
+          : 'You still have classes, you must first move them to another teacher within your school or club.'
+        }
       </Page.Notification>
       <Page.Section>
         <Typography variant="h4" align="center" marginBottom={theme.spacing(5)}>
@@ -306,7 +328,12 @@ const MoveClasses: React.FC = () => {
         }}>
           dashboard
         </Link>
-        <MoveClassTeacherForm />
+        <MoveClassTeacherForm
+          source={location.state.source}
+          classes={location.state.classes}
+          teachers={location.state.teachers}
+          teacherId={location.state.teacherId}
+        />
       </Page.Section >
     </>
   );
