@@ -46,7 +46,9 @@ import {
 } from '../../app/api/endpoints/teacher/dashboard';
 
 const InviteTeacherForm: React.FC = () => {
+  const navigate = useNavigate();
   const [inviteTeacher] = useInviteTeacherMutation();
+
   return (
     <CflHorizontalForm
       header="Invite a teacher to your school"
@@ -57,7 +59,12 @@ const InviteTeacherForm: React.FC = () => {
         const lastName = values.teacherLastName;
         inviteTeacher(values).unwrap()
           .then(() => {
-            alert(`You have invited ${firstName} ${lastName} to your school.`);
+            navigate(paths.teacher.dashboard.school._, {
+              state: {
+                message: `You have invited ${firstName} ${lastName} to your school.`
+              }
+            });
+            navigate(0);
           })
           .catch((err) => { console.error('InviteTeacher error', err); });
       }}
@@ -112,10 +119,12 @@ const InviteTeacherForm: React.FC = () => {
 const UpdateSchoolDetailsForm: React.FC<{
   schoolData: any;
 }> = ({ schoolData }) => {
+  const navigate = useNavigate();
   const schoolName = schoolData.name;
   const schoolPostcode = schoolData.postcode;
   const schoolCountry = schoolData.country;
   const [updateSchool] = useUpdateSchoolMutation();
+
   return (
     <CflHorizontalForm
       header="Update details of your school or club"
@@ -127,9 +136,15 @@ const UpdateSchoolDetailsForm: React.FC<{
       }}
       validationSchema={SCHOOL_DETAILS_UPDATE_SCHEMA}
       onSubmit={(values) => {
-        // TODO: messages: "You have updated the details for your school or club successfully.")
         updateSchool(values).unwrap()
-          .then()
+          .then(() => {
+            navigate(paths.teacher.dashboard.school._, {
+              state: {
+                message: 'You have updated the details for your school or club successfully.'
+              }
+            });
+            navigate(0);
+          })
           .catch((err) => { console.error('UpdateSchool error: ', err); });
         alert(JSON.stringify(values, null, 2));
       }}
@@ -294,7 +309,7 @@ const TeachersTable: React.FC<{
   teachersData: any;
   sentInvites: any;
 }> = ({ isUserAdmin, teachersData, sentInvites }) => {
-  // TODO: const { email } = getUser();
+  // const { email } = getUser();
   const email = 'alberteinstein@codeforlife.com';
   const boldText: React.FC<string> = (str: string) => (
     <Typography variant="body2" fontWeight="bold">
