@@ -211,8 +211,12 @@ const MoveClassTeacherForm: React.FC<{
     info.id = teacherId;
     organisationKick(info).unwrap()
       .then(() => {
-        // The teacher has been successfully removed from your school or club, and their classes were successfully transferred.")
-        navigate(paths.teacher.dashboard.school._);
+        navigate(paths.teacher.dashboard.school._, {
+          state: {
+            message: 'The teacher has been successfully removed from your school or club, and their classes were successfully transferred.'
+          }
+        });
+        navigate(0);
       })
       .catch((err) => { console.error('OrganisationKick error: ', err); });
   };
