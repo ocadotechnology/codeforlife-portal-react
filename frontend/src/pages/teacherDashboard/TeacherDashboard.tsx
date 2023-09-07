@@ -25,36 +25,34 @@ const TeacherDashboard: React.FC<{
   return <>
     {error
       ? (<>There was an error</>)
-      : isLoading
-        ? (<>Loading...</>)
-        : data
-          ? (
-            <Page.Container>
-              <Page.TabBar
-                header={`Welcome back, ${userName}`}
-                value={tab}
-                originalPath='/teacher/dashboard/:tab'
-                tabs={[
-                  {
-                    label: 'Your school',
-                    children: <YourSchool data={data} />,
-                    path: 'school'
-                  },
-                  {
-                    label: 'Your classes',
-                    children: <Classes movingClass={movingClass} />,
-                    path: 'classes'
-                  },
-                  {
-                    label: 'Your account',
-                    children: <YourAccount />,
-                    path: 'account'
-                  }
-                ]}
-              />
-            </Page.Container>
-          )
-          : null
+      : (!isLoading && data)
+        ? (
+          <Page.Container>
+            <Page.TabBar
+              header={`Welcome back, ${userName}`}
+              value={tab}
+              originalPath='/teacher/dashboard/:tab'
+              tabs={[
+                {
+                  label: 'Your school',
+                  children: <YourSchool data={data} />,
+                  path: 'school'
+                },
+                {
+                  label: 'Your classes',
+                  children: <Classes movingClass={movingClass} />,
+                  path: 'classes'
+                },
+                {
+                  label: 'Your account',
+                  children: <YourAccount />,
+                  path: 'account'
+                }
+              ]}
+            />
+          </Page.Container>
+        )
+        : null
     }
   </>;
 };

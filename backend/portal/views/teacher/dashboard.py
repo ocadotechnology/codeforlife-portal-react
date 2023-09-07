@@ -76,7 +76,7 @@ def dashboard_manage(request):
     teacher = request.user.new_teacher
 
     if teacher.school:
-        return dashboard_teacher_view(request, teacher.is_admin)
+        return dashboard_teacher_view(request)
     else:
         return JsonResponse(status=200, data={"redirect": "onboarding"})
 
@@ -90,34 +90,30 @@ def dashboard_manage(request):
     rate=_get_update_account_rate,
     block=True,
 )
-def dashboard_teacher_view(request, is_admin):
+def dashboard_teacher_view(request):
     teacher = request.user.new_teacher
     school = teacher.school
 
-    coworkers = None
-    sent_invites = []
-
-    if school:
-        coworkers = Teacher.objects.filter(school=school).values(
-            "id",
-            is_teacher_admin=F("is_admin"),
-            teacher_first_name=F("new_user__first_name"),
-            teacher_last_name=F("new_user__last_name"),
-            teacher_email=F("new_user__email"),
-        ).order_by("teacher_last_name", "teacher_first_name")
-        
-        coworkers_json = list(coworkers)
-        school_json = serializers.serialize("json", [school])
-        sent_invites = SchoolTeacherInvitation.objects.filter(school=school).values(
-            "id",
-            "invited_teacher_first_name",
-            "invited_teacher_last_name",
-            "invited_teacher_email",
-            "invited_teacher_is_admin",
-            "expiry",
-            "token"  
-        ) if teacher.is_admin else []
-        sent_invites_json = list(sent_invites)
+    coworkers = Teacher.objects.filter(school=school).values(
+        "id",
+        is_teacher_admin=F("is_admin"),
+        teacher_first_name=F("new_user__first_name"),
+        teacher_last_name=F("new_user__last_name"),
+        teacher_email=F("new_user__email"),
+    ).order_by("teacher_last_name", "teacher_first_name")
+    
+    coworkers_json = list(coworkers)
+    school_json = serializers.serialize("json", [school])
+    sent_invites = SchoolTeacherInvitation.objects.filter(school=school).values(
+        "id",
+        "invited_teacher_first_name",
+        "invited_teacher_last_name",
+        "invited_teacher_email",
+        "invited_teacher_is_admin",
+        "expiry",
+        "token"  
+    ) if teacher.is_admin else []
+    sent_invites_json = list(sent_invites)
 
     return JsonResponse(data={
         "is_admin": teacher.is_admin, 
@@ -257,31 +253,39 @@ def invite_teacher(request):
     school = teacher.school
 
     form_data = request.POST
-    invited_teacher_first_name = form_data["teacher_first_name"]
-    invited_teacher_last_name = form_data["teacher_last_name"]
-    invited_teacher_email = form_data["teacher_email"]
-    invited_teacher_is_admin = form_data["is_admin"]
-    invited_teacher_is_admin = (invited_teacher_is_admin == 'true')
+    invite_teacher_form = InviteTeacherForm(request.POST)
+    if invite_teacher_form.is_valid():
+        invited_teacher_first_name = form_data["teacher_first_name"]
+        invited_teacher_last_name = form_data["teacher_last_name"]
+        invited_teacher_email = form_data["teacher_email"]
+        invited_teacher_is_admin = form_data["is_admin"]
+        invited_teacher_is_admin = (invited_teacher_is_admin == 'true')
 
-    token = uuid4().hex
-    SchoolTeacherInvitation.objects.create(
-        token=token,
-        school=school,
-        from_teacher=teacher,
-        invited_teacher_first_name=invited_teacher_first_name,
-        invited_teacher_last_name=invited_teacher_last_name,
-        invited_teacher_email=invited_teacher_email,
-        invited_teacher_is_admin=invited_teacher_is_admin,
-        expiry=timezone.now() + timedelta(days=30),
-    )
-    account_exists = User.objects.filter(email=invited_teacher_email).exists()
-    message = email_messages.inviteTeacherEmail(request, school.name, token, account_exists)
+        token = uuid4().hex
+        SchoolTeacherInvitation.objects.create(
+            token=token,
+            school=school,
+            from_teacher=teacher,
+            invited_teacher_first_name=invited_teacher_first_name,
+            invited_teacher_last_name=invited_teacher_last_name,
+            invited_teacher_email=invited_teacher_email,
+            invited_teacher_is_admin=invited_teacher_is_admin,
+            expiry=timezone.now() + timedelta(days=30),
+        )
+        account_exists = User.objects.filter(email=invited_teacher_email).exists()
+        message = email_messages.inviteTeacherEmail(request, school.name, token, account_exists)
 
-    send_email(
-        INVITE_FROM, [invited_teacher_email], message["subject"], message["message"], message["subject"]
-    )
+        send_email(
+            INVITE_FROM, [invited_teacher_email], message["subject"], message["message"], message["subject"]
+        )
 
-    return HttpResponse()
+        return HttpResponse()
+    else:
+        return JsonResponse(data={
+            'hasError': True, 
+            'message': 'Form invalid', 
+            'errors': invite_teacher_form.errors
+        })
 
 
 def check_teacher_is_authorised(teacher, user):
@@ -312,7 +316,11 @@ def organisation_kick(request, pk):
     teachers = Teacher.objects.filter(school=teacher.school).exclude(id=teacher.id).values("id", "new_user_id__first_name", "new_user_id__last_name")
     
     if classes.exists():
-        return JsonResponse(status=status.HTTP_200_OK, data={'source': 'organisationKick', 'classes': list(classes), 'teachers': list(teachers)})
+        return JsonResponse(status=status.HTTP_200_OK, data={
+            'source': 'organisationKick', 
+            'classes': list(classes), 
+            'teachers': list(teachers)
+        })
 
     teacher.school = None
     teacher.save()

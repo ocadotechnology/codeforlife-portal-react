@@ -34,7 +34,6 @@ const teacherDashboardApi = api.injectEndpoints({
         method: 'GET'
       }),
       transformResponse: (response: any) => {
-        console.log('resp', response);
         const rtn = {
           school: '',
           coworkers: response.coworkers,
@@ -48,7 +47,7 @@ const teacherDashboardApi = api.injectEndpoints({
         return rtn;
       }
     }),
-    inviteTeacher: build.mutation<void, {
+    inviteTeacher: build.mutation<any, {
       teacherFirstName: string;
       teacherLastName: string;
       teacherEmail: string;
@@ -84,7 +83,10 @@ const teacherDashboardApi = api.injectEndpoints({
     }>({
       query: ({ id }) => ({
         url: `teach/dashboard/toggle_admin/${id}/`,
-        method: 'POST'
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
       })
     }),
     organisationKick: build.mutation<{
@@ -111,7 +113,10 @@ const teacherDashboardApi = api.injectEndpoints({
     }>({
       query: ({ id }) => ({
         url: `teach/dashboard/invite_toggle_admin/${id}/`,
-        method: 'POST'
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
       })
     }),
     resendInvite: build.mutation<void, {
@@ -119,7 +124,10 @@ const teacherDashboardApi = api.injectEndpoints({
     }>({
       query: ({ token }) => ({
         url: `teach/dashboard/resend_invite/${token}/`,
-        method: 'POST'
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
       })
     }),
     deleteInvite: build.mutation<void, {
@@ -127,7 +135,10 @@ const teacherDashboardApi = api.injectEndpoints({
     }>({
       query: ({ token }) => ({
         url: `teach/dashboard/delete_invite/${token}/`,
-        method: 'POST'
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
       })
     })
   })

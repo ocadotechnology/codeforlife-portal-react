@@ -58,10 +58,12 @@ const InviteTeacherForm: React.FC = () => {
         const firstName = values.teacherFirstName;
         const lastName = values.teacherLastName;
         inviteTeacher(values).unwrap()
-          .then(() => {
-            navigate(paths.teacher.dashboard.school._, {
+          .then((res) => {
+            navigate('.', {
               state: {
-                message: `You have invited ${firstName} ${lastName} to your school.`
+                message: res.hasError
+                  ? res.message
+                  : `You have invited ${firstName} ${lastName} to your school.`
               }
             });
             navigate(0);
@@ -138,7 +140,7 @@ const UpdateSchoolDetailsForm: React.FC<{
       onSubmit={(values) => {
         updateSchool(values).unwrap()
           .then(() => {
-            navigate(paths.teacher.dashboard.school._, {
+            navigate('.', {
               state: {
                 message: 'You have updated the details for your school or club successfully.'
               }
@@ -146,7 +148,6 @@ const UpdateSchoolDetailsForm: React.FC<{
             navigate(0);
           })
           .catch((err) => { console.error('UpdateSchool error: ', err); });
-        alert(JSON.stringify(values, null, 2));
       }}
       submitButton={<SubmitButton>Update details</SubmitButton>}
     >
@@ -176,7 +177,7 @@ const TeachersTableActions: React.FC<{
   const onToggleAdmin = (id: string) => () => {
     toggleAdmin({ id }).unwrap()
       .then((res) => {
-        navigate(paths.teacher.dashboard.school._, {
+        navigate('.', {
           state: {
             message: res.isAdminNow
               ? 'Administrator status has been given successfully.'
@@ -201,7 +202,7 @@ const TeachersTableActions: React.FC<{
             }
           });
         } else {
-          navigate(paths.teacher.dashboard.school._, {
+          navigate('.', {
             state: {
               message: 'The teacher has been successfully removed from your school or club.'
             }
@@ -215,7 +216,7 @@ const TeachersTableActions: React.FC<{
   const onInviteToggleAdmin = (id: string) => () => {
     inviteToggleAdmin({ id }).unwrap()
       .then((res) => {
-        navigate(paths.teacher.dashboard.school._, {
+        navigate('.', {
           state: {
             message: res.isAdminNow
               ? 'Administrator invite status has been given successfully.'
@@ -230,7 +231,7 @@ const TeachersTableActions: React.FC<{
   const onResendInvite = (token: string) => () => {
     resendInvite({ token }).unwrap()
       .then(() => {
-        navigate(paths.teacher.dashboard.school._, {
+        navigate('.', {
           state: {
             message: 'Teacher re-invited!'
           }
@@ -243,7 +244,7 @@ const TeachersTableActions: React.FC<{
   const onDeleteInvite = (token: string) => () => {
     deleteInvite({ token }).unwrap()
       .then(() => {
-        navigate(paths.teacher.dashboard.school._, {
+        navigate('.', {
           state: {
             message: 'Invitation successfully deleted.'
           }
