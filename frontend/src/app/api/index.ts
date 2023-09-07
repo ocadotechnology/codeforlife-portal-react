@@ -21,6 +21,7 @@ import {
   useRequestIndependentStudentPasswordResetMutation,
   useRequestTeacherPasswordResetMutation,
   useResetPasswordMutation,
+  useVerifyPasswordMutation,
   useDeleteAccountMutation
 } from './registration';
 
@@ -51,6 +52,7 @@ export {
   useRequestIndependentStudentPasswordResetMutation,
   useRequestTeacherPasswordResetMutation,
   useResetPasswordMutation,
+  useVerifyPasswordMutation,
   useDeleteAccountMutation,
   // student
   useGetStudentScoreQuery,

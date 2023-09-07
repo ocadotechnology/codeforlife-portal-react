@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Button,
   Grid,
@@ -179,9 +179,13 @@ const StudentAccount: React.FC<{
 }> = ({ isDependent }) => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const location = useLocation();
 
   return (
     <>
+      {
+        location.state?.notification && <Page.Notification>{location.state.notification}</Page.Notification>
+      }
       <Page.Section>
         {isDependent
           ? <>

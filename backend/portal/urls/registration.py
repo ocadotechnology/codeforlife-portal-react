@@ -5,6 +5,7 @@ from ..views.registration import (
     teacher_password_reset,
     password_reset_check_and_confirm,
     delete_account,
+    verify_password,
 )
 
 
@@ -29,4 +30,5 @@ urlpatterns = [
         delete_account,
         name="delete_account",
     ),
+    path("verify-password/", verify_password, name=verify_password.__name__),
 ]
