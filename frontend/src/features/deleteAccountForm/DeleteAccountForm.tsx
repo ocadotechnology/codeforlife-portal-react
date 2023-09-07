@@ -58,8 +58,15 @@ const DeleteAccountForm: React.FC<DeleteAccountFormProps> = ({ userType }) => {
                 scrollTo(0, 0);
                 navigate(location.pathname, {
                   state: {
-                    notification:
-                      'Your account was not deleted due to incorrect password.'
+                    notifications: [
+                      {
+                        index: 0,
+                        props: {
+                          children:
+                            'Your account was not deleted due to incorrect password.'
+                        }
+                      }
+                    ]
                   }
                 });
               }

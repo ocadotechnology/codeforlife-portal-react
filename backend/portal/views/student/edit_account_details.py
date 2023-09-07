@@ -5,7 +5,7 @@ from django.contrib import messages as messages
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic.edit import FormView
 
@@ -248,8 +248,8 @@ def change_independent_details(request):
         _,
     ) = process_change_email_password_form(request, request.user, "")
 
-    if changing_email or changing_password:
-        logout(request)
+    # if changing_email or changing_password:
+    #     logout(request)
 
     notifications = {
         "Your account details have been changed successfully. Your email will be changed once you have verified it, until then you can still log in with your old email.": changing_email,
@@ -263,7 +263,7 @@ def change_independent_details(request):
         if is_field_changed
     ]
 
-    return JsonResponse({"notification": notification_messages})
+    return HttpResponse()
 
 
 def delete_independent_account(request):

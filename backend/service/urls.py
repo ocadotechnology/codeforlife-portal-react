@@ -20,9 +20,9 @@ from django.contrib import admin
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include("portal.urls")),
-    # re_path(
-    #     r".*",
-    #     lambda request: render(request, "portal.html"),
-    #     name="react_app",
-    # ),
+    re_path(
+        r".*",
+        lambda request: render(request, "portal.html"),
+        name="react_app",
+    ),
 ]

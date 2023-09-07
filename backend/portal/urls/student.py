@@ -24,7 +24,7 @@ urlpatterns = [
     path(
         "independent/edit-details/",
         change_independent_details,
-        name=change_independent_details.__name__,
+        name="change_independent_details",
     ),
     path(
         "school-student/edit-details/",
@@ -34,6 +34,6 @@ urlpatterns = [
     path(
         "independent/delete/",
         delete_independent_account,
-        name=delete_independent_account.__name__,
+        name="delete_independent_account",
     ),
 ]

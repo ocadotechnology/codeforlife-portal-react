@@ -8,10 +8,7 @@ import {
   Typography,
   useTheme
 } from '@mui/material';
-import {
-  LockOutlined,
-  PersonOutline
-} from '@mui/icons-material';
+import { LockOutlined, PersonOutline } from '@mui/icons-material';
 
 import Page from 'codeforlife/lib/esm/components/page';
 import {
@@ -25,60 +22,69 @@ import {
 import DeleteAccountForm from '../../../features/deleteAccountForm/DeleteAccountForm';
 import { paths } from '../../../app/router';
 import { submitForm } from 'codeforlife/lib/esm/helpers/formik';
-import { useUpdateSchoolStudentDetailsMutation, useUpdateStudentDetailsMutation } from '../../../app/api';
+import {
+  useUpdateSchoolStudentDetailsMutation,
+  useUpdateStudentDetailsMutation
+} from '../../../app/api';
 
 const AccountFormPasswordFields: React.FC = () => {
-  return <>
-    <Grid item xs={12} sm={8}>
-      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+  return (
+    <>
+      <Grid item xs={12} sm={8}>
+        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+          <PasswordField
+            placeholder="New password (optional)"
+            helperText="Enter your new password (optional)"
+            name="newPassword"
+            repeat={[
+              {
+                name: 'repeatPassword',
+                placeholder: 'Confirm new password (optional)',
+                helperText: 'Confirm your new password (optional)'
+              }
+            ]}
+          />
+        </Stack>
+      </Grid>
+      <Grid item xs={12} sm={4}>
         <PasswordField
-          placeholder="New password (optional)"
-          helperText="Enter your new password (optional)"
-          name="newPassword"
-          repeat={[
-            {
-              name: 'repeatPassword',
-              placeholder: 'Confirm new password (optional)',
-              helperText: 'Confirm your new password (optional)'
-            }
-          ]}
+          placeholder="Current password"
+          helperText="Enter your current password"
+          name="currentPassword"
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <LockOutlined />
+              </InputAdornment>
+            )
+          }}
         />
-      </Stack>
-    </Grid>
-    <Grid item xs={12} sm={4}>
-      <PasswordField
-        placeholder="Current password"
-        helperText="Enter your current password"
-        name="currentPassword"
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <LockOutlined />
-            </InputAdornment>
-          )
-        }}
-      />
-    </Grid>
-  </>;
+      </Grid>
+    </>
+  );
 };
 
 const AccountFormButtons: React.FC = () => {
   const navigate = useNavigate();
 
-  return <>
-    <Stack direction='row' spacing={2} paddingY={3}>
-      <Button
-        variant='outlined'
-        onClick={() => { navigate(-1); }}
-      >
-        Cancel
-      </Button>
-      <SubmitButton>
-        { /* TODO: Connect to backend */}
-        Update details
-      </SubmitButton>
-    </Stack>
-  </>;
+  return (
+    <>
+      <Stack direction="row" spacing={2} paddingY={3}>
+        <Button
+          variant="outlined"
+          onClick={() => {
+            navigate(-1);
+          }}
+        >
+          Cancel
+        </Button>
+        <SubmitButton>
+          {/* TODO: Connect to backend */}
+          Update details
+        </SubmitButton>
+      </Stack>
+    </>
+  );
 };
 
 const AccountForm: React.FC<{
@@ -115,7 +121,9 @@ const AccountForm: React.FC<{
         initialValues={initialValues}
         onSubmit={submitForm(updateSchoolStudent, {
           then: (res) => {
-            navigate(paths.student.dashboard.dependent._, { state: { notification: res?.notification } });
+            navigate(paths.student.dashboard.dependent._, {
+              state: { notification: res?.notification }
+            });
           }
         })}
       >
@@ -137,12 +145,23 @@ const AccountForm: React.FC<{
     return (
       <Form
         initialValues={initialValues}
-        onSubmit={submitForm(updateStudent, {
-          then: (res) => {
-            navigate(paths.student.dashboard.independent._, { state: { notification: res?.notification } });
-          }
-        })
-        }
+        onSubmit={(values) => {
+          updateStudent(values)
+            .unwrap()
+            .then((res) => {
+              console.groupCollapsed(res);
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+          // submitForm(updateStudent, {
+          //   then: (res) => {
+          //     navigate(paths.student.dashboard.independent._, {
+          //       state: { notification: res?.notification }
+          //     });
+          //   }
+          // });
+        }}
       >
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
@@ -175,7 +194,7 @@ const AccountForm: React.FC<{
 };
 
 const StudentAccount: React.FC<{
-  isDependent: boolean
+  isDependent: boolean;
 }> = ({ isDependent }) => {
   const theme = useTheme();
   const navigate = useNavigate();
@@ -183,41 +202,59 @@ const StudentAccount: React.FC<{
 
   return (
     <>
-      {
-        location.state?.notification && <Page.Notification>{location.state.notification}</Page.Notification>
-      }
       <Page.Section>
-        {isDependent
-          ? <>
-            <Typography align='center' variant='h4'>Update your password</Typography>
-            <Typography>You may edit your password below. It must be long enough and hard enough to stop your friends
-              guessing it and stealing all of your hard work. Choose something memorable though.</Typography>
-            <Typography>If you have any problems, ask a teacher to help you.</Typography>
+        {isDependent ? (
+          <>
+            <Typography align="center" variant="h4">
+              Update your password
+            </Typography>
+            <Typography>
+              You may edit your password below. It must be long enough and hard
+              enough to stop your friends guessing it and stealing all of your
+              hard work. Choose something memorable though.
+            </Typography>
+            <Typography>
+              If you have any problems, ask a teacher to help you.
+            </Typography>
           </>
-          : <>
-            <Typography align='center' variant='h4'>Update your account details</Typography>
+        ) : (
+          <>
+            <Typography align="center" variant="h4">
+              Update your account details
+            </Typography>
             <Typography>You can update your account details below.</Typography>
-            <Typography>Please note: If you change your email address, you will need to re-verify it. Please ensure your
-              password is strong enough to be secure.</Typography>
+            <Typography>
+              Please note: If you change your email address, you will need to
+              re-verify it. Please ensure your password is strong enough to be
+              secure.
+            </Typography>
           </>
-        }
+        )}
         <AccountForm isDependent={isDependent} />
       </Page.Section>
-      {!isDependent
-        ? <>
+      {!isDependent ? (
+        <>
           <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
-            <Typography variant='h5'>Join a school or club</Typography>
-            <Typography>To find out about linking your Code For Life account with a school or club, click &apos;Join&apos;.</Typography>
-            <Button onClick={() => { navigate(paths.student.dashboard.independent.joinSchool._); }}>
+            <Typography variant="h5">Join a school or club</Typography>
+            <Typography>
+              To find out about linking your Code For Life account with a school
+              or club, click &apos;Join&apos;.
+            </Typography>
+            <Button
+              onClick={() => {
+                navigate(paths.student.dashboard.independent.joinSchool._);
+              }}
+            >
               Join
             </Button>
           </Page.Section>
           <Page.Section>
-            <DeleteAccountForm userType='independent' />
+            <DeleteAccountForm userType="independent" />
           </Page.Section>
         </>
-        : <></>
-      }
+      ) : (
+        <></>
+      )}
     </>
   );
 };
