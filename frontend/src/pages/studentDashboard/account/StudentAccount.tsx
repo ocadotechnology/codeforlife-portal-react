@@ -21,7 +21,6 @@ import {
 
 import DeleteAccountForm from '../../../features/deleteAccountForm/DeleteAccountForm';
 import { paths } from '../../../app/router';
-import { submitForm } from 'codeforlife/lib/esm/helpers/formik';
 import {
   useUpdateSchoolStudentDetailsMutation,
   useUpdateStudentDetailsMutation
@@ -115,17 +114,46 @@ const AccountForm: React.FC<{
     };
 
     const [updateSchoolStudent] = useUpdateSchoolStudentDetailsMutation();
-
+    const location = useLocation();
     return (
       <Form
         initialValues={initialValues}
-        onSubmit={submitForm(updateSchoolStudent, {
-          then: (res) => {
-            navigate(paths.student.dashboard.dependent._, {
-              state: { notification: res?.notification }
+        onSubmit={(values, formik) => {
+          const changedPassword =
+            'Your account details have been changed successfully. Please login using your new password.';
+          updateSchoolStudent(values)
+            .unwrap()
+            .then((res) => {
+              navigate(paths.student.dashboard.dependent._, {
+                state: {
+                  notifications: [
+                    {
+                      index: 0,
+                      props: {
+                        children: changedPassword
+                      }
+                    }
+                  ]
+                }
+              });
+            })
+            .catch((error) => {
+              console.error(error);
+              navigate(location.pathname, {
+                state: {
+                  notifications: [
+                    {
+                      index: 0,
+                      props: {
+                        children:
+                          'Your password was not changed due to incorrect details'
+                      }
+                    }
+                  ]
+                }
+              });
             });
-          }
-        })}
+        }}
       >
         <Grid container spacing={2}>
           <AccountFormPasswordFields />
@@ -142,25 +170,63 @@ const AccountForm: React.FC<{
       currentPassword: ''
     };
     const [updateStudent] = useUpdateStudentDetailsMutation();
+    // const [logoutMutation] = useLogoutUserMutation();
+    const location = useLocation();
     return (
       <Form
         initialValues={initialValues}
         onSubmit={(values) => {
+          const { email, newPassword, currentPassword, repeatPassword, name } =
+            values;
+          const isPasswordChanged = [
+            newPassword,
+            repeatPassword,
+            currentPassword
+          ].every((el) => el !== '');
+          const isEmailChanged = email !== '';
+          const isNameChanged = name !== '';
+          const notificationMessages: Record<string, boolean> = {
+            'Your account details have been changed successfully. Your email will be changed once you have verified it, until then you can still log in with your old email.':
+              isEmailChanged,
+            'Your account details have been changed successfully. Please login using your new password.':
+              isPasswordChanged,
+            'Your account details have been changed successfully.':
+              isNameChanged
+          };
+          const notifications = Object.keys(notificationMessages)
+            .filter((key: string) => notificationMessages[key])
+            .map((key: string, idx: number) => {
+              return { index: idx, props: { children: key } };
+            });
+
           updateStudent(values)
             .unwrap()
             .then((res) => {
-              console.groupCollapsed(res);
+              if (isEmailChanged || isPasswordChanged) {
+                // logout a user
+                // logoutMutation().then((res) => {
+                // })
+                navigate(paths._, { state: notifications });
+              } else if (isNameChanged) {
+                navigate(location.pathname, { state: notifications });
+              }
             })
             .catch((error) => {
               console.error(error);
+              navigate(location.pathname, {
+                state: {
+                  notifications: [
+                    {
+                      index: 0,
+                      props: {
+                        children:
+                          'Your account was not updated due to incorrect details'
+                      }
+                    }
+                  ]
+                }
+              });
             });
-          // submitForm(updateStudent, {
-          //   then: (res) => {
-          //     navigate(paths.student.dashboard.independent._, {
-          //       state: { notification: res?.notification }
-          //     });
-          //   }
-          // });
         }}
       >
         <Grid container spacing={2}>
@@ -198,8 +264,6 @@ const StudentAccount: React.FC<{
 }> = ({ isDependent }) => {
   const theme = useTheme();
   const navigate = useNavigate();
-  const location = useLocation();
-
   return (
     <>
       <Page.Section>

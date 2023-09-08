@@ -75,11 +75,6 @@ const DeleteAccountForm: React.FC<DeleteAccountFormProps> = ({ userType }) => {
               console.error(error);
             });
         }}
-        // then: () => {
-        //   const redirectPath = location.pathname.includes('teacher') ? paths.login.teacher._ : paths.login.independent._;
-        //   navigate(redirectPath, { state: { notification: 'Your account was successfully deleted' } });
-        // }
-        // })}
         // TODO: validate if teacher has classes. If not, delete account immediately.
         //   setDialog({
         //     open: true,

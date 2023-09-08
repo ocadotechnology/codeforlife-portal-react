@@ -198,17 +198,13 @@ def process_change_email_password_form(request, student, old_anchor):
 
 def process_student_edit_account_form(request):
     form_class = StudentEditAccountForm(request.user, request.POST)
-    notification = (
-        "Your account details have been changed successfully. Please login using your new password.",
-    )
     if form_class.is_valid():
         data = form_class.cleaned_data
-        changing_password = check_update_password(
-            form_class, request.user, request, data
-        )
+        check_update_password(form_class, request.user, request, data)
     else:
         print(form_class.errors)
         notification = form_class.errors["__all__"][0]
+        return JsonResponse({"error": notification})
     # messages.success(
     #     request, "Your account details have been changed successfully."
     # )
@@ -219,7 +215,7 @@ def process_student_edit_account_form(request):
     #         request,
     #         "Please login using your new password.",
     #     )
-    return JsonResponse({"notification": notification})
+    return HttpResponse()
 
 
 def change_school_student_details(request):
@@ -240,28 +236,17 @@ def change_independent_details(request):
             status=400,
         )
 
-    (
-        changing_email,
-        new_email,
-        changing_password,
-        changing_first_name,
-        _,
-    ) = process_change_email_password_form(request, request.user, "")
+    # (
+    #     changing_email,
+    #     new_email,
+    #     changing_password,
+    #     changing_first_name,
+    #     _,
+    # ) =
+    process_change_email_password_form(request, request.user, "")
 
     # if changing_email or changing_password:
     #     logout(request)
-
-    notifications = {
-        "Your account details have been changed successfully. Your email will be changed once you have verified it, until then you can still log in with your old email.": changing_email,
-        "Your account details have been changed successfully. Please login using your new password.": changing_password,
-        "Your account details have been changed successfully.": changing_first_name,
-    }
-
-    notification_messages = [
-        message
-        for message, is_field_changed in notifications.items()
-        if is_field_changed
-    ]
 
     return HttpResponse()
 
