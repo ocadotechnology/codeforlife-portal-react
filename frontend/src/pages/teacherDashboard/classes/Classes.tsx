@@ -233,8 +233,8 @@ const MoveClassTeacherForm: React.FC<{
   }));
   const teacherOptions = teacherList.map((t: teacherListType) => t.fullName);
   const findNewTeacherId = (name: string): number => {
-    const t = teacherList.find((t: teacherListType) => (t.fullName === name));
-    return t ? (t.id) : -1;
+    const selectedTeacher = teacherList.find((t: teacherListType) => (t.fullName === name));
+    return selectedTeacher ? (selectedTeacher.id) : -1;
   };
 
   return (

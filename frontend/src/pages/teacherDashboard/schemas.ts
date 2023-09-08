@@ -15,7 +15,7 @@ export const INVITE_TEACHER_SCHEMA = object({
   teacherFirstName: string().required('First name is required').min(1, 'First name cannot be empty'),
   teacherLastName: string().required('Last name is required').min(1, 'Last name cannot be empty'),
   teacherEmail: string().required('Email is required').email('Email is invalid').min(1, 'Email cannot be empty'),
-  isAdmin: boolean().required()
+  makeAdminTicked: boolean().required()
 });
 
 export const UPDATE_TEACHER_ACCOUNT_SCHEMA = object({

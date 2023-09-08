@@ -44,6 +44,7 @@ import {
   useToggleAdminMutation,
   useUpdateSchoolMutation
 } from '../../app/api/teacher/dashboard';
+import { getUser } from './dummyMethods';
 
 const InviteTeacherForm: React.FC = () => {
   const navigate = useNavigate();
@@ -109,7 +110,7 @@ const InviteTeacherForm: React.FC = () => {
         }}
       />
       <CheckboxField
-        name="isAdmin"
+        name="makeAdminTicked"
         formControlLabelProps={{
           label: 'Make an administrator of the school'
         }}
@@ -310,8 +311,7 @@ const TeachersTable: React.FC<{
   teachersData: any;
   sentInvites: any;
 }> = ({ isUserAdmin, teachersData, sentInvites }) => {
-  // const { email } = getUser();
-  const email = 'alberteinstein@codeforlife.com';
+  const { email } = getUser();
   const boldText: React.FC<string> = (str: string) => (
     <Typography variant="body2" fontWeight="bold">
       ({str})

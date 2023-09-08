@@ -252,14 +252,13 @@ def invite_teacher(request):
     teacher = request.user.new_teacher
     school = teacher.school
 
-    form_data = request.POST
     invite_teacher_form = InviteTeacherForm(request.POST)
     if invite_teacher_form.is_valid():
-        invited_teacher_first_name = form_data["teacher_first_name"]
-        invited_teacher_last_name = form_data["teacher_last_name"]
-        invited_teacher_email = form_data["teacher_email"]
-        invited_teacher_is_admin = form_data["is_admin"]
-        invited_teacher_is_admin = (invited_teacher_is_admin == 'true')
+        data = invite_teacher_form.cleaned_data
+        invited_teacher_first_name = data["teacher_first_name"]
+        invited_teacher_last_name = data["teacher_last_name"]
+        invited_teacher_email = data["teacher_email"]
+        invited_teacher_is_admin = (data["make_admin_ticked"] == 'true')
 
         token = uuid4().hex
         SchoolTeacherInvitation.objects.create(
@@ -291,7 +290,8 @@ def invite_teacher(request):
 def check_teacher_is_authorised(teacher, user):
     if teacher == user or (teacher.school != user.school or not user.is_admin):
         return False
-
+    else:
+        return True
 
 @require_POST
 @login_required(login_url=reverse_lazy("session-expired"))

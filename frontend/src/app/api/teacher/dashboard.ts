@@ -51,7 +51,7 @@ const teacherDashboardApi = api.injectEndpoints({
       teacherFirstName: string;
       teacherLastName: string;
       teacherEmail: string;
-      isAdmin: boolean;
+      makeAdminTicked: boolean;
     }>({
       query: (body) => ({
         url: 'teach/invite/',
