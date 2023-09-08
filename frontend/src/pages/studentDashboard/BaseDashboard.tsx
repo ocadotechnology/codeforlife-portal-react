@@ -69,10 +69,7 @@ const BaseDashboard: React.FC<BaseDashboardProps> = ({ isDependent }) => {
       <Page.Banner
         header={`Welcome, ${name}`}
         subheader={
-          view === undefined
-            ? 'This is where you can access your games' +
-              `${JSON.stringify(location.state)}`
-            : ''
+          view === undefined ? 'This is where you can access your games' : ''
         }
         textAlign="center"
         bgcolor={isDependent ? 'tertiary' : 'secondary'}

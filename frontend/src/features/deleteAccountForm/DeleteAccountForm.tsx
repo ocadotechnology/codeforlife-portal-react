@@ -33,7 +33,6 @@ const DeleteAccountForm: React.FC<DeleteAccountFormProps> = ({ userType }) => {
 
   return (
     <>
-      <pre>{JSON.stringify(location)}</pre>
       <Typography variant="h5">Delete account</Typography>
       <Typography>
         If you no longer wish to have a Code for Life account, you can delete it
@@ -94,7 +93,6 @@ const DeleteAccountForm: React.FC<DeleteAccountFormProps> = ({ userType }) => {
         {(form: FormikValues) => {
           return (
             <>
-              <pre>{JSON.stringify(form.values)}</pre>
               <ConfirmPopup
                 password={form.values.password}
                 unsubscribeNewsletter={form.values.unsubscribeNewsletter}
