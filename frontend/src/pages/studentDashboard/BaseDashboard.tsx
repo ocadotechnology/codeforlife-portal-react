@@ -22,7 +22,6 @@ export interface BaseDashboardProps {
 const BaseDashboard: React.FC<BaseDashboardProps> = ({ isDependent }) => {
   const theme = useTheme();
   const navigate = useNavigate();
-  const location = useLocation();
   const params = tryValidateSync(
     useParams(),
     yup.object({
@@ -39,19 +38,6 @@ const BaseDashboard: React.FC<BaseDashboardProps> = ({ isDependent }) => {
       navigate(paths.error.forbidden._);
     }
   }, [params]);
-
-  const handleClose = (notificationMessage: string): void => {
-    const { notification } = location.state || {};
-
-    if (notification) {
-      const updatedNotifications = notification.filter(
-        (message: string) => message !== notificationMessage
-      );
-      navigate(location.pathname, {
-        state: { notification: updatedNotifications }
-      });
-    }
-  };
 
   let view:
     | React.ReactElement<PageSectionProps, typeof Page.Section>

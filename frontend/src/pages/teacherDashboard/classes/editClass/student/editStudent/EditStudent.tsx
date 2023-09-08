@@ -1,11 +1,12 @@
-import React from 'react';
-import Page from 'codeforlife/lib/esm/components/page';
-import { Link, Typography } from '@mui/material';
-import { CflHorizontalForm } from '../../../../../../components/form/CflForm';
-import CflPasswordFields from '../../../../../../features/cflPasswordFields/CflPasswordFields';
-import StudentNameField from '../../../../../../components/form/StudentNameField';
 import { SubmitButton } from 'codeforlife/lib/esm/components/form';
-import { useTheme } from '@mui/material';
+import Page from 'codeforlife/lib/esm/components/page';
+import React from 'react';
+
+import { Link, Typography, useTheme } from '@mui/material';
+
+import { CflHorizontalForm } from '../../../../../../components/form/CflForm';
+import StudentNameField from '../../../../../../components/form/StudentNameField';
+import CflPasswordFields from '../../../../../../features/cflPasswordFields/CflPasswordFields';
 
 const UpdateNameForm: React.FC = () => {
   interface Values {
