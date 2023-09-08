@@ -325,14 +325,14 @@ def teacher_edit_class(request, access_code):
     locked_levels = klass.locked_levels.all()
     locked_levels_ids = [locked_level.id for locked_level in locked_levels]
 
-    form = ClassEditForm(
-        initial={
-            "name": klass.name,
-            "classmate_progress": klass.classmates_data_viewable,
-        }
-    )
-    level_control_form = ClassLevelControlForm()
-    class_move_form = ClassMoveForm(other_teachers)
+    # form = ClassEditForm(
+    #     initial={
+    #         "name": klass.name,
+    #         "classmate_progress": klass.classmates_data_viewable,
+    #     }
+    # )
+    # level_control_form = ClassLevelControlForm()
+    # class_move_form = ClassMoveForm(other_teachers)
 
     if request.method == "POST":
         if "class_edit_submit" in request.POST:
@@ -350,19 +350,31 @@ def teacher_edit_class(request, access_code):
             if class_move_form.is_valid():
                 return process_move_class_form(request, klass, class_move_form)
 
-    return render(
-        request,
-        "portal/teach/teacher_edit_class.html",
+    # return render(
+    #     request,
+    #     "portal/teach/teacher_edit_class.html",
+    #     {
+    #         "form": form,
+    #         "class_move_form": class_move_form,
+    #         "level_control_form": level_control_form,
+    #         "blockly_episodes": blockly_episodes,
+    #         "python_episodes": python_episodes,
+    #         "locked_levels": locked_levels_ids,
+    #         "class": klass,
+    #         "external_requests_message": external_requests_message,
+    #     },
+    # )
+    return JsonResponse(
         {
-            "form": form,
-            "class_move_form": class_move_form,
-            "level_control_form": level_control_form,
             "blockly_episodes": blockly_episodes,
             "python_episodes": python_episodes,
             "locked_levels": locked_levels_ids,
-            "class": klass,
+            "class": {
+                "name": klass.name,
+                "classmate_progress": klass.classmates_data_viewable,
+            },
             "external_requests_message": external_requests_message,
-        },
+        }
     )
 
 
@@ -410,13 +422,14 @@ def process_edit_class_form(request, klass, form):
     klass.classmates_data_viewable = classmate_progress
     klass.save()
 
-    messages.success(
-        request, "The class's settings have been changed successfully."
-    )
+    # messages.success(
+    #     request, "The class's settings have been changed successfully."
+    # )
 
-    return HttpResponseRedirect(
-        reverse_lazy("view_class", kwargs={"access_code": klass.access_code})
-    )
+    # return HttpResponseRedirect(
+    #     reverse_lazy("view_class", kwargs={"access_code": klass.access_code})
+    # )
+    return HttpResponse()
 
 
 def process_level_control_form(
