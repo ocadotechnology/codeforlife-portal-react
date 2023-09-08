@@ -4244,7 +4244,7 @@ coa@^2.0.2:
 
 "codeforlife@github:ocadotechnology/codeforlife-package-javascript#autocomplete_select_only":
   version "1.27.2"
-  resolved "https://codeload.github.com/ocadotechnology/codeforlife-package-javascript/tar.gz/648ebc58f28efb0bce6b7fae8921ab3db6ef656a"
+  resolved "https://codeload.github.com/ocadotechnology/codeforlife-package-javascript/tar.gz/a7119d2405a2dfe6afab256ac63ebf411acb9445"
   dependencies:
     "@emotion/react" "^11.10.6"
     "@emotion/styled" "^11.10.6"

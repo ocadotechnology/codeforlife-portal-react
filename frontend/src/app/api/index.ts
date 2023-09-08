@@ -24,6 +24,10 @@ import {
   useResetPasswordMutation,
   useDeleteAccountMutation
 } from './registration';
+import {
+  useGetClassQuery,
+  useUpdateClassMutation
+} from './teacher/teach';
 
 export default api;
 export {
@@ -46,5 +50,8 @@ export {
   useRequestIndependentStudentPasswordResetMutation,
   useRequestTeacherPasswordResetMutation,
   useResetPasswordMutation,
-  useDeleteAccountMutation
+  useDeleteAccountMutation,
+  // teacher/teach
+  useGetClassQuery,
+  useUpdateClassMutation
 };
