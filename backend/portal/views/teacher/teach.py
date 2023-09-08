@@ -8,10 +8,19 @@ from uuid import uuid4
 import pytz
 from aimmo.models import Game
 from common.helpers.emails import send_verification_email
-from common.helpers.generators import (generate_access_code, generate_login_id,
-                                       generate_password, get_hashed_login_id)
-from common.models import (Class, DailyActivity, JoinReleaseStudent, Student,
-                           Teacher)
+from common.helpers.generators import (
+    generate_access_code,
+    generate_login_id,
+    generate_password,
+    get_hashed_login_id,
+)
+from common.models import (
+    Class,
+    DailyActivity,
+    JoinReleaseStudent,
+    Student,
+    Teacher,
+)
 from common.permissions import check_teacher_authorised, logged_in_as_teacher
 from django.contrib import messages as messages
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -23,18 +32,21 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.views.decorators.http import require_POST
-from game.views.level_selection import (get_blockly_episodes,
-                                        get_python_episodes)
-from portal.forms.teach import (BaseTeacherDismissStudentsFormSet,
-                                BaseTeacherMoveStudentsDisambiguationFormSet,
-                                ClassCreationForm, ClassEditForm,
-                                ClassLevelControlForm, ClassMoveForm,
-                                StudentCreationForm,
-                                TeacherDismissStudentsForm,
-                                TeacherEditStudentForm,
-                                TeacherMoveStudentDisambiguationForm,
-                                TeacherMoveStudentsDestinationForm,
-                                TeacherSetStudentPass)
+from game.views.level_selection import get_blockly_episodes, get_python_episodes
+from portal.forms.teach import (
+    BaseTeacherDismissStudentsFormSet,
+    BaseTeacherMoveStudentsDisambiguationFormSet,
+    ClassCreationForm,
+    ClassEditForm,
+    ClassLevelControlForm,
+    ClassMoveForm,
+    StudentCreationForm,
+    TeacherDismissStudentsForm,
+    TeacherEditStudentForm,
+    TeacherMoveStudentDisambiguationForm,
+    TeacherMoveStudentsDestinationForm,
+    TeacherSetStudentPass,
+)
 from portal.helpers.ratelimit import clear_ratelimit_cache_for_user
 from portal.views.registration import handle_reset_password_tracking
 from reportlab.lib.colors import black, red
