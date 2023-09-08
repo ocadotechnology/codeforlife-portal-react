@@ -1,3 +1,4 @@
+import api from './api';
 import {
   useSubscribeToNewsletterMutation,
   useConsentFormMutation
@@ -24,6 +25,7 @@ import {
   useDeleteAccountMutation
 } from './registration';
 
+export default api;
 export {
   // dotmailer
   useSubscribeToNewsletterMutation,
