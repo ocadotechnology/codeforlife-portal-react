@@ -100,7 +100,6 @@ const DeleteAccountForm: React.FC<DeleteAccountFormProps> = ({ userType }) => {
                 open={confirmationPopup.open}
                 userType="independent"
               />
-              ;
               <Grid container columnSpacing={4}>
                 <Grid xs={12} sm={6}>
                   <PasswordField

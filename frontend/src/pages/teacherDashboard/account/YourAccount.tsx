@@ -111,10 +111,13 @@ const YourAccountForm: React.FC = () => {
   };
 
   const theme = useTheme();
+
   return (
     <Form
       initialValues={initialValues}
-      onSubmit={values => { alert(JSON.stringify(values, null, 2)); }}
+      onSubmit={(values) => {
+        alert(JSON.stringify(values, null, 2));
+      }}
     >
       <Grid container spacing={2}>
         <Grid item xs={12} sm={4}>
@@ -184,7 +187,7 @@ const YourAccountForm: React.FC = () => {
         </Grid>
       </Grid>
       <SubmitButton sx={{ marginTop: theme.spacing(3) }}>Update details</SubmitButton>
-    </Form >
+    </Form>
   );
 };
 
