@@ -101,9 +101,14 @@ def dashboard_teacher_view(request):
         teacher_last_name=F("new_user__last_name"),
         teacher_email=F("new_user__email"),
     ).order_by("teacher_last_name", "teacher_first_name")
-    
     coworkers_json = list(coworkers)
-    school_json = serializers.serialize("json", [school])
+
+    school_json = serializers.serialize(
+        "json", 
+        [school],
+        fields=["name", "postcode", "country"]
+    )
+    
     sent_invites = SchoolTeacherInvitation.objects.filter(school=school).values(
         "id",
         "invited_teacher_first_name",
@@ -245,6 +250,7 @@ def process_update_account_form(request, teacher, old_anchor):
 
     return changing_email, new_email, changing_password, anchor
 
+
 @require_POST
 @login_required(login_url=reverse_lazy("session-expired"))
 @user_passes_test(logged_in_as_teacher, login_url=reverse_lazy("session-expired"))
@@ -292,6 +298,7 @@ def check_teacher_is_authorised(teacher, user):
         return False
     else:
         return True
+
 
 @require_POST
 @login_required(login_url=reverse_lazy("session-expired"))

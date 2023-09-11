@@ -25,7 +25,7 @@ import SeeClassmatesProgressField from '../../../components/form/SeeClassmatesPr
 import EditClass from './editClass/EditClass';
 import { classType, teacherType, useLeaveOrganisationMutation } from '../../../app/api/organisation';
 import { FieldArray, Form, Formik } from 'formik';
-import { useOrganisationKickMutation } from '../../../app/api/teacher/dashboard';
+import { moveClassesType, organsationKickType, useOrganisationKickMutation } from '../../../app/api/teacher/dashboard';
 
 const _YourClasses: React.FC = () => {
   return (
@@ -199,7 +199,7 @@ const MoveClassTeacherForm: React.FC<{
   const [organisationKick] = useOrganisationKickMutation();
   const navigate = useNavigate();
 
-  const onLeaveOrganisation = (info: any): void => {
+  const onLeaveOrganisation = (info: moveClassesType[]): void => {
     leaveOrganisation(info).unwrap()
       .then(() => {
         navigate(paths.teacher.onboarding._, { state: { leftOrganisation: true } });
@@ -207,7 +207,7 @@ const MoveClassTeacherForm: React.FC<{
       .catch((err) => { console.error('LeaveOrganisation error: ', err); });
   };
 
-  const onOrganisationKick = (info: any): void => {
+  const onOrganisationKick = (info: organsationKickType): void => {
     info.id = teacherId;
     organisationKick(info).unwrap()
       .then(() => {
@@ -262,7 +262,7 @@ const MoveClassTeacherForm: React.FC<{
                     className='body'
                     titles={['Class name', 'New teacher']}
                   >
-                    {classes.map((c: any, index: number) =>
+                    {classes.map((c: classType, index: number) =>
                       <CflTableBody key={c.id}>
                         <CflTableCellElement>
                           <Typography variant="subtitle1">

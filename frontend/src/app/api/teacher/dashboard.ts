@@ -1,16 +1,16 @@
 import api from 'codeforlife/lib/esm/api';
 import { classType, teacherType } from '../organisation';
 
-interface coworkersType {
-  id: number,
+export interface coworkersType {
+  id: string,
   isTeacherAdmin: boolean,
   teacherEmail: string,
   teacherFirstName: string,
   teacherLastName: string,
 };
 
-interface sentInvitesType {
-  id: number,
+export interface sentInvitesType {
+  id: string,
   isTeacherAdmin: boolean,
   invitedTeacherEmail: string,
   invitedTeacherFirstName: string,
@@ -20,22 +20,47 @@ interface sentInvitesType {
   expiry: string,
 };
 
+export interface schoolType {
+  name: string,
+  postcode: string,
+  country: string,
+};
+
+interface getTeacherDataResponseType {
+  coworkers: coworkersType[],
+  isAdmin: boolean,
+  school: string,
+  sentInvites: sentInvitesType[],
+};
+
+export interface getTeacherDataReturnType {
+  coworkers: coworkersType[],
+  isAdmin: boolean,
+  school: schoolType,
+  sentInvites: sentInvitesType[],
+};
+
+export type moveClassesType = Record<string, string>;
+
+export interface organsationKickType extends moveClassesType {
+  id: string,
+};
+
 const teacherDashboardApi = api.injectEndpoints({
   endpoints: (build) => ({
-    getTeacherData: build.query<{
-      school: string;
-      coworkers: coworkersType[];
-      isAdmin: boolean;
-      sentInvites: sentInvitesType[];
-    }, void
+    getTeacherData: build.query<getTeacherDataReturnType, void
     >({
       query: () => ({
         url: 'teach/dashboard/',
         method: 'GET'
       }),
-      transformResponse: (response: any) => {
-        const rtn = {
-          school: '',
+      transformResponse: (response: getTeacherDataResponseType) => {
+        const rtn: getTeacherDataReturnType = {
+          school: {
+            name: '',
+            postcode: '',
+            country: ''
+          },
           coworkers: response.coworkers,
           isAdmin: response.isAdmin,
           sentInvites: response.sentInvites
@@ -93,10 +118,7 @@ const teacherDashboardApi = api.injectEndpoints({
       source?: string,
       classes?: classType,
       teachers?: teacherType,
-    }, {
-      id: string
-      info?: any
-    }>({
+    }, organsationKickType>({
       query: (body) => ({
         url: `teach/dashboard/kick/${body.id}/`,
         method: 'POST',

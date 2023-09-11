@@ -36,6 +36,10 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useLeaveOrganisationMutation } from '../../app/api';
 import { paths } from '../../app/router';
 import {
+  coworkersType,
+  getTeacherDataReturnType,
+  schoolType,
+  sentInvitesType,
   useDeleteInviteMutation,
   useInviteTeacherMutation,
   useInviteToggleAdminMutation,
@@ -120,7 +124,7 @@ const InviteTeacherForm: React.FC = () => {
 };
 
 const UpdateSchoolDetailsForm: React.FC<{
-  schoolData: any;
+  schoolData: schoolType;
 }> = ({ schoolData }) => {
   const navigate = useNavigate();
   const schoolName = schoolData.name;
@@ -308,8 +312,8 @@ const TeachersTableActions: React.FC<{
 
 const TeachersTable: React.FC<{
   isUserAdmin: boolean;
-  teachersData: any;
-  sentInvites: any;
+  teachersData: coworkersType[];
+  sentInvites: sentInvitesType[];
 }> = ({ isUserAdmin, teachersData, sentInvites }) => {
   const { email } = getUser();
   const boldText: React.FC<string> = (str: string) => (
@@ -324,7 +328,7 @@ const TeachersTable: React.FC<{
       titles={isUserAdmin ? ['Name', 'Administrator status', 'Actions'] : ['Name', 'Administrator status']}
     >
       {teachersData.map(
-        ({ teacherFirstName, teacherLastName, teacherEmail, isTeacherAdmin, id }: any) => (
+        ({ teacherFirstName, teacherLastName, teacherEmail, isTeacherAdmin, id }) => (
           <CflTableBody key={id}>
             <CflTableCellElement>
               <Typography variant="subtitle1">
@@ -358,7 +362,7 @@ const TeachersTable: React.FC<{
         )
       )}
       {sentInvites.map(
-        ({ invitedTeacherFirstName, invitedTeacherLastName, invitedTeacherEmail, invitedTeacherIsAdmin, isExpired, id, token }: any) => (
+        ({ invitedTeacherFirstName, invitedTeacherLastName, invitedTeacherEmail, isTeacherAdmin, isExpired, id, token }) => (
           <CflTableBody key={token}>
             <CflTableCellElement>
               <Typography variant="subtitle1">
@@ -371,7 +375,7 @@ const TeachersTable: React.FC<{
               justifyContent="flex-start"
             >
               <Typography variant="subtitle1">
-                {invitedTeacherIsAdmin ? 'Teacher Administrator' : 'Standard Teacher'}
+                {isTeacherAdmin ? 'Teacher Administrator' : 'Standard Teacher'}
               </Typography>
               <Typography variant="subtitle1">({invitedTeacherEmail})</Typography>
             </CflTableCellElement>
@@ -382,7 +386,7 @@ const TeachersTable: React.FC<{
                     isInvite: true,
                     teacherEmail: invitedTeacherEmail,
                     userEmail: email,
-                    isTeacherAdmin: invitedTeacherIsAdmin,
+                    isTeacherAdmin,
                     id,
                     token
                   }}
@@ -397,7 +401,7 @@ const TeachersTable: React.FC<{
 };
 
 const YourSchool: React.FC<{
-  data: any;
+  data: getTeacherDataReturnType;
 }> = ({ data }) => {
   const theme = useTheme();
   const [leaveOrganisation] = useLeaveOrganisationMutation();
