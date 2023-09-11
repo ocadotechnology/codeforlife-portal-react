@@ -22,6 +22,7 @@ import {
 import DeleteAccountForm from '../../../features/deleteAccountForm/DeleteAccountForm';
 import { paths } from '../../../app/router';
 import {
+  useLogoutUserMutation,
   useUpdateSchoolStudentDetailsMutation,
   useUpdateStudentDetailsMutation
 } from '../../../app/api';
@@ -170,7 +171,7 @@ const AccountForm: React.FC<{
       currentPassword: ''
     };
     const [updateStudent] = useUpdateStudentDetailsMutation();
-    // const [logoutMutation] = useLogoutUserMutation();
+    const [logoutUser] = useLogoutUserMutation();
     const location = useLocation();
     return (
       <Form
@@ -203,10 +204,14 @@ const AccountForm: React.FC<{
             .unwrap()
             .then((res) => {
               if (isEmailChanged || isPasswordChanged) {
-                // logout a user
-                // logoutMutation().then((res) => {
-                // })
-                navigate(paths._, { state: notifications });
+                logoutUser(null)
+                  .unwrap()
+                  .then(() => {
+                    navigate(paths._, { state: notifications });
+                  })
+                  .catch(() => {
+                    alert('Logout failed.');
+                  });
               } else if (isNameChanged) {
                 navigate(location.pathname, { state: notifications });
               }

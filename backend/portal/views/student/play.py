@@ -87,10 +87,6 @@ from rest_framework import status
 #         )
 
 
-def username_labeller(request):
-    return request.user.username
-
-
 @login_required(login_url=reverse_lazy("independent_student_login"))
 @user_passes_test(
     logged_in_as_independent_student,
@@ -102,7 +98,7 @@ def student_join_organisation(request):
 
     # check student not managed by a school
     if student.class_field:
-        return HttpResponseRedirect(reverse_lazy("student_details"))
+        return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
 
     if request.method == "POST":
         if "class_join_request" in request.POST:
@@ -113,15 +109,16 @@ def student_join_organisation(request):
             student.pending_class_request = None
             student.save()
             # Check teacher hasn't since accepted rejection before posting success
-            show_cancellation_message_if_student_not_in_class(student, request)
-            return HttpResponseRedirect(reverse_lazy("student_edit_account"))
+            # show_cancellation_message_if_student_not_in_class(student, request)
+            # HttpResponseRedirect(reverse_lazy("student_edit_account"))
+        return HttpResponse()
 
-    res = render(
-        request,
-        "portal/play/student_join_organisation.html",
-        {"request_form": request_form, "student": student},
-    )
-    return res
+    # res = render(
+    #     request,
+    #     "portal/play/student_join_organisation.html",
+    #     {"request_form": request_form, "student": student},
+    # )
+    return HttpResponse(status=status.HTTP_405_METHOD_NOT_ALLOWED)  # res
 
 
 def process_join_organisation_form(request_form, request, student):
@@ -156,18 +153,13 @@ def process_join_organisation_form(request_form, request, student):
             email_message["subject"],
         )
 
-        messages.success(
-            request,
-            "Your request to join a school has been received successfully.",
-        )
 
-
-def show_cancellation_message_if_student_not_in_class(student, request):
-    if not student.class_field:
-        messages.success(
-            request,
-            "Your request to join a school has been cancelled successfully.",
-        )
+# def show_cancellation_message_if_student_not_in_class(student, request):
+#     if not student.class_field:
+#         messages.success(
+#             request,
+#             "Your request to join a school has been cancelled successfully.",
+#         )
 
 
 def handle_rapid_router_scores(request):

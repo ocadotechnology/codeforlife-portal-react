@@ -29,7 +29,8 @@ import {
   useGetStudentScoreQuery,
   useGetStudentKuronoGameDataQuery,
   useUpdateSchoolStudentDetailsMutation,
-  useUpdateStudentDetailsMutation
+  useUpdateStudentDetailsMutation,
+  useJoinSchoolRequestMutation
 } from './student';
 
 export {
@@ -58,5 +59,6 @@ export {
   useGetStudentScoreQuery,
   useGetStudentKuronoGameDataQuery,
   useUpdateStudentDetailsMutation,
-  useUpdateSchoolStudentDetailsMutation
+  useUpdateSchoolStudentDetailsMutation,
+  useJoinSchoolRequestMutation
 };

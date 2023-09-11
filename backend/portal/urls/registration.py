@@ -30,5 +30,5 @@ urlpatterns = [
         delete_account,
         name="delete_account",
     ),
-    path("verify-password/", verify_password, name=verify_password.__name__),
+    path("verify-password/", verify_password, name="verify_password"),
 ]

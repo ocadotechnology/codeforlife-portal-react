@@ -49,6 +49,26 @@ const studentApi = api.injectEndpoints({
         }
       })
     }),
+    joinSchoolRequest: build.mutation<number, { accessCode: string }>({
+      query: (body) => ({
+        url: 'student-join-organisation/',
+        method: 'POST',
+        body: { ...body, classJoinRequest: '' },
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      })
+    }),
+    revokeSchoolRequest: build.mutation<number, { accessCode: string }>({
+      query: (body) => ({
+        url: 'student-join-organisation/',
+        method: 'POST',
+        body: { ...body, revokeJoinRequest: '' },
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      })
+    }),
     updateSchoolStudentDetails: build.mutation<
       NotificationResponseProps,
       {
@@ -74,5 +94,6 @@ export const {
   useGetStudentScoreQuery,
   useGetStudentKuronoGameDataQuery,
   useUpdateStudentDetailsMutation,
-  useUpdateSchoolStudentDetailsMutation
+  useUpdateSchoolStudentDetailsMutation,
+  useJoinSchoolRequestMutation
 } = studentApi;

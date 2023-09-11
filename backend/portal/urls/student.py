@@ -2,6 +2,7 @@ from django.urls import path
 from portal.views.student import (
     handle_rapid_router_scores,
     handle_kurono_game_data,
+    student_join_organisation,
 )
 from portal.views.student.edit_account_details import (
     change_independent_details,
@@ -35,5 +36,10 @@ urlpatterns = [
         "independent/delete/",
         delete_independent_account,
         name="delete_independent_account",
+    ),
+    path(
+        "student-join-organisation/",
+        student_join_organisation,
+        name="student_join",
     ),
 ]

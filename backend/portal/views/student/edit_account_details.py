@@ -14,6 +14,7 @@ from portal.forms.play import (
     IndependentStudentEditAccountForm,
 )
 from portal.forms.registration import DeleteAccountForm
+from rest_framework import status
 
 from portal.helpers.password import check_update_password
 from portal.helpers.ratelimit import clear_ratelimit_cache_for_user
@@ -165,7 +166,7 @@ class SchoolStudentEditAccountView(LoginRequiredMixin, FormView):
 #         return _get_form(self, form_class)
 
 
-def process_change_email_password_form(request, student, old_anchor):
+def process_change_email_password_form(request, student):
     change_email_password_form = IndependentStudentEditAccountForm(
         request.user, request.POST
     )
@@ -190,10 +191,9 @@ def process_change_email_password_form(request, student, old_anchor):
             new_email,
             changing_password,
             changing_first_name,
-            "",
         )
     else:
-        return False, "", False, False, old_anchor
+        return False, "", False, False
 
 
 def process_student_edit_account_form(request):
@@ -202,9 +202,10 @@ def process_student_edit_account_form(request):
         data = form_class.cleaned_data
         check_update_password(form_class, request.user, request, data)
     else:
-        print(form_class.errors)
         notification = form_class.errors["__all__"][0]
-        return JsonResponse({"error": notification})
+        return JsonResponse(
+            {"error": notification}, status=status.HTTP_400_BAD_REQUEST
+        )
     # messages.success(
     #     request, "Your account details have been changed successfully."
     # )
