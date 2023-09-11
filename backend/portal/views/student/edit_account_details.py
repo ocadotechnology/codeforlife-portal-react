@@ -219,10 +219,6 @@ def process_student_edit_account_form(request):
     return HttpResponse()
 
 
-def change_school_student_details(request):
-    return process_student_edit_account_form(request)
-
-
 @login_required(login_url=reverse_lazy("independent_student_login"))
 def change_independent_details(request):
     change_email_password_form = IndependentStudentEditAccountForm(

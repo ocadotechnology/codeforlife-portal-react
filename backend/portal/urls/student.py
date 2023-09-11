@@ -6,7 +6,6 @@ from portal.views.student import (
 )
 from portal.views.student.edit_account_details import (
     change_independent_details,
-    change_school_student_details,
     SchoolStudentEditAccountView,
     delete_independent_account,
 )
