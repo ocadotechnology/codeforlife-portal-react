@@ -1,3 +1,4 @@
+import api from './api';
 import {
   useSubscribeToNewsletterMutation,
   useConsentFormMutation
@@ -24,6 +25,7 @@ import {
   useVerifyPasswordMutation,
   useDeleteAccountMutation
 } from './registration';
+import { useGetClassQuery, useUpdateClassMutation } from './teacher/teach';
 
 import {
   useGetStudentScoreQuery,
@@ -34,6 +36,7 @@ import {
   useRevokeSchoolRequestMutation
 } from './student';
 
+export default api;
 export {
   // dotmailer
   useSubscribeToNewsletterMutation,
@@ -62,5 +65,8 @@ export {
   useUpdateStudentDetailsMutation,
   useUpdateSchoolStudentDetailsMutation,
   useJoinSchoolRequestMutation,
-  useRevokeSchoolRequestMutation
+  useRevokeSchoolRequestMutation,
+  // teacher/teach
+  useGetClassQuery,
+  useUpdateClassMutation
 };
