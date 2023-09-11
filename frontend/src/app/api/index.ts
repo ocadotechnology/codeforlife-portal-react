@@ -30,7 +30,8 @@ import {
   useGetStudentKuronoGameDataQuery,
   useUpdateSchoolStudentDetailsMutation,
   useUpdateStudentDetailsMutation,
-  useJoinSchoolRequestMutation
+  useJoinSchoolRequestMutation,
+  useRevokeSchoolRequestMutation
 } from './student';
 
 export {
@@ -60,5 +61,6 @@ export {
   useGetStudentKuronoGameDataQuery,
   useUpdateStudentDetailsMutation,
   useUpdateSchoolStudentDetailsMutation,
-  useJoinSchoolRequestMutation
+  useJoinSchoolRequestMutation,
+  useRevokeSchoolRequestMutation
 };

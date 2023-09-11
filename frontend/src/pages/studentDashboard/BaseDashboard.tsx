@@ -2,7 +2,7 @@ import Page from 'codeforlife/lib/esm/components/page';
 import { SectionProps as PageSectionProps } from 'codeforlife/lib/esm/components/page/Section';
 import { tryValidateSync } from 'codeforlife/lib/esm/helpers/yup';
 import React from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import * as yup from 'yup';
 
 import { Link, useTheme } from '@mui/material';
@@ -60,31 +60,35 @@ const BaseDashboard: React.FC<BaseDashboardProps> = ({ isDependent }) => {
         textAlign="center"
         bgcolor={isDependent ? 'tertiary' : 'secondary'}
       />
-      {view !== undefined ? (
-        view
-      ) : (
-        <>
-          <Page.Notification bgcolor={isDependent ? 'tertiary' : 'secondary'}>
-            {isDependent ? (
-              <>You are logged in to class: {classCode}</>
-            ) : (
-              <>
-                You are logged in as an independent student. If you want to join
-                a school, you need to&nbsp;
-                <Link
-                  onClick={() => {
-                    navigate(paths.student.dashboard.independent.joinSchool._);
-                  }}
-                  color="inherit"
-                >
-                  request to join one
-                </Link>
-                .
-              </>
-            )}
-          </Page.Notification>
-        </>
-      )}
+      {view !== undefined
+        ? (
+          view
+        )
+        : (
+          <>
+            <Page.Notification bgcolor={isDependent ? 'tertiary' : 'secondary'}>
+              {isDependent
+                ? (
+                  <>You are logged in to class: {classCode}</>
+                )
+                : (
+                  <>
+                    You are logged in as an independent student. If you want to join
+                    a school, you need to&nbsp;
+                    <Link
+                      onClick={() => {
+                        navigate(paths.student.dashboard.independent.joinSchool._);
+                      }}
+                      color="inherit"
+                    >
+                      request to join one
+                    </Link>
+                    .
+                  </>
+                )}
+            </Page.Notification>
+          </>
+        )}
 
       <Page.Section>
         <Games isDependent={isDependent} />

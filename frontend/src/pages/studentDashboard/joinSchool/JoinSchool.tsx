@@ -11,7 +11,11 @@ import {
 
 import { accessCodeSchema } from '../../../app/schemas';
 import { submitForm } from 'codeforlife/lib/esm/helpers/formik';
-import { useJoinSchoolRequestMutation } from '../../../app/api';
+import {
+  useJoinSchoolRequestMutation,
+  useRevokeSchoolRequestMutation
+} from '../../../app/api';
+import { getSchool } from '../../teacherDashboard/dummyMethods';
 
 const JoinSchool: React.FC = () => {
   const navigate = useNavigate();
@@ -21,19 +25,21 @@ const JoinSchool: React.FC = () => {
   };
 
   const [requestSent, setRequestSent] = React.useState(false);
-  const [requestToJoinSchool] = useJoinSchoolRequestMutation();
+  const [requestJoinSchool] = useJoinSchoolRequestMutation();
+  const [revokeJoinSchool] = useRevokeSchoolRequestMutation();
+  const { accessCode } = getSchool();
   return (
     <Page.Section>
       <Typography align="center" variant="h4">
         Join a school or club
       </Typography>
-      {requestSent ? (
-        <>
+      {requestSent
+        ? <>
           <Typography variant="h5">Request pending</Typography>
           {/* TODO: Fetch actual values from backend. */}
           <Typography>
-            Your request to join class AB123 in the school or club Code for Life
-            School is still pending.
+            Your request to join class {accessCode} in the school or club Code
+            for Life School is still pending.
           </Typography>
           <Typography>
             The teacher for that class must review and approve the request to
@@ -64,16 +70,21 @@ const JoinSchool: React.FC = () => {
             <Button
               onClick={() => {
                 // TODO: Connect to backend
-                useJoinSchoolRequestMutation();
-                setRequestSent(false);
+                revokeJoinSchool({ accessCode })
+                  .unwrap()
+                  .then(() => {
+                    setRequestSent(true);
+                  })
+                  .catch(() => {
+                    setRequestSent(false);
+                  });
               }}
             >
               Cancel request
             </Button>
           </Stack>
         </>
-      ) : (
-        <>
+        : <>
           <Typography variant="h5">Request to join a school or club</Typography>
           <Typography>
             If you want to link your Code For Life account with a school or
@@ -92,7 +103,7 @@ const JoinSchool: React.FC = () => {
 
           <Form
             initialValues={initialValues}
-            onSubmit={submitForm(requestToJoinSchool, {
+            onSubmit={submitForm(requestJoinSchool, {
               then: () => {
                 setRequestSent(true);
               },
@@ -123,7 +134,7 @@ const JoinSchool: React.FC = () => {
             </Stack>
           </Form>
         </>
-      )}
+      }
     </Page.Section>
   );
 };

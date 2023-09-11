@@ -272,7 +272,8 @@ const StudentAccount: React.FC<{
   return (
     <>
       <Page.Section>
-        {isDependent ? (
+        {isDependent
+? (
           <>
             <Typography align="center" variant="h4">
               Update your password
@@ -286,7 +287,8 @@ const StudentAccount: React.FC<{
               If you have any problems, ask a teacher to help you.
             </Typography>
           </>
-        ) : (
+        )
+: (
           <>
             <Typography align="center" variant="h4">
               Update your account details
@@ -301,7 +303,8 @@ const StudentAccount: React.FC<{
         )}
         <AccountForm isDependent={isDependent} />
       </Page.Section>
-      {!isDependent ? (
+      {!isDependent
+? (
         <>
           <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
             <Typography variant="h5">Join a school or club</Typography>
@@ -321,7 +324,8 @@ const StudentAccount: React.FC<{
             <DeleteAccountForm userType="independent" />
           </Page.Section>
         </>
-      ) : (
+      )
+: (
         <></>
       )}
     </>

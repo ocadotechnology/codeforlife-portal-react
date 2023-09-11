@@ -50,7 +50,6 @@ const KuronoProgress: React.FC<{
   isDependent: boolean;
 }> = ({ isDependent }) => {
   // TODO: fetch from api store.
-  const challengeLevel = 1;
 
   return (
     <Stack spacing={3} alignItems="center">
