@@ -3,8 +3,9 @@ from datetime import timedelta
 from itertools import chain
 from typing import List
 
-from common.models import Teacher, Student
+from django.conf import settings
 from django.contrib.auth.models import User
+from django.db.models.query import QuerySet
 from django.urls import reverse
 from django.utils import timezone
 from rest_framework.response import Response
@@ -35,23 +36,29 @@ USER_2ND_VERIFY_EMAIL_REMINDER_TEXT = (
 USER_DELETE_UNVERIFIED_ACCOUNT_DAYS = 19
 
 
-def get_unverified_emails(days: int) -> List[str]:
+def get_unverified_users(days: int, same_day: bool) -> QuerySet[User]:
     now = timezone.now()
 
-    teacher_emails = Teacher.objects.filter(
-        user__is_verified=False,
-        new_user__date_joined__lte=now - timedelta(days=days),
-        new_user__date_joined__gt=now - timedelta(days=days + 1),
-    ).values_list("new_user__email", flat=True)
+    # All expired unverified users.
+    user_queryset = User.objects.filter(
+        date_joined__lte=now - timedelta(days=days),
+        userprofile__is_verified=False,
+    )
+    if same_day:
+        user_queryset = user_queryset.filter(
+            date_joined__gt=now - timedelta(days=days + 1)
+        )
 
-    student_emails = Student.objects.filter(
-        user__is_verified=False,
-        class_field=None,
-        new_user__date_joined__lte=now - timedelta(days=days),
-        new_user__date_joined__gt=now - timedelta(days=days + 1),
-    ).values_list("new_user__email", flat=True)
+    teacher_queryset = user_queryset.filter(
+        new_teacher__isnull=False,
+        new_student__isnull=True,
+    )
+    independent_student_queryset = user_queryset.filter(
+        new_teacher__isnull=True,
+        new_student__class_field__isnull=True,
+    )
 
-    return list(chain(teacher_emails, student_emails))
+    return teacher_queryset.union(independent_student_queryset)
 
 
 def build_absolute_google_uri(request, location: str) -> str:
@@ -68,16 +75,19 @@ def build_absolute_google_uri(request, location: str) -> str:
 
 class FirstVerifyEmailReminderView(CronMixin, APIView):
     def get(self, request):
-        emails = get_unverified_emails(USER_1ST_VERIFY_EMAIL_REMINDER_DAYS)
+        user_queryset = get_unverified_users(
+            USER_1ST_VERIFY_EMAIL_REMINDER_DAYS,
+            same_day=True,
+        )
+        user_count = user_queryset.count()
 
-        logging.info(f"{len(emails)} emails unverified.")
+        logging.info(f"{user_count} emails unverified.")
 
-        if emails:
-            terms_url = build_absolute_google_uri(request, reverse("terms"))
-            privacy_notice_url = build_absolute_google_uri(request, reverse("privacy_notice"))
-
+        if user_count > 0:
             sent_email_count = 0
-            for email in emails:
+            for email in user_queryset.values_list("email", flat=True).iterator(
+                chunk_size=500
+            ):
                 email_verification_url = build_absolute_google_uri(
                     request,
                     reverse(
@@ -94,8 +104,8 @@ class FirstVerifyEmailReminderView(CronMixin, APIView):
                         title="Awaiting verification",
                         text_content=USER_1ST_VERIFY_EMAIL_REMINDER_TEXT.format(
                             email_verification_url=email_verification_url,
-                            terms_url=terms_url,
-                            privacy_notice_url=privacy_notice_url,
+                            terms_url=f"{settings.FRONTEND_URL}/terms-of-use/terms-of-use",
+                            privacy_notice_url=f"{settings.FRONTEND_URL}/privacy-notice/privacy-notice",
                         ),
                         replace_url={"verify_url": email_verification_url},
                     )
@@ -104,23 +114,26 @@ class FirstVerifyEmailReminderView(CronMixin, APIView):
                 except Exception as ex:
                     logging.exception(ex)
 
-            logging.info(f"Sent {sent_email_count}/{len(emails)} emails.")
+            logging.info(f"Sent {sent_email_count}/{user_count} emails.")
 
         return Response()
 
 
 class SecondVerifyEmailReminderView(CronMixin, APIView):
     def get(self, request):
-        emails = get_unverified_emails(USER_2ND_VERIFY_EMAIL_REMINDER_DAYS)
+        user_queryset = get_unverified_users(
+            USER_2ND_VERIFY_EMAIL_REMINDER_DAYS,
+            same_day=True,
+        )
+        user_count = user_queryset.count()
 
-        logging.info(f"{len(emails)} emails unverified.")
+        logging.info(f"{user_count} emails unverified.")
 
-        if emails:
-            terms_url = build_absolute_google_uri(request, reverse("terms"))
-            privacy_notice_url = build_absolute_google_uri(request, reverse("privacy_notice"))
-
+        if user_count > 0:
             sent_email_count = 0
-            for email in emails:
+            for email in user_queryset.values_list("email", flat=True).iterator(
+                chunk_size=500
+            ):
                 email_verification_url = build_absolute_google_uri(
                     request,
                     reverse(
@@ -137,8 +150,8 @@ class SecondVerifyEmailReminderView(CronMixin, APIView):
                         title="Your account needs verification",
                         text_content=USER_2ND_VERIFY_EMAIL_REMINDER_TEXT.format(
                             email_verification_url=email_verification_url,
-                            terms_url=terms_url,
-                            privacy_notice_url=privacy_notice_url,
+                            terms_url=f"{settings.FRONTEND_URL}/terms-of-use/terms-of-use",
+                            privacy_notice_url=f"{settings.FRONTEND_URL}/privacy-notice/privacy-notice",
                         ),
                         replace_url={"verify_url": email_verification_url},
                     )
@@ -147,7 +160,7 @@ class SecondVerifyEmailReminderView(CronMixin, APIView):
                 except Exception as ex:
                     logging.exception(ex)
 
-            logging.info(f"Sent {sent_email_count}/{len(emails)} emails.")
+            logging.info(f"Sent {sent_email_count}/{user_count} emails.")
 
         return Response()
 
@@ -156,22 +169,17 @@ class DeleteUnverifiedAccounts(CronMixin, APIView):
     def get(self, request):
         user_count = User.objects.count()
 
-        # All expired unverified users.
-        user_queryset = User.objects.filter(
-            date_joined__lte=timezone.now()
-            - timedelta(days=USER_DELETE_UNVERIFIED_ACCOUNT_DAYS),
-            userprofile__is_verified=False,
+        user_queryset = get_unverified_users(
+            USER_DELETE_UNVERIFIED_ACCOUNT_DAYS,
+            same_day=False,
         )
-        # Delete teachers.
-        user_queryset.filter(
-            new_teacher__isnull=False,
-            new_student__isnull=True,
-        ).delete()
-        # Delete independent students.
-        user_queryset.filter(
-            new_teacher__isnull=True,
-            new_student__class_field__isnull=True,
-        ).delete()
+
+        for user in user_queryset.iterator(chunk_size=100):
+            try:
+                user.delete()
+            except Exception as ex:
+                logging.error(f"Failed to delete user with id: {user.id}")
+                logging.exception(ex)
 
         user_count -= User.objects.count()
         logging.info(f"{user_count} unverified users deleted.")

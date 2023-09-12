@@ -1,3 +1,4 @@
+import api from './api';
 import {
   useSubscribeToNewsletterMutation,
   useConsentFormMutation
@@ -33,7 +34,12 @@ import {
   useResendInviteMutation,
   useDeleteInviteMutation
 } from './teacher/dashboard';
+import {
+  useGetClassQuery,
+  useUpdateClassMutation
+} from './teacher/teach';
 
+export default api;
 export {
   // dotmailer
   useSubscribeToNewsletterMutation,
@@ -63,5 +69,8 @@ export {
   useOrganisationKickMutation,
   useInviteToggleAdminMutation,
   useResendInviteMutation,
-  useDeleteInviteMutation
+  useDeleteInviteMutation,
+  // teacher/teach
+  useGetClassQuery,
+  useUpdateClassMutation
 };

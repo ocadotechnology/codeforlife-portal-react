@@ -1,4 +1,4 @@
-import api from 'codeforlife/lib/esm/api';
+import api from '../api';
 import { classType, teacherType } from '../organisation';
 
 export interface coworkersType {

@@ -1,133 +1,30 @@
-import * as Yup from 'yup';
-import React from 'react';
 import {
-  useTheme,
-  Typography,
-  Grid,
-  Stack,
+  Box,
   Button,
+  Grid,
   Link,
-  Box
+  Stack,
+  Typography,
+  useTheme
 } from '@mui/material';
-import { Formik, Form } from 'formik';
+import { Form, Formik } from 'formik';
+import React from 'react';
+
 import {
-  AutocompleteField,
-  CheckboxField
+  AutocompleteField
 } from 'codeforlife/lib/esm/components/form';
+import Page from 'codeforlife/lib/esm/components/page';
+
+import { useGetClassQuery } from '../../../../../app/api';
+import RapidRouterTabTitles from './RapidRouterTabTitles';
+import RapidRouterTabs from './RapidRouterTabs';
+import UpdateClassForm from './UpdateClassForm';
 import {
   BLOCKLY_LEVELS,
   PYTHON_LEVELS,
   RapidRouterGameTabs
 } from './rapidRouterLevelsProps';
-import RapidRouterTabTitles from './RapidRouterTabTitles';
-import RapidRouterTabs from './RapidRouterTabs';
-import ClassNameField from '../../../../../components/form/ClassNameField';
-import Page from 'codeforlife/lib/esm/components/page';
 
-const currentDropdownOptions = [
-  "Don't change my current setting",
-  "Don't allow external requests to this class",
-  'Allow external requests to this class for the next hour',
-  'Allow external requests to this class for the next 4 hours',
-  'Allow external requests to this class for the next 8 hours',
-  'Allow external requests to this class for the next 12 hours',
-  'Allow external requests to this class for the next 16 hours',
-  'Allow external requests to this class for the next 20 hours',
-  'Allow external requests to this class for the next 24 hours',
-  'Allow external requests to this class for the next 2 days',
-  'Allow external requests to this class for the next 3 days',
-  'Allow external requests to this class for the next 4 days',
-  'Always allow external requests to this class (not recommended)'
-];
-
-const ClassDetailsForm: React.FC<{
-  goBack: () => void;
-}> = ({ goBack }) => {
-  const theme = useTheme();
-  return (
-    <Formik
-      initialValues={{
-        // TODO: Prepopulate by getting class data instead of hardcoding
-        class: 'Class 1',
-        classSettingOptions: currentDropdownOptions[0],
-        allowStudentsToSeeEachOthersProgress: false
-      }}
-      validationSchema={Yup.object().shape({
-        class: Yup.string().required('Required'),
-        classSettingOptions: Yup.string().required('Required'),
-        allowStudentsToSeeEachOthersProgress: Yup.boolean().required('Required')
-      })}
-      onSubmit={(values) => {
-        alert(JSON.stringify(values, null, 2));
-      }}
-    >
-      {(formik) => (
-        <Form>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <ClassNameField />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <CheckboxField
-                name="allowStudentsToSeeEachOthersProgress"
-                formControlLabelProps={{
-                  label: "Allow students to see their classmates' progress."
-                }}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Stack gap={1}>
-                <Typography marginTop={theme.spacing(5)} variant="h5">
-                  External requests setting
-                </Typography>
-                <Typography>
-                  You can set up permissions for this class allowing students to
-                  send requests asking to join your class from outside of your
-                  school or club.
-                </Typography>
-                <Typography marginTop={theme.spacing(1)} fontWeight="bold">
-                  This class is not current accepting external requests.
-                </Typography>
-                <Typography marginTop={theme.spacing(2)}>
-                  Set up external requests to this class
-                </Typography>
-                <Grid container>
-                  <Grid item xs={6}>
-                    <AutocompleteField
-                      options={currentDropdownOptions}
-                      textFieldProps={{
-                        required: true,
-                        name: 'classSettingOptions',
-                        helperText: 'Choose your setting'
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={6}></Grid>
-                </Grid>
-                <Stack
-                  gap={3}
-                  direction="row"
-                  justifyContent="flex-start"
-                  marginTop={theme.spacing(3)}
-                >
-                  <Button variant="outlined" onClick={goBack}>
-                    Cancel
-                  </Button>
-                  <Button
-                    disabled={!(formik.isValid && formik.dirty)}
-                    type="submit"
-                  >
-                    Update
-                  </Button>
-                </Stack>
-              </Stack>
-            </Grid>
-          </Grid>
-        </Form>
-      )}
-    </Formik>
-  );
-};
 const allLevelsChecked: string[] = Array.from({ length: 109 }, (_, i) =>
   (i + 1).toString()
 );
@@ -288,23 +185,24 @@ const AdditionalSettings: React.FC<{
   goBack: () => void;
 }> = ({ accessCode, goBack }) => {
   const theme = useTheme();
+  const { data } = useGetClassQuery({ accessCode });
 
-  return (
-    <>
-      <Page.Section>
-        <Typography variant="h4" align="center">
-          Additional class settings class Class 1 ({accessCode})
-        </Typography>
-        <Link className="back-to" onClick={goBack}>
-          Edit Class
-        </Link>
-        <Typography mb={0}>
-          You may change the name of the class, or change permissions to allow
-          external requests from independent students to join this class. You
-          may also transfer the class to another teacher, or change permissions
-          to allow pupils to see their classmates&apos; progress.
-        </Typography>
-      </Page.Section>
+  return <>
+    <Page.Section>
+      <Typography variant="h4" align="center">
+        Additional class settings class Class 1 ({accessCode})
+      </Typography>
+      <Link className="back-to" onClick={goBack}>
+        Edit Class
+      </Link>
+      <Typography mb={0}>
+        You may change the name of the class, or change permissions to allow
+        external requests from independent students to join this class. You
+        may also transfer the class to another teacher, or change permissions
+        to allow pupils to see their classmates&apos; progress.
+      </Typography>
+    </Page.Section>
+    {data !== undefined &&
       <Page.Section
         sx={{
           my: theme.spacing(2)
@@ -314,26 +212,31 @@ const AdditionalSettings: React.FC<{
         <Typography marginTop={theme.spacing(4)} variant="h5">
           Class details
         </Typography>
-        <ClassDetailsForm goBack={goBack} />
+        <UpdateClassForm
+          accessCode={accessCode}
+          name={data.class.name}
+          classmateProgress={data.class.classmateProgress}
+          externalRequestsMessage={data.externalRequestsMessage}
+        />
       </Page.Section>
-      <Page.Section
-        sx={{
-          marginTop: theme.spacing(3.5),
-          marginBottom: theme.spacing(6)
-        }}
-      >
-        <Typography variant="h5">Rapid Router access settings</Typography>
-        <Typography marginBottom={theme.spacing(3.5)}>
-          You may control access to levels here by selecting what you wish to
-          display to the students.
-        </Typography>
-        <RapidRouterAccessSettings />
-      </Page.Section>
-      <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
-        <TransferClassToAnotherTeacher />
-      </Page.Section>
-    </>
-  );
+    }
+    <Page.Section
+      sx={{
+        marginTop: theme.spacing(3.5),
+        marginBottom: theme.spacing(6)
+      }}
+    >
+      <Typography variant="h5">Rapid Router access settings</Typography>
+      <Typography marginBottom={theme.spacing(3.5)}>
+        You may control access to levels here by selecting what you wish to
+        display to the students.
+      </Typography>
+      <RapidRouterAccessSettings />
+    </Page.Section>
+    <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
+      <TransferClassToAnotherTeacher />
+    </Page.Section>
+  </>;
 };
 
 export default AdditionalSettings;
