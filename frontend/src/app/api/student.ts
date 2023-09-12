@@ -1,4 +1,4 @@
-import api from 'codeforlife/lib/esm/api';
+import api from './api';
 
 interface StudentScoreProps {
   numCompleted: number;
