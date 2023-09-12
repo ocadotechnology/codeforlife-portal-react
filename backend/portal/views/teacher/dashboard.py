@@ -264,7 +264,7 @@ def invite_teacher(request):
         invited_teacher_first_name = data["teacher_first_name"]
         invited_teacher_last_name = data["teacher_last_name"]
         invited_teacher_email = data["teacher_email"]
-        invited_teacher_is_admin = (data["make_admin_ticked"] == 'true')
+        invited_teacher_is_admin = (data["make_admin_ticked"] == True)
 
         token = uuid4().hex
         SchoolTeacherInvitation.objects.create(

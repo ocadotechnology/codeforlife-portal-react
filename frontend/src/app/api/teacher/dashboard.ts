@@ -11,7 +11,7 @@ export interface coworkersType {
 
 export interface sentInvitesType {
   id: string,
-  isTeacherAdmin: boolean,
+  invitedTeacherIsAdmin: boolean,
   invitedTeacherEmail: string,
   invitedTeacherFirstName: string,
   invitedTeacherLastName: string,
