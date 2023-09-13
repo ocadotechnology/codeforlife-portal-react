@@ -70,7 +70,8 @@ const teacherDashboardApi = api.injectEndpoints({
         });
         rtn.school = JSON.parse(response.school)[0].fields;
         return rtn;
-      }
+      },
+      providesTags: ['teacher']
     }),
     inviteTeacher: build.mutation<any, {
       teacherFirstName: string;
@@ -85,7 +86,8 @@ const teacherDashboardApi = api.injectEndpoints({
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
-      })
+      }),
+      invalidatesTags: ['teacher']
     }),
     updateSchool: build.mutation<void, {
       name: string;
@@ -99,7 +101,8 @@ const teacherDashboardApi = api.injectEndpoints({
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
-      })
+      }),
+      invalidatesTags: ['teacher']
     }),
     toggleAdmin: build.mutation<{
       isAdminNow: boolean
@@ -112,7 +115,8 @@ const teacherDashboardApi = api.injectEndpoints({
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
-      })
+      }),
+      invalidatesTags: ['teacher']
     }),
     organisationKick: build.mutation<{
       source?: string,
@@ -126,7 +130,8 @@ const teacherDashboardApi = api.injectEndpoints({
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
-      })
+      }),
+      invalidatesTags: ['teacher']
     }),
     inviteToggleAdmin: build.mutation<{
       isAdminNow: boolean
@@ -139,7 +144,8 @@ const teacherDashboardApi = api.injectEndpoints({
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
-      })
+      }),
+      invalidatesTags: ['teacher']
     }),
     resendInvite: build.mutation<void, {
       token: string
@@ -161,7 +167,8 @@ const teacherDashboardApi = api.injectEndpoints({
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
-      })
+      }),
+      invalidatesTags: ['teacher']
     })
   })
 });

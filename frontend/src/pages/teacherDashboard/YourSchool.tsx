@@ -128,7 +128,6 @@ const InviteTeacherForm: React.FC<{
                           : `You have invited ${firstName} ${lastName} to your school.`
                       }
                     });
-                    navigate(0);
                   })
                   .catch((err) => { console.error('InviteTeacher error', err); });
               }
@@ -143,7 +142,6 @@ const InviteTeacherForm: React.FC<{
                       : `You have invited ${firstName} ${lastName} to your school.`
                   }
                 });
-                navigate(0);
               })
               .catch((err) => { console.error('InviteTeacher error', err); });
           }
@@ -223,7 +221,6 @@ const UpdateSchoolDetailsForm: React.FC<{
                 message: 'You have updated the details for your school or club successfully.'
               }
             });
-            navigate(0);
           })
           .catch((err) => { console.error('UpdateSchool error: ', err); });
       }}
@@ -253,7 +250,7 @@ const TeachersTableActions: React.FC<{
   const [resendInvite] = useResendInviteMutation();
   const [deleteInvite] = useDeleteInviteMutation();
 
-  const onToggleAdmin = (id: string) => () => {
+  const onToggleAdmin = (id: string): void => {
     toggleAdmin({ id }).unwrap()
       .then((res) => {
         navigate('.', {
@@ -263,12 +260,11 @@ const TeachersTableActions: React.FC<{
               : 'Administrator status has been revoked successfully.'
           }
         });
-        navigate(0);
       })
       .catch((err) => { console.error('ToggleAdmin error: ', err); });
   };
 
-  const onOrganisationKick = (id: string) => () => {
+  const onOrganisationKick = (id: string): void => {
     organisationKick({ id }).unwrap()
       .then((res) => {
         if (res?.classes) {
@@ -286,7 +282,6 @@ const TeachersTableActions: React.FC<{
               message: 'The teacher has been successfully removed from your school or club.'
             }
           });
-          navigate(0);
         }
       })
       .catch((err) => { console.error('OrganisationKick error: ', err); });
@@ -302,12 +297,11 @@ const TeachersTableActions: React.FC<{
               : 'Administrator invite status has been revoked successfully.'
           }
         });
-        navigate(0);
       })
       .catch((err) => { console.error('InviteToggleAdmin error: ', err); });
   };
 
-  const onResendInvite = (token: string) => () => {
+  const onResendInvite = (token: string): void => {
     resendInvite({ token }).unwrap()
       .then(() => {
         navigate('.', {
@@ -315,12 +309,11 @@ const TeachersTableActions: React.FC<{
             message: 'Teacher re-invited!'
           }
         });
-        navigate(0);
       })
       .catch((err) => { console.error('ResendInvite error: ', err); });
   };
 
-  const onDeleteInvite = (token: string) => () => {
+  const onDeleteInvite = (token: string): void => {
     deleteInvite({ token }).unwrap()
       .then(() => {
         navigate('.', {
@@ -328,7 +321,6 @@ const TeachersTableActions: React.FC<{
             message: 'Invitation successfully deleted.'
           }
         });
-        navigate(0);
       })
       .catch((err) => { console.error('DeleteInvite error: ', err); });
   };
@@ -338,6 +330,16 @@ const TeachersTableActions: React.FC<{
       open: true,
       onConfirm: () => {
         onInviteToggleAdmin(id);
+        setDialog({ open: false });
+      }
+    });
+  };
+
+  const onMakeAdmin = (id: string): void => {
+    setDialog({
+      open: true,
+      onConfirm: () => {
+        onToggleAdmin(id);
         setDialog({ open: false });
       }
     });
@@ -354,8 +356,8 @@ const TeachersTableActions: React.FC<{
             Make admin
           </Button>
         }
-        <Button endIcon={<EmailOutlined />} onClick={onResendInvite(token as string)}>Resend invite</Button>
-        <Button className="alert" endIcon={<DeleteOutline />} onClick={onDeleteInvite(token as string)}>Delete</Button>
+        <Button endIcon={<EmailOutlined />} onClick={() => { onResendInvite(token as string); }}>Resend invite</Button>
+        <Button className="alert" endIcon={<DeleteOutline />} onClick={() => { onDeleteInvite(token as string); }}>Delete</Button>
       </>
     );
   } else {
@@ -370,10 +372,10 @@ const TeachersTableActions: React.FC<{
     } else if (isTeacherAdmin) {
       return (
         <>
-          <Button className="alert" endIcon={<DoNotDisturb />} onClick={onToggleAdmin(id)}>
+          <Button className="alert" endIcon={<DoNotDisturb />} onClick={() => { onToggleAdmin(id); }}>
             Revoke admin
           </Button>
-          <Button className="alert" endIcon={<DeleteOutline />} onClick={onOrganisationKick(id)}>
+          <Button className="alert" endIcon={<DeleteOutline />} onClick={() => { onOrganisationKick(id); }}>
             Delete
           </Button>
         </>
@@ -381,7 +383,7 @@ const TeachersTableActions: React.FC<{
     } else {
       return (
         <>
-          <Button endIcon={<Add />} onClick={() => { onInviteMakeAdmin(id); }}>Make admin</Button>
+          <Button endIcon={<Add />} onClick={() => { onMakeAdmin(id); }}>Make admin</Button>
           {twoFactorAuthentication
             ? <Button endIcon={<DoDisturbOnOutlined />} className="alert">
               Disable 2FA
