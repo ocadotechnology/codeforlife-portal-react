@@ -108,17 +108,9 @@ def student_join_organisation(request):
         elif "revoke_join_request" in request.POST:
             student.pending_class_request = None
             student.save()
-            # Check teacher hasn't since accepted rejection before posting success
-            # show_cancellation_message_if_student_not_in_class(student, request)
-            # HttpResponseRedirect(reverse_lazy("student_edit_account"))
         return HttpResponse()
 
-    # res = render(
-    #     request,
-    #     "portal/play/student_join_organisation.html",
-    #     {"request_form": request_form, "student": student},
-    # )
-    return HttpResponse(status=status.HTTP_405_METHOD_NOT_ALLOWED)  # res
+    return HttpResponse(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 def process_join_organisation_form(request_form, request, student):

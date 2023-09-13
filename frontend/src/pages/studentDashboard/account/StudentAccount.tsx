@@ -119,12 +119,12 @@ const AccountForm: React.FC<{
     return (
       <Form
         initialValues={initialValues}
-        onSubmit={(values, formik) => {
+        onSubmit={(values) => {
           const changedPassword =
             'Your account details have been changed successfully. Please login using your new password.';
           updateSchoolStudent(values)
             .unwrap()
-            .then((res) => {
+            .then(() => {
               navigate(paths.student.dashboard.dependent._, {
                 state: {
                   notifications: [
@@ -273,61 +273,61 @@ const StudentAccount: React.FC<{
     <>
       <Page.Section>
         {isDependent
-? (
-          <>
-            <Typography align="center" variant="h4">
-              Update your password
-            </Typography>
-            <Typography>
-              You may edit your password below. It must be long enough and hard
-              enough to stop your friends guessing it and stealing all of your
-              hard work. Choose something memorable though.
-            </Typography>
-            <Typography>
-              If you have any problems, ask a teacher to help you.
-            </Typography>
-          </>
-        )
-: (
-          <>
-            <Typography align="center" variant="h4">
-              Update your account details
-            </Typography>
-            <Typography>You can update your account details below.</Typography>
-            <Typography>
-              Please note: If you change your email address, you will need to
-              re-verify it. Please ensure your password is strong enough to be
-              secure.
-            </Typography>
-          </>
-        )}
+          ? (
+            <>
+              <Typography align="center" variant="h4">
+                Update your password
+              </Typography>
+              <Typography>
+                You may edit your password below. It must be long enough and hard
+                enough to stop your friends guessing it and stealing all of your
+                hard work. Choose something memorable though.
+              </Typography>
+              <Typography>
+                If you have any problems, ask a teacher to help you.
+              </Typography>
+            </>
+          )
+          : (
+            <>
+              <Typography align="center" variant="h4">
+                Update your account details
+              </Typography>
+              <Typography>You can update your account details below.</Typography>
+              <Typography>
+                Please note: If you change your email address, you will need to
+                re-verify it. Please ensure your password is strong enough to be
+                secure.
+              </Typography>
+            </>
+          )}
         <AccountForm isDependent={isDependent} />
       </Page.Section>
       {!isDependent
-? (
-        <>
-          <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
-            <Typography variant="h5">Join a school or club</Typography>
-            <Typography>
-              To find out about linking your Code For Life account with a school
-              or club, click &apos;Join&apos;.
-            </Typography>
-            <Button
-              onClick={() => {
-                navigate(paths.student.dashboard.independent.joinSchool._);
-              }}
-            >
-              Join
-            </Button>
-          </Page.Section>
-          <Page.Section>
-            <DeleteAccountForm userType="independent" />
-          </Page.Section>
-        </>
-      )
-: (
-        <></>
-      )}
+        ? (
+          <>
+            <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
+              <Typography variant="h5">Join a school or club</Typography>
+              <Typography>
+                To find out about linking your Code For Life account with a school
+                or club, click &apos;Join&apos;.
+              </Typography>
+              <Button
+                onClick={() => {
+                  navigate(paths.student.dashboard.independent.joinSchool._);
+                }}
+              >
+                Join
+              </Button>
+            </Page.Section>
+            <Page.Section>
+              <DeleteAccountForm userType="independent" />
+            </Page.Section>
+          </>
+        )
+        : (
+          <></>
+        )}
     </>
   );
 };

@@ -241,7 +241,7 @@ def change_independent_details(request):
     #     changing_first_name,
     #     _,
     # ) =
-    process_change_email_password_form(request, request.user, "")
+    process_change_email_password_form(request, request.user)
 
     # if changing_email or changing_password:
     #     logout(request)
