@@ -3,6 +3,7 @@ import logging
 from common.models import UserSession, Student, Class
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, FormView
 from django.contrib.auth.models import User
 from django.http import HttpRequest, HttpResponse, JsonResponse

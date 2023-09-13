@@ -33,7 +33,8 @@ import {
   useUpdateSchoolStudentDetailsMutation,
   useUpdateStudentDetailsMutation,
   useJoinSchoolRequestMutation,
-  useRevokeSchoolRequestMutation
+  useRevokeSchoolRequestMutation,
+  useIsRequestingToJoinSchoolQuery
 } from './student';
 
 export default api;
@@ -66,6 +67,7 @@ export {
   useUpdateSchoolStudentDetailsMutation,
   useJoinSchoolRequestMutation,
   useRevokeSchoolRequestMutation,
+  useIsRequestingToJoinSchoolQuery,
   // teacher/teach
   useGetClassQuery,
   useUpdateClassMutation

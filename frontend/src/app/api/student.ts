@@ -57,12 +57,10 @@ const studentApi = api.injectEndpoints({
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
-      })
+      }),
+      invalidatesTags: (result) => [{ type: 'studentRequest' }]
     }),
-    revokeSchoolRequest: build.mutation<
-      { accessCode: string },
-      { accessCode: string }
-    >({
+    revokeSchoolRequest: build.mutation<null, { accessCode: string }>({
       query: (body) => ({
         url: 'student-join-organisation/',
         method: 'POST',
@@ -70,7 +68,18 @@ const studentApi = api.injectEndpoints({
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
-      })
+      }),
+      invalidatesTags: (result) => [{ type: 'studentRequest' }]
+    }),
+    isRequestingToJoinSchool: build.query<
+      { accessCode: string; isPending: boolean },
+      null
+    >({
+      query: () => ({
+        url: 'is-pending-class-request/',
+        method: 'GET'
+      }),
+      providesTags: (result) => [{ type: 'studentRequest' }]
     }),
     updateSchoolStudentDetails: build.mutation<
       NotificationResponseProps,
@@ -99,5 +108,6 @@ export const {
   useUpdateStudentDetailsMutation,
   useUpdateSchoolStudentDetailsMutation,
   useJoinSchoolRequestMutation,
-  useRevokeSchoolRequestMutation
+  useRevokeSchoolRequestMutation,
+  useIsRequestingToJoinSchoolQuery
 } = studentApi;

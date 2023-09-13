@@ -2,18 +2,21 @@ import api from '../api';
 
 const teachApi = api.injectEndpoints({
   endpoints: (build) => ({
-    getClass: build.query<{
-      // blockly_episodes
-      // python_episodes
-      // locked_levels
-      class: {
-        name: string;
-        classmateProgress: boolean;
+    getClass: build.query<
+      {
+        // blockly_episodes
+        // python_episodes
+        // locked_levels
+        class: {
+          name: string;
+          classmateProgress: boolean;
+        };
+        externalRequestsMessage: string;
+      },
+      {
+        accessCode: string;
       }
-      externalRequestsMessage: string;
-    }, {
-      accessCode: string;
-    }>({
+    >({
       query: ({ accessCode }) => ({
         url: `teach/class/edit/${accessCode}`,
         method: 'GET'
@@ -22,15 +25,18 @@ const teachApi = api.injectEndpoints({
         { type: 'class', id: accessCode }
       ]
     }),
-    updateClass: build.mutation<null, {
-      accessCode: string;
-      classEditSubmit?: boolean;
-      levelControlSubmit?: boolean;
-      classMoveSubmit?: boolean;
-      name: string;
-      classmateProgress: boolean;
-      externalRequests: string;
-    }>({
+    updateClass: build.mutation<
+      null,
+      {
+        accessCode: string;
+        classEditSubmit?: boolean;
+        levelControlSubmit?: boolean;
+        classMoveSubmit?: boolean;
+        name: string;
+        classmateProgress: boolean;
+        externalRequests: string;
+      }
+    >({
       query: ({ accessCode, ...body }) => ({
         url: `teach/class/edit/${accessCode}`,
         method: 'POST',
@@ -47,7 +53,4 @@ const teachApi = api.injectEndpoints({
 });
 
 export default teachApi;
-export const {
-  useGetClassQuery,
-  useUpdateClassMutation
-} = teachApi;
+export const { useGetClassQuery, useUpdateClassMutation } = teachApi;

@@ -10,8 +10,8 @@ import {
 } from 'codeforlife/lib/esm/components/form';
 
 import { accessCodeSchema } from '../../../app/schemas';
-import { submitForm } from 'codeforlife/lib/esm/helpers/formik';
 import {
+  useIsRequestingToJoinSchoolQuery,
   useJoinSchoolRequestMutation,
   useRevokeSchoolRequestMutation
 } from '../../../app/api';
@@ -24,16 +24,17 @@ const JoinSchool: React.FC = () => {
     accessCode: ''
   };
 
-  const [requestSent, setRequestSent] = React.useState(false);
   const [requestJoinSchool] = useJoinSchoolRequestMutation();
   const [revokeJoinSchool] = useRevokeSchoolRequestMutation();
   const { accessCode } = getSchool();
+  const { data = { isPending: false, accessCode: '' }, refetch } = useIsRequestingToJoinSchoolQuery(null);
+
   return (
     <Page.Section>
       <Typography align="center" variant="h4">
         Join a school or club
       </Typography>
-      {requestSent
+      {data.isPending
         ? <>
           <Typography variant="h5">Request pending</Typography>
           {/* TODO: Fetch actual values from backend. */}
@@ -69,16 +70,10 @@ const JoinSchool: React.FC = () => {
             </Button>
             <Button
               onClick={() => {
-                // TODO: Connect to backend
                 revokeJoinSchool({ accessCode })
-                  .unwrap()
-                  .then(() => {
-                    setRequestSent(true);
-                  })
-                  .catch(() => {
-                    setRequestSent(false);
-                  });
+                  .unwrap().then(refetch).catch((error) => { console.log(error); });
               }}
+
             >
               Cancel request
             </Button>
@@ -103,14 +98,12 @@ const JoinSchool: React.FC = () => {
 
           <Form
             initialValues={initialValues}
-            onSubmit={submitForm(requestJoinSchool, {
-              then: () => {
-                setRequestSent(true);
-              },
-              catch: () => {
-                setRequestSent(false);
-              }
-            })}
+            onSubmit={() => {
+              requestJoinSchool({
+                accessCode
+              })
+                .unwrap().then(refetch).catch((error) => { console.log(error); });
+            }}
           >
             <TextField
               placeholder="Class code"
@@ -135,7 +128,7 @@ const JoinSchool: React.FC = () => {
           </Form>
         </>
       }
-    </Page.Section>
+    </Page.Section >
   );
 };
 

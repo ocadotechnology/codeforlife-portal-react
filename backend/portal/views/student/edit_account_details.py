@@ -1,3 +1,4 @@
+from common.models import Student
 from common.helpers.emails import (
     update_indy_email,
 )
@@ -421,3 +422,18 @@ def delete_independent_account(request):
 #         return HttpResponseRedirect(reverse_lazy("independent_edit_account"))
 #     else:
 #         return HttpResponseRedirect(reverse_lazy("school_student_edit_account"))
+@login_required(login_url=reverse_lazy("independent_student_login"))
+def is_pending_class_request(request):
+    if request.method == "GET":
+        student = Student.objects.get(new_user=request.user)
+        access_code = ""
+        pending_for_class = student.pending_class_request
+        if pending_for_class:
+            access_code = pending_for_class.access_code
+        return JsonResponse(
+            {
+                "is_pending": True if pending_for_class else False,
+                "access_code": access_code,
+            }
+        )
+    return HttpResponse(status=405)
