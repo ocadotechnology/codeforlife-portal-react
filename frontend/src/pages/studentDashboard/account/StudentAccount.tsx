@@ -190,9 +190,7 @@ const AccountForm: React.FC<{
             'Your account details have been changed successfully. Your email will be changed once you have verified it, until then you can still log in with your old email.':
               isEmailChanged,
             'Your account details have been changed successfully. Please login using your new password.':
-              isPasswordChanged,
-            'Your account details have been changed successfully.':
-              isNameChanged
+              isPasswordChanged
           };
           const notifications = Object.keys(notificationMessages)
             .filter((key: string) => notificationMessages[key])
@@ -213,9 +211,16 @@ const AccountForm: React.FC<{
                     alert('Logout failed.');
                   });
               } else if (isNameChanged) {
-                navigate(location.pathname, { state: notifications });
+                navigate(location.pathname, {
+                  state: {
+                    notifications: [
+                      { index: 0, props: { children: 'Your details have been changed successfully' } }
+                    ]
+                  }
+                });
               }
             })
+
             .catch((error) => {
               console.error(error);
               navigate(location.pathname, {
@@ -259,7 +264,7 @@ const AccountForm: React.FC<{
           <AccountFormPasswordFields />
         </Grid>
         <AccountFormButtons />
-      </Form>
+      </Form >
     );
   }
 };
