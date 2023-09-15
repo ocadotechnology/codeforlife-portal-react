@@ -67,9 +67,10 @@ class SchoolStudentEditAccountView(LoginRequiredMixin, FormView):
                         "Your account details have been changed successfully."
                     ]
                 },
-                status=200,
             )
-        return JsonResponse({"errors": form.errors}, status=400)
+        return JsonResponse(
+            {"errors": form.errors}, status=status.HTTP_400_BAD_REQUEST
+        )
 
     def process_student_edit_account_form(self, form, request):
         data = form.cleaned_data
