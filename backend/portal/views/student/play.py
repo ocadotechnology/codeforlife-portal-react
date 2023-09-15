@@ -110,14 +110,14 @@ def student_join_organisation(request):
         elif "revoke_join_request" in request.POST:
             student.pending_class_request = None
             student.save()
-    return (
-        JsonResponse(
-            {"error": request_form.errors["__all__"][0]},
-            status=status.HTTP_400_BAD_REQUEST,
+        return (
+            JsonResponse(
+                {"error": request_form.errors["__all__"][0]},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+            if errors
+            else HttpResponse()
         )
-        if errors
-        else HttpResponse()
-    )
 
     return HttpResponse(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
