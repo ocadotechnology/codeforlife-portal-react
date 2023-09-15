@@ -17,13 +17,15 @@ interface SchoolData {
   schoolName: string;
   schoolPostcode: string;
   schoolCountry: string;
+  accessCode: string;
 }
 export const getSchool = (): SchoolData => {
   // TODO: get school data
   return {
     schoolName: 'Real School',
     schoolPostcode: 'AB1 2CD',
-    schoolCountry: 'United States of America'
+    schoolCountry: 'United States of America',
+    accessCode: 'AB123'
   };
 };
 

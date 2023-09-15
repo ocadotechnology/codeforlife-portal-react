@@ -3,6 +3,7 @@ import logging
 from common.models import UserSession, Student, Class
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, FormView
 from django.contrib.auth.models import User
 from django.http import HttpRequest, HttpResponse, JsonResponse
@@ -142,10 +143,16 @@ def student_login_view(request: HttpRequest, access_code: str):
         return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
 
     try:
-        user = User.objects.get(
-            username=request.POST["username"],
-            new_student__class_field__access_code=access_code,
-        )
+        if access_code:
+            user = User.objects.get(
+                first_name=request.POST["username"],
+                new_student__class_field__access_code=access_code,
+            )
+        else:
+            user = User.objects.get(
+                username=request.POST["username"],
+                new_student__class_field__access_code=access_code,
+            )
     except User.DoesNotExist:
         return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
 

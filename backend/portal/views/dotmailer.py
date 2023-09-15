@@ -18,10 +18,10 @@ def process_newsletter_form(request):
         try:
             validate_email(user_email)
         except ValidationError:
-            return JsonResponse(status=200, data={"success": False})
+            return JsonResponse(data={"success": False})
         else:
             add_to_dotmailer("", "", user_email, DotmailerUserType.NO_ACCOUNT)
-            return JsonResponse(status=200, data={"success": True})
+            return JsonResponse(data={"success": True})
 
     return HttpResponse(status=405)
 
@@ -35,10 +35,10 @@ def dotmailer_consent_form(request):
             add_consent_record_to_dotmailer_user(user)
         except:
             # if no user is registered with that email, show error message
-            return JsonResponse(status=200, data={"success": False})
+            return JsonResponse(data={"success": False})
         else:
             # no error
             send_dotmailer_consent_confirmation_email_to_user(user)
-            return JsonResponse(status=200, data={"success": True})
+            return JsonResponse(data={"success": True})
 
     return HttpResponse(status=405)
