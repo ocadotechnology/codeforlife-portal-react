@@ -34,7 +34,7 @@ urlpatterns = [
         name="download_student_pack",
     ),
     path(
-        "logout/",
+        "session/logout/",
         logout_view,
         name="logout_view",
     ),

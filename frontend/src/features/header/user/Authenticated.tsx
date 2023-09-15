@@ -16,7 +16,7 @@ import {
   LogoutOutlined as LogoutOutlinedIcon
 } from '@mui/icons-material';
 
-import { useLogoutUserMutation } from '../../../app/api';
+import { useLogoutMutation } from '../../../app/api';
 import { paths } from '../../../app/router';
 import {
   SummaryLoginSelect,
@@ -28,11 +28,11 @@ import {
 
 // TODO: call logout on inactive session timeout popup.
 function handleLogout(
-  logoutUser: MutationTrigger<MutationDefinition<null, any, any, any>>,
+  logout: MutationTrigger<MutationDefinition<null, any, any, any>>,
   navigate: NavigateFunction
 ) {
   return () => {
-    logoutUser(null)
+    logout(null)
       .unwrap()
       .then(() => { navigate(paths._); })
       .catch(() => { alert('Logout failed.'); });
@@ -54,7 +54,7 @@ export const AuthenticatedSummary: React.FC<AuthenticatedSummaryProps> = ({
 }) => {
   const theme = useTheme();
   const navigate = useNavigate();
-  const [logoutUser] = useLogoutUserMutation();
+  const [logout] = useLogoutMutation();
   const upLg = useMediaQuery(theme.breakpoints.up('lg'));
 
   // TODO: get from API.
@@ -82,7 +82,7 @@ export const AuthenticatedSummary: React.FC<AuthenticatedSummaryProps> = ({
         {
           children: 'Log out',
           icon: <LogoutOutlinedIcon />,
-          onClick: handleLogout(logoutUser, navigate)
+          onClick: handleLogout(logout, navigate)
         },
         ...menuItemsProps
       ]}
@@ -100,7 +100,7 @@ export const AuthenticatedDetails: React.FC<AuthenticatedDetailsProps> = ({
 }) => {
   const theme = useTheme();
   const navigate = useNavigate();
-  const [logoutUser] = useLogoutUserMutation();
+  const [logout] = useLogoutMutation();
 
   // TODO: get from API.
   const userName = 'John Doe';
@@ -119,7 +119,7 @@ export const AuthenticatedDetails: React.FC<AuthenticatedDetailsProps> = ({
       {userName}
     </Typography>
     {children}
-    <DetailsButton onClick={handleLogout(logoutUser, navigate)}>
+    <DetailsButton onClick={handleLogout(logout, navigate)}>
       Logout
     </DetailsButton>
   </>;
