@@ -103,12 +103,21 @@ def student_join_organisation(request):
     if request.method == "POST":
         if "class_join_request" in request.POST:
             request_form = StudentJoinOrganisationForm(request.POST)
-            process_join_organisation_form(request_form, request, student)
+            errors = process_join_organisation_form(
+                request_form, request, student
+            )
 
         elif "revoke_join_request" in request.POST:
             student.pending_class_request = None
             student.save()
-        return HttpResponse()
+    return (
+        JsonResponse(
+            {"error": request_form.errors["__all__"][0]},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+        if errors
+        else HttpResponse()
+    )
 
     return HttpResponse(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
@@ -144,6 +153,8 @@ def process_join_organisation_form(request_form, request, student):
             email_message["message"],
             email_message["subject"],
         )
+        return False
+    return True
 
 
 # def show_cancellation_message_if_student_not_in_class(student, request):

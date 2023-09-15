@@ -2,7 +2,6 @@ from common.models import Student
 from common.helpers.emails import (
     update_indy_email,
 )
-from django.contrib import messages as messages
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -19,7 +18,6 @@ from rest_framework import status
 
 from portal.helpers.password import check_update_password
 from portal.helpers.ratelimit import clear_ratelimit_cache_for_user
-from django.contrib import messages as messages
 
 
 # def _get_form(self, form_class):
@@ -207,16 +205,6 @@ def process_student_edit_account_form(request):
         return JsonResponse(
             {"error": notification}, status=status.HTTP_400_BAD_REQUEST
         )
-    # messages.success(
-    #     request, "Your account details have been changed successfully."
-    # )
-
-    # if changing_password:
-    #     logout(request)
-    #     messages.success(
-    #         request,
-    #         "Please login using your new password.",
-    #     )
     return HttpResponse()
 
 
@@ -255,10 +243,6 @@ def delete_independent_account(request):
         notification = ""
         delete_account_form = DeleteAccountForm(user, request.POST)
         if not delete_account_form.is_valid():
-            # messages.warning(
-            #     request,
-            #     "Your account was not deleted due to incorrect password.",
-            # )
             notification = (
                 "Your account was not deleted due to incorrect password"
             )
