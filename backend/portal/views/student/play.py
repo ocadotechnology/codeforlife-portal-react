@@ -100,6 +100,7 @@ def student_join_organisation(request):
     if student.class_field:
         return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
 
+    errors = None
     if request.method == "POST":
         if "class_join_request" in request.POST:
             request_form = StudentJoinOrganisationForm(request.POST)
