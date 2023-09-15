@@ -15,7 +15,6 @@ import {
   useJoinSchoolRequestMutation,
   useRevokeSchoolRequestMutation
 } from '../../../app/api';
-import { getSchool } from '../../teacherDashboard/dummyMethods';
 
 const JoinSchool: React.FC = () => {
   const navigate = useNavigate();
@@ -27,7 +26,6 @@ const JoinSchool: React.FC = () => {
 
   const [requestJoinSchool] = useJoinSchoolRequestMutation();
   const [revokeJoinSchool] = useRevokeSchoolRequestMutation();
-  const { accessCode } = getSchool();
   const { data = { isPending: false, accessCode: '' }, refetch } = useIsRequestingToJoinSchoolQuery(null);
 
   return (
@@ -40,7 +38,7 @@ const JoinSchool: React.FC = () => {
           <Typography variant="h5">Request pending</Typography>
           {/* TODO: Fetch actual values from backend. */}
           <Typography>
-            Your request to join class {accessCode} in the school or club Code
+            Your request to join class {data.accessCode} in the school or club Code
             for Life School is still pending.
           </Typography>
           <Typography>
@@ -71,7 +69,7 @@ const JoinSchool: React.FC = () => {
             </Button>
             <Button
               onClick={() => {
-                revokeJoinSchool({ accessCode })
+                revokeJoinSchool({ accessCode: data.accessCode })
                   .unwrap().then(refetch).catch((error) => { console.log(error); });
               }}
 
@@ -115,7 +113,7 @@ const JoinSchool: React.FC = () => {
                             }
                           ]
                         }
-                      })
+                      });
                   });
             }}
           >
