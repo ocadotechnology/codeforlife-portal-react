@@ -284,12 +284,14 @@ def invite_teacher(request):
             INVITE_FROM, [invited_teacher_email], message["subject"], message["message"], message["subject"]
         )
 
-        return HttpResponse()
+        return JsonResponse(data={
+            'hasError': False, 
+            'error': ''
+        })
     else:
         return JsonResponse(data={
             'hasError': True, 
-            'message': 'Form invalid', 
-            'errors': invite_teacher_form.errors
+            'error': list(invite_teacher_form.errors.values())[0][0]
         })
 
 

@@ -46,6 +46,11 @@ export interface organsationKickType extends moveClassesType {
   id: string,
 };
 
+interface inviteTeacherReturnType {
+  hasError: boolean,
+  error: string
+};
+
 const teacherDashboardApi = api.injectEndpoints({
   endpoints: (build) => ({
     getTeacherData: build.query<getTeacherDataReturnType, void
@@ -73,7 +78,7 @@ const teacherDashboardApi = api.injectEndpoints({
       },
       providesTags: ['teacher']
     }),
-    inviteTeacher: build.mutation<any, {
+    inviteTeacher: build.mutation<inviteTeacherReturnType, {
       teacherFirstName: string;
       teacherLastName: string;
       teacherEmail: string;

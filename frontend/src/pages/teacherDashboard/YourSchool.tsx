@@ -123,13 +123,14 @@ const InviteTeacherForm: React.FC<{
                   .then((res) => {
                     navigate('.', {
                       state: {
-                        message: res?.hasError
-                          ? res.message
+                        message: res.hasError
+                          ? res.error
                           : `You have invited ${firstName} ${lastName} to your school.`
                       }
                     });
                   })
                   .catch((err) => { console.error('InviteTeacher error', err); });
+                setDialog({ open: false });
               }
             });
           } else {
@@ -137,8 +138,8 @@ const InviteTeacherForm: React.FC<{
               .then((res) => {
                 navigate('.', {
                   state: {
-                    message: res?.hasError
-                      ? res.message
+                    message: res.hasError
+                      ? res.error
                       : `You have invited ${firstName} ${lastName} to your school.`
                   }
                 });
