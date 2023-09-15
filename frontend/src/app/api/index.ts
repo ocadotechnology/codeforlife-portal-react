@@ -25,6 +25,16 @@ import {
   useDeleteAccountMutation
 } from './registration';
 import {
+  useGetTeacherDataQuery,
+  useInviteTeacherMutation,
+  useUpdateSchoolMutation,
+  useToggleAdminMutation,
+  useOrganisationKickMutation,
+  useInviteToggleAdminMutation,
+  useResendInviteMutation,
+  useDeleteInviteMutation
+} from './teacher/dashboard';
+import {
   useGetClassQuery,
   useUpdateClassMutation
 } from './teacher/teach';
@@ -51,6 +61,15 @@ export {
   useRequestTeacherPasswordResetMutation,
   useResetPasswordMutation,
   useDeleteAccountMutation,
+  // teacher dashboard
+  useGetTeacherDataQuery,
+  useInviteTeacherMutation,
+  useUpdateSchoolMutation,
+  useToggleAdminMutation,
+  useOrganisationKickMutation,
+  useInviteToggleAdminMutation,
+  useResendInviteMutation,
+  useDeleteInviteMutation,
   // teacher/teach
   useGetClassQuery,
   useUpdateClassMutation

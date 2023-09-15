@@ -2,7 +2,7 @@ export const INVITE_TEACHER_INITIAL_VALUES = {
   teacherFirstName: '',
   teacherLastName: '',
   teacherEmail: '',
-  isAdmin: false
+  makeAdminTicked: false
 };
 
 export const UPDATE_TEACHER_ACCOUNT_INITIAL_VALUES = {
