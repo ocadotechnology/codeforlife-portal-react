@@ -8,6 +8,7 @@ from .email import urlpatterns as email_urlpatterns
 from .home import urlpatterns as home_urlpatterns
 from .login import urlpatterns as login_urlpatterns
 from .organisation import urlpatterns as organisation_urlpatterns
+from .teacher.dashboard import urlpatterns as teach_dashboard_urlpatterns
 from .registration import urlpatterns as registration_urlpatterns
 from .student import urlpatterns as student_urlpatterns
 from .teacher import urlpatterns as teacher_urlpatterns
@@ -23,5 +24,6 @@ urlpatterns = [
     *student_urlpatterns,
     *admin_urlpatterns,
     *organisation_urlpatterns,
+    *teach_dashboard_urlpatterns,
     *teacher_urlpatterns,
 ]

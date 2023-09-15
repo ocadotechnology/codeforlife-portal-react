@@ -4,7 +4,8 @@ import {
   Button,
   useTheme,
   InputAdornment,
-  Stack
+  Stack,
+  Dialog
 } from '@mui/material';
 import React from 'react';
 import {
@@ -22,7 +23,6 @@ import CflTable, {
   CflTableBody,
   CflTableCellElement
 } from '../../components/CflTable';
-import { getSchool, getTeachersData, getUser } from './dummyMethods';
 import {
   TextField,
   CheckboxField,
@@ -33,82 +33,197 @@ import Page from 'codeforlife/lib/esm/components/page';
 import SchoolNameField from '../../components/form/SchoolNameField';
 import SchoolPostcodeField from '../../components/form/SchoolPostcodeField';
 import SchoolCountryField from '../../components/form/SchoolCountryField';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useLeaveOrganisationMutation } from '../../app/api';
-import { useNavigate } from 'react-router-dom';
 import { paths } from '../../app/router';
+import {
+  coworkersType,
+  getTeacherDataReturnType,
+  schoolType,
+  sentInvitesType,
+  useDeleteInviteMutation,
+  useInviteTeacherMutation,
+  useInviteToggleAdminMutation,
+  useOrganisationKickMutation,
+  useResendInviteMutation,
+  useToggleAdminMutation,
+  useUpdateSchoolMutation
+} from '../../app/api/teacher/dashboard';
+import { getUser } from './dummyMethods';
 
-const InviteTeacherForm: React.FC = () => {
+interface DialogProps {
+  open: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+}
+
+type SetDialogType = React.Dispatch<React.SetStateAction<{
+  open: boolean;
+  onConfirm?: (() => void) | undefined;
+}>>;
+
+const InviteAdminConfirmDialog: React.FC<DialogProps> = ({
+  open,
+  onClose,
+  onConfirm
+}) => {
+  const theme = useTheme();
   return (
-    <CflHorizontalForm
-      header="Invite a teacher to your school"
-      initialValues={INVITE_TEACHER_INITIAL_VALUES}
-      validationSchema={INVITE_TEACHER_SCHEMA}
-      onSubmit={(values) => {
-        alert(JSON.stringify(values, null, 2));
-      }}
-      submitButton={<SubmitButton>Invite teacher</SubmitButton>}
-    >
-      <TextField
-        placeholder="First name of teacher"
-        helperText="Enter first name of teacher"
-        name="teacherFirstName"
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <PersonOutlined />
-            </InputAdornment>
-          )
-        }}
-      />
-      <TextField
-        placeholder="Teacher's last name"
-        helperText="Enter the teacher's last name"
-        name="teacherLastName"
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <PersonOutlined />
-            </InputAdornment>
-          )
-        }}
-      />
-      <TextField
-        placeholder="Teacher's email"
-        helperText="Enter the teacher's email"
-        name="teacherEmail"
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <EmailOutlined />
-            </InputAdornment>
-          )
-        }}
-      />
-      <CheckboxField
-        name="isAdmin"
-        formControlLabelProps={{
-          label: 'Make an administrator of the school'
-        }}
-      />
-    </CflHorizontalForm>
+    <Dialog open={open} onClose={onClose} maxWidth={'xs'}>
+      <Typography variant='h5' textAlign='center'>
+        Assigning admin permissions
+      </Typography>
+      <Typography>
+        You are about to add admin permissions to another teacher&apos;s account. Teachers with admin permissions will have the same permissions as you.
+      </Typography>
+      <Typography fontWeight="bold">
+        Do you wish to proceed?
+      </Typography>
+      <Typography fontWeight="bold" color="error" mt={theme.spacing(1)}>
+        Accepting means you understand class data will be shared.
+      </Typography>
+
+      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3} mt={theme.spacing(5)}>
+        <Button onClick={onClose}>
+          Cancel
+        </Button>
+        <Button
+          className='alert'
+          endIcon={<Add />}
+          onClick={onConfirm}
+        >
+          Add as admin
+        </Button>
+      </Stack>
+    </Dialog>
   );
 };
 
-const UpdateSchoolDetailsForm: React.FC = () => {
-  // TODO: Prepopulate with current school data
-  const { schoolName, schoolPostcode, schoolCountry } = getSchool();
+const InviteTeacherForm: React.FC<{
+  setDialog: SetDialogType
+}> = ({
+  setDialog
+}) => {
+    const navigate = useNavigate();
+    const [inviteTeacher] = useInviteTeacherMutation();
+
+    return (
+      <CflHorizontalForm
+        header="Invite a teacher to your school"
+        initialValues={INVITE_TEACHER_INITIAL_VALUES}
+        validationSchema={INVITE_TEACHER_SCHEMA}
+        onSubmit={(values) => {
+          const firstName = values.teacherFirstName;
+          const lastName = values.teacherLastName;
+          if (values.makeAdminTicked) {
+            setDialog({
+              open: true,
+              onConfirm: () => {
+                inviteTeacher(values).unwrap()
+                  .then((res) => {
+                    navigate('.', {
+                      state: {
+                        message: res.hasError
+                          ? res.error
+                          : `You have invited ${firstName} ${lastName} to your school.`
+                      }
+                    });
+                  })
+                  .catch((err) => { console.error('InviteTeacher error', err); });
+                setDialog({ open: false });
+              }
+            });
+          } else {
+            inviteTeacher(values).unwrap()
+              .then((res) => {
+                navigate('.', {
+                  state: {
+                    message: res.hasError
+                      ? res.error
+                      : `You have invited ${firstName} ${lastName} to your school.`
+                  }
+                });
+              })
+              .catch((err) => { console.error('InviteTeacher error', err); });
+          }
+        }}
+        submitButton={<SubmitButton>Invite teacher</SubmitButton>}
+      >
+        <TextField
+          placeholder="First name of teacher"
+          helperText="Enter first name of teacher"
+          name="teacherFirstName"
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <PersonOutlined />
+              </InputAdornment>
+            )
+          }}
+        />
+        <TextField
+          placeholder="Teacher's last name"
+          helperText="Enter the teacher's last name"
+          name="teacherLastName"
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <PersonOutlined />
+              </InputAdornment>
+            )
+          }}
+        />
+        <TextField
+          placeholder="Teacher's email"
+          helperText="Enter the teacher's email"
+          name="teacherEmail"
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <EmailOutlined />
+              </InputAdornment>
+            )
+          }}
+        />
+        <CheckboxField
+          name="makeAdminTicked"
+          formControlLabelProps={{
+            label: 'Make an administrator of the school'
+          }}
+        />
+      </CflHorizontalForm>
+    );
+  };
+
+const UpdateSchoolDetailsForm: React.FC<{
+  schoolData: schoolType;
+}> = ({ schoolData }) => {
+  const navigate = useNavigate();
+  const schoolName = schoolData.name;
+  const schoolPostcode = schoolData.postcode;
+  const schoolCountry = schoolData.country;
+  const [updateSchool] = useUpdateSchoolMutation();
+
   return (
     <CflHorizontalForm
       header="Update details of your school or club"
       subheader="Update your school or club's name and/or postcode"
       initialValues={{
-        schoolCountry,
-        schoolPostcode,
-        schoolName
+        name: schoolName,
+        postcode: schoolPostcode,
+        country: schoolCountry
       }}
       validationSchema={SCHOOL_DETAILS_UPDATE_SCHEMA}
       onSubmit={(values) => {
-        alert(JSON.stringify(values, null, 2));
+        updateSchool(values).unwrap()
+          .then(() => {
+            navigate('.', {
+              state: {
+                message: 'You have updated the details for your school or club successfully.'
+              }
+            });
+          })
+          .catch((err) => { console.error('UpdateSchool error: ', err); });
       }}
       submitButton={<SubmitButton>Update details</SubmitButton>}
     >
@@ -120,67 +235,192 @@ const UpdateSchoolDetailsForm: React.FC = () => {
 };
 
 const TeachersTableActions: React.FC<{
+  isInvite: boolean;
   teacherEmail: string;
   userEmail: string;
   isTeacherAdmin: boolean;
+  id: string;
+  token?: string;
   twoFactorAuthentication?: boolean;
-}> = ({ teacherEmail, userEmail, isTeacherAdmin, twoFactorAuthentication }) => {
-  if (teacherEmail === userEmail) {
+  setDialog: SetDialogType;
+}> = ({ isInvite, teacherEmail, userEmail, isTeacherAdmin, id, token, twoFactorAuthentication, setDialog }) => {
+  const navigate = useNavigate();
+  const [toggleAdmin] = useToggleAdminMutation();
+  const [organisationKick] = useOrganisationKickMutation();
+  const [inviteToggleAdmin] = useInviteToggleAdminMutation();
+  const [resendInvite] = useResendInviteMutation();
+  const [deleteInvite] = useDeleteInviteMutation();
+
+  const onToggleAdmin = (id: string): void => {
+    toggleAdmin({ id }).unwrap()
+      .then((res) => {
+        navigate('.', {
+          state: {
+            message: res.isAdminNow
+              ? 'Administrator status has been given successfully.'
+              : 'Administrator status has been revoked successfully.'
+          }
+        });
+      })
+      .catch((err) => { console.error('ToggleAdmin error: ', err); });
+  };
+
+  const onOrganisationKick = (id: string): void => {
+    organisationKick({ id }).unwrap()
+      .then((res) => {
+        if (res?.classes) {
+          navigate(paths.teacher.dashboard.school.leave._, {
+            state: {
+              source: res.source,
+              classes: res.classes,
+              teachers: res.teachers,
+              teacherId: id
+            }
+          });
+        } else {
+          navigate('.', {
+            state: {
+              message: 'The teacher has been successfully removed from your school or club.'
+            }
+          });
+        }
+      })
+      .catch((err) => { console.error('OrganisationKick error: ', err); });
+  };
+
+  const onInviteToggleAdmin = (id: string): void => {
+    inviteToggleAdmin({ id }).unwrap()
+      .then((res) => {
+        navigate('.', {
+          state: {
+            message: res.isAdminNow
+              ? 'Administrator invite status has been given successfully.'
+              : 'Administrator invite status has been revoked successfully.'
+          }
+        });
+      })
+      .catch((err) => { console.error('InviteToggleAdmin error: ', err); });
+  };
+
+  const onResendInvite = (token: string): void => {
+    resendInvite({ token }).unwrap()
+      .then(() => {
+        navigate('.', {
+          state: {
+            message: 'Teacher re-invited!'
+          }
+        });
+      })
+      .catch((err) => { console.error('ResendInvite error: ', err); });
+  };
+
+  const onDeleteInvite = (token: string): void => {
+    deleteInvite({ token }).unwrap()
+      .then(() => {
+        navigate('.', {
+          state: {
+            message: 'Invitation successfully deleted.'
+          }
+        });
+      })
+      .catch((err) => { console.error('DeleteInvite error: ', err); });
+  };
+
+  const onInviteMakeAdmin = (id: string): void => {
+    setDialog({
+      open: true,
+      onConfirm: () => {
+        onInviteToggleAdmin(id);
+        setDialog({ open: false });
+      }
+    });
+  };
+
+  const onMakeAdmin = (id: string): void => {
+    setDialog({
+      open: true,
+      onConfirm: () => {
+        onToggleAdmin(id);
+        setDialog({ open: false });
+      }
+    });
+  };
+
+  if (isInvite) {
     return (
       <>
-        <Button endIcon={<Create />}>Update details</Button>
-        {/* This button below will be used for pending invites  */}
-        <Button endIcon={<EmailOutlined />}>Resend invite</Button>
-      </>
-    );
-  } else if (isTeacherAdmin) {
-    return (
-      <>
-        <Button className="alert" endIcon={<DoNotDisturb />}>
-          Revoke admin
-        </Button>
-        <Button className="alert" endIcon={<DeleteOutline />}>
-          Delete
-        </Button>
+        {isTeacherAdmin
+          ? <Button className={isTeacherAdmin && 'alert'} endIcon={<DoNotDisturb />} onClick={() => { onInviteToggleAdmin(id); }}>
+            Revoke admin
+          </Button>
+          : <Button endIcon={<Add />} onClick={() => { onInviteMakeAdmin(id); }}>
+            Make admin
+          </Button>
+        }
+        <Button endIcon={<EmailOutlined />} onClick={() => { onResendInvite(token as string); }}>Resend invite</Button>
+        <Button className="alert" endIcon={<DeleteOutline />} onClick={() => { onDeleteInvite(token as string); }}>Delete</Button>
       </>
     );
   } else {
-    return (
-      <>
-        <Button endIcon={<Add />}>Make admin</Button>
-        {twoFactorAuthentication
-          ? <Button endIcon={<DoDisturbOnOutlined />} className="alert">
-            Disable 2FA
+    if (teacherEmail === userEmail) {
+      return (
+        <>
+          <Button endIcon={<Create />} onClick={() => { navigate(paths.teacher.dashboard.account._); }}>Update details</Button>
+          {/* This button below will be used for pending invites  */}
+          <Button endIcon={<EmailOutlined />}>Resend invite</Button>
+        </>
+      );
+    } else if (isTeacherAdmin) {
+      return (
+        <>
+          <Button className="alert" endIcon={<DoNotDisturb />} onClick={() => { onToggleAdmin(id); }}>
+            Revoke admin
           </Button>
-          : <></>
-        }
-      </>
-    );
+          <Button className="alert" endIcon={<DeleteOutline />} onClick={() => { onOrganisationKick(id); }}>
+            Delete
+          </Button>
+        </>
+      );
+    } else {
+      return (
+        <>
+          <Button endIcon={<Add />} onClick={() => { onMakeAdmin(id); }}>Make admin</Button>
+          {twoFactorAuthentication
+            ? <Button endIcon={<DoDisturbOnOutlined />} className="alert">
+              Disable 2FA
+            </Button>
+            : <></>
+          }
+        </>
+      );
+    }
   }
 };
 
 const TeachersTable: React.FC<{
-  isAdmin: boolean;
-}> = ({ isAdmin }) => {
+  isUserAdmin: boolean;
+  teachersData: coworkersType[];
+  sentInvites: sentInvitesType[];
+  setDialog: SetDialogType;
+}> = ({ isUserAdmin, teachersData, sentInvites, setDialog }) => {
   const { email } = getUser();
-  const teachersData = getTeachersData();
-  const youText = (
+  const boldText: React.FC<string> = (str: string) => (
     <Typography variant="body2" fontWeight="bold">
-      (you)
+      ({str})
     </Typography>
   );
 
   return (
     <CflTable
       className="body"
-      titles={isAdmin ? ['Name', 'Administrator status', 'Actions'] : ['Name', 'Administrator status']}
+      titles={isUserAdmin ? ['Name', 'Administrator status', 'Actions'] : ['Name', 'Administrator status']}
     >
       {teachersData.map(
-        ({ teacherName, isTeacherAdmin, teacherEmail }, keyIdx: number) => (
-          <CflTableBody key={`${keyIdx}`}>
+        ({ teacherFirstName, teacherLastName, teacherEmail, isTeacherAdmin, id }) => (
+          <CflTableBody key={id}>
             <CflTableCellElement>
               <Typography variant="subtitle1">
-                {teacherName} {teacherEmail === email ? youText : ''}{' '}
+                {teacherFirstName} {teacherLastName} {teacherEmail === email ? boldText('you') : ''}{' '}
               </Typography>
             </CflTableCellElement>
             <CflTableCellElement
@@ -193,13 +433,52 @@ const TeachersTable: React.FC<{
               </Typography>
               <Typography variant="subtitle1">({teacherEmail}) </Typography>
             </CflTableCellElement>
-            {isAdmin &&
+            {isUserAdmin &&
               <CflTableCellElement justifyContent="center">
                 <TeachersTableActions
                   {...{
+                    isInvite: false,
                     teacherEmail,
                     userEmail: email,
-                    isTeacherAdmin
+                    isTeacherAdmin,
+                    id,
+                    setDialog
+                  }}
+                />
+              </CflTableCellElement>
+            }
+          </CflTableBody>
+        )
+      )}
+      {sentInvites.map(
+        ({ invitedTeacherFirstName, invitedTeacherLastName, invitedTeacherEmail, invitedTeacherIsAdmin, isExpired, id, token }) => (
+          <CflTableBody key={token}>
+            <CflTableCellElement>
+              <Typography variant="subtitle1">
+                {invitedTeacherFirstName} {invitedTeacherLastName} {isExpired ? boldText('expired') : boldText('pending')}{' '}
+              </Typography>
+            </CflTableCellElement>
+            <CflTableCellElement
+              direction="column"
+              alignItems="flex-start"
+              justifyContent="flex-start"
+            >
+              <Typography variant="subtitle1">
+                {invitedTeacherIsAdmin ? 'Teacher Administrator' : 'Standard Teacher'}
+              </Typography>
+              <Typography variant="subtitle1">({invitedTeacherEmail})</Typography>
+            </CflTableCellElement>
+            {isUserAdmin &&
+              <CflTableCellElement justifyContent="center">
+                <TeachersTableActions
+                  {...{
+                    isInvite: true,
+                    teacherEmail: invitedTeacherEmail,
+                    userEmail: email,
+                    isTeacherAdmin: invitedTeacherIsAdmin,
+                    id,
+                    token,
+                    setDialog
                   }}
                 />
               </CflTableCellElement>
@@ -211,29 +490,47 @@ const TeachersTable: React.FC<{
   );
 };
 
-const YourSchool: React.FC = () => {
-  const { schoolName, schoolPostcode } = getSchool();
+const YourSchool: React.FC<{
+  data: getTeacherDataReturnType;
+}> = ({ data }) => {
   const theme = useTheme();
   const [leaveOrganisation] = useLeaveOrganisationMutation();
   const navigate = useNavigate();
-  const isAdmin = true; // TODO: retrieve from backend or redux
+  const location = useLocation();
+  const isAdmin = data.isAdmin;
+
+  const [dialog, setDialog] = React.useState<{
+    open: boolean;
+    onConfirm?: () => void;
+  }>({ open: false });
 
   const onLeaveOrganisation = (): void => {
     leaveOrganisation().unwrap()
       .then((res) => {
-        if (res?.hasClasses) {
-          navigate(paths.teacher.dashboard.school.leave._, { state: { classes: res.classes, teachers: res.teachers } });
+        if (res?.classes) {
+          navigate(paths.teacher.dashboard.school.leave._, {
+            state: {
+              source: res.source,
+              classes: res.classes,
+              teachers: res.teachers
+            }
+          });
         } else {
           navigate(paths.teacher.onboarding._, { state: { leftOrganisation: true } });
         }
       })
-      .catch((err) => { console.log('LeaveOrganisation error: ', err); });
+      .catch((err) => { console.error('LeaveOrganisation error: ', err); });
   };
 
   return <>
+    {location.state?.message &&
+      <Page.Notification>
+        {location.state.message}
+      </Page.Notification>
+    }
     <Page.Section>
       <Typography align="center" variant="h4">
-        Your school: {schoolName} ({schoolPostcode})
+        Your school: {data.school.name} ({data.school.postcode})
       </Typography>
     </Page.Section>
     <Page.Section sx={{ paddingTop: 0 }}>
@@ -248,7 +545,7 @@ const YourSchool: React.FC = () => {
             rights to other teachers.
           </Typography>
           <Page.Section sx={{ paddingBottom: 0 }}>
-            <InviteTeacherForm />
+            <InviteTeacherForm setDialog={setDialog} />
           </Page.Section>
         </>
         : <Stack alignItems="center">
@@ -266,7 +563,12 @@ const YourSchool: React.FC = () => {
       <Typography variant="h5">
         These teachers are already part of your school or club
       </Typography>
-      <TeachersTable isAdmin={isAdmin} />
+      <TeachersTable
+        isUserAdmin={isAdmin}
+        teachersData={data.coworkers}
+        sentInvites={data.sentInvites}
+        setDialog={setDialog}
+      />
       {isAdmin &&
         <Grid container columnSpacing={5}>
           <Grid item sm={6}>
@@ -288,8 +590,15 @@ const YourSchool: React.FC = () => {
     </Page.Section>
     {isAdmin &&
       <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
-        <UpdateSchoolDetailsForm />
+        <UpdateSchoolDetailsForm schoolData={data.school} />
       </Page.Section>
+    }
+    {dialog.onConfirm !== undefined &&
+      <InviteAdminConfirmDialog
+        open={dialog.open}
+        onClose={() => { setDialog({ open: false }); }}
+        onConfirm={dialog.onConfirm}
+      />
     }
   </>;
 };
