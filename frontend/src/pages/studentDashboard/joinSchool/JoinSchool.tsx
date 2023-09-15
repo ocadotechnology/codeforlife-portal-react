@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Button, Stack, Typography } from '@mui/material';
 
 import Page from 'codeforlife/lib/esm/components/page';
@@ -19,6 +19,7 @@ import { getSchool } from '../../teacherDashboard/dummyMethods';
 
 const JoinSchool: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const initialValues = {
     accessCode: ''
@@ -98,11 +99,24 @@ const JoinSchool: React.FC = () => {
 
           <Form
             initialValues={initialValues}
-            onSubmit={() => {
+            onSubmit={(values) => {
               requestJoinSchool({
-                accessCode
+                accessCode: values.accessCode
               })
-                .unwrap().then(refetch).catch((error) => { console.log(error); });
+                .unwrap().then(refetch).catch(
+                  (error) => {
+                    console.log(error);
+                    navigate(location.pathname,
+                      {
+                        state: {
+                          notifications: [
+                            {
+                              index: 0, props: { children: 'Cannot find the school or club and/or class' }
+                            }
+                          ]
+                        }
+                      })
+                  });
             }}
           >
             <TextField
