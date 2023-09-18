@@ -13,8 +13,6 @@ const TeacherDashboard: React.FC<{
   tab: number;
   movingClass?: boolean;
 }> = ({ tab, movingClass = false }) => {
-  // TODO: get from API.
-  const userName = 'John Doe';
   const { data, error, isLoading } = useGetTeacherDataQuery();
   const navigate = useNavigate();
 
@@ -29,7 +27,7 @@ const TeacherDashboard: React.FC<{
         ? (
           <Page.Container>
             <Page.TabBar
-              header={`Welcome back, ${userName}`}
+              header={`Welcome back, ${data.teacher.teacherFirstName as string} ${data.teacher.teacherLastName as string}`}
               value={tab}
               originalPath='/teacher/dashboard/:tab'
               tabs={[

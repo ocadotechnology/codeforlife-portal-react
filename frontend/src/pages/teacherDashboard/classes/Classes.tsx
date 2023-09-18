@@ -3,6 +3,7 @@ import { useParams, useNavigate, generatePath, useLocation } from 'react-router-
 import { Button, Typography, useTheme, Link, Stack } from '@mui/material';
 import { Add, Create, DoNotDisturb } from '@mui/icons-material';
 import * as Yup from 'yup';
+import { FieldArray, Form, Formik } from 'formik';
 
 import {
   AutocompleteField,
@@ -17,14 +18,13 @@ import CflTable, {
 } from '../../../components/CflTable';
 import { accessCodeSchema } from '../../../app/schemas';
 import { paths } from '../../../app/router';
-import { getClassesData, getTeachersData, getUser } from '../dummyMethods';
+import { getTeachersData } from '../dummyMethods';
 import CopyToClipboardIcon from '../../../components/CopyToClipboardIcon';
 import { CflHorizontalForm } from '../../../components/form/CflForm';
 import ClassNameField from '../../../components/form/ClassNameField';
 import SeeClassmatesProgressField from '../../../components/form/SeeClassmatesProgressField';
 import EditClass from './editClass/EditClass';
 import { classType, teacherType, useLeaveOrganisationMutation } from '../../../app/api/organisation';
-import { FieldArray, Form, Formik } from 'formik';
 import { TeacherDashboardData, moveClassesType, organsationKickType, useOrganisationKickMutation } from '../../../app/api/teacher/dashboard';
 
 const _YourClasses: React.FC = () => {
@@ -43,16 +43,19 @@ const _YourClasses: React.FC = () => {
   );
 };
 
-const ClassTable: React.FC = () => {
+const ClassTable: React.FC<{
+  teacherData: TeacherDashboardData['teacher'];
+  classData: TeacherDashboardData['classes'];
+}> = ({ teacherData, classData }) => {
   const navigate = useNavigate();
-  const classData = getClassesData();
-  const { firstName, lastName } = getUser();
+  const [firstName, lastName] = [teacherData.teacherFirstName, teacherData.teacherLastName];
+  const isAdmin = teacherData.isAdmin;
 
   return (
-    <CflTable titles={['Class name', 'Access code', 'Teacher', 'Action']}>
-      {classData.map(({ className, accessCode, teacher }, keyIdx: number) => (
-        <CflTableBody key={`${keyIdx}`}>
-          <CflTableCellElement>{className}</CflTableCellElement>
+    <CflTable titles={isAdmin ? ['Class name', 'Access code', 'Teacher', 'Action'] : ['Class name', 'Access code', 'Action']}>
+      {classData.map(({ name, accessCode, teacherFirstName, teacherLastName, teacherId }) => (
+        <CflTableBody key={`${teacherId}`}>
+          <CflTableCellElement>{name}</CflTableCellElement>
           <CflTableCellElement
             justifyContent="space-between"
             alignItems="center"
@@ -60,9 +63,10 @@ const ClassTable: React.FC = () => {
             {accessCode}
             <CopyToClipboardIcon stringToCopy={accessCode} />
           </CflTableCellElement>
-          <CflTableCellElement>
-            {teacher === `${firstName} ${lastName}` ? 'You' : teacher}
+          {isAdmin && <CflTableCellElement>
+            {`${teacherFirstName} ${teacherLastName}` === `${firstName} ${lastName}` ? 'You' : `${teacherFirstName} ${teacherLastName}`}
           </CflTableCellElement>
+          }
           <CflTableCellElement justifyContent="center">
             <Button
               onClick={() => {
@@ -83,35 +87,31 @@ const ClassTable: React.FC = () => {
   );
 };
 
-const ExternalStudentsJoiningRequestsActions: React.FC = () => {
-  return (
-    <>
-      <Button endIcon={<Add />}>Add to class</Button>
-      <Button className="alert" endIcon={<DoNotDisturb />}>
-        Reject
-      </Button>
-    </>
-  );
-};
-
-const ExternalStudentsJoiningRequestsTable: React.FC = () => {
-  const teacherData = getTeachersData();
+const ExternalStudentsJoiningRequestsTable: React.FC<{
+  requestData: TeacherDashboardData['requests'];
+}> = ({ requestData }) => {
   return (
     <CflTable
       className="body"
       titles={['Name', 'Email address', 'Class', 'Actions']}
     >
-      {teacherData.map(
+      {requestData.map(
         (
-          { teacherName, teacherClass, teacherEmail, isTeacherAdmin },
+          { studentFirstName, studentEmail, requestClass, isRequestTeacher, requestTeacherFirstName, requestTeacherLastName },
           keyIdx: number
         ) => (
           <CflTableBody key={`${keyIdx}`}>
-            <CflTableCellElement>{teacherName}</CflTableCellElement>
-            <CflTableCellElement>{teacherEmail}</CflTableCellElement>
-            <CflTableCellElement>{teacherClass}</CflTableCellElement>
+            <CflTableCellElement>{studentFirstName}</CflTableCellElement>
+            <CflTableCellElement>{studentEmail}</CflTableCellElement>
+            <CflTableCellElement>
+              {requestClass}
+              {isRequestTeacher ? '' : ` (${requestTeacherFirstName} ${requestTeacherLastName})`}
+            </CflTableCellElement>
             <CflTableCellElement justifyContent="center">
-              <ExternalStudentsJoiningRequestsActions />
+              <Button endIcon={<Add />}>Add to class</Button>
+              <Button className="alert" endIcon={<DoNotDisturb />}>
+                Reject
+              </Button>
             </CflTableCellElement>
           </CflTableBody>
         )
@@ -120,7 +120,9 @@ const ExternalStudentsJoiningRequestsTable: React.FC = () => {
   );
 };
 
-const ExternalStudentsJoiningRequests: React.FC = () => {
+const ExternalStudentsJoiningRequests: React.FC<{
+  requestData: TeacherDashboardData['requests'];
+}> = ({ requestData }) => {
   return (
     <>
       <Typography align="center" variant="h4">
@@ -131,7 +133,7 @@ const ExternalStudentsJoiningRequests: React.FC = () => {
         student has been given a Class Access Code, and provided you have
         enabled external requests for that class.
       </Typography>
-      <ExternalStudentsJoiningRequestsTable />
+      <ExternalStudentsJoiningRequestsTable requestData={requestData} />
       <Typography fontWeight="bold" mb={0}>
         No student has currently requested to join your classes.
       </Typography>
@@ -353,7 +355,6 @@ const Classes: React.FC<{
     useParams(),
     Yup.object({ accessCode: accessCodeSchema })
   );
-  const isAdmin = data.teacher.isAdmin;
 
   if (params?.accessCode !== undefined) {
     return <EditClass accessCode={params.accessCode} />;
@@ -363,13 +364,13 @@ const Classes: React.FC<{
     <>
       <Page.Section>
         <_YourClasses />
-        <ClassTable />
+        <ClassTable teacherData={data.teacher} classData={data.classes} />
       </Page.Section >
       <Page.Section>
-        <ExternalStudentsJoiningRequests />
+        <ExternalStudentsJoiningRequests requestData={data.requests} />
       </Page.Section>
       <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
-        <CreateNewClassForm isAdmin={isAdmin} />
+        <CreateNewClassForm isAdmin={data.teacher.isAdmin} />
       </Page.Section>
     </>
   );
