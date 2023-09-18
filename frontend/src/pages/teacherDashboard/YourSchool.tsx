@@ -37,8 +37,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useLeaveOrganisationMutation } from '../../app/api';
 import { paths } from '../../app/router';
 import {
+  TeacherDashboardData,
   coworkersType,
-  getTeacherDataReturnType,
   schoolType,
   sentInvitesType,
   useDeleteInviteMutation,
@@ -491,13 +491,13 @@ const TeachersTable: React.FC<{
 };
 
 const YourSchool: React.FC<{
-  data: getTeacherDataReturnType;
+  data: TeacherDashboardData;
 }> = ({ data }) => {
   const theme = useTheme();
   const [leaveOrganisation] = useLeaveOrganisationMutation();
   const navigate = useNavigate();
   const location = useLocation();
-  const isAdmin = data.isAdmin;
+  const isAdmin = data.teacher.isAdmin;
 
   const [dialog, setDialog] = React.useState<{
     open: boolean;

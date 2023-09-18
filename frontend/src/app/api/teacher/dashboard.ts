@@ -26,19 +26,42 @@ export interface schoolType {
   country: string,
 };
 
-interface getTeacherDataResponseType {
-  coworkers: coworkersType[],
+interface teacherDashboardType {
+  id: string,
   isAdmin: boolean,
-  school: string,
-  sentInvites: sentInvitesType[],
+  teacherEmail: string,
+  teacherFirstName: string,
+  teacherLastName: string,
 };
 
-export interface getTeacherDataReturnType {
-  coworkers: coworkersType[],
-  isAdmin: boolean,
-  school: schoolType,
-  sentInvites: sentInvitesType[],
+interface classesDashboardType {
+  name: string,
+  accessCode: string,
+  teacherId: number,
+  teacherFirstName: string,
+  teacherLastName: string,
 };
+
+interface externalRequestType {
+  studentFirstName: string,
+  studentEmail: string
+  requestClass: string,
+  requestTeacherEmail: string,
+  requestTeacherFirstName: string,
+  requestTeacherId: number,
+  requestTeacherLastName: string,
+  isRequestTeacher: boolean,
+};
+
+export interface TeacherDashboardData {
+  coworkers: coworkersType[],
+  teacher: teacherDashboardType,
+  sentInvites: sentInvitesType[],
+  backupToken: number,
+  requests: externalRequestType[],
+  classes: classesDashboardType[],
+  school: schoolType
+}
 
 export type moveClassesType = Record<string, string>;
 
@@ -53,28 +76,17 @@ interface inviteTeacherReturnType {
 
 const teacherDashboardApi = api.injectEndpoints({
   endpoints: (build) => ({
-    getTeacherData: build.query<getTeacherDataReturnType, void
+    getTeacherData: build.query<any, void
     >({
       query: () => ({
         url: 'teach/dashboard/',
         method: 'GET'
       }),
-      transformResponse: (response: getTeacherDataResponseType) => {
-        const rtn: getTeacherDataReturnType = {
-          school: {
-            name: '',
-            postcode: '',
-            country: ''
-          },
-          coworkers: response.coworkers,
-          isAdmin: response.isAdmin,
-          sentInvites: response.sentInvites
-        };
-        rtn.sentInvites.forEach((s: sentInvitesType) => {
+      transformResponse: (response: TeacherDashboardData) => {
+        response.sentInvites.forEach((s: sentInvitesType) => {
           s.isExpired = Date.parse(s.expiry) < Date.now();
         });
-        rtn.school = JSON.parse(response.school)[0].fields;
-        return rtn;
+        return response;
       },
       providesTags: ['teacher']
     }),

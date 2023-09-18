@@ -3,7 +3,7 @@ import React from 'react';
 import Page from 'codeforlife/lib/esm/components/page';
 
 import YourSchool from './YourSchool';
-import Classes from './classes/Classes';
+import Classes, { MoveClasses } from './classes/Classes';
 import YourAccount from './account/YourAccount';
 import { useGetTeacherDataQuery } from '../../app/api/teacher/dashboard';
 import { useNavigate } from 'react-router-dom';
@@ -40,7 +40,7 @@ const TeacherDashboard: React.FC<{
                 },
                 {
                   label: 'Your classes',
-                  children: <Classes movingClass={movingClass} />,
+                  children: movingClass ? <MoveClasses /> : <Classes data={data} />,
                   path: 'classes'
                 },
                 {

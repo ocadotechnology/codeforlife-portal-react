@@ -25,7 +25,7 @@ import SeeClassmatesProgressField from '../../../components/form/SeeClassmatesPr
 import EditClass from './editClass/EditClass';
 import { classType, teacherType, useLeaveOrganisationMutation } from '../../../app/api/organisation';
 import { FieldArray, Form, Formik } from 'formik';
-import { moveClassesType, organsationKickType, useOrganisationKickMutation } from '../../../app/api/teacher/dashboard';
+import { TeacherDashboardData, moveClassesType, organsationKickType, useOrganisationKickMutation } from '../../../app/api/teacher/dashboard';
 
 const _YourClasses: React.FC = () => {
   return (
@@ -145,7 +145,9 @@ const CREATE_CLASS_SCHEMA = Yup.object().shape({
   seeClassmates: Yup.boolean()
 });
 
-const CreateNewClassForm: React.FC = () => {
+const CreateNewClassForm: React.FC<{
+  isAdmin: boolean;
+}> = ({ isAdmin }) => {
   const teachersData = getTeachersData();
   const teacherNames = teachersData.map((teacher) => teacher.teacherName);
   return (
@@ -158,9 +160,8 @@ const CreateNewClassForm: React.FC = () => {
         seeClassmates: false
       }}
       validationSchema={CREATE_CLASS_SCHEMA}
-      onSubmit={(values, { setSubmitting }) => {
+      onSubmit={(values) => {
         alert(JSON.stringify(values, null, 2));
-        setSubmitting(false);
       }}
       submitButton={<SubmitButton>Create class</SubmitButton>}
     >
@@ -309,7 +310,7 @@ const MoveClassTeacherForm: React.FC<{
   );
 };
 
-const MoveClasses: React.FC = () => {
+export const MoveClasses: React.FC = () => {
   // TODO: get data from BE
   const userName = 'John Doe';
   const navigate = useNavigate();
@@ -345,13 +346,14 @@ const MoveClasses: React.FC = () => {
 };
 
 const Classes: React.FC<{
-  movingClass: boolean;
-}> = ({ movingClass }) => {
+  data: TeacherDashboardData;
+}> = ({ data }) => {
   const theme = useTheme();
   const params = tryValidateSync(
     useParams(),
     Yup.object({ accessCode: accessCodeSchema })
   );
+  const isAdmin = data.teacher.isAdmin;
 
   if (params?.accessCode !== undefined) {
     return <EditClass accessCode={params.accessCode} />;
@@ -359,21 +361,16 @@ const Classes: React.FC<{
 
   return (
     <>
-      {movingClass
-        ? <MoveClasses />
-        : <>
-          <Page.Section>
-            <_YourClasses />
-            <ClassTable />
-          </Page.Section >
-          <Page.Section>
-            <ExternalStudentsJoiningRequests />
-          </Page.Section>
-          <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
-            <CreateNewClassForm />
-          </Page.Section>
-        </>
-      }
+      <Page.Section>
+        <_YourClasses />
+        <ClassTable />
+      </Page.Section >
+      <Page.Section>
+        <ExternalStudentsJoiningRequests />
+      </Page.Section>
+      <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
+        <CreateNewClassForm isAdmin={isAdmin} />
+      </Page.Section>
     </>
   );
 };

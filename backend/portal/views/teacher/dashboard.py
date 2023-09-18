@@ -20,7 +20,7 @@ from django.contrib import messages as messages
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
-from django.db.models import F
+from django.db.models import F, Value
 from django.http import Http404, HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
@@ -94,6 +94,20 @@ def dashboard_teacher_view(request):
     teacher = request.user.new_teacher
     school = teacher.school
 
+    teacher_json = {
+        "id": teacher.id,
+        "is_admin": teacher.is_admin,
+        "teacher_first_name": teacher.new_user.first_name,
+        "teacher_last_name": teacher.new_user.last_name,
+        "teacher_email": teacher.new_user.email,
+    }
+
+    school_json = {
+        "name": school.name,
+        "postcode": school.postcode,
+        "country": school.country.name,
+    } 
+
     coworkers = Teacher.objects.filter(school=school).values(
         "id",
         is_teacher_admin=F("is_admin"),
@@ -102,12 +116,6 @@ def dashboard_teacher_view(request):
         teacher_email=F("new_user__email"),
     ).order_by("teacher_last_name", "teacher_first_name")
     coworkers_json = list(coworkers)
-
-    school_json = serializers.serialize(
-        "json", 
-        [school],
-        fields=["name", "postcode", "country"]
-    )
     
     sent_invites = SchoolTeacherInvitation.objects.filter(school=school).values(
         "id",
@@ -120,76 +128,74 @@ def dashboard_teacher_view(request):
     ) if teacher.is_admin else []
     sent_invites_json = list(sent_invites)
 
+    backup_tokens = check_backup_tokens(request)
+
+    classes = []
+    classes_json = []
+    requests = []
+    requests_json = []
+    if teacher.is_admin:
+        # Making sure the current teacher classes come up first
+        classes = school.classes()
+        for klass in classes:
+            classes_json.append({ 
+                "name": klass.name,
+                "access_code": klass.access_code,
+                "teacher_first_name": klass.teacher.new_user.first_name,
+                "teacher_last_name": klass.teacher.new_user.last_name,
+                "teacher_id": klass.teacher.id,
+            })
+        [classes_json.insert(0, classes_json.pop(i)) for i in range(len(classes_json)) if classes_json[i]['teacher_id'] == teacher.id]
+
+        requests = Student.objects.filter(pending_class_request__teacher__school=school).values(
+            student_first_name=F("new_user__first_name"),
+            student_email=F("new_user__email"),
+            request_class=F("pending_class_request__name"),
+            request_teacher_first_name=F("pending_class_request__teacher__new_user__first_name"),
+            request_teacher_last_name=F("pending_class_request__teacher__new_user__last_name"),
+            request_teacher_email=F("pending_class_request__teacher__new_user__email"),
+            request_teacher_id=F("pending_class_request__teacher__id"),
+        )
+        requests_json = list(requests)
+        [
+            requests_json.insert(0, requests_json.pop(i)) 
+            for i in range(len(requests_json)) 
+            if requests_json[i]["request_teacher_id"] == teacher.id
+        ]
+
+    else:
+        classes = Class.objects.filter(teacher=teacher).values(
+            "name",
+            "access_code",
+            teacher_first_name="teacher__new_user__first_name",
+            teacher_last_name="teacher__new_user__last_name",
+            teacher_id="teacher__id"
+        )
+        classes_json = list(classes)
+    
+        requests = Student.objects.filter(pending_class_request__teacher=teacher).values(
+            student_first_name=F("new_user__first_name"),
+            student_email=F("new_user__email"),
+            request_class=F("pending_class_request__name"),
+            request_teacher_first_name=F("pending_class_request__teacher__new_user__first_name"),
+            request_teacher_last_name=F("pending_class_request__teacher__new_user__last_name"),
+            request_teacher_email=F("pending_class_request__teacher__new_user__email"),
+            request_teacher_id=F("pending_class_request__teacher__id"),
+        )
+        requests_json= list(requests)
+
+    for i in range(len(requests_json)):
+        requests_json[i]["is_request_teacher"] = (requests_json[i]["request_teacher_email"] == teacher.new_user.email)
+    
     return JsonResponse(data={
-        "is_admin": teacher.is_admin, 
-        # "teacher": teacher, 
+        "teacher": teacher_json,
+        "classes": classes_json, 
         "school": school_json,
         "coworkers": coworkers_json,
         "sent_invites": sent_invites_json,
-        # "requests": requests, # requests is for classes tab
-        # "backup_tokens": backup_tokens # backup_tokens is for account tab
+        "requests": requests_json, # requests is for classes tab
+        "backup_tokens": backup_tokens # backup_tokens is for account tab
     })
-
-    # backup_tokens = check_backup_tokens(request)
-
-    # show_onboarding_complete = False
-
-    # if request.method == "POST":
-    #     form_data = request.POST
-
-    #     if "create_class" in request.POST:
-    #         anchor = "new-class"
-    #         create_class_form = ClassCreationForm(request.POST, teacher=teacher)
-    #         if create_class_form.is_valid():
-    #             class_teacher = teacher
-    #             # If the logged in teacher is an admin, then get the class teacher from the selected dropdown
-    #             if teacher.is_admin:
-    #                 class_teacher = get_object_or_404(Teacher, id=create_class_form.cleaned_data["teacher"])
-    #             created_class = create_class(create_class_form, class_teacher, class_creator=teacher)
-    #             messages.success(
-    #                 request,
-    #                 "The class '{className}' has been created successfully.".format(className=created_class.name),
-    #             )
-    #             return teacher_view_class(request, created_class.access_code)
-    #             # return HttpResponseRedirect(
-    #             #     reverse_lazy("view_class", kwargs={"access_code": created_class.access_code})
-    #             # )
-
-    #     else:
-    #         anchor = "account"
-    #         update_account_form = TeacherEditAccountForm(request.user, request.POST)
-    #         (changing_email, new_email, changing_password, anchor) = process_update_account_form(
-    #             request, teacher, anchor
-    #         )
-    #         if changing_email:
-    #             logout(request)
-    #             messages.success(
-    #                 request,
-    #                 "Your email will be changed once you have verified it, until then "
-    #                 "you can still log in with your old email.",
-    #             )
-    #             return render(request, "portal/email_verification_needed.html", {"usertype": "TEACHER"})
-
-    #         if changing_password:
-    #             logout(request)
-    #             messages.success(request, "Please login using your new password.")
-    #             return HttpResponseRedirect(reverse_lazy("session-expired"))
-
-    # if teacher.is_admin:
-    #     # Making sure the current teacher classes come up first
-    #     classes = school.classes()
-    #     [classes.insert(0, classes.pop(i)) for i in range(len(classes)) if classes[i].teacher.id == teacher.id]
-
-    #     requests = list(Student.objects.filter(pending_class_request__teacher__school=school))
-    #     [
-    #         requests.insert(0, requests.pop(i))
-    #         for i in range(len(requests))
-    #         if requests[i].pending_class_request.teacher.id == teacher.id
-    #     ]
-
-    # else:
-    #     classes = Class.objects.filter(teacher=teacher)
-    #     requests = Student.objects.filter(pending_class_request__teacher=teacher)
 
 
 @login_required(login_url=reverse_lazy("session-expired"))
