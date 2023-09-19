@@ -141,11 +141,11 @@ def dashboard_teacher_view(request):
             classes_json.append({ 
                 "name": klass.name,
                 "access_code": klass.access_code,
-                "teacher_first_name": klass.teacher.new_user.first_name,
-                "teacher_last_name": klass.teacher.new_user.last_name,
-                "teacher_id": klass.teacher.id,
+                "class_teacher_first_name": klass.teacher.new_user.first_name,
+                "class_teacher_last_name": klass.teacher.new_user.last_name,
+                "class_teacher_id": klass.teacher.id,
             })
-        [classes_json.insert(0, classes_json.pop(i)) for i in range(len(classes_json)) if classes_json[i]['teacher_id'] == teacher.id]
+        [classes_json.insert(0, classes_json.pop(i)) for i in range(len(classes_json)) if classes_json[i]['class_teacher_id'] == teacher.id]
 
         requests = Student.objects.filter(pending_class_request__teacher__school=school).values(
             student_first_name=F("new_user__first_name"),
@@ -167,9 +167,9 @@ def dashboard_teacher_view(request):
         classes = Class.objects.filter(teacher=teacher).values(
             "name",
             "access_code",
-            teacher_first_name="teacher__new_user__first_name",
-            teacher_last_name="teacher__new_user__last_name",
-            teacher_id="teacher__id"
+            class_teacher_first_name=F("teacher__new_user__first_name"),
+            class_teacher_last_name=F("teacher__new_user__last_name"),
+            class_teacher_id=F("teacher__id"),
         )
         classes_json = list(classes)
     

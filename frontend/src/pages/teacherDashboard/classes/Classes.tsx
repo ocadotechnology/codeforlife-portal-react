@@ -53,8 +53,8 @@ const ClassTable: React.FC<{
 
   return (
     <CflTable titles={isAdmin ? ['Class name', 'Access code', 'Teacher', 'Action'] : ['Class name', 'Access code', 'Action']}>
-      {classData.map(({ name, accessCode, teacherFirstName, teacherLastName, teacherId }) => (
-        <CflTableBody key={`${teacherId}`}>
+      {classData.map(({ name, accessCode, classTeacherFirstName, classTeacherLastName, classTeacherId }) => (
+        <CflTableBody key={`${accessCode}`}>
           <CflTableCellElement>{name}</CflTableCellElement>
           <CflTableCellElement
             justifyContent="space-between"
@@ -64,7 +64,7 @@ const ClassTable: React.FC<{
             <CopyToClipboardIcon stringToCopy={accessCode} />
           </CflTableCellElement>
           {isAdmin && <CflTableCellElement>
-            {`${teacherFirstName} ${teacherLastName}` === `${firstName} ${lastName}` ? 'You' : `${teacherFirstName} ${teacherLastName}`}
+            {`${classTeacherFirstName} ${classTeacherLastName}` === `${firstName} ${lastName}` ? 'You' : `${classTeacherFirstName} ${classTeacherLastName}`}
           </CflTableCellElement>
           }
           <CflTableCellElement justifyContent="center">

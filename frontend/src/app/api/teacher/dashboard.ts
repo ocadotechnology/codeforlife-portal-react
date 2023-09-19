@@ -37,9 +37,9 @@ interface teacherDashboardType {
 interface classesDashboardType {
   name: string,
   accessCode: string,
-  teacherId: number,
-  teacherFirstName: string,
-  teacherLastName: string,
+  classTeacherId: number,
+  classTeacherFirstName: string,
+  classTeacherLastName: string,
 };
 
 interface externalRequestType {
@@ -86,6 +86,7 @@ const teacherDashboardApi = api.injectEndpoints({
         response.sentInvites.forEach((s: sentInvitesType) => {
           s.isExpired = Date.parse(s.expiry) < Date.now();
         });
+        console.log('resp', response);
         return response;
       },
       providesTags: ['teacher']
