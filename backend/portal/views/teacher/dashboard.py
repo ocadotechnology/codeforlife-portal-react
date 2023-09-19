@@ -148,6 +148,7 @@ def dashboard_teacher_view(request):
         [classes_json.insert(0, classes_json.pop(i)) for i in range(len(classes_json)) if classes_json[i]['class_teacher_id'] == teacher.id]
 
         requests = Student.objects.filter(pending_class_request__teacher__school=school).values(
+            student_id=F("id"),
             student_first_name=F("new_user__first_name"),
             student_email=F("new_user__email"),
             request_class=F("pending_class_request__name"),
@@ -174,6 +175,7 @@ def dashboard_teacher_view(request):
         classes_json = list(classes)
     
         requests = Student.objects.filter(pending_class_request__teacher=teacher).values(
+            student_id=F("id"),
             student_first_name=F("new_user__first_name"),
             student_email=F("new_user__email"),
             request_class=F("pending_class_request__name"),
@@ -471,9 +473,11 @@ def teacher_disable_2FA(request, pk):
 @login_required(login_url=reverse_lazy("session-expired"))
 @user_passes_test(logged_in_as_teacher, login_url=reverse_lazy("session-expired"))
 def teacher_accept_student_request(request, pk):
-    student = get_object_or_404(Student, id=pk)
-
-    check_student_request_can_be_handled(request, student)
+    try:
+        student = get_object_or_404(Student, id=pk)
+        check_student_request_can_be_handled(request, student)
+    except:
+        return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
 
     students = Student.objects.filter(class_field=student.pending_class_request).order_by("new_user__first_name")
 
@@ -528,10 +532,12 @@ def check_student_request_can_be_handled(request, student):
 @login_required(login_url=reverse_lazy("session-expired"))
 @user_passes_test(logged_in_as_teacher, login_url=reverse_lazy("session-expired"))
 def teacher_reject_student_request(request, pk):
-    student = get_object_or_404(Student, id=pk)
-
-    check_student_request_can_be_handled(request, student)
-
+    try:
+        student = get_object_or_404(Student, id=pk)
+        check_student_request_can_be_handled(request, student)
+    except:
+        return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
+    
     emailMessage = email_messages.studentJoinRequestRejectedEmail(
         request, student.pending_class_request.teacher.school.name, student.pending_class_request.access_code
     )
@@ -546,9 +552,7 @@ def teacher_reject_student_request(request, pk):
     student.pending_class_request = None
     student.save()
 
-    messages.success(request, "Request from external/independent student has been rejected successfully.")
-
-    return HttpResponseRedirect(reverse_lazy("dashboard"))
+    return HttpResponse()
 
 
 def invited_teacher(request, token):

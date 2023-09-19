@@ -26,6 +26,7 @@ import SeeClassmatesProgressField from '../../../components/form/SeeClassmatesPr
 import EditClass from './editClass/EditClass';
 import { classType, teacherType, useLeaveOrganisationMutation } from '../../../app/api/organisation';
 import { TeacherDashboardData, moveClassesType, organsationKickType, useOrganisationKickMutation } from '../../../app/api/teacher/dashboard';
+import { useAcceptStudentRequestMutation, useRejectStudentRequestMutation } from '../../../app/api/teacher/dashboardClasses';
 
 const _YourClasses: React.FC = () => {
   return (
@@ -90,6 +91,28 @@ const ClassTable: React.FC<{
 const ExternalStudentsJoiningRequestsTable: React.FC<{
   requestData: TeacherDashboardData['requests'];
 }> = ({ requestData }) => {
+  const navigate = useNavigate();
+  const [acceptStudentRequest] = useAcceptStudentRequestMutation();
+  const [rejectStudentRequest] = useRejectStudentRequestMutation();
+
+  const onAcceptRequest = (id: number): void => {
+    acceptStudentRequest({ id }).unwrap()
+      .then(() => { console.log('acceptStudentRequest'); })
+      .catch((err) => { console.error('AcceptStudentRequest error', err); });
+  };
+
+  const onRejectRequest = (id: number): void => {
+    rejectStudentRequest({ id }).unwrap()
+      .then(() => {
+        navigate('.', {
+          state: {
+            message: 'Request from external/independent student has been rejected successfully.'
+          }
+        });
+      })
+      .catch((err) => { console.error('RejectStudentRequest error', err); });
+  };
+
   return (
     <CflTable
       className="body"
@@ -97,7 +120,7 @@ const ExternalStudentsJoiningRequestsTable: React.FC<{
     >
       {requestData.map(
         (
-          { studentFirstName, studentEmail, requestClass, isRequestTeacher, requestTeacherFirstName, requestTeacherLastName },
+          { studentId, studentFirstName, studentEmail, requestClass, isRequestTeacher, requestTeacherFirstName, requestTeacherLastName },
           keyIdx: number
         ) => (
           <CflTableBody key={`${keyIdx}`}>
@@ -108,8 +131,8 @@ const ExternalStudentsJoiningRequestsTable: React.FC<{
               {isRequestTeacher ? '' : ` (${requestTeacherFirstName} ${requestTeacherLastName})`}
             </CflTableCellElement>
             <CflTableCellElement justifyContent="center">
-              <Button endIcon={<Add />}>Add to class</Button>
-              <Button className="alert" endIcon={<DoNotDisturb />}>
+              <Button endIcon={<Add />} onClick={() => { onAcceptRequest(studentId); }}>Add to class</Button>
+              <Button className="alert" endIcon={<DoNotDisturb />} onClick={() => { onRejectRequest(studentId); }}>
                 Reject
               </Button>
             </CflTableCellElement>
@@ -355,6 +378,7 @@ const Classes: React.FC<{
     useParams(),
     Yup.object({ accessCode: accessCodeSchema })
   );
+  const location = useLocation();
 
   if (params?.accessCode !== undefined) {
     return <EditClass accessCode={params.accessCode} />;
@@ -362,6 +386,11 @@ const Classes: React.FC<{
 
   return (
     <>
+      {location.state?.message &&
+        <Page.Notification>
+          {location.state.message}
+        </Page.Notification>
+      }
       <Page.Section>
         <_YourClasses />
         <ClassTable teacherData={data.teacher} classData={data.classes} />
