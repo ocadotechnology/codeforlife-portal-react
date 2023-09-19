@@ -136,9 +136,17 @@ jobs:
         uses: mikefarah/yq@master
         with:
           cmd: |
+            SERVICE_NAME=$(
+              if [ ${{ github.ref_name }} == "production" ]
+              then echo ${{ env.SERVICE_NAME }}
+              else echo ${{ github.ref_name }}-${{ env.SERVICE_NAME }}
+              fi
+            )
+
             yq -i '
               .service = "${{ github.ref_name }}-${{ env.SERVICE }}" |
-              .env_variables.SITE_DOMAIN = "${{ github.ref_name }}-portal-dot-decent-digit-629.appspot.com" |
+              .env_variables.SECRET_KEY = "${{ vars.SECRET_KEY }}" |
+              .env_variables.SERVICE_NAME = "$SERVICE_NAME" |
               .env_variables.MODULE_NAME = "${{ github.ref_name }}"
             ' backend/app.yaml
 
