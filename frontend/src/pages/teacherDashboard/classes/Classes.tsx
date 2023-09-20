@@ -23,7 +23,7 @@ import ClassNameField from '../../../components/form/ClassNameField';
 import SeeClassmatesProgressField from '../../../components/form/SeeClassmatesProgressField';
 import EditClass from './editClass/EditClass';
 import { TeacherDashboardData } from '../../../app/api/teacher/dashboard';
-import { CreateClassFormType, CreatedClassType, useAcceptStudentRequestMutation, useCreateNewClassMutation, useRejectStudentRequestMutation } from '../../../app/api/teacher/dashboardClasses';
+import { CreateClassFormType, CreatedClassType, useCreateNewClassMutation, useRejectStudentRequestMutation } from '../../../app/api/teacher/dashboardClasses';
 
 const _YourClasses: React.FC = () => {
   return (
@@ -89,17 +89,18 @@ const ExternalStudentsJoiningRequestsTable: React.FC<{
   requestData: TeacherDashboardData['requests'];
 }> = ({ requestData }) => {
   const navigate = useNavigate();
-  const [acceptStudentRequest] = useAcceptStudentRequestMutation();
   const [rejectStudentRequest] = useRejectStudentRequestMutation();
 
-  const onAcceptRequest = (id: number): void => {
-    acceptStudentRequest({ id }).unwrap()
-      .then(() => { console.log('acceptStudentRequest'); })
-      .catch((err) => { console.error('AcceptStudentRequest error', err); });
+  const onAcceptRequest = (studentId: number): void => {
+    navigate(
+      generatePath(paths.teacher.dashboard.student.accept._, {
+        studentId
+      })
+    );
   };
 
-  const onRejectRequest = (id: number): void => {
-    rejectStudentRequest({ id }).unwrap()
+  const onRejectRequest = (studentId: number): void => {
+    rejectStudentRequest({ studentId }).unwrap()
       .then(() => {
         navigate('.', {
           state: {

@@ -15,10 +15,10 @@ export interface CreatedClassType {
 const dashboardClassesApi = api.injectEndpoints({
   endpoints: (build) => ({
     acceptStudentRequest: build.mutation<void, {
-      id: number
+      studentId: number
     }>({
-      query: ({ id }) => ({
-        url: `teach/dashboard/student/accept/${id}/`,
+      query: ({ studentId }) => ({
+        url: `teach/dashboard/student/accept/${studentId}/`,
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
@@ -27,10 +27,10 @@ const dashboardClassesApi = api.injectEndpoints({
       invalidatesTags: ['teacher']
     }),
     rejectStudentRequest: build.mutation<void, {
-      id: number
+      studentId: number
     }>({
-      query: ({ id }) => ({
-        url: `teach/dashboard/student/reject/${id}/`,
+      query: ({ studentId }) => ({
+        url: `teach/dashboard/student/reject/${studentId}/`,
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
