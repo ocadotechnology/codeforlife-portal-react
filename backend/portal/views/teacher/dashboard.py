@@ -11,7 +11,7 @@ from common.helpers.emails import (
     send_email,
     update_email,
 )
-from common.helpers.generators import get_random_username
+from common.helpers.generators import get_random_username, generate_access_code
 from common.models import Class, JoinReleaseStudent, SchoolTeacherInvitation, Student, Teacher
 from common.permissions import logged_in_as_teacher, check_teacher_authorised
 from common.utils import using_two_factor
@@ -47,8 +47,6 @@ from portal.helpers.ratelimit import (
     RATELIMIT_METHOD,
     clear_ratelimit_cache_for_user,
 )
-from .teach import create_class, teacher_view_class
-
 
 def _get_update_account_rate(group, request):
     """
@@ -116,6 +114,11 @@ def dashboard_teacher_view(request):
         teacher_email=F("new_user__email"),
     ).order_by("teacher_last_name", "teacher_first_name")
     coworkers_json = list(coworkers)
+    [
+        coworkers_json.insert(0, coworkers_json.pop(i)) 
+        for i in range(len(coworkers_json)) 
+        if coworkers_json[i]["teacher_email"] == teacher.new_user.email
+    ]
     
     sent_invites = SchoolTeacherInvitation.objects.filter(school=school).values(
         "id",
@@ -198,6 +201,34 @@ def dashboard_teacher_view(request):
         "requests": requests_json, # requests is for classes tab
         "backup_tokens": backup_tokens # backup_tokens is for account tab
     })
+
+
+@require_POST
+@login_required(login_url=reverse_lazy("session-expired"))
+@user_passes_test(logged_in_as_teacher, login_url=reverse_lazy("session-expired"))
+def create_new_class(request):
+    teacher = request.user.new_teacher
+
+    form_data = request.POST
+    class_teacher = None
+    try:
+        class_teacher = get_object_or_404(Teacher, id=form_data["teacher_id"])
+    except:
+        return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
+
+    created_class = Class.objects.create(
+        name=form_data['class'],
+        teacher=class_teacher,
+        access_code=generate_access_code(),
+        classmates_data_viewable=bool(form_data['see_classmates']),
+        created_by=teacher,
+    )
+
+    created_class_info = {
+        "name": created_class.name,
+        "access_code": created_class.access_code,
+    }
+    return JsonResponse(status=status.HTTP_201_CREATED, data=created_class_info)
 
 
 @login_required(login_url=reverse_lazy("session-expired"))

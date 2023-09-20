@@ -38,9 +38,6 @@ import { useLeaveOrganisationMutation } from '../../app/api';
 import { paths } from '../../app/router';
 import {
   TeacherDashboardData,
-  coworkersType,
-  schoolType,
-  sentInvitesType,
   useDeleteInviteMutation,
   useInviteTeacherMutation,
   useInviteToggleAdminMutation,
@@ -49,7 +46,6 @@ import {
   useToggleAdminMutation,
   useUpdateSchoolMutation
 } from '../../app/api/teacher/dashboard';
-import { getUser } from './dummyMethods';
 
 interface DialogProps {
   open: boolean;
@@ -196,7 +192,7 @@ const InviteTeacherForm: React.FC<{
   };
 
 const UpdateSchoolDetailsForm: React.FC<{
-  schoolData: schoolType;
+  schoolData: TeacherDashboardData['school'];
 }> = ({ schoolData }) => {
   const navigate = useNavigate();
   const schoolName = schoolData.name;
@@ -398,12 +394,13 @@ const TeachersTableActions: React.FC<{
 };
 
 const TeachersTable: React.FC<{
-  isUserAdmin: boolean;
-  teachersData: coworkersType[];
-  sentInvites: sentInvitesType[];
+  teacherData: TeacherDashboardData['teacher'];
+  coworkersData: TeacherDashboardData['coworkers'];
+  sentInvites: TeacherDashboardData['sentInvites'];
   setDialog: SetDialogType;
-}> = ({ isUserAdmin, teachersData, sentInvites, setDialog }) => {
-  const { email } = getUser();
+}> = ({ teacherData, coworkersData, sentInvites, setDialog }) => {
+  const isUserAdmin = teacherData.isAdmin;
+  const email = teacherData.teacherEmail;
   const boldText: React.FC<string> = (str: string) => (
     <Typography variant="body2" fontWeight="bold">
       ({str})
@@ -415,7 +412,7 @@ const TeachersTable: React.FC<{
       className="body"
       titles={isUserAdmin ? ['Name', 'Administrator status', 'Actions'] : ['Name', 'Administrator status']}
     >
-      {teachersData.map(
+      {coworkersData.map(
         ({ teacherFirstName, teacherLastName, teacherEmail, isTeacherAdmin, id }) => (
           <CflTableBody key={id}>
             <CflTableCellElement>
@@ -564,8 +561,8 @@ const YourSchool: React.FC<{
         These teachers are already part of your school or club
       </Typography>
       <TeachersTable
-        isUserAdmin={isAdmin}
-        teachersData={data.coworkers}
+        teacherData={data.teacher}
+        coworkersData={data.coworkers}
         sentInvites={data.sentInvites}
         setDialog={setDialog}
       />

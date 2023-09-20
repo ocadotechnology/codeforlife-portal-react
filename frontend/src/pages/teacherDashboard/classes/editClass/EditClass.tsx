@@ -2,7 +2,8 @@ import React from 'react';
 import {
   useNavigate,
   useParams,
-  generatePath
+  generatePath,
+  useLocation
 } from 'react-router-dom';
 import {
   DeleteOutlined,
@@ -204,6 +205,7 @@ const EditClass: React.FC<{
 }> = ({ accessCode }) => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const location = useLocation();
   const searchParams = fromSearchParams();
 
   const params = tryValidateSync(
@@ -296,6 +298,11 @@ const EditClass: React.FC<{
   }
 
   return <>
+    {location.state?.message &&
+      <Page.Notification>
+        {location.state.message}
+      </Page.Notification>
+    }
     <Page.Section>
       <Typography variant="h4" align="center">
         Update details for Class 1 ({accessCode})

@@ -1,5 +1,17 @@
 import api from '../api';
 
+export interface CreateClassFormType {
+  class: string,
+  teacherName: string,
+  seeClassmates: boolean,
+  teacherId?: string,
+};
+
+export interface CreatedClassType {
+  name: string,
+  accessCode: string,
+};
+
 const dashboardClassesApi = api.injectEndpoints({
   endpoints: (build) => ({
     acceptStudentRequest: build.mutation<void, {
@@ -25,6 +37,18 @@ const dashboardClassesApi = api.injectEndpoints({
         }
       }),
       invalidatesTags: ['teacher']
+    }),
+    createNewClass: build.mutation<CreatedClassType, CreateClassFormType
+    >({
+      query: (body) => ({
+        url: 'teach/create_new_class/',
+        method: 'POST',
+        body,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }),
+      invalidatesTags: ['teacher']
     })
   })
 });
@@ -32,5 +56,6 @@ const dashboardClassesApi = api.injectEndpoints({
 export default dashboardClassesApi;
 export const {
   useAcceptStudentRequestMutation,
-  useRejectStudentRequestMutation
+  useRejectStudentRequestMutation,
+  useCreateNewClassMutation
 } = dashboardClassesApi;

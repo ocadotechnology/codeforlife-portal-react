@@ -18,7 +18,6 @@ import CflTable, {
 } from '../../../components/CflTable';
 import { accessCodeSchema } from '../../../app/schemas';
 import { paths } from '../../../app/router';
-import { getTeachersData } from '../dummyMethods';
 import CopyToClipboardIcon from '../../../components/CopyToClipboardIcon';
 import { CflHorizontalForm } from '../../../components/form/CflForm';
 import ClassNameField from '../../../components/form/ClassNameField';
@@ -26,7 +25,7 @@ import SeeClassmatesProgressField from '../../../components/form/SeeClassmatesPr
 import EditClass from './editClass/EditClass';
 import { classType, teacherType, useLeaveOrganisationMutation } from '../../../app/api/organisation';
 import { TeacherDashboardData, moveClassesType, organsationKickType, useOrganisationKickMutation } from '../../../app/api/teacher/dashboard';
-import { useAcceptStudentRequestMutation, useRejectStudentRequestMutation } from '../../../app/api/teacher/dashboardClasses';
+import { CreateClassFormType, CreatedClassType, useAcceptStudentRequestMutation, useCreateNewClassMutation, useRejectStudentRequestMutation } from '../../../app/api/teacher/dashboardClasses';
 
 const _YourClasses: React.FC = () => {
   return (
@@ -54,7 +53,7 @@ const ClassTable: React.FC<{
 
   return (
     <CflTable titles={isAdmin ? ['Class name', 'Access code', 'Teacher', 'Action'] : ['Class name', 'Access code', 'Action']}>
-      {classData.map(({ name, accessCode, classTeacherFirstName, classTeacherLastName, classTeacherId }) => (
+      {classData.map(({ name, accessCode, classTeacherFirstName, classTeacherLastName }) => (
         <CflTableBody key={`${accessCode}`}>
           <CflTableCellElement>{name}</CflTableCellElement>
           <CflTableCellElement
@@ -156,10 +155,12 @@ const ExternalStudentsJoiningRequests: React.FC<{
         student has been given a Class Access Code, and provided you have
         enabled external requests for that class.
       </Typography>
-      <ExternalStudentsJoiningRequestsTable requestData={requestData} />
-      <Typography fontWeight="bold" mb={0}>
-        No student has currently requested to join your classes.
-      </Typography>
+      {requestData.length
+        ? <ExternalStudentsJoiningRequestsTable requestData={requestData} />
+        : <Typography fontWeight="bold" mb={0}>
+          No student has currently requested to join your classes.
+        </Typography>
+      }
     </>
   );
 };
@@ -171,23 +172,46 @@ const CREATE_CLASS_SCHEMA = Yup.object().shape({
 });
 
 const CreateNewClassForm: React.FC<{
-  isAdmin: boolean;
-}> = ({ isAdmin }) => {
-  const teachersData = getTeachersData();
-  const teacherNames = teachersData.map((teacher) => teacher.teacherName);
+  teacherData: TeacherDashboardData['teacher'];
+  coworkersData: TeacherDashboardData['coworkers'];
+}> = ({ teacherData, coworkersData }) => {
+  const isAdmin = teacherData.isAdmin;
+  const teacherNames = isAdmin
+    ? coworkersData.map((teacher) => `${teacher.teacherFirstName} ${teacher.teacherLastName}`)
+    : [`${teacherData.teacherFirstName} ${teacherData.teacherLastName}`];
+  const subheader = isAdmin
+    ? ' When you set up a new class, a unique class access code will automatically be generated for the teacher assigned to the class.'
+    : 'When you set up a new class, a unique class access code will automatically be generated, with you being identified as the teacher for that class.';
+
+  const navigate = useNavigate();
+  const [createNewClass] = useCreateNewClassMutation();
+  const onCreateNewClass = (values: CreateClassFormType): void => {
+    values.teacherId = coworkersData.filter((teacher) => values.teacherName === `${teacher.teacherFirstName} ${teacher.teacherLastName}`)[0].id;
+    createNewClass(values).unwrap()
+      .then((res: CreatedClassType) => {
+        navigate(
+          generatePath(paths.teacher.dashboard.classes.editClass._, {
+            accessCode: res.accessCode
+          }), {
+          state: {
+            message: `The class ${res.name} has been created successfully.`
+          }
+        });
+      })
+      .catch((err) => { console.error('CreateNewClass error: ', err); });
+  };
+
   return (
     <CflHorizontalForm
       header="Create a new class"
-      subheader="When you set up a new class, a unique class access code will automatically be generated for the teacher assigned to the class."
+      subheader={subheader}
       initialValues={{
         class: '',
         teacherName: teacherNames[0],
         seeClassmates: false
       }}
       validationSchema={CREATE_CLASS_SCHEMA}
-      onSubmit={(values) => {
-        alert(JSON.stringify(values, null, 2));
-      }}
+      onSubmit={(values) => { onCreateNewClass(values); }}
       submitButton={<SubmitButton>Create class</SubmitButton>}
     >
       <ClassNameField />
@@ -198,6 +222,7 @@ const CreateNewClassForm: React.FC<{
           name: 'teacherName',
           helperText: 'Select teacher'
         }}
+        disabled={!isAdmin}
       />
       <>{/* NOTE: Leaving an empty gap */}</>
       <SeeClassmatesProgressField />
@@ -399,7 +424,7 @@ const Classes: React.FC<{
         <ExternalStudentsJoiningRequests requestData={data.requests} />
       </Page.Section>
       <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
-        <CreateNewClassForm isAdmin={data.teacher.isAdmin} />
+        <CreateNewClassForm teacherData={data.teacher} coworkersData={data.coworkers} />
       </Page.Section>
     </>
   );
