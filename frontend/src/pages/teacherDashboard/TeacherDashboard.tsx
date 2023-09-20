@@ -2,12 +2,14 @@ import React from 'react';
 
 import Page from 'codeforlife/lib/esm/components/page';
 
-import YourSchool from './YourSchool';
-import Classes, { MoveClasses } from './classes/Classes';
-import YourAccount from './account/YourAccount';
-import { useGetTeacherDataQuery } from '../../app/api/teacher/dashboard';
 import { useNavigate } from 'react-router-dom';
 import { paths } from '../../app/router';
+
+import YourSchool from './YourSchool';
+import Classes from './classes/Classes';
+import MoveClasses from './classes/MoveClasses';
+import YourAccount from './account/YourAccount';
+import { useGetTeacherDataQuery } from '../../app/api/teacher/dashboard';
 
 const TeacherDashboard: React.FC<{
   tab: number;
