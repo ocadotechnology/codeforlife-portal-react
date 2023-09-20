@@ -14,9 +14,13 @@ import {
   parseResponseBody
 } from 'codeforlife/lib/esm/api/baseQuery';
 
+import {
+  SSO_SERVICE_NAME
+} from './env';
+
 // TODO: remove this hot switching code and migrate login pages to SSO service.
 const ssoFetch = fetchBaseQuery({
-  baseUrl: `http://localhost:8001/${process.env.REACT_APP_SSO_SERVICE_NAME ?? 'sso'}/api/`,
+  baseUrl: `http://localhost:8001/${SSO_SERVICE_NAME}/api/`,
   credentials: 'include'
 });
 
@@ -24,7 +28,7 @@ const baseQuery: FetchBaseQuery = async (args, api, extraOptions) => {
   const isLoginRequest = args.url.startsWith('session/login/');
 
   if (isLoginRequest) {
-    await injectCsrfToken(ssoFetch, args, api, 'sso_csrftoken');
+    await injectCsrfToken(ssoFetch, args, api, SSO_SERVICE_NAME);
   } else {
     await injectCsrfToken(fetch, args, api);
   }
