@@ -20,12 +20,30 @@ import {
   useRequestIndependentStudentPasswordResetMutation,
   useRequestTeacherPasswordResetMutation,
   useResetPasswordMutation,
+  useVerifyPasswordMutation,
   useDeleteAccountMutation
 } from './registration';
+
 import {
-  useGetClassQuery,
-  useUpdateClassMutation
-} from './teacher/teach';
+  useGetStudentScoreQuery,
+  useGetStudentKuronoGameDataQuery,
+  useUpdateSchoolStudentDetailsMutation,
+  useUpdateStudentDetailsMutation,
+  useJoinSchoolRequestMutation,
+  useRevokeSchoolRequestMutation,
+  useIsRequestingToJoinSchoolQuery
+} from './student';
+import {
+  useGetTeacherDataQuery,
+  useInviteTeacherMutation,
+  useUpdateSchoolMutation,
+  useToggleAdminMutation,
+  useOrganisationKickMutation,
+  useInviteToggleAdminMutation,
+  useResendInviteMutation,
+  useDeleteInviteMutation
+} from './teacher/dashboard';
+import { useGetClassQuery, useUpdateClassMutation } from './teacher/teach';
 
 export default api;
 export {
@@ -46,7 +64,25 @@ export {
   useRequestIndependentStudentPasswordResetMutation,
   useRequestTeacherPasswordResetMutation,
   useResetPasswordMutation,
+  useVerifyPasswordMutation,
   useDeleteAccountMutation,
+  // student
+  useGetStudentScoreQuery,
+  useGetStudentKuronoGameDataQuery,
+  useUpdateStudentDetailsMutation,
+  useUpdateSchoolStudentDetailsMutation,
+  useJoinSchoolRequestMutation,
+  useRevokeSchoolRequestMutation,
+  useIsRequestingToJoinSchoolQuery,
+  // teacher dashboard
+  useGetTeacherDataQuery,
+  useInviteTeacherMutation,
+  useUpdateSchoolMutation,
+  useToggleAdminMutation,
+  useOrganisationKickMutation,
+  useInviteToggleAdminMutation,
+  useResendInviteMutation,
+  useDeleteInviteMutation,
   // teacher/teach
   useGetClassQuery,
   useUpdateClassMutation

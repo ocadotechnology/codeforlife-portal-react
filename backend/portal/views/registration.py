@@ -318,6 +318,21 @@ def password_reset_check_and_confirm(request, uidb64=None, token=None):
 
 
 @require_POST
+@login_required
+def verify_password(request):
+    if request.method == "POST":
+        user = request.user
+        return JsonResponse(
+            {
+                "is_password_correct": user.check_password(
+                    request.POST["password"]
+                )
+            }
+        )
+    return HttpResponse(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+@require_POST
 @login_required(login_url=reverse_lazy("teacher_login"))
 def delete_account(request: HttpRequest):
     user = request.user

@@ -30,7 +30,7 @@ const organisationApi = api.injectEndpoints({
       })
     }),
     leaveOrganisation: build.mutation<{
-      hasClasses: boolean,
+      source?: string;
       classes?: classType[],
       teachers?: teacherType[]
     }, void | object

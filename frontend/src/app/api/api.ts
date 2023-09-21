@@ -48,7 +48,7 @@ const baseQuery: FetchBaseQuery = async (args, api, extraOptions) => {
 const api = createApi({
   reducerPath: 'api',
   baseQuery,
-  tagTypes: [...tagTypes],
+  tagTypes: [...tagTypes, 'studentRequest'],
   endpoints: (build) => ({
     ...endpoints(build)
   })
