@@ -14,6 +14,7 @@ from ...views.teacher.dashboard import (
     invited_teacher,
     update_school,
     create_new_class,
+    get_student_request_data,
 )
 
 
@@ -82,5 +83,10 @@ urlpatterns = [
         r"^teach/dashboard/student/reject/(?P<pk>[0-9]+)/$",
         teacher_reject_student_request,
         name="teacher_reject_student_request",
+    ),
+    re_path(
+        r"^teach/dashboard/student/request/(?P<pk>[0-9]+)/$",
+        get_student_request_data,
+        name="get_student_request_data",
     ),
 ]

@@ -500,6 +500,25 @@ def teacher_disable_2FA(request, pk):
     return HttpResponseRedirect(reverse_lazy("dashboard"))
 
 
+@login_required(login_url=reverse_lazy("session-expired"))
+@user_passes_test(logged_in_as_teacher, login_url=reverse_lazy("session-expired"))
+def get_student_request_data(request, pk):
+    try:
+        student = get_object_or_404(Student, id=pk)
+    except:
+        return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+    
+    student_json = {
+        "student_username": student.new_user.username,
+        "class_name": student.pending_class_request.name,
+        "class_access_code": student.pending_class_request.access_code,
+    }
+    students = Student.objects.filter(class_field=student.pending_class_request).order_by("new_user__first_name").values_list("new_user__first_name", flat=True)
+    students_json = list(students)
+
+    return JsonResponse(data={'student': student_json, 'students': students_json})
+
+
 @require_POST
 @login_required(login_url=reverse_lazy("session-expired"))
 @user_passes_test(logged_in_as_teacher, login_url=reverse_lazy("session-expired"))
@@ -510,42 +529,28 @@ def teacher_accept_student_request(request, pk):
     except:
         return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
 
-    students = Student.objects.filter(class_field=student.pending_class_request).order_by("new_user__first_name")
+    form = TeacherAddExternalStudentForm(student.pending_class_request, request.POST)
+    if form.is_valid():
+        data = form.cleaned_data
+        student.class_field = student.pending_class_request
+        student.pending_class_request = None
+        student.new_user.username = get_random_username()
+        student.new_user.first_name = data["name"]
+        student.new_user.last_name = ""
+        student.new_user.email = ""
 
-    if request.method == "POST":
-        form = TeacherAddExternalStudentForm(student.pending_class_request, request.POST)
-        if form.is_valid():
-            data = form.cleaned_data
-            student.class_field = student.pending_class_request
-            student.pending_class_request = None
-            student.new_user.username = get_random_username()
-            student.new_user.first_name = data["name"]
-            student.new_user.last_name = ""
-            student.new_user.email = ""
+        student.save()
+        student.new_user.save()
+        student.new_user.userprofile.save()
 
-            student.save()
-            student.new_user.save()
-            student.new_user.userprofile.save()
+        # log the data
+        joinrelease = JoinReleaseStudent.objects.create(student=student, action_type=JoinReleaseStudent.JOIN)
+        joinrelease.save()
 
-            # log the data
-            joinrelease = JoinReleaseStudent.objects.create(student=student, action_type=JoinReleaseStudent.JOIN)
-            joinrelease.save()
-
-            return render(
-                request,
-                "portal/teach/teacher_added_external_student.html",
-                {"student": student, "class": student.class_field},
-            )
+        return HttpResponse()
     else:
-        form = TeacherAddExternalStudentForm(
-            student.pending_class_request, initial={"name": student.new_user.first_name}
-        )
-
-    return render(
-        request,
-        "portal/teach/teacher_add_external_student.html",
-        {"students": students, "class": student.pending_class_request, "student": student, "form": form},
-    )
+        error = form.errors['name'][0]
+        return JsonResponse(status=status.HTTP_400_BAD_REQUEST, data={"error": error})
 
 
 def check_student_request_can_be_handled(request, student):

@@ -12,14 +12,33 @@ export interface CreatedClassType {
   accessCode: string,
 };
 
+export interface StudentRequestData {
+  student: {
+    studentUsername: string,
+    className: string,
+    classAccessCode: string
+  },
+  students: string[],
+}
+
 const dashboardClassesApi = api.injectEndpoints({
   endpoints: (build) => ({
-    acceptStudentRequest: build.mutation<void, {
+    getStudentRequestData: build.query<StudentRequestData, {
       studentId: number
     }>({
       query: ({ studentId }) => ({
-        url: `teach/dashboard/student/accept/${studentId}/`,
+        url: `teach/dashboard/student/request/${studentId}/`,
+        method: 'GET'
+      })
+    }),
+    acceptStudentRequest: build.mutation<void, {
+      studentId: number
+      name: string
+    }>({
+      query: (body) => ({
+        url: `teach/dashboard/student/accept/${body.studentId}/`,
         method: 'POST',
+        body,
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
@@ -55,6 +74,7 @@ const dashboardClassesApi = api.injectEndpoints({
 
 export default dashboardClassesApi;
 export const {
+  useGetStudentRequestDataQuery,
   useAcceptStudentRequestMutation,
   useRejectStudentRequestMutation,
   useCreateNewClassMutation
