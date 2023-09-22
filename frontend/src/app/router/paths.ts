@@ -35,7 +35,8 @@ const paths = _('', {
         backupTokens: _('/backup-tokens')
       }),
       student: _('/student', {
-        accept: _('/accept/:studentId')
+        accept: _('/accept/:studentId'),
+        added: _('/added/')
       })
     })
   }),

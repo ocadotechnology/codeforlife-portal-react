@@ -61,7 +61,8 @@ const StudentsCurrentlyInClass: React.FC<{
 
 const AddExternalStudentForm: React.FC<{
   studentId: number;
-}> = ({ studentId }) => {
+  data: StudentRequestData;
+}> = ({ studentId, data }) => {
   const theme = useTheme();
   const navigate = useNavigate();
   const initialValues = {
@@ -72,8 +73,13 @@ const AddExternalStudentForm: React.FC<{
   const onSubmitStudentName = (value: { name: string }): void => {
     acceptStudentRequest({ studentId, name: value.name }).unwrap()
       .then(() => {
-        // TODO: redirect to teacher_added_external_student.html
-        console.log('acceptStudentRequest');
+        navigate(paths.teacher.dashboard.student.added._, {
+          state: {
+            className: data.student.className,
+            classAccessCode: data.student.classAccessCode,
+            studentFirstName: value.name
+          }
+        });
       })
       .catch((err) => {
         console.error('AcceptStudentRequest error', err);
@@ -99,7 +105,6 @@ const AddExternalStudentForm: React.FC<{
       <Form
         initialValues={initialValues}
         onSubmit={(values) => {
-          alert(JSON.stringify(values, null, 2));
           onSubmitStudentName(values);
         }}
       >
@@ -156,7 +161,7 @@ const AddExternalStudent: React.FC = () => {
                   <StudentsCurrentlyInClass data={data} />
                 </Grid>
                 <Grid xs={12} md={6} bgcolor={theme.palette.info.main}>
-                  <AddExternalStudentForm studentId={studentId} />
+                  <AddExternalStudentForm studentId={studentId} data={data} />
                 </Grid>
               </Grid>
 

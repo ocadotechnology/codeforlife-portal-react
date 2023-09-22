@@ -5,6 +5,7 @@ import Teacher from '../../../pages/teacher/Teacher';
 import TeacherOnboarding from '../../../pages/teacherOnboarding/TeacherOnboarding';
 import TeacherDashboard from '../../../pages/teacherDashboard/TeacherDashboard';
 import AddExternalStudent from '../../../pages/teacherDashboard/classes/AddExternalStudent';
+import AddedExternalStudent from '../../../pages/teacherDashboard/classes/AddedExternalStudent';
 
 const teacher = <>
   <Route
@@ -34,6 +35,10 @@ const teacher = <>
   <Route
     path={`${paths.teacher.dashboard.student.accept._}`}
     element={<AddExternalStudent />}
+  />
+  <Route
+    path={`${paths.teacher.dashboard.student.added._}`}
+    element={<AddedExternalStudent />}
   />
 </>;
 
