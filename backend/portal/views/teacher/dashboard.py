@@ -527,7 +527,7 @@ def teacher_accept_student_request(request, pk):
         student = get_object_or_404(Student, id=pk)
         check_student_request_can_be_handled(request, student)
     except:
-        return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
+        return HttpResponse(status=status.HTTP_404_NOT_FOUND)
 
     form = TeacherAddExternalStudentForm(student.pending_class_request, request.POST)
     if form.is_valid():

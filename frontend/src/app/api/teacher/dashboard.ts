@@ -77,7 +77,7 @@ interface inviteTeacherReturnType {
 
 const teacherDashboardApi = api.injectEndpoints({
   endpoints: (build) => ({
-    getTeacherData: build.query<any, void
+    getTeacherData: build.query<TeacherDashboardData, void
     >({
       query: () => ({
         url: 'teach/dashboard/',

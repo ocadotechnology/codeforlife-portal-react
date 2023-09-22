@@ -36,7 +36,7 @@ const paths = _('', {
       }),
       student: _('/student', {
         accept: _('/accept/:studentId'),
-        added: _('/added/')
+        added: _('/added')
       })
     })
   }),
