@@ -239,8 +239,8 @@ def check_backup_tokens(request):
     # For teachers using 2FA, find out how many backup tokens they have
     if using_two_factor(request.user):
         try:
-            static_devices = request.user.staticdevice_set.all()[0]
-            backup_tokens = static_devices[0].token_set.count()
+            static_device = request.user.staticdevice_set.all()
+            backup_tokens = static_device.token_set.count()
         except Exception:
             backup_tokens = 0
 
