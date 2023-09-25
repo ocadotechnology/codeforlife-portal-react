@@ -248,7 +248,6 @@ const YourAccountForm: React.FC = () => {
         <Grid item xs={12} sm={8}>
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
             <PasswordField
-              required
               placeholder="New password (optional)"
               helperText="Enter your new password (optional)"
               name="newPassword"
@@ -264,6 +263,7 @@ const YourAccountForm: React.FC = () => {
         </Grid>
         <Grid item xs={12} sm={4}>
           <PasswordField
+            required
             placeholder="Current password"
             helperText="Enter your current password"
             name="currentPassword"
