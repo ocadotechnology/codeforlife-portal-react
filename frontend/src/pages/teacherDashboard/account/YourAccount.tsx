@@ -210,6 +210,7 @@ const YourAccountForm: React.FC = () => {
       <Grid container spacing={2}>
         <Grid item xs={12} sm={4}>
           <TextField
+            required
             name="firstName"
             helperText="Enter your first name"
             placeholder="First name"
@@ -224,6 +225,7 @@ const YourAccountForm: React.FC = () => {
         </Grid>
         <Grid item xs={12} sm={4}>
           <TextField
+            required
             placeholder="Last name"
             helperText="Enter your last name"
             name="lastName"
@@ -246,6 +248,7 @@ const YourAccountForm: React.FC = () => {
         <Grid item xs={12} sm={8}>
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
             <PasswordField
+              required
               placeholder="New password (optional)"
               helperText="Enter your new password (optional)"
               name="newPassword"
