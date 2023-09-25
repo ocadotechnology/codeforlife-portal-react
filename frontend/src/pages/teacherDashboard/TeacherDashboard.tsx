@@ -2,19 +2,19 @@ import React from 'react';
 
 import Page from 'codeforlife/lib/esm/components/page';
 
-import YourSchool from './YourSchool';
-import Classes from './classes/Classes';
-import YourAccount from './account/YourAccount';
-import { useGetTeacherDataQuery } from '../../app/api/teacher/dashboard';
 import { useNavigate } from 'react-router-dom';
 import { paths } from '../../app/router';
+
+import YourSchool from './YourSchool';
+import Classes from './classes/Classes';
+import MoveClasses from './classes/MoveClasses';
+import YourAccount from './account/YourAccount';
+import { useGetTeacherDataQuery } from '../../app/api/teacher/dashboard';
 
 const TeacherDashboard: React.FC<{
   tab: number;
   movingClass?: boolean;
 }> = ({ tab, movingClass = false }) => {
-  // TODO: get from API.
-  const userName = 'John Doe';
   const { data, error, isLoading } = useGetTeacherDataQuery();
   const navigate = useNavigate();
 
@@ -29,7 +29,7 @@ const TeacherDashboard: React.FC<{
         ? (
           <Page.Container>
             <Page.TabBar
-              header={`Welcome back, ${userName}`}
+              header={`Welcome back, ${data.teacher.teacherFirstName as string} ${data.teacher.teacherLastName as string}`}
               value={tab}
               originalPath='/teacher/dashboard/:tab'
               tabs={[
@@ -40,7 +40,7 @@ const TeacherDashboard: React.FC<{
                 },
                 {
                   label: 'Your classes',
-                  children: <Classes movingClass={movingClass} />,
+                  children: movingClass ? <MoveClasses /> : <Classes data={data} />,
                   path: 'classes'
                 },
                 {
