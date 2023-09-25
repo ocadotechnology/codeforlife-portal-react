@@ -4,7 +4,7 @@ export interface CreateClassFormType {
   class: string,
   teacherName: string,
   seeClassmates: boolean,
-  teacherId?: string,
+  teacherId: string,
 };
 
 export interface CreatedClassType {

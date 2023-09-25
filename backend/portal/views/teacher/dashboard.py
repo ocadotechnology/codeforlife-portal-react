@@ -526,7 +526,7 @@ def teacher_accept_student_request(request, pk):
     try:
         student = get_object_or_404(Student, id=pk)
         check_student_request_can_be_handled(request, student)
-    except:
+    except Http404:
         return HttpResponse(status=status.HTTP_404_NOT_FOUND)
 
     form = TeacherAddExternalStudentForm(student.pending_class_request, request.POST)
@@ -571,7 +571,7 @@ def teacher_reject_student_request(request, pk):
     try:
         student = get_object_or_404(Student, id=pk)
         check_student_request_can_be_handled(request, student)
-    except:
+    except Http404:
         return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
     
     emailMessage = email_messages.studentJoinRequestRejectedEmail(

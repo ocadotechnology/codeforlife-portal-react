@@ -207,7 +207,8 @@ const CreateNewClassForm: React.FC<{
       initialValues={{
         class: '',
         teacherName: teacherNames[0],
-        seeClassmates: false
+        seeClassmates: false,
+        teacherId: ''
       }}
       validationSchema={CREATE_CLASS_SCHEMA}
       onSubmit={(values) => { onCreateNewClass(values); }}
