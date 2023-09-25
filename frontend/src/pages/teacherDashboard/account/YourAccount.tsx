@@ -123,6 +123,8 @@ const YourAccountForm: React.FC = () => {
     currentPassword: string;
   }
 
+  // TODO: prefill firstname and lastname
+  // from the getUser endpoint in the backend
   const initialValues: Values = {
     firstName: '',
     lastName: '',

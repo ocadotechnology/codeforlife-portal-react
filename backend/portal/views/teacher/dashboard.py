@@ -19,28 +19,26 @@ from common.models import (
     Student,
     Teacher,
 )
-from common.permissions import logged_in_as_teacher, check_teacher_authorised
+from common.permissions import check_teacher_authorised, logged_in_as_teacher
 from common.utils import using_two_factor
-from django.core import serializers
 from django.contrib import messages as messages
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
+from django.core import serializers
 from django.db.models import F
 from django.http import (
     Http404,
-    HttpResponseRedirect,
     HttpResponse,
+    HttpResponseRedirect,
     JsonResponse,
 )
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views.decorators.http import require_POST
+from django_otp.plugins.otp_totp.models import TOTPDevice
 from game.level_management import levels_shared_with, unshare_level
-from two_factor.utils import devices_for_user
-from rest_framework import status
-
 from portal.forms.invite_teacher import InviteTeacherForm
 from portal.forms.organisation import OrganisationForm
 from portal.forms.registration import DeleteAccountForm
@@ -58,6 +56,9 @@ from portal.helpers.ratelimit import (
     RATELIMIT_METHOD,
     clear_ratelimit_cache_for_user,
 )
+from rest_framework import status
+from two_factor.utils import devices_for_user
+
 from .teach import create_class, teacher_view_class
 
 
@@ -247,9 +248,6 @@ def check_backup_tokens(request):
     return backup_tokens
 
 
-from django_otp.plugins.otp_totp.models import TOTPDevice
-
-
 @login_required(login_url=reverse_lazy("teacher_login"))
 def teacher_2fa_handler(request):
     user = request.user
@@ -298,7 +296,8 @@ def process_update_account_form(request):
         )
 
     return JsonResponse(
-        {"message": "Something went wrong"}, status=status.HTTP_400_BAD_REQUEST
+        {"error": update_account_form.errors},
+        status=status.HTTP_400_BAD_REQUEST,
     )
 
 
