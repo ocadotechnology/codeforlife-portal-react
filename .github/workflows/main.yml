@@ -112,6 +112,9 @@ jobs:
           REACT_APP_API_BASE_URL: ${{ vars.REACT_APP_API_BASE_URL }}
           REACT_APP_PORTAL_BASE_URL: ${{ vars.REACT_APP_PORTAL_BASE_URL }}
           REACT_APP_SSO_SERVICE_NAME: ${{ vars.REACT_APP_SSO_SERVICE_NAME }}
+          REACT_APP_SSO_SERVICE_PROTOCOL: 'https'
+          REACT_APP_SSO_SERVICE_DOMAIN: 'codeforlife.education'
+          REACT_APP_SSO_SERVICE_PORT: '443'
 
       - name: 🛠 Install Backend Dependencies
         working-directory: ./backend

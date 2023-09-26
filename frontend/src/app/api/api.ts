@@ -15,12 +15,13 @@ import {
 } from 'codeforlife/lib/esm/api/baseQuery';
 
 import {
+  SSO_SERVICE_API_URL,
   SSO_SERVICE_NAME
 } from './env';
 
 // TODO: remove this hot switching code and migrate login pages to SSO service.
 const ssoFetch = fetchBaseQuery({
-  baseUrl: `http://localhost:8001/${SSO_SERVICE_NAME}/api/`,
+  baseUrl: SSO_SERVICE_API_URL,
   credentials: 'include'
 });
 
