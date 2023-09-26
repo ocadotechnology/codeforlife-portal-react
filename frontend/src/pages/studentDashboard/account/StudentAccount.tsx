@@ -1,5 +1,4 @@
-import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { LockOutlined, PersonOutline } from '@mui/icons-material';
 import {
   Button,
   Grid,
@@ -8,9 +7,9 @@ import {
   Typography,
   useTheme
 } from '@mui/material';
-import { LockOutlined, PersonOutline } from '@mui/icons-material';
+import React from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-import Page from 'codeforlife/lib/esm/components/page';
 import {
   EmailField,
   Form,
@@ -18,14 +17,15 @@ import {
   SubmitButton,
   TextField
 } from 'codeforlife/lib/esm/components/form';
+import Page from 'codeforlife/lib/esm/components/page';
 
-import DeleteAccountForm from '../../../features/deleteAccountForm/DeleteAccountForm';
-import { paths } from '../../../app/router';
 import {
-  useLogoutUserMutation,
+  useLogoutMutation,
   useUpdateSchoolStudentDetailsMutation,
   useUpdateStudentDetailsMutation
 } from '../../../app/api';
+import { paths } from '../../../app/router';
+import DeleteAccountForm from '../../../features/deleteAccountForm/DeleteAccountForm';
 
 const AccountFormPasswordFields: React.FC = () => {
   return (
@@ -171,7 +171,7 @@ const AccountForm: React.FC<{
       currentPassword: ''
     };
     const [updateStudent] = useUpdateStudentDetailsMutation();
-    const [logoutUser] = useLogoutUserMutation();
+    const [logout] = useLogoutMutation();
     const location = useLocation();
     return (
       <Form
@@ -202,7 +202,7 @@ const AccountForm: React.FC<{
             .unwrap()
             .then((res) => {
               if (isEmailChanged || isPasswordChanged) {
-                logoutUser(null)
+                logout(null)
                   .unwrap()
                   .then(() => {
                     navigate(paths._, { state: notifications });

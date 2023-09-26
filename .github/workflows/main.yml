@@ -111,6 +111,10 @@ jobs:
           NODE_ENV: production
           REACT_APP_API_BASE_URL: ${{ vars.REACT_APP_API_BASE_URL }}
           REACT_APP_PORTAL_BASE_URL: ${{ vars.REACT_APP_PORTAL_BASE_URL }}
+          REACT_APP_SSO_SERVICE_NAME: ${{ vars.REACT_APP_SSO_SERVICE_NAME }}
+          REACT_APP_SSO_SERVICE_PROTOCOL: 'https'
+          REACT_APP_SSO_SERVICE_DOMAIN: 'codeforlife.education'
+          REACT_APP_SSO_SERVICE_PORT: '443'
 
       - name: 🛠 Install Backend Dependencies
         working-directory: ./backend
@@ -136,9 +140,25 @@ jobs:
         uses: mikefarah/yq@master
         with:
           cmd: |
+            SERVICE_NAME=$(
+              if [ ${{ github.ref_name }} == "production" ]
+              then echo ${{ env.SERVICE_NAME }}
+              else echo ${{ github.ref_name }}-${{ env.SERVICE_NAME }}
+              fi
+            )
+
+            SERVICE_IS_ROOT=$(
+              if [ ${{ github.ref_name }} == "production" ]
+              then echo "1"
+              else echo "0"
+              fi
+            )
+
             yq -i '
               .service = "${{ github.ref_name }}-${{ env.SERVICE }}" |
-              .env_variables.SITE_DOMAIN = "${{ github.ref_name }}-portal-dot-decent-digit-629.appspot.com" |
+              .env_variables.SECRET_KEY = "${{ vars.SECRET_KEY }}" |
+              .env_variables.SERVICE_NAME = "$SERVICE_NAME" |
+              .env_variables.SERVICE_IS_ROOT = "$SERVICE_IS_ROOT" |
               .env_variables.MODULE_NAME = "${{ github.ref_name }}"
             ' backend/app.yaml
 

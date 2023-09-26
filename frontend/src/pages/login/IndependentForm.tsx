@@ -13,13 +13,13 @@ import {
 } from 'codeforlife/lib/esm/components/form';
 import { submitForm } from 'codeforlife/lib/esm/helpers/formik';
 
-import { useLoginIndependentStudentMutation } from '../../app/api';
+import { useLoginMutation } from '../../app/api';
 import { paths } from '../../app/router';
 import BaseForm from './BaseForm';
 
 const IndependentForm: React.FC = () => {
   const navigate = useNavigate();
-  const [loginIndependentStudent] = useLoginIndependentStudentMutation();
+  const [login] = useLoginMutation();
 
   return (
     <BaseForm
@@ -27,16 +27,15 @@ const IndependentForm: React.FC = () => {
       header='Welcome'
       subheader='Please enter your login details.'
       initialValues={{
-        username: '',
+        email: '',
         password: ''
       }}
-      onSubmit={submitForm(loginIndependentStudent, {
+      onSubmit={submitForm(login, {
         then: () => { navigate(paths.student.dashboard.independent._); }
       })}
     >
       <EmailField
         required
-        name="username"
         placeholder="Email address"
         helperText="Enter your email address"
       />

@@ -21,10 +21,7 @@ import {
 import { fromSearchParams } from 'codeforlife/lib/esm/hooks';
 import { submitForm } from 'codeforlife/lib/esm/helpers/formik';
 
-import {
-  useLoginDependentStudentMutation,
-  useLoginDependentStudentDirectlyMutation
-} from '../../app/api';
+import { useLoginMutation } from '../../app/api';
 import { paths } from '../../app/router';
 
 const AccessCodeForm: React.FC = () => {
@@ -67,7 +64,7 @@ const CredentialsForm: React.FC<{
   accessCode: string;
 }> = ({ accessCode }) => {
   const navigate = useNavigate();
-  const [loginDependentStudent] = useLoginDependentStudentMutation();
+  const [login] = useLoginMutation();
 
   return (
     <BaseForm
@@ -77,9 +74,9 @@ const CredentialsForm: React.FC<{
       initialValues={{
         username: '',
         password: '',
-        accessCode
+        classId: accessCode
       }}
-      onSubmit={submitForm(loginDependentStudent, {
+      onSubmit={submitForm(login, {
         then: () => { navigate(paths.student.dashboard.dependent._); }
       })}
     >
@@ -106,8 +103,7 @@ const CredentialsForm: React.FC<{
 
 const StudentForm: React.FC = () => {
   const navigate = useNavigate();
-  const [loginDependentStudentDirectly] =
-    useLoginDependentStudentDirectlyMutation();
+  const [login] = useLoginMutation();
 
   const searchParams = tryValidateSync(
     fromSearchParams(),
@@ -123,7 +119,7 @@ const StudentForm: React.FC = () => {
   )?.accessCode;
 
   if (searchParams !== undefined) {
-    loginDependentStudentDirectly(searchParams)
+    login(searchParams)
       .unwrap()
       .then(() => { navigate(paths.student.dashboard.dependent._); })
       .catch(() => {

@@ -1,24 +1,11 @@
 from django.urls import path, include
 
 from ..views.cron import (
-    session,
     user,
 )
 
 
 urlpatterns = [
-    path(
-        "session/",
-        include(
-            [
-                path(
-                    "clear-expired/",
-                    session.ClearExpiredView.as_view(),
-                    name="clear-expired-sessions",
-                ),
-            ]
-        ),
-    ),
     path(
         "user/",
         include(
