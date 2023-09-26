@@ -15,7 +15,7 @@ import {
 } from 'codeforlife/lib/esm/components/form';
 import Page from 'codeforlife/lib/esm/components/page';
 
-import { useGetClassQuery } from '../../../../../app/api';
+import { useGetClassQuery, useGetTeacherDataQuery } from '../../../../../app/api';
 import RapidRouterTabTitles from './RapidRouterTabTitles';
 import RapidRouterTabs from './RapidRouterTabs';
 import UpdateClassForm from './UpdateClassForm';
@@ -112,7 +112,17 @@ const RapidRouterAccessSettings: React.FC = () => {
 };
 
 const TransferClassToAnotherTeacher: React.FC = () => {
-  const options = ['Teacher 1', 'Teacher 2', 'Teacher 3'];
+  const { teacher, coworkers } = useGetTeacherDataQuery(undefined, {
+    selectFromResult: ({ data }) => ({
+      teacher: data?.teacher,
+      coworkers: data?.coworkers
+    })
+  });
+  const options = (coworkers && teacher)
+    ? coworkers.filter((worker) => worker.teacherEmail !== teacher.teacherEmail)
+      .map((worker) => `${worker.teacherFirstName} ${worker.teacherLastName}`)
+    : [];
+
   const theme = useTheme();
   return (
     <Box
