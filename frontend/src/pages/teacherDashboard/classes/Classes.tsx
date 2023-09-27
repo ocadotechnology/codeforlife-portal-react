@@ -22,8 +22,8 @@ import { CflHorizontalForm } from '../../../components/form/CflForm';
 import ClassNameField from '../../../components/form/ClassNameField';
 import SeeClassmatesProgressField from '../../../components/form/SeeClassmatesProgressField';
 import EditClass from './editClass/EditClass';
-import { TeacherDashboardData } from '../../../app/api/teacher/dashboard';
-import { CreateClassFormType, CreatedClassType, useCreateNewClassMutation, useRejectStudentRequestMutation } from '../../../app/api/teacher/dashboardClasses';
+import { TeacherDashboardProps } from '../../../app/api/teacher/dashboard';
+import { CreateClassFormProps, CreatedClassProps, useCreateNewClassMutation, useRejectStudentRequestMutation } from '../../../app/api/teacher/dashboardClasses';
 
 const _YourClasses: React.FC = () => {
   return (
@@ -42,8 +42,8 @@ const _YourClasses: React.FC = () => {
 };
 
 const ClassTable: React.FC<{
-  teacherData: TeacherDashboardData['teacher'];
-  classData: TeacherDashboardData['classes'];
+  teacherData: TeacherDashboardProps['teacher'];
+  classData: TeacherDashboardProps['classes'];
 }> = ({ teacherData, classData }) => {
   const navigate = useNavigate();
   const [firstName, lastName] = [teacherData.teacherFirstName, teacherData.teacherLastName];
@@ -89,7 +89,7 @@ const ClassTable: React.FC<{
 };
 
 const ExternalStudentsJoiningRequestsTable: React.FC<{
-  requestData: TeacherDashboardData['requests'];
+  requestData: TeacherDashboardProps['requests'];
 }> = ({ requestData }) => {
   const navigate = useNavigate();
   const [rejectStudentRequest] = useRejectStudentRequestMutation();
@@ -145,7 +145,7 @@ const ExternalStudentsJoiningRequestsTable: React.FC<{
 };
 
 const ExternalStudentsJoiningRequests: React.FC<{
-  requestData: TeacherDashboardData['requests'];
+  requestData: TeacherDashboardProps['requests'];
 }> = ({ requestData }) => {
   return (
     <>
@@ -174,8 +174,8 @@ const CREATE_CLASS_SCHEMA = Yup.object().shape({
 });
 
 const CreateNewClassForm: React.FC<{
-  teacherData: TeacherDashboardData['teacher'];
-  coworkersData: TeacherDashboardData['coworkers'];
+  teacherData: TeacherDashboardProps['teacher'];
+  coworkersData: TeacherDashboardProps['coworkers'];
 }> = ({ teacherData, coworkersData }) => {
   const isAdmin = teacherData.isAdmin;
   const teacherNames = isAdmin
@@ -187,10 +187,10 @@ const CreateNewClassForm: React.FC<{
 
   const navigate = useNavigate();
   const [createNewClass] = useCreateNewClassMutation();
-  const onCreateNewClass = (values: CreateClassFormType): void => {
+  const onCreateNewClass = (values: CreateClassFormProps): void => {
     values.teacherId = coworkersData.filter((teacher) => values.teacherName === `${teacher.teacherFirstName} ${teacher.teacherLastName}`)[0].id;
     createNewClass(values).unwrap()
-      .then((res: CreatedClassType) => {
+      .then((res: CreatedClassProps) => {
         navigate(
           generatePath(paths.teacher.dashboard.classes.editClass._, {
             accessCode: res.accessCode
@@ -234,7 +234,7 @@ const CreateNewClassForm: React.FC<{
 };
 
 const Classes: React.FC<{
-  data: TeacherDashboardData;
+  data: TeacherDashboardProps;
 }> = ({ data }) => {
   const theme = useTheme();
   const params = tryValidateSync(

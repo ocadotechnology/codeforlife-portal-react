@@ -37,7 +37,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useLeaveOrganisationMutation } from '../../app/api';
 import { paths } from '../../app/router';
 import {
-  TeacherDashboardData,
+  TeacherDashboardProps,
   useDeleteInviteMutation,
   useInviteTeacherMutation,
   useInviteToggleAdminMutation,
@@ -192,7 +192,7 @@ const InviteTeacherForm: React.FC<{
   };
 
 const UpdateSchoolDetailsForm: React.FC<{
-  schoolData: TeacherDashboardData['school'];
+  schoolData: TeacherDashboardProps['school'];
 }> = ({ schoolData }) => {
   const navigate = useNavigate();
   const schoolName = schoolData.name;
@@ -392,9 +392,9 @@ const TeachersTableActions: React.FC<{
 };
 
 const TeachersTable: React.FC<{
-  teacherData: TeacherDashboardData['teacher'];
-  coworkersData: TeacherDashboardData['coworkers'];
-  sentInvites: TeacherDashboardData['sentInvites'];
+  teacherData: TeacherDashboardProps['teacher'];
+  coworkersData: TeacherDashboardProps['coworkers'];
+  sentInvites: TeacherDashboardProps['sentInvites'];
   setDialog: SetDialogType;
 }> = ({ teacherData, coworkersData, sentInvites, setDialog }) => {
   const isUserAdmin = teacherData.isAdmin;
@@ -486,7 +486,7 @@ const TeachersTable: React.FC<{
 };
 
 const YourSchool: React.FC<{
-  data: TeacherDashboardData;
+  data: TeacherDashboardProps;
 }> = ({ data }) => {
   const theme = useTheme();
   const [leaveOrganisation] = useLeaveOrganisationMutation();
