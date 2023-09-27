@@ -1,5 +1,4 @@
 import api from '../api';
-import { classType, teacherType } from '../organisation';
 
 export interface coworkersType {
   id: string,
@@ -64,10 +63,17 @@ export interface TeacherDashboardData {
   school: schoolType
 }
 
-export type moveClassesType = Record<string, string>;
+export type MoveClassesFormProps = Record<string, string>;
 
-export interface organsationKickType extends moveClassesType {
+export interface OrgansationKickProps extends MoveClassesFormProps {
   id: string,
+};
+
+export interface MoveClassDataProps {
+  source: string,
+  teacher: teacherDashboardType,
+  classes: classesDashboardType[],
+  coworkers: coworkersType[]
 };
 
 interface inviteTeacherReturnType {
@@ -136,11 +142,8 @@ const teacherDashboardApi = api.injectEndpoints({
       }),
       invalidatesTags: ['teacher']
     }),
-    organisationKick: build.mutation<{
-      source?: string,
-      classes?: classType,
-      teachers?: teacherType,
-    }, organsationKickType>({
+    organisationKick: build.mutation<MoveClassDataProps, OrgansationKickProps
+    >({
       query: (body) => ({
         url: `teach/dashboard/kick/${body.id}/`,
         method: 'POST',

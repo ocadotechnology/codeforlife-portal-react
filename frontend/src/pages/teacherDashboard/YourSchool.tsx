@@ -263,15 +263,10 @@ const TeachersTableActions: React.FC<{
 
   const onOrganisationKick = (id: string): void => {
     organisationKick({ id }).unwrap()
-      .then((res) => {
-        if (res?.classes) {
+      .then((moveClassData) => {
+        if (moveClassData?.classes) {
           navigate(paths.teacher.dashboard.school.leave._, {
-            state: {
-              source: res.source,
-              classes: res.classes,
-              teachers: res.teachers,
-              teacherId: id
-            }
+            state: moveClassData
           });
         } else {
           navigate('.', {
@@ -381,6 +376,9 @@ const TeachersTableActions: React.FC<{
       return (
         <>
           <Button endIcon={<Add />} onClick={() => { onMakeAdmin(id); }}>Make admin</Button>
+          <Button className="alert" endIcon={<DeleteOutline />} onClick={() => { onOrganisationKick(id); }}>
+            Delete
+          </Button>
           {twoFactorAuthentication
             ? <Button endIcon={<DoDisturbOnOutlined />} className="alert">
               Disable 2FA
@@ -503,14 +501,10 @@ const YourSchool: React.FC<{
 
   const onLeaveOrganisation = (): void => {
     leaveOrganisation().unwrap()
-      .then((res) => {
-        if (res?.classes) {
+      .then((moveClassData) => {
+        if (moveClassData?.classes) {
           navigate(paths.teacher.dashboard.school.leave._, {
-            state: {
-              source: res.source,
-              classes: res.classes,
-              teachers: res.teachers
-            }
+            state: moveClassData
           });
         } else {
           navigate(paths.teacher.onboarding._, { state: { leftOrganisation: true } });
