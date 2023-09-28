@@ -1,18 +1,16 @@
-import api from './api';
+import api, {
+  useLogoutMutation
+} from './api';
 import {
   useSubscribeToNewsletterMutation,
   useConsentFormMutation
 } from './dotmailer';
 import {
   useRegisterUserMutation,
-  useLogoutUserMutation,
   useDownloadStudentPackMutation
 } from './home';
 import {
-  useLoginTeacherMutation,
-  useLoginDependentStudentMutation,
-  useLoginDependentStudentDirectlyMutation,
-  useLoginIndependentStudentMutation
+  useLoginMutation
 } from './login';
 import {
   useCreateOrganisationMutation,
@@ -54,18 +52,16 @@ import {
 
 export default api;
 export {
+  // api
+  useLogoutMutation,
   // dotmailer
   useSubscribeToNewsletterMutation,
   useConsentFormMutation,
   // home
   useRegisterUserMutation,
-  useLogoutUserMutation,
   useDownloadStudentPackMutation,
   // login
-  useLoginTeacherMutation,
-  useLoginDependentStudentMutation,
-  useLoginDependentStudentDirectlyMutation,
-  useLoginIndependentStudentMutation,
+  useLoginMutation,
   // organisation
   useCreateOrganisationMutation,
   useLeaveOrganisationMutation,
