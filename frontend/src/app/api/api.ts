@@ -1,11 +1,11 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 
-import { TAG_TYPES, baseQuery } from 'codeforlife/lib/esm/api';
+import { tagTypes, baseQuery } from 'codeforlife/lib/esm/api';
 
 const api = createApi({
   reducerPath: 'api',
   baseQuery,
-  tagTypes: [...TAG_TYPES, 'studentRequest'],
+  tagTypes: [...tagTypes, 'studentRequest'],
   endpoints: () => ({})
 });
 
