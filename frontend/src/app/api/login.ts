@@ -1,67 +1,43 @@
 import api from './api';
 
+// TODO: move this to sso service.
 const loginApi = api.injectEndpoints({
   endpoints: (build) => ({
-    loginTeacher: build.mutation<null, {
-      // TODO: implement 2fs teacher login
-      // 'auth-username': string;
-      // 'auth-password': string;
-      // currentStep: 'auth' | 'token';
+    login: build.mutation<null, {
+      email: string;
+      password: string;
+    } | {
       username: string;
       password: string;
-    }>({
-      query: (body) => ({
-        url: 'login/teacher/',
-        method: 'POST',
-        body,
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        }
-      })
-    }),
-    loginDependentStudent: build.mutation<null, {
-      accessCode: string;
-      username: string;
-      password: string;
-    }>({
-      query: ({ accessCode, ...body }) => ({
-        url: `login/student/${accessCode}/`,
-        method: 'POST',
-        body,
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        }
-      })
-    }),
-    loginDependentStudentDirectly: build.mutation<null, {
+      classId: string;
+    } | {
       userId: string;
       loginId: string;
+    } | {
+      otp: string;
     }>({
-      query: ({ userId, loginId }) => ({
-        url: `u/${userId}/${loginId}/`,
-        method: 'POST'
-      })
-    }),
-    loginIndependentStudent: build.mutation<null, {
-      username: string;
-      password: string;
-    }>({
-      query: (body) => ({
-        url: 'login/independent/',
-        method: 'POST',
-        body,
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        }
-      })
+      query: (body) => {
+        let form: string;
+        if ('email' in body) form = 'email';
+        else if ('username' in body) form = 'username';
+        else if ('userId' in body) form = 'user-id';
+        else if ('otp' in body) form = 'otp';
+        else throw new Error('form could not be selected');
+
+        return {
+          url: `session/login/${form}/`,
+          method: 'POST',
+          body,
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
+        };
+      }
     })
   })
 });
 
 export default loginApi;
 export const {
-  useLoginTeacherMutation,
-  useLoginDependentStudentMutation,
-  useLoginDependentStudentDirectlyMutation,
-  useLoginIndependentStudentMutation
+  useLoginMutation
 } = loginApi;

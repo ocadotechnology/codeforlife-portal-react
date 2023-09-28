@@ -21,7 +21,12 @@
       "args": [
         "runserver",
         "localhost:8000"
-      ]
+      ],
+      "preLaunchTask": "migrate-db",
+      "env": {
+        "SERVICE_NAME": "portal",
+        "SERVICE_IS_ROOT": "1"
+      }
     },
     {
       "name": "Pytest",

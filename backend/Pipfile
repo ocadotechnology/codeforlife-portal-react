@@ -4,17 +4,12 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-# codeforlife = {ref = "v0.1.12", git = "https://github.com/ocadotechnology/codeforlife-package-python.git"}
 whitenoise = "==6.5.0"
-django = "==3.2.19"
 django-countries = "==7.3.1"
-djangorestframework = "==3.13.1"
 django-pipeline = "==2.0.8"
 django-recaptcha = "==2.0.6"
 pyyaml = "==5.4.1"
 importlib-metadata = "==4.13.0"
-rapid-router = ">=4"
-aimmo = ">=2"
 reportlab = "==3.6.13"
 django-formtools = "==2.2"
 django-otp = "==1.0.2"  # we needed to fix this due to a wide ranged dependency in django-two-factor-auth
@@ -24,9 +19,7 @@ django-sekizai = "==2.0.0"
 django-classy-tags = "==2.0.0"
 sqlparse = "==0.4.4"
 libsass = "==0.22.0"
-phonenumbers = "==8.12.12"
 more-itertools = "==8.7.0"
-cfl-common = "==6.33.1"
 django-ratelimit = "==3.0.1"
 django-preventconcurrentlogins = "==0.8.2"
 django-csp = "==3.7"
@@ -35,7 +28,16 @@ google-cloud-logging = "==1.*"
 google-auth = "==1.*"
 google-cloud-container = "==2.3.0"
 "django-anymail[amazon_ses]" = "==7.0.*"
+codeforlife = {ref = "v0.7.14", git = "https://github.com/ocadotechnology/codeforlife-package-python.git"}
+django = "==3.2.20"
+djangorestframework = "==3.13.1"
 django-cors-headers = "==4.1.0"
+# https://pypi.org/user/codeforlife/
+cfl-common = "==6.36.2" # TODO: remove
+codeforlife-portal = "==6.36.2" # TODO: remove
+aimmo = "==2.10.6" # TODO: remove
+rapid-router = "==5.11.3" # TODO: remove
+phonenumbers = "==8.12.12" # TODO: remove
 
 [dev-packages]
 django-selenium-clean = "==0.3.3"

@@ -1,8 +1,7 @@
 import logging
 from datetime import timedelta
-from itertools import chain
-from typing import List
 
+from codeforlife.mixins import CronMixin
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db.models.query import QuerySet
@@ -12,7 +11,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from ...emails import NOTIFICATION_EMAIL, generate_token_for_email, send_email
-from ...mixins import CronMixin
 
 # TODO: move email templates to DotDigital.
 USER_1ST_VERIFY_EMAIL_REMINDER_DAYS = 7

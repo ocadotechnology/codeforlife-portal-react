@@ -13,6 +13,25 @@
 			"path": "frontend",
 			"problemMatcher": [],
 			"label": "start-react-dev-server"
+		},
+		{
+			"label": "install-dev-deps",
+			"type": "shell",
+			"options": {
+				"cwd": "${workspaceFolder}/backend"
+			},
+			"command": "pipenv install --dev"
+		},
+		{
+			"label": "migrate-db",
+			"type": "shell",
+			"options": {
+				"cwd": "${workspaceFolder}/backend"
+			},
+			"dependsOn": [
+				"install-dev-deps"
+			],
+			"command": "pipenv run python ./manage.py migrate"
 		}
 	]
 }

@@ -16,21 +16,8 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Site (Custom)
-SITE_PROTOCOL = os.getenv("SITE_PROTOCOL", "http")
-SITE_DOMAIN = os.getenv("SITE_DOMAIN", "localhost")
-SITE_PORT = int(os.getenv("SITE_PORT", "8000"))
-SITE_BASE_URL = f"{SITE_PROTOCOL}://{SITE_DOMAIN}:{SITE_PORT}"
-SITE_API_URL = f"{SITE_BASE_URL}/api"
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "not-a-secret")
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(int(os.getenv("DEBUG", "1")))
 
 ALLOWED_HOSTS = ["*"]
 
@@ -61,7 +48,7 @@ INSTALLED_APPS = [
     "treebeard",
     "two_factor",
     "preventconcurrentlogins",
-    # "codeforlife",
+    "codeforlife",
     "corsheaders",
 ]
 
@@ -85,8 +72,6 @@ MIDDLEWARE = [
     # "deploy.middleware.screentime_warning.ScreentimeWarningMiddleware",
 ]
 
-ROOT_URLCONF = "service.urls"
-
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -106,9 +91,6 @@ TEMPLATES = [
     }
 ]
 
-WSGI_APPLICATION = "service.wsgi.application"
-
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
@@ -118,46 +100,6 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
-
-
-# Password validation
-# https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
-
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    },
-]
-
-# Auth
-# https://docs.djangoproject.com/en/3.2/topics/auth/default/
-
-LOGIN_URL = f"{SITE_API_URL}/login/session-expired/"
-
-# Internationalization
-# https://docs.djangoproject.com/en/3.2/topics/i18n/
-
-LANGUAGE_CODE = "en-gb"
-
-LANGUAGES = [("en-gb", "English")]
-
-TIME_ZONE = "Europe/London"
-
-USE_I18N = True
-
-USE_L10N = True
-
-USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
@@ -172,65 +114,6 @@ STATICFILES_FINDERS = [
 ]
 # STATICFILES_STORAGE = "pipeline.storage.PipelineStorage"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
-
-DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
-
-# Sessions
-# https://docs.djangoproject.com/en/3.2/topics/http/sessions/
-
-SESSION_COOKIE_AGE = 60 * 60
-SESSION_SAVE_EVERY_REQUEST = True
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-SESSION_COOKIE_SECURE = True
-SESSION_COOKIE_SAMESITE = "None"
-
-# CSRF
-# https://docs.djangoproject.com/en/3.2/ref/csrf/
-
-CSRF_COOKIE_SAMESITE = "None"
-CSRF_COOKIE_SECURE = True
-
-# CORS
-# https://pypi.org/project/django-cors-headers/
-
-CORS_ALLOW_ALL_ORIGINS = DEBUG
-CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = []
-
-# Logging
-# https://docs.djangoproject.com/en/3.2/topics/logging/
-
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "default": {
-            "format": "[%(asctime)s][%(name)s][%(levelname)s] %(message)s",
-            "style": "%",
-        },
-    },
-    "handlers": {
-        "console": {
-            "class": "logging.StreamHandler",
-            "formatter": "default",
-        },
-    },
-    # TODO: check if this is needed
-    # "loggers": {
-    #     "two_factor": {
-    #         "handlers": ["console"],
-    #         "level": "INFO",
-    #     },
-    # },
-    "root": {
-        "level": os.getenv("LOG_LEVEL", "INFO"),
-        "handlers": ["console"],
-    },
-}
-
 
 # Custom
 MEDIA_ROOT = os.path.join(STATIC_ROOT, "email_media/")
@@ -248,10 +131,7 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
 RECAPTCHA_DOMAIN = "www.recaptcha.net"
-AUTHENTICATION_BACKENDS = [
-    "django.contrib.auth.backends.ModelBackend",
-    # "portal.backends.StudentLoginBackend",
-]
+
 PASSWORD_RESET_TIMEOUT_DAYS = 1
 
 PIPELINE_ENABLED = False
@@ -383,3 +263,6 @@ CSP_MEDIA_SRC = (
     f"{domain()}/static/portal/video/",
 )
 CSP_MANIFEST_SRC = (f"{domain()}/static/manifest.json",)
+
+
+from codeforlife.settings import *
