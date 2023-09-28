@@ -59,6 +59,8 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen import canvas
 
+from django.conf import settings
+
 STUDENT_PASSWORD_LENGTH = 6
 REMINDER_CARDS_PDF_ROWS = 8
 REMINDER_CARDS_PDF_COLUMNS = 1
@@ -308,6 +310,7 @@ def teacher_edit_class(request, access_code):
     - Locking or unlocking specific Rapid Router levels
     - Transferring the class to another teacher
     """
+    access_code = access_code.upper()
     klass = get_object_or_404(Class, access_code=access_code)
     old_teacher = klass.teacher
     other_teachers = Teacher.objects.filter(school=old_teacher.school).exclude(
@@ -525,7 +528,7 @@ def teacher_edit_student(request, pk):
     set_password_mode = False
 
     if request.method == "POST":
-        if "update_details" in request.POST:
+        if "name" in request.POST:
             name_form = TeacherEditStudentForm(student, request.POST)
             if name_form.is_valid():
                 name = name_form.cleaned_data["name"]
@@ -533,37 +536,27 @@ def teacher_edit_student(request, pk):
                 student.new_user.save()
                 student.save()
 
-                messages.success(
-                    request,
-                    "The student's details have been changed successfully.",
+                return JsonResponse(
+                    {
+                        "message": "The student's details have been changed successfully.",
+                    }
                 )
 
-                return HttpResponseRedirect(
-                    reverse_lazy(
-                        "view_class",
-                        kwargs={"access_code": student.class_field.access_code},
-                    )
-                )
-
-        else:
+        elif "confirm_password" in request.POST:
             password_form = TeacherSetStudentPass(request.POST)
             if password_form.is_valid():
                 return process_reset_password_form(
                     request, student, password_form
                 )
-            set_password_mode = True
 
-    return render(
-        request,
-        "portal/teach/teacher_edit_student.html",
-        {
-            "name_form": name_form,
-            "password_form": password_form,
-            "student": student,
-            "class": student.class_field,
-            "set_password_mode": set_password_mode,
-        },
-    )
+        return JsonResponse(
+            {
+                "message": "Your details were not updated due to incorrect details"
+            },
+            status=400,
+        )
+    else:
+        return HttpResponse(status=405)
 
 
 def process_reset_password_form(request, student, password_form):
@@ -598,22 +591,26 @@ def process_reset_password_form(request, student, password_form):
         )
         student.blocked_time = datetime.now(tz=pytz.utc) - timedelta(days=1)
         student.save()
-
-        return render(
-            request,
-            "portal/teach/onboarding_print.html",
+        access_code = student.class_field.access_code
+        frontend_link = request.headers.get("referer", "")
+        student_login_link = "".join([frontend_link, "login/student"])
+        class_login_link = "/".join([student_login_link, access_code])
+        return JsonResponse(
             {
-                "class": student.class_field,
+                "student_login_link": student_login_link,
+                "class_link": class_login_link,
+                "access_code": access_code,
+                "class": student.class_field.name,
                 "students_info": students_info,
                 "onboarding_done": True,
-                "query_data": json.dumps(students_info),
+                "query_data": students_info,  # this field could be redundant
                 "class_url": request.build_absolute_uri(
                     reverse(
                         "student_login",
                         kwargs={"access_code": student.class_field.access_code},
                     )
                 ),
-            },
+            }
         )
 
 
@@ -927,8 +924,47 @@ class DownloadType(Enum):
     PYTHON_PACK = 4
 
 
-@login_required(login_url=reverse_lazy("teacher_login"))
-@user_passes_test(logged_in_as_teacher, login_url=reverse_lazy("teacher_login"))
+# This method was added due to weird behavior of
+# dictionaries keys and list indexes when passing
+# data from frontend to backend. If you know a method
+# to fix the dictionary issue, feel free to use it and
+# delete this method
+def expand_key(dictionary):
+    expanded = {}
+
+    for key, value in dictionary.items():
+        keys = key.split("[")
+        keys = [k.replace("]", "") for k in keys]
+
+        temp = expanded
+        for i, k in enumerate(keys[:-1]):
+            if k.isdigit():
+                k = int(k)
+                if not isinstance(temp, list):
+                    temp = []
+                while len(temp) <= k:
+                    temp.append({})
+                if keys[i - 1] in expanded:
+                    expanded[keys[i - 1]] = temp
+                else:
+                    temp[keys[i - 1]] = temp
+                temp = temp[k]
+            else:
+                if k not in temp:
+                    temp[k] = {}
+                temp = temp[k]
+
+        temp[keys[-1]] = value[0] if len(value) == 1 else value
+
+    return expanded
+
+
+# @login_required(login_url=reverse_lazy("teacher_login"))
+# @user_passes_test(logged_in_as_teacher, login_url=reverse_lazy("teacher_login"))
+from django.views.decorators.csrf import csrf_exempt
+
+
+@csrf_exempt
 def teacher_print_reminder_cards(request, access_code):
     response = HttpResponse(content_type="application/pdf")
     response["Content-Disposition"] = 'filename="student_reminder_cards.pdf"'
@@ -950,29 +986,26 @@ def teacher_print_reminder_cards(request, access_code):
 
     CARD_INNER_HEIGHT = CARD_HEIGHT - CARD_PADDING * 2
 
-    logo_image = ImageReader(
-        staticfiles_storage.path("portal/img/logo_cfl_reminder_cards.jpg")
-    )
+    # logo_image = ImageReader(
+    #     staticfiles_storage.path("portal/img/logo_cfl_reminder_cards.jpg")
+    # )
 
     klass = get_object_or_404(Class, access_code=access_code)
     # Check auth
     check_teacher_authorised(request, klass.teacher)
 
     # Use data from the query string if given
-    student_data = get_student_data(request)
-    student_login_link = request.build_absolute_uri(
-        reverse("student_login_access_code")
-    )
-    class_login_link = request.build_absolute_uri(
-        reverse("student_login", kwargs={"access_code": access_code})
-    )
+    frontend_link = request.headers.get("referer", "")
+    student_login_link = "/".join([frontend_link, "login/student"])
+    class_login_link = "/".join([student_login_link, access_code])
+    current_student_reminder_data = expand_key(dict(request.POST))
 
     # Now draw everything
     x = 0
     y = 0
 
     current_student_count = 0
-    for student in student_data:
+    for student in current_student_reminder_data["students_info"]:
         # warning text for every new page
         if current_student_count % (NUM_X * NUM_Y) == 0:
             p.setFillColor(red)
@@ -996,15 +1029,15 @@ def teacher_print_reminder_cards(request, access_code):
         p.rect(left, bottom, CARD_WIDTH, CARD_HEIGHT)
 
         # logo
-        p.drawImage(
-            logo_image,
-            left,
-            bottom + INTER_CARD_MARGIN,
-            height=CARD_HEIGHT - INTER_CARD_MARGIN * 2,
-            preserveAspectRatio=True,
-        )
+        # p.drawImage(
+        #     logo_image,
+        #     left,
+        #     bottom + INTER_CARD_MARGIN,
+        #     height=CARD_HEIGHT - INTER_CARD_MARGIN * 2,
+        #     preserveAspectRatio=True,
+        # )
 
-        text_left = left + logo_image.getSize()[0]
+        text_left = left  # + logo_image.getSize()[0]
 
         # student details
         p.setFillColor(black)
@@ -1040,12 +1073,16 @@ def teacher_print_reminder_cards(request, access_code):
     p.save()
 
     count_student_details_click(DownloadType.LOGIN_CARDS)
-
     return response
 
 
-@login_required(login_url=reverse_lazy("teacher_login"))
-@user_passes_test(logged_in_as_teacher, login_url=reverse_lazy("teacher_login"))
+def pdf_url(request, id):
+    response = request.session.get(f"{id}_downloaded_cards", None)
+    return response
+
+
+# @login_required(login_url=reverse_lazy("teacher_login"))
+# @user_passes_test(logged_in_as_teacher, login_url=reverse_lazy("teacher_login"))
 def teacher_download_csv(request, access_code):
     response = HttpResponse(content_type="text/csv")
     response[
