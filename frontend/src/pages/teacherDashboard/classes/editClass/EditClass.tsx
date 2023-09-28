@@ -39,6 +39,7 @@ import EditStudent from './student/editStudent/EditStudent';
 import ReleaseStudent from './student/releaseStudent/ReleaseStudent';
 import MoveStudent from './student/moveStudent/MoveStudent';
 import ResetStudent from './student/resetStudent/ResetStudent';
+import { useDeleteClassMutation } from '../../../../app/api/teacher/teach';
 
 const DeleteClassConfirmDialog: React.FC<{
   open: boolean;
@@ -340,6 +341,8 @@ const EditClass: React.FC<{
     onConfirm?: () => void;
   }>({ open: false });
 
+  const [deleteClass] = useDeleteClassMutation();
+
   // TODO: fetch from API
   const classHasStudents = false;
   const onDeleteClass = (): void => {
@@ -355,11 +358,15 @@ const EditClass: React.FC<{
           });
           navigate(0);
         } else {
-          navigate(paths.teacher.dashboard.classes._, {
-            state: {
-              message: 'The class has been deleted successfully.'
-            }
-          });
+          deleteClass({ accessCode }).unwrap()
+            .then(() => {
+              navigate(paths.teacher.dashboard.classes._, {
+                state: {
+                  message: 'The class has been deleted successfully.'
+                }
+              });
+            })
+            .catch((err) => { console.error('DeleteClass error ', err); });
         }
       }
     });
