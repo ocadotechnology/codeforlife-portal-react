@@ -6,6 +6,7 @@ import TeacherOnboarding from '../../../pages/teacherOnboarding/TeacherOnboardin
 import TeacherDashboard from '../../../pages/teacherDashboard/TeacherDashboard';
 import AddExternalStudent from '../../../pages/teacherDashboard/classes/AddExternalStudent';
 import AddedExternalStudent from '../../../pages/teacherDashboard/classes/AddedExternalStudent';
+import UpdatedStudentCredentials from '../../../pages/teacherDashboard/classes/editClass/student/editStudent/UpdatedStudentCredentials';
 
 const teacher = <>
   <Route
@@ -39,6 +40,10 @@ const teacher = <>
   <Route
     path={`${paths.teacher.dashboard.student.added._}`}
     element={<AddedExternalStudent />}
+  />
+  <Route
+    path={`${paths.teacher.dashboard.classes._}/:accessCode/updated-student-credentials`}
+    element={<UpdatedStudentCredentials />}
   />
 </>;
 

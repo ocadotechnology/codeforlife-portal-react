@@ -21,6 +21,9 @@ import {
 
 import { primary } from 'codeforlife/lib/esm/theme/colors';
 import CopyToClipboardIcon from '../../components/CopyToClipboardIcon';
+import { useLocation } from 'react-router-dom';
+import teachApi from '../../app/api/teacher/teach';
+
 
 const WhiteTableCell: React.FC<TableCellProps> = ({
   style,
@@ -77,13 +80,16 @@ export interface NewStudentsTableProps {
 }
 
 const NewStudentsTable: React.FC<NewStudentsTableProps> = ({
-  classLink,
   students
 }) => {
   const nameCellWidth = '40%';
   const passwordCellWidth = '60%';
 
+  const location = useLocation();
   const theme = useTheme();
+  const classLink = location.state.updatedStudentCredentials.classLink;
+  const accessCode = location.state.updatedStudentCredentials.accessCode;
+  const [getReminderCards] = teachApi.useGetReminderCardsMutation();
   return (
     <Box marginBottom={theme.spacing(2)}>
       <Box marginBottom={theme.spacing(6)}>
@@ -104,6 +110,11 @@ const NewStudentsTable: React.FC<NewStudentsTableProps> = ({
           cards from the button below. Please ensure you share student passwords
           securely.
         </Typography>
+        <pre>
+          <code>
+            {JSON.stringify(location.state, null, 2)}
+          </code>
+        </pre>
       </Box>
       <Table
         sx={{
@@ -131,7 +142,7 @@ const NewStudentsTable: React.FC<NewStudentsTableProps> = ({
             <TableCell>
               <Stack direction="row" width="100%" alignItems="center">
                 <Typography marginRight={2}>Class link:</Typography>
-                <Typography className="nowrap-ellipsis">{classLink}</Typography>
+                <Typography className="nowrap-ellipsis">{classLink} {'lol'}</Typography>
                 <CopyToClipboardIcon
                   stringToCopy={classLink}
                   sx={{ marginLeft: 'auto' }}
@@ -211,7 +222,17 @@ const NewStudentsTable: React.FC<NewStudentsTableProps> = ({
         <Button
           endIcon={<PrintIcon />}
           onClick={() => {
-            alert('TODO: call api');
+            console.log('lol');
+            getReminderCards({ accessCode, data: location.state.updatedStudentCredentials }).unwrap().then((response) => {
+              console.log('success');
+              //console.log(response);
+            }
+            ).catch((error) => {
+              console.log('failure');
+              console.error(error);
+              alert(JSON.stringify(error, null, 2));
+            }
+            );
           }}
           className="body"
         >
@@ -220,7 +241,6 @@ const NewStudentsTable: React.FC<NewStudentsTableProps> = ({
         <Button
           endIcon={<SaveAltIcon />}
           onClick={() => {
-            alert('TODO: call api');
           }}
           className="body"
         >

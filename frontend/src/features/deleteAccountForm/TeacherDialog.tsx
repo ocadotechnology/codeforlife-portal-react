@@ -31,7 +31,6 @@ export const ConfirmPopup: React.FC<ConfirmPopupProps> = ({
   const [deleteAccount] = useDeleteAccountMutation();
   return (
     <Dialog open={open}>
-      <pre></pre>
       <Typography variant="h5" textAlign="center">
         You are about to delete your account
       </Typography>

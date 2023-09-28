@@ -1,7 +1,60 @@
 import api from '../api';
 
+interface StudentInfo {
+  id: number;
+  name: string;
+  password: string;
+  loginUrl: string;
+}
+
+export interface ResetStudentPasswordResponseProps {
+  class: string;
+  studentsInfo: StudentInfo[];
+  onboardingDone: boolean;
+  queryData: StudentInfo[];
+  classUrl: string;
+}
+
 const teachApi = api.injectEndpoints({
   endpoints: (build) => ({
+    editStudentPassword: build.mutation<
+      ResetStudentPasswordResponseProps,
+      {
+        studentId: string;
+        password: string;
+        confirmPassword: string;
+      }
+    >({
+      query: ({ studentId, password, confirmPassword }) => ({
+        url: `teach/student/edit/${studentId}`,
+        method: 'POST',
+        body: {
+          password,
+          confirmPassword
+        },
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      })
+    }),
+    editStudentName: build.mutation<
+      null,
+      {
+        studentId: string;
+        name: string;
+      }
+    >({
+      query: ({ studentId, name }) => ({
+        url: `teach/student/edit/${studentId}`,
+        method: 'POST',
+        body: {
+          name
+        },
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      })
+    }),
     getClass: build.query<
       {
         // blockly_episodes
@@ -48,9 +101,28 @@ const teachApi = api.injectEndpoints({
       invalidatesTags: (result, error, { accessCode }) => [
         { type: 'class', id: accessCode }
       ]
+    }),
+    getReminderCards: build.mutation<null, { accessCode: string; data: any }>({
+      query: ({ accessCode, data }) => ({
+        url: `teach/onboarding-class/${accessCode}/print-reminder-cards/`,
+        method: 'POST',
+        body: data,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          Accept: 'application/pdf'
+        },
+        transformResponse: async (response: Response) =>
+          await response.clone().blob()
+      })
     })
   })
 });
 
 export default teachApi;
-export const { useGetClassQuery, useUpdateClassMutation } = teachApi;
+export const {
+  useGetClassQuery,
+  useUpdateClassMutation,
+  useEditStudentNameMutation,
+  useEditStudentPasswordMutation,
+  useGetReminderCardsMutation
+} = teachApi;
