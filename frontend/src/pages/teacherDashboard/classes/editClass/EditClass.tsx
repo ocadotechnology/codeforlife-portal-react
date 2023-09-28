@@ -15,6 +15,7 @@ import {
   Box,
   Button,
   Checkbox,
+  Dialog,
   Link,
   Stack,
   Table,
@@ -38,6 +39,43 @@ import EditStudent from './student/editStudent/EditStudent';
 import ReleaseStudent from './student/releaseStudent/ReleaseStudent';
 import MoveStudent from './student/moveStudent/MoveStudent';
 import ResetStudent from './student/resetStudent/ResetStudent';
+
+const DeleteClassConfirmDialog: React.FC<{
+  open: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+}> = ({
+  open,
+  onClose,
+  onConfirm
+}) => {
+    const theme = useTheme();
+    return (
+      <Dialog open={open} onClose={onClose} maxWidth={'xs'}>
+        <Typography variant='h5' textAlign='center'>
+          Delete class
+        </Typography>
+        <Typography>
+          This class will be permanently deleted. Are you sure?
+        </Typography>
+
+        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3} mt={theme.spacing(5)}>
+          <Button
+            variant='outlined'
+            className='body'
+            onClick={onClose}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={onConfirm}
+          >
+            Confirm
+          </Button>
+        </Stack>
+      </Dialog>
+    );
+  };
 
 const StudentsTable: React.FC<{
   accessCode: string;
@@ -297,6 +335,36 @@ const EditClass: React.FC<{
     }
   }
 
+  const [dialog, setDialog] = React.useState<{
+    open: boolean;
+    onConfirm?: () => void;
+  }>({ open: false });
+
+  // TODO: fetch from API
+  const classHasStudents = false;
+  const onDeleteClass = (): void => {
+    setDialog({
+      open: true,
+      onConfirm: () => {
+        setDialog({ open: false });
+        if (classHasStudents) {
+          navigate('.', {
+            state: {
+              message: 'This class still has students, please remove or delete them all before deleting the class.'
+            }
+          });
+          navigate(0);
+        } else {
+          navigate(paths.teacher.dashboard.classes._, {
+            state: {
+              message: 'The class has been deleted successfully.'
+            }
+          });
+        }
+      }
+    });
+  };
+
   return <>
     {location.state?.message &&
       <Page.Notification>
@@ -361,11 +429,19 @@ const EditClass: React.FC<{
             variant="contained"
             className="alert"
             endIcon={<DeleteOutlineOutlined />}
+            onClick={onDeleteClass}
           >
             Delete class
           </Button>
         </Stack>
       </Stack>
+      {dialog.onConfirm !== undefined &&
+        <DeleteClassConfirmDialog
+          open={dialog.open}
+          onClose={() => { setDialog({ open: false }); }}
+          onConfirm={dialog.onConfirm}
+        />
+      }
     </Page.Section>
   </>;
 };
