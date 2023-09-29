@@ -54,7 +54,7 @@ const teachApi = api.injectEndpoints({
       { accessCode: string; }
     >({
       query: ({ accessCode, ...body }) => ({
-        url: `teach/class/edit/${accessCode}`,
+        url: `teach/class/delete/${accessCode}`,
         method: 'POST',
         body,
         headers: {

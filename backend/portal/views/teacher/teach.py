@@ -243,7 +243,7 @@ def teacher_delete_class(request, access_code):
     try:
         check_teacher_authorised(request, klass.teacher)
     except Http404:
-        return HttpResponse(
+        return JsonResponse(
             {"error": "User not authorised."},
             status=status.HTTP_400_BAD_REQUEST,
         )
@@ -251,7 +251,7 @@ def teacher_delete_class(request, access_code):
     if Student.objects.filter(
         class_field=klass, new_user__is_active=True
     ).exists():
-        return HttpResponse(
+        return JsonResponse(
             {
                 "error": "This class still has students, please remove or delete them all before deleting the class."
             },
