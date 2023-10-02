@@ -59,7 +59,7 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen import canvas
 
-from django.conf import settings
+from codeforlife import settings
 
 STUDENT_PASSWORD_LENGTH = 6
 REMINDER_CARDS_PDF_ROWS = 8
@@ -566,12 +566,9 @@ def process_reset_password_form(request, student, password_form):
         # generate uuid for url and store the hashed
         uuidstr = uuid4().hex
         login_id = get_hashed_login_id(uuidstr)
-        login_url = request.build_absolute_uri(
-            reverse(
-                "student_direct_login",
-                kwargs={"user_id": student.new_user.id, "login_id": uuidstr},
-            )
-        )
+        protocol = settings.SERVICE_PROTOCOL
+        domain = settings.SERVICE_DOMAIN
+        login_url = f"{protocol}://{domain}/u/{student.new_user.id}/{uuidstr}/"
 
         students_info = [
             {
@@ -604,12 +601,12 @@ def process_reset_password_form(request, student, password_form):
                 "students_info": students_info,
                 "onboarding_done": True,
                 "query_data": students_info,  # this field could be redundant
-                "class_url": request.build_absolute_uri(
-                    reverse(
-                        "student_login",
-                        kwargs={"access_code": student.class_field.access_code},
-                    )
-                ),
+                # "class_url": request.build_absolute_uri(
+                #     reverse(
+                #         "student_login",
+                #         kwargs={"access_code": student.class_field.access_code},
+                #     )
+                # ),
             }
         )
 
@@ -964,116 +961,142 @@ def expand_key(dictionary):
 from django.views.decorators.csrf import csrf_exempt
 
 
+# @csrf_exempt
+# def teacher_print_reminder_cards(request, access_code):
+#     response = HttpResponse(content_type="application/pdf")
+#     response["Content-Disposition"] = 'filename="student_reminder_cards.pdf"'
+
+#     p = canvas.Canvas(response, pagesize=A4)
+
+#     # Define constants that determine the look of the cards
+#     PAGE_WIDTH, PAGE_HEIGHT = A4
+#     PAGE_MARGIN = PAGE_WIDTH // 16
+#     INTER_CARD_MARGIN = PAGE_WIDTH // 64
+#     CARD_PADDING = PAGE_WIDTH // 48
+
+#     # rows and columns on page
+#     NUM_X = REMINDER_CARDS_PDF_COLUMNS
+#     NUM_Y = REMINDER_CARDS_PDF_ROWS
+
+#     CARD_WIDTH = (PAGE_WIDTH - PAGE_MARGIN * 2) // NUM_X
+#     CARD_HEIGHT = (PAGE_HEIGHT - PAGE_MARGIN * 4) // NUM_Y
+
+#     CARD_INNER_HEIGHT = CARD_HEIGHT - CARD_PADDING * 2
+
+#     # logo_image = ImageReader(
+#     #     staticfiles_storage.path("portal/img/logo_cfl_reminder_cards.jpg")
+#     # )
+
+#     klass = get_object_or_404(Class, access_code=access_code)
+#     # Check auth
+#     check_teacher_authorised(request, klass.teacher)
+
+#     # Use data from the query string if given
+#     frontend_link = request.headers.get("referer", "")
+#     student_login_link = "/".join([frontend_link, "login/student"])
+#     class_login_link = "/".join([student_login_link, access_code])
+#     current_student_reminder_data = expand_key(dict(request.POST))
+
+#     # Now draw everything
+#     x = 0
+#     y = 0
+
+#     current_student_count = 0
+#     for student in current_student_reminder_data["students_info"]:
+#         # warning text for every new page
+#         if current_student_count % (NUM_X * NUM_Y) == 0:
+#             p.setFillColor(red)
+#             p.setFont("Helvetica-Bold", 10)
+#             p.drawString(
+#                 PAGE_MARGIN, PAGE_MARGIN / 2, REMINDER_CARDS_PDF_WARNING_TEXT
+#             )
+
+#         left = PAGE_MARGIN + x * CARD_WIDTH + x * INTER_CARD_MARGIN * 2
+#         bottom = (
+#             PAGE_HEIGHT
+#             - PAGE_MARGIN
+#             - (y + 1) * CARD_HEIGHT
+#             - y * INTER_CARD_MARGIN
+#         )
+
+#         inner_bottom = bottom + CARD_PADDING
+
+#         # card border
+#         p.setStrokeColor(black)
+#         p.rect(left, bottom, CARD_WIDTH, CARD_HEIGHT)
+
+#         # logo
+#         # p.drawImage(
+#         #     logo_image,
+#         #     left,
+#         #     bottom + INTER_CARD_MARGIN,
+#         #     height=CARD_HEIGHT - INTER_CARD_MARGIN * 2,
+#         #     preserveAspectRatio=True,
+#         # )
+
+#         text_left = left  # + logo_image.getSize()[0]
+
+#         # student details
+#         p.setFillColor(black)
+#         p.setFont("Helvetica", 12)
+#         p.drawString(
+#             text_left,
+#             inner_bottom + CARD_INNER_HEIGHT * 0.9,
+#             f"Class code: {klass.access_code} at {student_login_link}",
+#         )
+#         p.setFont("Helvetica-BoldOblique", 12)
+#         p.drawString(text_left, inner_bottom + CARD_INNER_HEIGHT * 0.6, "OR")
+#         p.setFont("Helvetica", 12)
+#         p.drawString(
+#             text_left + 22,
+#             inner_bottom + CARD_INNER_HEIGHT * 0.6,
+#             f"class link: {class_login_link}",
+#         )
+#         p.drawString(
+#             text_left,
+#             inner_bottom + CARD_INNER_HEIGHT * 0.3,
+#             f"Name: {student['name']}",
+#         )
+#         p.drawString(
+#             text_left, inner_bottom, f"Password: {student['password']}"
+#         )
+
+#         x = (x + 1) % NUM_X
+#         y = compute_show_page_character(p, x, y, NUM_Y)
+#         current_student_count += 1
+
+#     compute_show_page_end(p, x, y)
+
+#     p.save()
+
+#     count_student_details_click(DownloadType.LOGIN_CARDS)
+#     return response
+
+
 @csrf_exempt
 def teacher_print_reminder_cards(request, access_code):
-    response = HttpResponse(content_type="application/pdf")
-    response["Content-Disposition"] = 'filename="student_reminder_cards.pdf"'
-
-    p = canvas.Canvas(response, pagesize=A4)
-
-    # Define constants that determine the look of the cards
-    PAGE_WIDTH, PAGE_HEIGHT = A4
-    PAGE_MARGIN = PAGE_WIDTH // 16
-    INTER_CARD_MARGIN = PAGE_WIDTH // 64
-    CARD_PADDING = PAGE_WIDTH // 48
-
-    # rows and columns on page
-    NUM_X = REMINDER_CARDS_PDF_COLUMNS
-    NUM_Y = REMINDER_CARDS_PDF_ROWS
-
-    CARD_WIDTH = (PAGE_WIDTH - PAGE_MARGIN * 2) // NUM_X
-    CARD_HEIGHT = (PAGE_HEIGHT - PAGE_MARGIN * 4) // NUM_Y
-
-    CARD_INNER_HEIGHT = CARD_HEIGHT - CARD_PADDING * 2
-
-    # logo_image = ImageReader(
-    #     staticfiles_storage.path("portal/img/logo_cfl_reminder_cards.jpg")
-    # )
-
     klass = get_object_or_404(Class, access_code=access_code)
-    # Check auth
     check_teacher_authorised(request, klass.teacher)
 
-    # Use data from the query string if given
     frontend_link = request.headers.get("referer", "")
     student_login_link = "/".join([frontend_link, "login/student"])
     class_login_link = "/".join([student_login_link, access_code])
     current_student_reminder_data = expand_key(dict(request.POST))
 
-    # Now draw everything
-    x = 0
-    y = 0
+    students_data = []
 
-    current_student_count = 0
     for student in current_student_reminder_data["students_info"]:
-        # warning text for every new page
-        if current_student_count % (NUM_X * NUM_Y) == 0:
-            p.setFillColor(red)
-            p.setFont("Helvetica-Bold", 10)
-            p.drawString(
-                PAGE_MARGIN, PAGE_MARGIN / 2, REMINDER_CARDS_PDF_WARNING_TEXT
-            )
-
-        left = PAGE_MARGIN + x * CARD_WIDTH + x * INTER_CARD_MARGIN * 2
-        bottom = (
-            PAGE_HEIGHT
-            - PAGE_MARGIN
-            - (y + 1) * CARD_HEIGHT
-            - y * INTER_CARD_MARGIN
-        )
-
-        inner_bottom = bottom + CARD_PADDING
-
-        # card border
-        p.setStrokeColor(black)
-        p.rect(left, bottom, CARD_WIDTH, CARD_HEIGHT)
-
-        # logo
-        # p.drawImage(
-        #     logo_image,
-        #     left,
-        #     bottom + INTER_CARD_MARGIN,
-        #     height=CARD_HEIGHT - INTER_CARD_MARGIN * 2,
-        #     preserveAspectRatio=True,
-        # )
-
-        text_left = left  # + logo_image.getSize()[0]
-
-        # student details
-        p.setFillColor(black)
-        p.setFont("Helvetica", 12)
-        p.drawString(
-            text_left,
-            inner_bottom + CARD_INNER_HEIGHT * 0.9,
-            f"Class code: {klass.access_code} at {student_login_link}",
-        )
-        p.setFont("Helvetica-BoldOblique", 12)
-        p.drawString(text_left, inner_bottom + CARD_INNER_HEIGHT * 0.6, "OR")
-        p.setFont("Helvetica", 12)
-        p.drawString(
-            text_left + 22,
-            inner_bottom + CARD_INNER_HEIGHT * 0.6,
-            f"class link: {class_login_link}",
-        )
-        p.drawString(
-            text_left,
-            inner_bottom + CARD_INNER_HEIGHT * 0.3,
-            f"Name: {student['name']}",
-        )
-        p.drawString(
-            text_left, inner_bottom, f"Password: {student['password']}"
-        )
-
-        x = (x + 1) % NUM_X
-        y = compute_show_page_character(p, x, y, NUM_Y)
-        current_student_count += 1
-
-    compute_show_page_end(p, x, y)
-
-    p.save()
+        student_data = {
+            "class_code": klass.access_code,
+            "student_login_link": student_login_link,
+            "class_login_link": class_login_link,
+            "name": student["name"],
+            "password": student["password"],
+        }
+        students_data.append(student_data)
 
     count_student_details_click(DownloadType.LOGIN_CARDS)
-    return response
+    return JsonResponse({"students": students_data})
 
 
 def pdf_url(request, id):

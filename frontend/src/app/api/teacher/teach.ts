@@ -111,8 +111,7 @@ const teachApi = api.injectEndpoints({
           'Content-Type': 'application/x-www-form-urlencoded',
           Accept: 'application/pdf'
         },
-        transformResponse: async (response: Response) =>
-          await response.clone().blob()
+        responseType: 'blob'
       })
     })
   })
