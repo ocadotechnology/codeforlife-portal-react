@@ -26,13 +26,53 @@ import teachApi from '../../app/api/teacher/teach';
 import { pdf } from '@react-pdf/renderer';
 import MyDocument from '../../pages/login/MyDocument';
 
+interface StudentInfo {
+  name: string;
+  password: string;
+  classLink: string;
+  loginUrl: string;
+}
+
+const DownloadButtonCSV: React.FC = () => {
+  const generateCSV: (studentsInfo: StudentInfo[], classLink: string) => string = (studentsInfo, classLink) => {
+    let csvContent = 'Name,Password,Class Link,Login URL\n';
+    studentsInfo.forEach(student => {
+      csvContent += `${student.name},${student.password},${classLink},${student.loginUrl}\n`;
+    });
+    return csvContent;
+  };
+  const location = useLocation();
+  const { studentsInfo } = location.state.updatedStudentCredentials;
+  const { classLink } = location.state.updatedStudentCredentials;
+
+  const downloadCSV = () => {
+    const csvContent = generateCSV(studentsInfo, classLink);
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'data.csv';
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
+  return (
+    <Button
+      endIcon={<SaveAltIcon />}
+      className="body"
+      onClick={downloadCSV}>
+      Download CSV
+    </Button>
+  );
+};
+
+
 const DownloadButtonPDF: React.FC = () => {
   const location = useLocation();
   const { studentsInfo } = location.state.updatedStudentCredentials;
   const { classLink } = location.state.updatedStudentCredentials;
-  console.log(studentsInfo, classLink);
   const downloadPdf = async () => {
-    const blob = await pdf(<MyDocument studentsInfo={studentsInfo} classLink={classLink} />).toBlob();
+    const blob = await pdf(<MyDocument classLink={classLink} studentsInfo={studentsInfo} />).toBlob();
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
@@ -247,14 +287,7 @@ const NewStudentsTable: React.FC<NewStudentsTableProps> = ({
       {/* TODO: fix margin bottom */}
       <Stack direction="row" justifyContent="space-between">
         <DownloadButtonPDF />
-        <Button
-          endIcon={<SaveAltIcon />}
-          onClick={() => {
-          }}
-          className="body"
-        >
-          Download CSV
-        </Button>
+        <DownloadButtonCSV />
       </Stack>
     </Box>
   );
