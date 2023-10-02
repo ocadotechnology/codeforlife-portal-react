@@ -35,8 +35,8 @@ const teachApi = api.injectEndpoints({
             firstName: string;
             lastName: string;
           };
-          pendingClassRequest: any;
-          blockedTime: string | null;
+          pendingClassRequest: number;
+          blockedTime: string;
         }>;
       },
       { accessCode: string } // Specify the input type

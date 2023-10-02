@@ -71,14 +71,14 @@ def get_students_from_access_code(request, access_code):
     students = [
         {
             "id": student.id,
-            "class_field": getattr(student.class_field, "id", -1),
+            "class_field": getattr(student.class_field, "id", 0),
             "new_user": {
-                "id": getattr(student.new_user, "id", -1),
+                "id": getattr(student.new_user, "id", 0),
                 "first_name": getattr(student.new_user, "first_name", ""),
                 "last_name": getattr(student.new_user, "last_name", ""),
             },
             "pending_class_request": getattr(
-                student.pending_class_request, "id", -1
+                student.pending_class_request, "id", 0
             ),
             "blocked_time": student.blocked_time.strftime("%Y-%m-%d %H:%M:%S")
             if student.blocked_time
