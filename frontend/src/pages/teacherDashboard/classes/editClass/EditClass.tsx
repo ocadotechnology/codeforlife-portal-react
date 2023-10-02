@@ -38,6 +38,7 @@ import EditStudent from './student/editStudent/EditStudent';
 import ReleaseStudent from './student/releaseStudent/ReleaseStudent';
 import MoveStudent from './student/moveStudent/MoveStudent';
 import ResetStudent from './student/resetStudent/ResetStudent';
+import teachApi from '../../../../app/api/teacher/teach';
 
 const StudentsTable: React.FC<{
   accessCode: string;
@@ -81,6 +82,7 @@ const StudentsTable: React.FC<{
     selectedStudentsIds.push(idx);
   };
 
+  const { data, error, isLoading } = teachApi.useGetStudentsByAccessCodeQuery({ accessCode });
   return (
     <Box>
       <Table>
@@ -104,10 +106,10 @@ const StudentsTable: React.FC<{
           </TableRow>
         </TableHead>
         <TableBody>
-          {randomStudentNames.map((studentName, idx) => (
-            <TableRow key={`${studentName}-${idx}`}>
+          {data?.studentsPerAccessCode.map((_student, idx) => (
+            <TableRow key={`${_student.newUser.firstName}-${idx}`}>
               <TableCell>
-                <Typography variant="body2">{studentName}</Typography>
+                <Typography variant="body2">{_student.newUser.firstName}</Typography>
               </TableCell>
               <TableCell align="center">
                 <Checkbox
@@ -128,7 +130,7 @@ const StudentsTable: React.FC<{
                       .editClass
                       .editStudent
                       ._,
-                    [idx]
+                    [_student.id]
                   );
                 }}
                   endIcon={<Edit />}>Edit details</Button>
@@ -197,6 +199,22 @@ const StudentsTable: React.FC<{
         </Button>
       </Stack>
     </Box>
+  );
+};
+
+const DebugComponent: React.FC<any> = ({ accessCode }) => {
+  const { data, isLoading, error } = teachApi.useGetStudentsByAccessCodeQuery({ accessCode });
+  return (
+    <div>
+      <code>
+        {
+          !isLoading
+            ? (error ? JSON.stringify(error, null, 2) : JSON.stringify(data))
+            : null
+        }
+
+      </code>
+    </div>
   );
 };
 
@@ -296,7 +314,6 @@ const EditClass: React.FC<{
       }
     }
   }
-
   return <>
     {location.state?.message &&
       <Page.Notification>
@@ -318,6 +335,7 @@ const EditClass: React.FC<{
         your classes or to another teacher within your school or club, or
         remove students altogether.
       </Typography>
+      <DebugComponent accessCode={accessCode} />
     </Page.Section>
     <Page.Section>
       <Box>
