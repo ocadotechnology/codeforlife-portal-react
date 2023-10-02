@@ -13,6 +13,7 @@ export interface ResetStudentPasswordResponseProps {
   onboardingDone: boolean;
   queryData: StudentInfo[];
   classUrl: string;
+  accessCode: string;
 }
 
 const teachApi = api.injectEndpoints({
@@ -102,6 +103,27 @@ const teachApi = api.injectEndpoints({
         { type: 'student', id: accessCode }
       ]
     }),
+    getStudent: build.query<
+      {
+        student: {
+          id: number;
+          classField: number;
+          newUser: {
+            id: number;
+            firstName: string;
+            lastName: string;
+          };
+          pendingClassRequest: number;
+          blockedTime: string | null;
+        };
+      },
+      { studentId: string } // Specify the input type
+    >({
+      query: ({ studentId }) => ({
+        url: `class/student/${studentId}/`,
+        method: 'GET'
+      })
+    }),
     updateClass: build.mutation<
       null,
       {
@@ -148,5 +170,6 @@ export const {
   useEditStudentNameMutation,
   useEditStudentPasswordMutation,
   useGetReminderCardsMutation,
-  useGetStudentsByAccessCodeQuery
+  useGetStudentsByAccessCodeQuery,
+  useGetStudentQuery
 } = teachApi;

@@ -12,7 +12,7 @@ const StudentNameField: React.FC<Omit<TextFieldProps, 'name'> & {
   name = 'name',
   helperText = 'Choose a name',
   disabled = false,
-  style
+  style,
 }) => {
     return (
       <TextField

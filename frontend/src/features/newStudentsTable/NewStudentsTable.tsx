@@ -23,6 +23,33 @@ import { primary } from 'codeforlife/lib/esm/theme/colors';
 import CopyToClipboardIcon from '../../components/CopyToClipboardIcon';
 import { useLocation } from 'react-router-dom';
 import teachApi from '../../app/api/teacher/teach';
+import { pdf } from '@react-pdf/renderer';
+import MyDocument from '../../pages/login/MyDocument';
+
+const DownloadButtonPDF: React.FC = () => {
+  const location = useLocation();
+  const { studentsInfo } = location.state.updatedStudentCredentials;
+  const { classLink } = location.state.updatedStudentCredentials;
+  console.log(studentsInfo, classLink);
+  const downloadPdf = async () => {
+    const blob = await pdf(<MyDocument studentsInfo={studentsInfo} classLink={classLink} />).toBlob();
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'document.pdf';
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+  return (
+    <Button
+      endIcon={<PrintIcon />}
+      onClick={downloadPdf}
+      className="body"
+    >
+      Print password reminder cards
+    </Button>
+  );
+};
 
 
 const WhiteTableCell: React.FC<TableCellProps> = ({
@@ -219,25 +246,7 @@ const NewStudentsTable: React.FC<NewStudentsTableProps> = ({
       </Table>
       {/* TODO: fix margin bottom */}
       <Stack direction="row" justifyContent="space-between">
-        <Button
-          endIcon={<PrintIcon />}
-          onClick={() => {
-            console.log('lol');
-            getReminderCards({ accessCode, data: location.state.updatedStudentCredentials }).unwrap().then((response) => {
-              console.log('success');
-              //console.log(response);
-            }
-            ).catch((error) => {
-              console.log('failure');
-              console.error(error);
-              alert(JSON.stringify(error, null, 2));
-            }
-            );
-          }}
-          className="body"
-        >
-          Print password reminder cards
-        </Button>
+        <DownloadButtonPDF />
         <Button
           endIcon={<SaveAltIcon />}
           onClick={() => {

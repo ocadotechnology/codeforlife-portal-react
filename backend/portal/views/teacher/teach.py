@@ -568,7 +568,9 @@ def process_reset_password_form(request, student, password_form):
         login_id = get_hashed_login_id(uuidstr)
         protocol = settings.SERVICE_PROTOCOL
         domain = settings.SERVICE_DOMAIN
-        login_url = f"{protocol}://{domain}/u/{student.new_user.id}/{uuidstr}/"
+        login_url = (
+            f"{protocol}://{domain}/api/u/{student.new_user.id}/{uuidstr}/"
+        )
 
         students_info = [
             {

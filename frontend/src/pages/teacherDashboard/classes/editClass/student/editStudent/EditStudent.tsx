@@ -14,59 +14,30 @@ import {
 import { generatePath, useLocation, useNavigate } from 'react-router-dom';
 import { paths } from '../../../../../../app/router';
 import teachApi from '../../../../../../app/api/teacher/teach';
+import { tryValidateSync } from 'codeforlife/lib/esm/helpers/yup';
+import { useSearchParams } from 'react-router-dom';
 
-const DebugComponent: React.FC<any> = ({ accessCode, search }) => {
-  const { data, isLoading, error } = teachApi.useGetStudentsByAccessCodeQuery({ accessCode });
-  return (
-    <div>
-      <code>
-        {
-          !isLoading
-            ? (error ? JSON.stringify(error, null, 2) : JSON.stringify(data))
-            : null
-        }
-        {JSON.stringify(search, null, 2)}
-      </code>
-    </div>
-  );
-};
 
 const UpdateNameForm: React.FC<{ accessCode: string; }> = ({ accessCode }) => {
+  const location = useLocation();
+  const studentId = new URLSearchParams(location.search).get('studentIds') ?? '';
   interface Values {
     name: string;
-    studentId: string;
   }
+  const { data, isLoading, error } = teachApi.useGetStudentQuery({ studentId });
 
-  const searchParams = tryValidateSync(
-    fromSearchParams(),
-    yup.object({
-      studentIds: yup.number().required(),
-    })
-  );
-  const { data, isLoading, error } = teachApi.useGetStudentsByAccessCodeQuery({ accessCode });
-
-  // TODO: Initial value should be student name
-  const studentId = tryValidateSync(
-    fromSearchParams(),
-    yup.object({
-      studentIds: yup.string().required(),
-    })
-  );
-
-  const studentEditId = studentId?.studentIds ?? '0';
   const initialValues: Values = {
-    name: 'Florian',
-    studentId: studentEditId,
+    name: ''
   };
-  const [editStudentName] = useEditStudentNameMutation();
 
+  const [editStudentName] = teachApi.useEditStudentNameMutation();
   return (
     <CflHorizontalForm
       header="Update name"
       subheader="Remember this is the name they use to log in with, so you should tell them what you've changed it to."
       initialValues={initialValues}
       onSubmit={(values) => {
-        editStudentName({ name: values.name, studentId: studentEditId })
+        editStudentName({ name: values.name, studentId: studentId })
           .unwrap()
           .then((response) => {
             console.log(response);
@@ -77,14 +48,18 @@ const UpdateNameForm: React.FC<{ accessCode: string; }> = ({ accessCode }) => {
       }}
       submitButton={<SubmitButton>Update</SubmitButton>}
     >
+      <code>
+        {JSON.stringify(data, null, 2)}
+      </code>
       <StudentNameField />
-      <DebugComponent search={searchParams} accessCode={accessCode} />
     </CflHorizontalForm>
   );
 };
 
-const UpdatePasswordForm: React.FC<{ accessCode: string; }> = ({ accessCode }) => {
+const UpdatePasswordForm: React.FC = () => {
   const [editStudentPassword] = useEditStudentPasswordMutation();
+  const location = useLocation();
+  const studentId = new URLSearchParams(location.search).get('studentIds') ?? '';
   interface Values {
     password: string;
     confirmPassword: string;
@@ -95,24 +70,21 @@ const UpdatePasswordForm: React.FC<{ accessCode: string; }> = ({ accessCode }) =
     confirmPassword: '',
   };
   const navigate = useNavigate();
-  const studentId = tryValidateSync(
-    fromSearchParams(),
-    yup.object({
-      studentIds: yup.string().required(),
-    })
-  );
-  const studentEditId = studentId?.studentIds ?? '0';
+
   const handleSubmit: (values: Values) => void = (values) => {
     editStudentPassword({
       password: values.password,
-      studentId: studentEditId,
+      studentId: studentId,
       confirmPassword: values.confirmPassword,
     })
       .unwrap()
       .then((response) => {
-        console.log(response);
+        const path = paths.teacher.dashboard.classes.editClass.updatedStudentCredentials._;
+        const { accessCode } = response;
+        console.log(response, path, accessCode);
+
         navigate(
-          generatePath(paths.teacher.dashboard.classes.editClass.updatedStudentCredentials._, accessCode),
+          path.replace(':accessCode', accessCode), // tried using generatePath but it says it is missing :accessCode 02/10/2023 22:32
           { state: { updatedStudentCredentials: response } }
         );
       })
@@ -172,7 +144,7 @@ const EditStudent: React.FC<{
         <UpdateNameForm accessCode={accessCode} />
       </Page.Section>
       <Page.Section style={{ paddingTop: theme.spacing(0.5) }}>
-        <UpdatePasswordForm accessCode={accessCode} />
+        <UpdatePasswordForm />
       </Page.Section>
     </>
   );
