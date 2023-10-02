@@ -25,6 +25,30 @@ const teachApi = api.injectEndpoints({
         { type: 'class', id: accessCode }
       ]
     }),
+    getStudentsByAccessCode: build.query<
+      {
+        studentsPerAccessCode: Array<{
+          id: number;
+          classField: number;
+          newUser: {
+            id: number;
+            firstName: string;
+            lastName: string;
+          };
+          pendingClassRequest: number;
+          blockedTime: string;
+        }>;
+      },
+      { accessCode: string } // Specify the input type
+    >({
+      query: ({ accessCode }) => ({
+        url: `class/students/${accessCode}/`,
+        method: 'GET'
+      }),
+      providesTags: (result, error, { accessCode }) => [
+        { type: 'student', id: accessCode }
+      ]
+    }),
     updateClass: build.mutation<
       null,
       {
@@ -53,4 +77,8 @@ const teachApi = api.injectEndpoints({
 });
 
 export default teachApi;
-export const { useGetClassQuery, useUpdateClassMutation } = teachApi;
+export const {
+  useGetClassQuery,
+  useUpdateClassMutation,
+  useGetStudentsByAccessCodeQuery
+} = teachApi;
