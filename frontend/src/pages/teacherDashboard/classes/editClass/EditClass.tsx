@@ -87,10 +87,7 @@ const StudentsTable: React.FC<{
   const onDelete = (): void => {
     const selectedStudentsIds = JSON.stringify(getSelectedStudentsIds());
     deleteStudent({ accessCode, transferStudents: selectedStudentsIds }).unwrap()
-      .then(() => {
-        // TODO: message banner?
-        console.log('Student deleted');
-      })
+      .then(() => { })
       .catch((err) => { console.error('DeleteStudent error ', err); });
   };
 
