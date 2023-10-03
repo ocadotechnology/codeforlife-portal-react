@@ -344,8 +344,7 @@ const EditClass: React.FC<{
 
   const [deleteClass] = useDeleteClassMutation();
 
-  // TODO: fetch from API
-  const classHasStudents = false;
+  const classHasStudents = studentData?.length;
   const onDeleteClass = (): void => {
     setDialog({
       open: true,
