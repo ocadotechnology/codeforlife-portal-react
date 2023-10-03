@@ -39,7 +39,8 @@ import EditStudent from './student/editStudent/EditStudent';
 import ReleaseStudent from './student/releaseStudent/ReleaseStudent';
 import MoveStudent from './student/moveStudent/MoveStudent';
 import ResetStudent from './student/resetStudent/ResetStudent';
-import { studentPerAccessCode, useDeleteClassMutation, useGetStudentsByAccessCodeQuery } from '../../../../app/api/teacher/teach';
+import { useDeleteClassMutation, useGetStudentsByAccessCodeQuery } from '../../../../app/api';
+import { studentPerAccessCode } from '../../../../app/api/teacher/teach';
 
 const DeleteClassConfirmDialog: React.FC<{
   open: boolean;
