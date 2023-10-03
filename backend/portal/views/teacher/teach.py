@@ -58,6 +58,7 @@ from reportlab.lib.colors import black, red
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen import canvas
+from rest_framework import status
 
 STUDENT_PASSWORD_LENGTH = 6
 REMINDER_CARDS_PDF_ROWS = 8
@@ -294,9 +295,7 @@ def teacher_delete_students(request, access_code):
         else:  # otherwise, just delete
             student.new_user.delete()
 
-    return HttpResponseRedirect(
-        reverse_lazy("view_class", kwargs={"access_code": access_code})
-    )
+    return HttpResponse(status=status.HTTP_204_NO_CONTENT)
 
 
 @login_required(login_url=reverse_lazy("teacher_login"))

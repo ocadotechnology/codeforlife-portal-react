@@ -39,13 +39,14 @@ import ReleaseStudent from './student/releaseStudent/ReleaseStudent';
 import MoveStudent from './student/moveStudent/MoveStudent';
 import ResetStudent from './student/resetStudent/ResetStudent';
 import { useGetStudentsByAccessCodeQuery } from '../../../../app/api';
-import { studentPerAccessCode } from '../../../../app/api/teacher/teach';
+import { studentPerAccessCode, useDeleteStudentMutation } from '../../../../app/api/teacher/teach';
 
 const StudentsTable: React.FC<{
   accessCode: string;
   studentData: studentPerAccessCode[];
 }> = ({ accessCode, studentData }) => {
   const _navigate = useNavigate();
+  const [deleteStudent] = useDeleteStudentMutation();
 
   function navigate(path: string, studentIds: number[]): void {
     _navigate(generatePath(
@@ -84,8 +85,13 @@ const StudentsTable: React.FC<{
   };
 
   const onDelete = (): void => {
-    const selectedStudentsIds = getSelectedStudentsIds();
-    console.log('onDel', accessCode, selectedStudentsIds);
+    const selectedStudentsIds = JSON.stringify(getSelectedStudentsIds());
+    deleteStudent({ accessCode, transferStudents: selectedStudentsIds }).unwrap()
+      .then(() => {
+        // TODO: message banner?
+        console.log('Student deleted');
+      })
+      .catch((err) => { console.error('DeleteStudent error ', err); });
   };
 
   return (

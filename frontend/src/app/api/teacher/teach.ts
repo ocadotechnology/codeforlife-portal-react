@@ -79,10 +79,13 @@ const teachApi = api.injectEndpoints({
     }),
     deleteStudent: build.mutation<
       any,
-      { accessCode: string }
+      {
+        accessCode: string,
+        transferStudents: string
+      }
     >({
       query: ({ accessCode, ...body }) => ({
-        url: `teach/class/edit/${accessCode}`,
+        url: `teach/class/${accessCode}/students/delete/`,
         method: 'POST',
         body,
         headers: {
