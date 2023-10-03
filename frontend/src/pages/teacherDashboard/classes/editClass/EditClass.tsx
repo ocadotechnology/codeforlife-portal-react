@@ -38,10 +38,12 @@ import EditStudent from './student/editStudent/EditStudent';
 import ReleaseStudent from './student/releaseStudent/ReleaseStudent';
 import MoveStudent from './student/moveStudent/MoveStudent';
 import ResetStudent from './student/resetStudent/ResetStudent';
+import { studentPerAccessCode, useGetStudentsByAccessCodeQuery } from '../../../../app/api/teacher/teach';
 
 const StudentsTable: React.FC<{
   accessCode: string;
-}> = ({ accessCode }) => {
+  studentData: studentPerAccessCode[];
+}> = ({ accessCode, studentData }) => {
   const _navigate = useNavigate();
 
   function navigate(path: string, studentIds: number[]): void {
@@ -51,29 +53,30 @@ const StudentsTable: React.FC<{
     ));
   }
 
-  const randomStudentNames = [
-    'John Doe',
-    'John Smith',
-    'Jane Doe',
-    'Jane Smith',
-    'John Doe',
-    'John Smith'
-  ];
-
   const [checked, setChecked] = React.useState<boolean[]>(
-    Array(randomStudentNames.length).fill(false)
+    Array(studentData.length).fill(false)
   );
   const selectedStudentsIds: number[] = [1, 2, 3];
 
   const handleSelectAllClick: () => void = () => {
     if (checked.includes(true)) {
-      setChecked(Array(randomStudentNames.length).fill(false));
+      setChecked(Array(studentData.length).fill(false));
     } else {
-      setChecked(Array(randomStudentNames.length).fill(true));
+      setChecked(Array(studentData.length).fill(true));
     }
   };
 
-  // TODO: fix student ids selection
+  const studentsIds = studentData.map((student) => student.id);
+  const getSelectedStudentsIds: () => number[] = () => {
+    const selectedIds: number[] = [];
+    for (let i = 0; i < checked.length; i += 1) {
+      if (checked[i]) {
+        selectedIds.push(studentsIds[i]);
+      }
+    }
+    return selectedIds;
+  };
+
   const handleChange: (idx: number) => void = (idx: number) => {
     const newChecked = [...checked];
     newChecked[idx] = !checked[idx];
@@ -104,10 +107,10 @@ const StudentsTable: React.FC<{
           </TableRow>
         </TableHead>
         <TableBody>
-          {randomStudentNames.map((studentName, idx) => (
-            <TableRow key={`${studentName}-${idx}`}>
+          {studentData.map((student, idx) => (
+            <TableRow key={`${student.id}`}>
               <TableCell>
-                <Typography variant="body2">{studentName}</Typography>
+                <Typography variant="body2">{student.newUser.firstName} {student.newUser.lastName}</Typography>
               </TableCell>
               <TableCell align="center">
                 <Checkbox
@@ -128,7 +131,7 @@ const StudentsTable: React.FC<{
                       .editClass
                       .editStudent
                       ._,
-                    [idx]
+                    [student.id]
                   );
                 }}
                   endIcon={<Edit />}>Edit details</Button>
@@ -153,7 +156,7 @@ const StudentsTable: React.FC<{
                 .editClass
                 .releaseStudents
                 ._,
-              selectedStudentsIds
+              getSelectedStudentsIds()
             );
           }}
         >Release</Button>
@@ -167,7 +170,7 @@ const StudentsTable: React.FC<{
                 .editClass
                 .moveStudents
                 ._,
-              selectedStudentsIds
+              getSelectedStudentsIds()
             );
           }}
         >Move</Button>
@@ -181,7 +184,7 @@ const StudentsTable: React.FC<{
                 .editClass
                 .resetStudents
                 ._,
-              selectedStudentsIds
+              getSelectedStudentsIds()
             );
           }}
           endIcon={<SecurityOutlined />}
@@ -207,6 +210,8 @@ const EditClass: React.FC<{
   const navigate = useNavigate();
   const location = useLocation();
   const searchParams = fromSearchParams();
+  const { data } = useGetStudentsByAccessCodeQuery({ accessCode });
+  const studentData = data?.studentsPerAccessCode;
 
   const params = tryValidateSync(
     useParams(),
@@ -329,7 +334,7 @@ const EditClass: React.FC<{
           your school and make them an independent Code for Life user, or delete
           them permanently.
         </Typography>
-        <StudentsTable accessCode={accessCode} />
+        {studentData && <StudentsTable accessCode={accessCode} studentData={studentData} />}
       </Box>
     </Page.Section>
     <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
