@@ -42,7 +42,8 @@ import {
 import {
   useGetClassQuery,
   useUpdateClassMutation,
-  useGetStudentsByAccessCodeQuery
+  useGetStudentsByAccessCodeQuery,
+  useDeleteStudentMutation
 } from './teacher/teach';
 
 export default api;
@@ -86,5 +87,6 @@ export {
   // teacher/teach
   useGetClassQuery,
   useUpdateClassMutation,
-  useGetStudentsByAccessCodeQuery
+  useGetStudentsByAccessCodeQuery,
+  useDeleteStudentMutation
 };

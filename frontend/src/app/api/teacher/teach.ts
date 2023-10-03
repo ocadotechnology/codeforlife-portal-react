@@ -76,6 +76,22 @@ const teachApi = api.injectEndpoints({
       invalidatesTags: (result, error, { accessCode }) => [
         { type: 'class', id: accessCode }
       ]
+    }),
+    deleteStudent: build.mutation<
+      any,
+      { accessCode: string }
+    >({
+      query: ({ accessCode, ...body }) => ({
+        url: `teach/class/edit/${accessCode}`,
+        method: 'POST',
+        body,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }),
+      invalidatesTags: (result, error, { accessCode }) => [
+        { type: 'student', id: accessCode }
+      ]
     })
   })
 });
@@ -84,5 +100,6 @@ export default teachApi;
 export const {
   useGetClassQuery,
   useUpdateClassMutation,
-  useGetStudentsByAccessCodeQuery
+  useGetStudentsByAccessCodeQuery,
+  useDeleteStudentMutation
 } = teachApi;

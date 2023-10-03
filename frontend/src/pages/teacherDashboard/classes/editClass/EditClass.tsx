@@ -38,7 +38,8 @@ import EditStudent from './student/editStudent/EditStudent';
 import ReleaseStudent from './student/releaseStudent/ReleaseStudent';
 import MoveStudent from './student/moveStudent/MoveStudent';
 import ResetStudent from './student/resetStudent/ResetStudent';
-import { studentPerAccessCode, useGetStudentsByAccessCodeQuery } from '../../../../app/api/teacher/teach';
+import { useGetStudentsByAccessCodeQuery } from '../../../../app/api';
+import { studentPerAccessCode } from '../../../../app/api/teacher/teach';
 
 const StudentsTable: React.FC<{
   accessCode: string;
@@ -56,7 +57,6 @@ const StudentsTable: React.FC<{
   const [checked, setChecked] = React.useState<boolean[]>(
     Array(studentData.length).fill(false)
   );
-  const selectedStudentsIds: number[] = [1, 2, 3];
 
   const handleSelectAllClick: () => void = () => {
     if (checked.includes(true)) {
@@ -81,7 +81,11 @@ const StudentsTable: React.FC<{
     const newChecked = [...checked];
     newChecked[idx] = !checked[idx];
     setChecked(newChecked);
-    selectedStudentsIds.push(idx);
+  };
+
+  const onDelete = (): void => {
+    const selectedStudentsIds = getSelectedStudentsIds();
+    console.log('onDel', accessCode, selectedStudentsIds);
   };
 
   return (
@@ -195,6 +199,7 @@ const StudentsTable: React.FC<{
           disabled={!checked.includes(true)}
           endIcon={<DeleteOutlined />}
           className="alert"
+          onClick={onDelete}
         >
           Delete
         </Button>
