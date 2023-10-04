@@ -1,6 +1,25 @@
 from datetime import timedelta
 from uuid import uuid4
 
+from django.contrib import messages
+from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.models import User
+from django.core import serializers
+from django.db.models import F, Value
+from django.http import (
+    Http404,
+    HttpResponse,
+    HttpResponseRedirect,
+    JsonResponse,
+)
+from django.shortcuts import get_object_or_404, render
+from django.urls import reverse_lazy
+from django.utils import timezone
+from django.views.decorators.http import require_POST
+from django_otp.plugins.otp_totp.models import TOTPDevice
+from rest_framework import status
+
 from common import email_messages
 from common.helpers.emails import (
     INVITE_FROM,
@@ -19,27 +38,10 @@ from common.models import (
     Student,
     Teacher,
 )
-from common.permissions import logged_in_as_teacher, check_teacher_authorised
+from common.permissions import check_teacher_authorised, logged_in_as_teacher
 from common.utils import using_two_factor
-from django.core import serializers
-from django.contrib import messages as messages
-from django.contrib.auth import logout
-from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib.auth.models import User
-from django.db.models import F, Value
-from django.http import (
-    Http404,
-    HttpResponseRedirect,
-    HttpResponse,
-    JsonResponse,
-)
-from django.shortcuts import get_object_or_404, render
-from django.urls import reverse_lazy
-from django.utils import timezone
-from django.views.decorators.http import require_POST
+
 from game.level_management import levels_shared_with, unshare_level
-from two_factor.utils import devices_for_user
-from rest_framework import status
 
 from portal.forms.invite_teacher import InviteTeacherForm
 from portal.forms.organisation import OrganisationForm
@@ -59,7 +61,9 @@ from portal.helpers.ratelimit import (
     clear_ratelimit_cache_for_user,
 )
 
-from common.permissions import check_teacher_authorised
+from two_factor.utils import devices_for_user
+
+from .teach import create_class, teacher_view_class
 
 
 @login_required(login_url=reverse_lazy("teacher_login"))
@@ -346,7 +350,26 @@ def check_backup_tokens(request):
     return backup_tokens
 
 
-def process_update_account_form(request, teacher, old_anchor):
+@login_required(login_url=reverse_lazy("teacher_login"))
+def teacher_2fa_handler(request):
+    user = request.user
+    if request.method == "GET":
+        return JsonResponse(
+            {"has2fa": TOTPDevice.objects.filter(user=user).exists()}
+        )
+    elif request.method == "DELETE":
+        user_2fa_instances = TOTPDevice.objects.filter(user=user)
+        # sometimes the 2fa TOTPDevice can have several instances
+        # hence delete them all
+        if user_2fa_instances:
+            for instance in user_2fa_instances:
+                instance.delete()
+            return JsonResponse({"has2fa": False})
+
+
+@login_required(login_url=reverse_lazy("teacher_login"))
+def process_update_account_form(request):
+    teacher = request.user.new_teacher
     update_account_form = TeacherEditAccountForm(request.user, request.POST)
     changing_email = False
     changing_password = False
@@ -367,18 +390,17 @@ def process_update_account_form(request, teacher, old_anchor):
         teacher.save()
         teacher.new_user.save()
 
-        anchor = ""
-
         # Reset ratelimit cache after successful account details update
         clear_ratelimit_cache_for_user(teacher.new_user.username)
 
-        messages.success(
-            request, "Your account details have been successfully changed."
+        return JsonResponse(
+            {"message": "Your account details have been successfully changed."}
         )
-    else:
-        anchor = old_anchor
 
-    return changing_email, new_email, changing_password, anchor
+    return JsonResponse(
+        {"error": update_account_form.errors},
+        status=status.HTTP_400_BAD_REQUEST,
+    )
 
 
 @require_POST
