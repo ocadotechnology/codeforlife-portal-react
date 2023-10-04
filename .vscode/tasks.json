@@ -7,7 +7,8 @@
 			"script": "start",
 			"options": {
 				"env": {
-					"BROWSER": "none"
+					"BROWSER": "none",
+					"REACT_APP_SERVICE_NAME": "portal"
 				}
 			},
 			"path": "frontend",

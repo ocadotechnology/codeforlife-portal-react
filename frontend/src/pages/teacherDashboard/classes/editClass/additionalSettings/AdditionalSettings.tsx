@@ -23,8 +23,7 @@ import {
   PYTHON_LEVELS,
   RapidRouterGameTabs
 } from './rapidRouterLevelsProps';
-import { useGetClassQuery, useGetTeacherDataQuery } from '../../../../../app/api';
-import { useMoveClassMutation } from '../../../../../app/api/teacher/teach';
+import { useGetClassQuery, useGetTeacherDataQuery, useMoveClassMutation } from '../../../../../app/api';
 import { useNavigate } from 'react-router-dom';
 import { paths } from '../../../../../app/router';
 

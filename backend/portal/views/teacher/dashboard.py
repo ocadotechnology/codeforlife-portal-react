@@ -59,6 +59,36 @@ from portal.helpers.ratelimit import (
     clear_ratelimit_cache_for_user,
 )
 
+from common.permissions import check_teacher_authorised
+
+
+@login_required(login_url=reverse_lazy("teacher_login"))
+def get_students_from_access_code(request, access_code):
+    check_teacher_authorised(request, request.user.new_teacher)
+    students_query = Student.objects.filter(
+        class_field__access_code=access_code
+    )
+    students = [
+        {
+            "id": student.id,
+            "class_field": getattr(student.class_field, "id", 0),
+            "new_user": {
+                "id": getattr(student.new_user, "id", 0),
+                "first_name": getattr(student.new_user, "first_name", ""),
+                "last_name": getattr(student.new_user, "last_name", ""),
+            },
+            "pending_class_request": getattr(
+                student.pending_class_request, "id", 0
+            ),
+            "blocked_time": student.blocked_time.strftime("%Y-%m-%d %H:%M:%S")
+            if student.blocked_time
+            else "",
+        }
+        for student in students_query
+    ]
+
+    return JsonResponse({"students_per_access_code": students})
+
 
 def _get_update_account_rate(group, request):
     """
