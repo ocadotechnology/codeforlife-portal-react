@@ -34,13 +34,9 @@ const UpdateNameForm: React.FC<{ accessCode: string; }> = ({ accessCode }) => {
         editStudentName({ name: values.name, studentId: studentId })
           .unwrap()
           .then((response: any) => {
-            console.log(response);
             const path = location.pathname + location.search;
-            console.log(path);
             navigate(path,
               {
-                // pathname: location.pathname,
-                // search: location.search,
                 state: {
                   notifications: [
                     { index: 0, props: { children: 'You successfully updated your student details' } }
@@ -53,11 +49,8 @@ const UpdateNameForm: React.FC<{ accessCode: string; }> = ({ accessCode }) => {
           .catch((error) => {
             console.error(error);
             const path = location.pathname + location.search;
-            console.log(path);
             navigate(path,
               {
-                // pathname: location.pathname,
-                // search: location.search,
                 state: {
                   notifications: [
                     { index: 0, props: { children: error.data.message } }
