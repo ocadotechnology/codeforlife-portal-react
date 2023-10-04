@@ -6,7 +6,6 @@ from ...views.teacher.teach import (
     teacher_edit_student,
     teacher_download_csv,
     teacher_print_reminder_cards,
-    pdf_url,
 )
 
 
@@ -31,5 +30,4 @@ urlpatterns = [
         teacher_print_reminder_cards,
         name="teacher_print_reminder_cards",
     ),
-    path("help/<int:id>", pdf_url, name="teacher_print_reminder_cards"),
 ]

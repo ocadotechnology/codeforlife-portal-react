@@ -1111,40 +1111,36 @@ def teacher_print_reminder_cards(request, access_code):
     return JsonResponse({"students": students_data})
 
 
-def pdf_url(request, id):
-    response = request.session.get(f"{id}_downloaded_cards", None)
-    return response
-
-
+# TODO: before deploying make sure the count_student_details_click is implemented
 # @login_required(login_url=reverse_lazy("teacher_login"))
 # @user_passes_test(logged_in_as_teacher, login_url=reverse_lazy("teacher_login"))
-def teacher_download_csv(request, access_code):
-    response = HttpResponse(content_type="text/csv")
-    response[
-        "Content-Disposition"
-    ] = 'attachment; filename="student_login_urls.csv"'
+# def teacher_download_csv(request, access_code):
+#     response = HttpResponse(content_type="text/csv")
+#     response[
+#         "Content-Disposition"
+#     ] = 'attachment; filename="student_login_urls.csv"'
 
-    klass = get_object_or_404(Class, access_code=access_code)
-    # Check auth
-    check_teacher_authorised(request, klass.teacher)
+#     klass = get_object_or_404(Class, access_code=access_code)
+#     # Check auth
+#     check_teacher_authorised(request, klass.teacher)
 
-    class_url = request.build_absolute_uri(
-        reverse("student_login", kwargs={"access_code": access_code})
-    )
+#     class_url = request.build_absolute_uri(
+#         reverse("student_login", kwargs={"access_code": access_code})
+#     )
 
-    # Use data from the query string if given
-    student_data = get_student_data(request)
-    if student_data:
-        writer = csv.writer(response)
-        writer.writerow([access_code, class_url])
-        for student in student_data:
-            writer.writerow(
-                [student["name"], student["password"], student["login_url"]]
-            )
+#     # Use data from the query string if given
+#     student_data = get_student_data(request)
+#     if student_data:
+#         writer = csv.writer(response)
+#         writer.writerow([access_code, class_url])
+#         for student in student_data:
+#             writer.writerow(
+#                 [student["name"], student["password"], student["login_url"]]
+#             )
 
-    count_student_details_click(DownloadType.CSV)
+#     count_student_details_click(DownloadType.CSV) <-- implement this
 
-    return response
+#     return response
 
 
 def get_student_data(request):

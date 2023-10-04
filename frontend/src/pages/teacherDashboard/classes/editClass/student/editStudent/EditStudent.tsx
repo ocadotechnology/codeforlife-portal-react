@@ -2,20 +2,15 @@ import React from 'react';
 import { SubmitButton } from 'codeforlife/lib/esm/components/form';
 import Page from 'codeforlife/lib/esm/components/page';
 import { Link, Typography, useTheme } from '@mui/material';
-import * as yup from 'yup';
 import { CflHorizontalForm } from '../../../../../../components/form/CflForm';
 import StudentNameField from '../../../../../../components/form/StudentNameField';
 import CflPasswordFields from '../../../../../../features/cflPasswordFields/CflPasswordFields';
-import { fromSearchParams } from 'codeforlife/lib/esm/hooks';
 import {
-  useEditStudentNameMutation,
   useEditStudentPasswordMutation,
 } from '../../../../../../app/api';
-import { generatePath, redirect, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { paths } from '../../../../../../app/router';
 import teachApi from '../../../../../../app/api/teacher/teach';
-import { tryValidateSync } from 'codeforlife/lib/esm/helpers/yup';
-import { useSearchParams } from 'react-router-dom';
 
 
 const UpdateNameForm: React.FC<{ accessCode: string; }> = ({ accessCode }) => {
@@ -24,7 +19,6 @@ const UpdateNameForm: React.FC<{ accessCode: string; }> = ({ accessCode }) => {
   interface Values {
     name: string;
   }
-  const { data, isLoading, error } = teachApi.useGetStudentQuery({ studentId });
 
   const initialValues: Values = {
     name: ''
@@ -101,7 +95,7 @@ const UpdatePasswordForm: React.FC = () => {
   const handleSubmit: (values: Values) => void = (values) => {
     editStudentPassword({
       password: values.password,
-      studentId: studentId,
+      studentId,
       confirmPassword: values.confirmPassword,
     })
       .unwrap()
