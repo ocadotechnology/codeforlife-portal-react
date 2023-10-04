@@ -392,11 +392,9 @@ def process_update_account_form(request):
         # Reset ratelimit cache after successful account details update
         clear_ratelimit_cache_for_user(teacher.new_user.username)
 
-        messages.success(
-            request, "Your account details have been successfully changed."
+        return JsonResponse(
+            {"message": "Your account details have been successfully changed."}
         )
-    else:
-        anchor = old_anchor
 
     return JsonResponse(
         {"error": update_account_form.errors},
