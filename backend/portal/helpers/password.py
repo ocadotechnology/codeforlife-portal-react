@@ -138,8 +138,9 @@ def form_clean_password(self, password_field_name, strength: PasswordStrength):
 
 
 def check_update_password(form, user, request, data):
+    # TODO: add password strength test from pwned password API
     changing_password = False
-    if data["new_password"] != "":
+    if data.get("new_password", "") != "":
         changing_password = True
         user.set_password(data["new_password"])
         user.save()

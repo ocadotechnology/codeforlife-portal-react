@@ -18,6 +18,18 @@ interface getStudentsByAccessCodeProps {
 
 const teachApi = api.injectEndpoints({
   endpoints: (build) => ({
+    teacherHas2fa: build.query<{ has2fa: boolean }, null>({
+      query: () => ({
+        url: 'teacher/handle-2fa/',
+        method: 'GET'
+      })
+    }),
+    disable2fa: build.mutation<null, null>({
+      query: () => ({
+        url: 'teacher/handle-2fa/',
+        method: 'DELETE'
+      })
+    }),
     getClass: build.query<
       {
         // blockly_episodes
@@ -97,7 +109,9 @@ const teachApi = api.injectEndpoints({
 export default teachApi;
 export const {
   useGetClassQuery,
+  useGetStudentsByAccessCodeQuery,
   useUpdateClassMutation,
   useDeleteClassMutation,
-  useGetStudentsByAccessCodeQuery
+  useTeacherHas2faQuery,
+  useDisable2faMutation
 } = teachApi;

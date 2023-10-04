@@ -30,7 +30,9 @@ const DeleteAccountForm: React.FC<DeleteAccountFormProps> = ({ userType }) => {
     open: boolean;
     onDeleteAccount?: () => void;
   }>({ open: false });
-
+  // TODO: check if teacher has classes by calling an
+  // API endpoint and replace this with the result.
+  const teacherHasClasses = true;
   return (
     <>
       <Typography variant="h5">Delete account</Typography>
@@ -74,21 +76,21 @@ const DeleteAccountForm: React.FC<DeleteAccountFormProps> = ({ userType }) => {
               console.error(error);
             });
         }}
-        // TODO: validate if teacher has classes. If not, delete account immediately.
-        //   setDialog({
-        //     open: true,
-        //     onDeleteAccount: () => {
-        //       deleteAccount(values)
-        //         .unwrap()
-        //         // TODO: ensure user is logged out.
-        //         .then(() => { navigate(paths._); })
-        //         .catch((error) => {
-        //           setFormErrors(error, setErrors);
-        //           setDialog({ open: false });
-        //         });
-        //     }
-        //   });
-        // }}
+      // TODO: validate if teacher has classes. If not, delete account immediately.
+      //   setDialog({
+      //     open: true,
+      //     onDeleteAccount: () => {
+      //       deleteAccount(values)
+      //         .unwrap()
+      //         // TODO: ensure user is logged out.
+      //         .then(() => { navigate(paths._); })
+      //         .catch((error) => {
+      //           setFormErrors(error, setErrors);
+      //           setDialog({ open: false });
+      //         });
+      //     }
+      //   });
+      // }}
       >
         {(form: FormikValues) => {
           return (
@@ -98,7 +100,8 @@ const DeleteAccountForm: React.FC<DeleteAccountFormProps> = ({ userType }) => {
                 unsubscribeNewsletter={form.values.unsubscribeNewsletter}
                 toggle={setConfirmationPopup}
                 open={confirmationPopup.open}
-                userType="independent"
+                userType={userType}
+                hasClasses={teacherHasClasses}
               />
               <Grid container columnSpacing={4}>
                 <Grid xs={12} sm={6}>

@@ -104,7 +104,7 @@ class TeacherEditAccountForm(forms.Form):
         ),
         help_text="New email address (optional)",
     )
-    password = forms.CharField(
+    new_password = forms.CharField(
         required=False,
         widget=forms.PasswordInput(
             attrs={"placeholder": "New password (optional)"}

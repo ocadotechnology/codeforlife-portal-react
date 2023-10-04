@@ -41,10 +41,13 @@ import {
 } from './teacher/dashboard';
 import {
   useGetClassQuery,
+  useGetStudentsByAccessCodeQuery,
   useUpdateClassMutation,
   useDeleteClassMutation,
-  useGetStudentsByAccessCodeQuery
+  useTeacherHas2faQuery,
+  useDisable2faMutation
 } from './teacher/teach';
+import { useUpdateTeacherAccountDetailsMutation } from './teacher/account';
 
 export default api;
 export {
@@ -86,7 +89,11 @@ export {
   useDeleteInviteMutation,
   // teacher/teach
   useGetClassQuery,
+  useGetStudentsByAccessCodeQuery,
   useUpdateClassMutation,
   useDeleteClassMutation,
-  useGetStudentsByAccessCodeQuery
+  // teacher/account
+  useUpdateTeacherAccountDetailsMutation,
+  useTeacherHas2faQuery,
+  useDisable2faMutation
 };
