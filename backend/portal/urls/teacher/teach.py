@@ -4,7 +4,6 @@ from ...helpers.regexes import ACCESS_CODE_REGEX
 from ...views.teacher.teach import (
     teacher_edit_class,
     teacher_edit_student,
-    teacher_download_csv,
     teacher_print_reminder_cards,
 )
 
@@ -19,11 +18,6 @@ urlpatterns = [
         "student/edit/<int:pk>",
         teacher_edit_student,
         name="teacher_edit_student",
-    ),
-    re_path(
-        rf"onboarding-class/(?P<access_code>{ACCESS_CODE_REGEX})/download-csv/",
-        teacher_download_csv,
-        name="teacher_download_csv",
     ),
     re_path(
         rf"onboarding-class/(?P<access_code>{ACCESS_CODE_REGEX})/print-reminder-cards/",

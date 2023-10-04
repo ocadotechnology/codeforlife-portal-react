@@ -1138,7 +1138,7 @@ def teacher_print_reminder_cards(request, access_code):
 #                 [student["name"], student["password"], student["login_url"]]
 #             )
 
-#     count_student_details_click(DownloadType.CSV) <-- implement this
+#     count_student_details_click(DownloadType.CSV)  # <-- implement this
 
 #     return response
 

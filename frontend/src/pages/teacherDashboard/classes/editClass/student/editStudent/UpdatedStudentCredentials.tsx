@@ -4,6 +4,7 @@ import Page from 'codeforlife/lib/esm/components/page';
 import { Print } from '@mui/icons-material';
 import { useLocation } from 'react-router-dom';
 import { Box, Button, Typography } from '@mui/material';
+import { DownloadButtonPDF } from '../../../../../../features/newStudentsTable/NewStudentsTable';
 const UpdatedStudentCredentials: React.FC = () => {
   const location = useLocation();
   const accessCode: string = location.state?.updatedStudentCredentials.accessCode;
@@ -27,12 +28,7 @@ const UpdatedStudentCredentials: React.FC = () => {
         <Typography mb={0}>
           This is the only time you will be able to view this page. You can print reminder cards or download as a CSV file.
         </Typography>
-        <Button sx={{
-          border: '2px solid black',
-          '&:hover': {
-            border: '2px solid black',
-          }
-        }} variant='outlined' color='secondary' endIcon={<Print />}>Print reminder cards</Button>
+        <DownloadButtonPDF isButtonBanner={true} />
       </Box>
     </Page.Notification>
     <Page.Section>

@@ -67,7 +67,11 @@ const DownloadButtonCSV: React.FC = () => {
   );
 };
 
-const DownloadButtonPDF: React.FC = () => {
+interface DownloadButtonPDFProps {
+  isButtonBanner?: boolean;
+}
+
+export const DownloadButtonPDF: React.FC<DownloadButtonPDFProps> = ({ isButtonBanner }) => {
   const location = useLocation();
   const { studentsInfo, classLink } = location.state.updatedStudentCredentials;
   const linkRef = React.useRef<HTMLAnchorElement | null>(null);
@@ -89,15 +93,22 @@ const DownloadButtonPDF: React.FC = () => {
       console.error(error);
     }
   };
+  const buttonStyles = isButtonBanner ? {
+    sx: {
+      border: '2px solid black',
+      '&:hover': {
+        border: '2px solid black',
+      },
+    }
+  } : {};
 
   return (
     <>
       <Button
         endIcon={<PrintIcon />}
-        onClick={() => {
-          void downloadPdf();
-        }}
+        onClick={() => { void downloadPdf(); }}
         className="body"
+        {...buttonStyles}
       >
         Print password reminder cards
       </Button>

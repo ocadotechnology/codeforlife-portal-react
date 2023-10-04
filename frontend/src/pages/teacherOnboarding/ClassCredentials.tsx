@@ -11,6 +11,8 @@ import {
 import { paths } from '../../app/router';
 import NewStudentsTable from '../../features/newStudentsTable/NewStudentsTable';
 import { ResetStudentPasswordResponseProps } from '../../app/api/teacher/teach';
+// TODO: These variables are defined while we don't have the onboarding implemented.
+// Once we have the onboarding implemented, we can remove these variables and fetch the data
 const ClassCredentials: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
