@@ -11,7 +11,7 @@ import {
   useEditStudentNameMutation,
   useEditStudentPasswordMutation,
 } from '../../../../../../app/api';
-import { generatePath, useLocation, useNavigate } from 'react-router-dom';
+import { generatePath, redirect, useLocation, useNavigate } from 'react-router-dom';
 import { paths } from '../../../../../../app/router';
 import teachApi from '../../../../../../app/api/teacher/teach';
 import { tryValidateSync } from 'codeforlife/lib/esm/helpers/yup';
@@ -31,6 +31,7 @@ const UpdateNameForm: React.FC<{ accessCode: string; }> = ({ accessCode }) => {
   };
 
   const [editStudentName] = teachApi.useEditStudentNameMutation();
+  const navigate = useNavigate();
   return (
     <CflHorizontalForm
       header="Update name"
@@ -39,20 +40,32 @@ const UpdateNameForm: React.FC<{ accessCode: string; }> = ({ accessCode }) => {
       onSubmit={(values) => {
         editStudentName({ name: values.name, studentId: studentId })
           .unwrap()
-          .then((response) => {
+          .then((response: any) => {
             console.log(response);
-          })
+            navigate('/',
+              {
+                // pathname: location.pathname,
+                // search: location.search,
+                state: {
+                  notifications: [
+                    { index: 0, props: { children: 'You successfully updated your student details' } }
+                  ]
+                }
+              }
+            );
+          }
+          )
           .catch((error) => {
             console.error(error);
           });
       }}
-      submitButton={<SubmitButton>Update</SubmitButton>}
+      submitButton={<SubmitButton> Update</SubmitButton>}
     >
       <code>
         {JSON.stringify(data, null, 2)}
       </code>
       <StudentNameField />
-    </CflHorizontalForm>
+    </CflHorizontalForm >
   );
 };
 
