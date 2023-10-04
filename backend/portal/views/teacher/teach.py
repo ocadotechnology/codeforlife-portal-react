@@ -529,6 +529,16 @@ def teacher_edit_student(request, pk):
 
     if request.method == "POST":
         if "name" in request.POST:
+            student_name = request.POST.get("name")
+            if Student.objects.filter(
+                new_user__first_name=student_name
+            ).exists():
+                return JsonResponse(
+                    {
+                        "message": f"There is already a student called {student_name} in this class"
+                    },
+                    status=400,
+                )
             name_form = TeacherEditStudentForm(student, request.POST)
             if name_form.is_valid():
                 name = name_form.cleaned_data["name"]

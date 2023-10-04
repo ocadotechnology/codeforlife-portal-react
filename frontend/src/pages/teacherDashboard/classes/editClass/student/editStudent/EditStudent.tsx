@@ -42,7 +42,9 @@ const UpdateNameForm: React.FC<{ accessCode: string; }> = ({ accessCode }) => {
           .unwrap()
           .then((response: any) => {
             console.log(response);
-            navigate('/',
+            const path = location.pathname + location.search;
+            console.log(path);
+            navigate(path,
               {
                 // pathname: location.pathname,
                 // search: location.search,
@@ -57,13 +59,25 @@ const UpdateNameForm: React.FC<{ accessCode: string; }> = ({ accessCode }) => {
           )
           .catch((error) => {
             console.error(error);
+            const path = location.pathname + location.search;
+            console.log(path);
+            navigate(path,
+              {
+                // pathname: location.pathname,
+                // search: location.search,
+                state: {
+                  notifications: [
+                    { index: 0, props: { children: error.data.message } }
+                  ]
+                }
+              }
+            );
+          }).finally(() => {
+            scrollTo(0, 0);
           });
       }}
       submitButton={<SubmitButton> Update</SubmitButton>}
     >
-      <code>
-        {JSON.stringify(data, null, 2)}
-      </code>
       <StudentNameField />
     </CflHorizontalForm >
   );
@@ -116,11 +130,6 @@ const UpdatePasswordForm: React.FC = () => {
       }}
       submitButton={<SubmitButton>Update</SubmitButton>}
     >
-      <pre>
-        <code>
-          {JSON.stringify(location, null, 2)}
-        </code>
-      </pre>
       <CflPasswordFields userType="student" repeatPasswordName="confirmPassword" />
     </CflHorizontalForm>
   );

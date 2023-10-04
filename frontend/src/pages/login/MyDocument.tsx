@@ -1,6 +1,7 @@
 import React from 'react';
-import { Page, Text, View, Document, StyleSheet, Image } from '@react-pdf/renderer';
+import { Page, Text, View, Document, StyleSheet, Image, Font } from '@react-pdf/renderer';
 import CflLogo from '../../images/cfl_logo.png';
+
 
 
 const styles = StyleSheet.create({
@@ -9,13 +10,10 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     gap: 5,
-    padding: 10
+    padding: 10,
   },
   page: {
     padding: 20
-  },
-  border: {
-    border: '1px solid black',
   },
   text: {
     marginBottom: 5,
@@ -24,7 +22,7 @@ const styles = StyleSheet.create({
   image: {
     width: 100,
     height: 100,
-  }
+  },
 });
 
 interface StudentInfo {

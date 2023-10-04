@@ -69,25 +69,33 @@ const DownloadButtonCSV: React.FC = () => {
 
 const DownloadButtonPDF: React.FC = () => {
   const location = useLocation();
-  const { studentsInfo } = location.state.updatedStudentCredentials;
-  const { classLink } = location.state.updatedStudentCredentials;
-  const downloadPdf = async () => {
+  const { studentsInfo, classLink } = location.state.updatedStudentCredentials;
+  const linkRef = React.useRef<HTMLAnchorElement | null>(null);
+
+  const downloadPdf = async (): Promise<void> => {
     const blob = await pdf(<MyDocument classLink={classLink} studentsInfo={studentsInfo} />).toBlob();
     const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'document.pdf';
-    link.click();
-    URL.revokeObjectURL(url);
+
+    if (linkRef.current) {
+      linkRef.current.href = url;
+      linkRef.current.download = 'document.pdf';
+      linkRef.current.click();
+      URL.revokeObjectURL(url);
+    }
   };
+
   return (
-    <Button
-      endIcon={<PrintIcon />}
-      onClick={downloadPdf}
-      className="body"
-    >
-      Print password reminder cards
-    </Button>
+    <>
+      <Button
+        endIcon={<PrintIcon />}
+        onClick={downloadPdf}
+        className="body"
+      >
+        Print password reminder cards
+      </Button>
+      {/* Invisible anchor tag to trigger the download */}
+      <a ref={linkRef} style={{ display: 'none' }}></a>
+    </>
   );
 };
 
@@ -177,11 +185,6 @@ const NewStudentsTable: React.FC<NewStudentsTableProps> = ({
           cards from the button below. Please ensure you share student passwords
           securely.
         </Typography>
-        <pre>
-          <code>
-            {JSON.stringify(location.state, null, 2)}
-          </code>
-        </pre>
       </Box>
       <Table
         sx={{

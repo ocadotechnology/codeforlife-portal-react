@@ -11,6 +11,7 @@ const UpdatedStudentCredentials: React.FC = () => {
   return <Page.Container>
     <Page.Banner
       header={`${className}, (${accessCode})`}
+      textAlign='center'
       subheader='Class and class access code:' />
     <Page.Notification>
       <Box sx={{
@@ -26,7 +27,12 @@ const UpdatedStudentCredentials: React.FC = () => {
         <Typography mb={0}>
           This is the only time you will be able to view this page. You can print reminder cards or download as a CSV file.
         </Typography>
-        <Button sx={{ border: '2px solid black' }} variant='outlined' color='secondary' endIcon={<Print />}>Print reminder cards</Button>
+        <Button sx={{
+          border: '2px solid black',
+          '&:hover': {
+            border: '2px solid black',
+          }
+        }} variant='outlined' color='secondary' endIcon={<Print />}>Print reminder cards</Button>
       </Box>
     </Page.Notification>
     <Page.Section>

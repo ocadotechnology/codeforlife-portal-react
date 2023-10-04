@@ -1,5 +1,6 @@
 import { fetchBaseQuery } from '@reduxjs/toolkit/query';
 import { createApi } from '@reduxjs/toolkit/query/react';
+
 import { endpoints, tagTypes } from 'codeforlife/lib/esm/api';
 import {
   FetchBaseQuery,
@@ -36,7 +37,7 @@ const baseQuery: FetchBaseQuery = async (args, api, extraOptions) => {
     extraOptions
   );
 
-  handleResponseError(result);
+  // handleResponseError(result);
 
   parseResponseBody(result);
 
