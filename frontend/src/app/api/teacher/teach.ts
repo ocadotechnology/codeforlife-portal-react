@@ -2,6 +2,18 @@ import api from '../api';
 
 const teachApi = api.injectEndpoints({
   endpoints: (build) => ({
+    teacherHas2fa: build.query<{ has2fa: boolean }, null>({
+      query: () => ({
+        url: 'teacher/handle-2fa/',
+        method: 'GET'
+      })
+    }),
+    disable2fa: build.mutation<null, null>({
+      query: () => ({
+        url: 'teacher/handle-2fa/',
+        method: 'DELETE'
+      })
+    }),
     getClass: build.query<
       {
         // blockly_episodes
@@ -95,5 +107,7 @@ export const {
   useGetClassQuery,
   useGetStudentsByAccessCodeQuery,
   useUpdateClassMutation,
-  useMoveClassMutation
+  useMoveClassMutation,
+  useTeacherHas2faQuery,
+  useDisable2faMutation
 } = teachApi;
