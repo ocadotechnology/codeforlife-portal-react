@@ -6,13 +6,14 @@ import { CflHorizontalForm } from '../../../../../../components/form/CflForm';
 import StudentNameField from '../../../../../../components/form/StudentNameField';
 import CflPasswordFields from '../../../../../../features/cflPasswordFields/CflPasswordFields';
 import {
+  useEditStudentNameMutation,
   useEditStudentPasswordMutation
 } from '../../../../../../app/api';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { paths } from '../../../../../../app/router';
 
 
-const UpdateNameForm: React.FC<{ accessCode: string; }> = ({ accessCode }) => {
+const UpdateNameForm: React.FC = () => {
   const location = useLocation();
   const studentId = new URLSearchParams(location.search).get('studentIds') ?? '';
   interface Values {
@@ -23,7 +24,7 @@ const UpdateNameForm: React.FC<{ accessCode: string; }> = ({ accessCode }) => {
     name: ''
   };
 
-  const [editStudentName] = useEditStudentPasswordMutation();
+  const [editStudentName] = useEditStudentNameMutation();
   const navigate = useNavigate();
   return (
     <CflHorizontalForm
@@ -31,7 +32,7 @@ const UpdateNameForm: React.FC<{ accessCode: string; }> = ({ accessCode }) => {
       subheader="Remember this is the name they use to log in with, so you should tell them what you've changed it to."
       initialValues={initialValues}
       onSubmit={(values) => {
-        editStudentName({ name: values.name, studentId: studentId })
+        editStudentName({ name: values.name, studentId })
           .unwrap()
           .then((response: any) => {
             const path = location.pathname + location.search;
@@ -128,8 +129,6 @@ const EditStudent: React.FC<{
   goBack: () => void;
 }> = ({ accessCode, studentId, goBack }) => {
   const theme = useTheme();
-  const location = useLocation();
-  const resettingPassword = location.state?.updatedStudentCredentials;
 
   return (
     <>
@@ -149,7 +148,7 @@ const EditStudent: React.FC<{
         </Typography>
       </Page.Section>
       <Page.Section style={{ paddingTop: theme.spacing(1) }}>
-        <UpdateNameForm accessCode={accessCode} />
+        <UpdateNameForm />
       </Page.Section>
       <Page.Section style={{ paddingTop: theme.spacing(0.5) }}>
         <UpdatePasswordForm />
