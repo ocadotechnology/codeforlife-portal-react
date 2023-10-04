@@ -1,19 +1,13 @@
-import api from './api';
+import api, { useLogoutMutation } from './api';
 import {
   useSubscribeToNewsletterMutation,
   useConsentFormMutation
 } from './dotmailer';
 import {
   useRegisterUserMutation,
-  useLogoutUserMutation,
   useDownloadStudentPackMutation
 } from './home';
-import {
-  useLoginTeacherMutation,
-  useLoginDependentStudentMutation,
-  useLoginDependentStudentDirectlyMutation,
-  useLoginIndependentStudentMutation
-} from './login';
+import { useLoginMutation } from './login';
 import {
   useCreateOrganisationMutation,
   useLeaveOrganisationMutation
@@ -49,24 +43,23 @@ import {
   useGetClassQuery,
   useUpdateClassMutation,
   useTeacherHas2faQuery,
-  useDisable2faMutation
+  useDisable2faMutation,
+  useGetStudentsByAccessCodeQuery
 } from './teacher/teach';
 import { useUpdateTeacherAccountDetailsMutation } from './teacher/account';
 
 export default api;
 export {
+  // api
+  useLogoutMutation,
   // dotmailer
   useSubscribeToNewsletterMutation,
   useConsentFormMutation,
   // home
   useRegisterUserMutation,
-  useLogoutUserMutation,
   useDownloadStudentPackMutation,
   // login
-  useLoginTeacherMutation,
-  useLoginDependentStudentMutation,
-  useLoginDependentStudentDirectlyMutation,
-  useLoginIndependentStudentMutation,
+  useLoginMutation,
   // organisation
   useCreateOrganisationMutation,
   useLeaveOrganisationMutation,
@@ -99,5 +92,6 @@ export {
   // teacher/account
   useUpdateTeacherAccountDetailsMutation,
   useTeacherHas2faQuery,
-  useDisable2faMutation
+  useDisable2faMutation,
+  useGetStudentsByAccessCodeQuery
 };

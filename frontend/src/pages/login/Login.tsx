@@ -2,7 +2,6 @@ import Page from 'codeforlife/lib/esm/components/page';
 import { tryValidateSync } from 'codeforlife/lib/esm/helpers/yup';
 import { fromSearchParams } from 'codeforlife/lib/esm/hooks';
 import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 
 import { BaseFormProps } from './BaseForm';
@@ -32,8 +31,7 @@ const Login: React.FC<{
       verifyEmail: yup.boolean().default(false)
     })
   );
-  const navigate = useNavigate();
-  const location = useLocation();
+
   return (
     <Page.Container>
       {searchParams?.verifyEmail === true && (

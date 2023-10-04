@@ -33,6 +33,10 @@ const paths = _('', {
       account: _('/account', {
         setup2FA: _('/setup-2fa'),
         backupTokens: _('/backup-tokens')
+      }),
+      student: _('/student', {
+        accept: _('/accept/:studentId'),
+        added: _('/added')
       })
     })
   }),

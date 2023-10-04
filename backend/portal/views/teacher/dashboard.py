@@ -11,7 +11,11 @@ from common.helpers.emails import (
     send_email,
     update_email,
 )
+<<<<<<< HEAD
 from common.helpers.generators import get_random_username
+=======
+from common.helpers.generators import get_random_username, generate_access_code
+>>>>>>> development
 from common.models import (
     Class,
     JoinReleaseStudent,
@@ -19,18 +23,30 @@ from common.models import (
     Student,
     Teacher,
 )
+<<<<<<< HEAD
 from common.permissions import check_teacher_authorised, logged_in_as_teacher
+=======
+from common.permissions import logged_in_as_teacher, check_teacher_authorised
+>>>>>>> development
 from common.utils import using_two_factor
 from django.contrib import messages as messages
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
+<<<<<<< HEAD
 from django.core import serializers
 from django.db.models import F
 from django.http import (
     Http404,
     HttpResponse,
     HttpResponseRedirect,
+=======
+from django.db.models import F, Value
+from django.http import (
+    Http404,
+    HttpResponseRedirect,
+    HttpResponse,
+>>>>>>> development
     JsonResponse,
 )
 from django.shortcuts import get_object_or_404, render
@@ -56,10 +72,43 @@ from portal.helpers.ratelimit import (
     RATELIMIT_METHOD,
     clear_ratelimit_cache_for_user,
 )
+<<<<<<< HEAD
 from rest_framework import status
 from two_factor.utils import devices_for_user
 
 from .teach import create_class, teacher_view_class
+=======
+
+from common.permissions import check_teacher_authorised
+
+
+@login_required(login_url=reverse_lazy("teacher_login"))
+def get_students_from_access_code(request, access_code):
+    check_teacher_authorised(request, request.user.new_teacher)
+    students_query = Student.objects.filter(
+        class_field__access_code=access_code
+    )
+    students = [
+        {
+            "id": student.id,
+            "class_field": getattr(student.class_field, "id", 0),
+            "new_user": {
+                "id": getattr(student.new_user, "id", 0),
+                "first_name": getattr(student.new_user, "first_name", ""),
+                "last_name": getattr(student.new_user, "last_name", ""),
+            },
+            "pending_class_request": getattr(
+                student.pending_class_request, "id", 0
+            ),
+            "blocked_time": student.blocked_time.strftime("%Y-%m-%d %H:%M:%S")
+            if student.blocked_time
+            else "",
+        }
+        for student in students_query
+    ]
+
+    return JsonResponse({"students_per_access_code": students})
+>>>>>>> development
 
 
 def _get_update_account_rate(group, request):
@@ -110,6 +159,7 @@ def dashboard_teacher_view(request):
     teacher = request.user.new_teacher
     school = teacher.school
 
+<<<<<<< HEAD
     coworkers = (
         Teacher.objects.filter(school=school)
         .values(
@@ -126,6 +176,39 @@ def dashboard_teacher_view(request):
     school_json = serializers.serialize(
         "json", [school], fields=["name", "postcode", "country"]
     )
+=======
+    teacher_json = {
+        "id": teacher.id,
+        "is_admin": teacher.is_admin,
+        "teacher_first_name": teacher.new_user.first_name,
+        "teacher_last_name": teacher.new_user.last_name,
+        "teacher_email": teacher.new_user.email,
+    }
+
+    school_json = {
+        "name": school.name,
+        "postcode": school.postcode,
+        "country": school.country.name,
+    }
+
+    coworkers = (
+        Teacher.objects.filter(school=school)
+        .values(
+            "id",
+            is_teacher_admin=F("is_admin"),
+            teacher_first_name=F("new_user__first_name"),
+            teacher_last_name=F("new_user__last_name"),
+            teacher_email=F("new_user__email"),
+        )
+        .order_by("teacher_last_name", "teacher_first_name")
+    )
+    coworkers_json = list(coworkers)
+    [
+        coworkers_json.insert(0, coworkers_json.pop(i))
+        for i in range(len(coworkers_json))
+        if coworkers_json[i]["teacher_email"] == teacher.new_user.email
+    ]
+>>>>>>> development
 
     sent_invites = (
         SchoolTeacherInvitation.objects.filter(school=school).values(
@@ -142,6 +225,7 @@ def dashboard_teacher_view(request):
     )
     sent_invites_json = list(sent_invites)
 
+<<<<<<< HEAD
     return JsonResponse(
         data={
             "is_admin": teacher.is_admin,
@@ -153,67 +237,134 @@ def dashboard_teacher_view(request):
             # "backup_tokens": backup_tokens # backup_tokens is for account tab
         }
     )
+=======
+    backup_tokens = check_backup_tokens(request)
+>>>>>>> development
 
-    # backup_tokens = check_backup_tokens(request)
+    classes = []
+    classes_json = []
+    requests = []
+    requests_json = []
+    if teacher.is_admin:
+        # Making sure the current teacher classes come up first
+        classes = school.classes()
+        for klass in classes:
+            classes_json.append(
+                {
+                    "name": klass.name,
+                    "access_code": klass.access_code,
+                    "class_teacher_first_name": klass.teacher.new_user.first_name,
+                    "class_teacher_last_name": klass.teacher.new_user.last_name,
+                    "class_teacher_id": klass.teacher.id,
+                }
+            )
+        [
+            classes_json.insert(0, classes_json.pop(i))
+            for i in range(len(classes_json))
+            if classes_json[i]["class_teacher_id"] == teacher.id
+        ]
 
-    # show_onboarding_complete = False
+        requests = Student.objects.filter(
+            pending_class_request__teacher__school=school
+        ).values(
+            student_id=F("id"),
+            student_first_name=F("new_user__first_name"),
+            student_email=F("new_user__email"),
+            request_class=F("pending_class_request__name"),
+            request_teacher_first_name=F(
+                "pending_class_request__teacher__new_user__first_name"
+            ),
+            request_teacher_last_name=F(
+                "pending_class_request__teacher__new_user__last_name"
+            ),
+            request_teacher_email=F(
+                "pending_class_request__teacher__new_user__email"
+            ),
+            request_teacher_id=F("pending_class_request__teacher__id"),
+        )
+        requests_json = list(requests)
+        [
+            requests_json.insert(0, requests_json.pop(i))
+            for i in range(len(requests_json))
+            if requests_json[i]["request_teacher_id"] == teacher.id
+        ]
 
-    # if request.method == "POST":
-    #     form_data = request.POST
+    else:
+        classes = Class.objects.filter(teacher=teacher).values(
+            "name",
+            "access_code",
+            class_teacher_first_name=F("teacher__new_user__first_name"),
+            class_teacher_last_name=F("teacher__new_user__last_name"),
+            class_teacher_id=F("teacher__id"),
+        )
+        classes_json = list(classes)
 
-    #     if "create_class" in request.POST:
-    #         anchor = "new-class"
-    #         create_class_form = ClassCreationForm(request.POST, teacher=teacher)
-    #         if create_class_form.is_valid():
-    #             class_teacher = teacher
-    #             # If the logged in teacher is an admin, then get the class teacher from the selected dropdown
-    #             if teacher.is_admin:
-    #                 class_teacher = get_object_or_404(Teacher, id=create_class_form.cleaned_data["teacher"])
-    #             created_class = create_class(create_class_form, class_teacher, class_creator=teacher)
-    #             messages.success(
-    #                 request,
-    #                 "The class '{className}' has been created successfully.".format(className=created_class.name),
-    #             )
-    #             return teacher_view_class(request, created_class.access_code)
-    #             # return HttpResponseRedirect(
-    #             #     reverse_lazy("view_class", kwargs={"access_code": created_class.access_code})
-    #             # )
+        requests = Student.objects.filter(
+            pending_class_request__teacher=teacher
+        ).values(
+            student_id=F("id"),
+            student_first_name=F("new_user__first_name"),
+            student_email=F("new_user__email"),
+            request_class=F("pending_class_request__name"),
+            request_teacher_first_name=F(
+                "pending_class_request__teacher__new_user__first_name"
+            ),
+            request_teacher_last_name=F(
+                "pending_class_request__teacher__new_user__last_name"
+            ),
+            request_teacher_email=F(
+                "pending_class_request__teacher__new_user__email"
+            ),
+            request_teacher_id=F("pending_class_request__teacher__id"),
+        )
+        requests_json = list(requests)
 
-    #     else:
-    #         anchor = "account"
-    #         update_account_form = TeacherEditAccountForm(request.user, request.POST)
-    #         (changing_email, new_email, changing_password, anchor) = process_update_account_form(
-    #             request, teacher, anchor
-    #         )
-    #         if changing_email:
-    #             logout(request)
-    #             messages.success(
-    #                 request,
-    #                 "Your email will be changed once you have verified it, until then "
-    #                 "you can still log in with your old email.",
-    #             )
-    #             return render(request, "portal/email_verification_needed.html", {"usertype": "TEACHER"})
+    for i in range(len(requests_json)):
+        requests_json[i]["is_request_teacher"] = (
+            requests_json[i]["request_teacher_email"] == teacher.new_user.email
+        )
 
-    #         if changing_password:
-    #             logout(request)
-    #             messages.success(request, "Please login using your new password.")
-    #             return HttpResponseRedirect(reverse_lazy("session-expired"))
+    return JsonResponse(
+        data={
+            "teacher": teacher_json,
+            "classes": classes_json,
+            "school": school_json,
+            "coworkers": coworkers_json,
+            "sent_invites": sent_invites_json,
+            "requests": requests_json,  # requests is for classes tab
+            "backup_tokens": backup_tokens,  # backup_tokens is for account tab
+        }
+    )
 
-    # if teacher.is_admin:
-    #     # Making sure the current teacher classes come up first
-    #     classes = school.classes()
-    #     [classes.insert(0, classes.pop(i)) for i in range(len(classes)) if classes[i].teacher.id == teacher.id]
 
-    #     requests = list(Student.objects.filter(pending_class_request__teacher__school=school))
-    #     [
-    #         requests.insert(0, requests.pop(i))
-    #         for i in range(len(requests))
-    #         if requests[i].pending_class_request.teacher.id == teacher.id
-    #     ]
+@require_POST
+@login_required(login_url=reverse_lazy("session-expired"))
+@user_passes_test(
+    logged_in_as_teacher, login_url=reverse_lazy("session-expired")
+)
+def create_new_class(request):
+    teacher = request.user.new_teacher
 
-    # else:
-    #     classes = Class.objects.filter(teacher=teacher)
-    #     requests = Student.objects.filter(pending_class_request__teacher=teacher)
+    form_data = request.POST
+    class_teacher = None
+    try:
+        class_teacher = get_object_or_404(Teacher, id=form_data["teacher_id"])
+    except:
+        return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
+
+    created_class = Class.objects.create(
+        name=form_data["class"],
+        teacher=class_teacher,
+        access_code=generate_access_code(),
+        classmates_data_viewable=bool(form_data["see_classmates"]),
+        created_by=teacher,
+    )
+
+    created_class_info = {
+        "name": created_class.name,
+        "access_code": created_class.access_code,
+    }
+    return JsonResponse(status=status.HTTP_201_CREATED, data=created_class_info)
 
 
 @login_required(login_url=reverse_lazy("session-expired"))
@@ -239,8 +390,14 @@ def check_backup_tokens(request):
     # For teachers using 2FA, find out how many backup tokens they have
     if using_two_factor(request.user):
         try:
+<<<<<<< HEAD
             static_device = request.user.staticdevice_set.all()[0]
             backup_tokens = static_device.token_set.count()
+=======
+            backup_tokens = request.user.staticdevice_set.all()[
+                0
+            ].token_set.count()
+>>>>>>> development
         except Exception:
             backup_tokens = 0
 
@@ -290,9 +447,17 @@ def process_update_account_form(request):
         # Reset ratelimit cache after successful account details update
         clear_ratelimit_cache_for_user(teacher.new_user.username)
 
+<<<<<<< HEAD
         return JsonResponse(
             {"message": "Your account details have been successfully changed."}
         )
+=======
+        messages.success(
+            request, "Your account details have been successfully changed."
+        )
+    else:
+        anchor = old_anchor
+>>>>>>> development
 
     return JsonResponse(
         {"error": update_account_form.errors},
@@ -556,14 +721,46 @@ def teacher_disable_2FA(request, pk):
     return HttpResponseRedirect(reverse_lazy("dashboard"))
 
 
+@login_required(login_url=reverse_lazy("session-expired"))
+@user_passes_test(
+    logged_in_as_teacher, login_url=reverse_lazy("session-expired")
+)
+def get_student_request_data(request, pk):
+    try:
+        student = get_object_or_404(Student, id=pk)
+    except:
+        return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+
+    student_json = {
+        "student_username": student.new_user.username,
+        "class_name": student.pending_class_request.name,
+        "class_access_code": student.pending_class_request.access_code,
+    }
+    students = (
+        Student.objects.filter(class_field=student.pending_class_request)
+        .order_by("new_user__first_name")
+        .values_list("new_user__first_name", flat=True)
+    )
+    students_json = list(students)
+
+    return JsonResponse(
+        data={"student": student_json, "students": students_json}
+    )
+
+
 @require_POST
 @login_required(login_url=reverse_lazy("session-expired"))
 @user_passes_test(
     logged_in_as_teacher, login_url=reverse_lazy("session-expired")
 )
 def teacher_accept_student_request(request, pk):
-    student = get_object_or_404(Student, id=pk)
+    try:
+        student = get_object_or_404(Student, id=pk)
+        check_student_request_can_be_handled(request, student)
+    except Http404:
+        return HttpResponse(status=status.HTTP_404_NOT_FOUND)
 
+<<<<<<< HEAD
     check_student_request_can_be_handled(request, student)
 
     students = Student.objects.filter(
@@ -613,7 +810,36 @@ def teacher_accept_student_request(request, pk):
             "student": student,
             "form": form,
         },
+=======
+    form = TeacherAddExternalStudentForm(
+        student.pending_class_request, request.POST
+>>>>>>> development
     )
+    if form.is_valid():
+        data = form.cleaned_data
+        student.class_field = student.pending_class_request
+        student.pending_class_request = None
+        student.new_user.username = get_random_username()
+        student.new_user.first_name = data["name"]
+        student.new_user.last_name = ""
+        student.new_user.email = ""
+
+        student.save()
+        student.new_user.save()
+        student.new_user.userprofile.save()
+
+        # log the data
+        joinrelease = JoinReleaseStudent.objects.create(
+            student=student, action_type=JoinReleaseStudent.JOIN
+        )
+        joinrelease.save()
+
+        return HttpResponse()
+    else:
+        error = form.errors["name"][0]
+        return JsonResponse(
+            status=status.HTTP_400_BAD_REQUEST, data={"error": error}
+        )
 
 
 def check_student_request_can_be_handled(request, student):
@@ -633,9 +859,11 @@ def check_student_request_can_be_handled(request, student):
     logged_in_as_teacher, login_url=reverse_lazy("session-expired")
 )
 def teacher_reject_student_request(request, pk):
-    student = get_object_or_404(Student, id=pk)
-
-    check_student_request_can_be_handled(request, student)
+    try:
+        student = get_object_or_404(Student, id=pk)
+        check_student_request_can_be_handled(request, student)
+    except Http404:
+        return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
 
     emailMessage = email_messages.studentJoinRequestRejectedEmail(
         request,
@@ -653,12 +881,16 @@ def teacher_reject_student_request(request, pk):
     student.pending_class_request = None
     student.save()
 
+<<<<<<< HEAD
     messages.success(
         request,
         "Request from external/independent student has been rejected successfully.",
     )
 
     return HttpResponseRedirect(reverse_lazy("dashboard"))
+=======
+    return HttpResponse()
+>>>>>>> development
 
 
 def invited_teacher(request, token):

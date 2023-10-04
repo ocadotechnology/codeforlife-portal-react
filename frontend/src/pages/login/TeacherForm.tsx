@@ -16,7 +16,7 @@ import { tryValidateSync } from 'codeforlife/lib/esm/helpers/yup';
 import { submitForm } from 'codeforlife/lib/esm/helpers/formik';
 
 import { paths } from '../../app/router';
-import { useLoginTeacherMutation } from '../../app/api';
+import { useLoginMutation } from '../../app/api';
 import BaseForm from './BaseForm';
 import Teacher2faBackupForm from './Teacher2faBackupForm';
 import Teacher2faForm from './Teacher2faForm';
@@ -50,7 +50,7 @@ const TeacherForm: React.FC = () => {
 
 const BaseTeacherForm: React.FC = () => {
   const navigate = useNavigate();
-  const [loginTeacher] = useLoginTeacherMutation();
+  const [login] = useLoginMutation();
 
   return (
     <BaseForm
@@ -62,23 +62,20 @@ const BaseTeacherForm: React.FC = () => {
         // 'auth-username': '',
         // 'auth-password': '',
         // currentStep: 'auth' as const
-        username: '',
+        email: '',
         password: ''
       }}
-      onSubmit={submitForm(loginTeacher, {
+      onSubmit={submitForm(login, {
         // TODO: navigate(paths.login.teacher.twoFA._);
         then: () => { navigate(paths.teacher.dashboard.school._); }
       })}
     >
       <EmailField
         required
-        // name='auth-username'
-        name='username'
         placeholder="Email address"
         helperText="Enter your email address"
       />
       <PasswordField
-        // name='auth-password'
         placeholder="Password"
         helperText="Enter your password"
         required
