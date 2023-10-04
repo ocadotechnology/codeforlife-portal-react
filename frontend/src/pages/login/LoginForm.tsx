@@ -6,11 +6,11 @@ import {
   useNavigate
 } from 'react-router-dom';
 
-import { ContainerState } from 'codeforlife/src/components/page';
+import { ContainerState } from 'codeforlife/lib/esm/components/page';
 import {
   isFormError,
   submitForm
-} from 'codeforlife/src/helpers/formik';
+} from 'codeforlife/lib/esm/helpers/formik';
 
 import {
   LoginAuthFactor,
