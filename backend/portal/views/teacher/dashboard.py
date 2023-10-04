@@ -1,5 +1,3 @@
-
-
 from datetime import timedelta
 from uuid import uuid4
 
@@ -9,7 +7,12 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.core import serializers
 from django.db.models import F, Value
-from django.http import Http404, HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import (
+    Http404,
+    HttpResponse,
+    HttpResponseRedirect,
+    JsonResponse,
+)
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -28,7 +31,13 @@ from common.helpers.emails import (
     update_email,
 )
 from common.helpers.generators import get_random_username, generate_access_code
-from common.models import Class, JoinReleaseStudent, SchoolTeacherInvitation, Student, Teacher
+from common.models import (
+    Class,
+    JoinReleaseStudent,
+    SchoolTeacherInvitation,
+    Student,
+    Teacher,
+)
 from common.permissions import check_teacher_authorised, logged_in_as_teacher
 from common.utils import using_two_factor
 
@@ -133,24 +142,6 @@ def dashboard_teacher_view(request):
     teacher = request.user.new_teacher
     school = teacher.school
 
-<<<<<<< HEAD
-    coworkers = (
-        Teacher.objects.filter(school=school)
-        .values(
-            "id",
-            is_teacher_admin=F("is_admin"),
-            teacher_first_name=F("new_user__first_name"),
-            teacher_last_name=F("new_user__last_name"),
-            teacher_email=F("new_user__email"),
-        )
-        .order_by("teacher_last_name", "teacher_first_name")
-    )
-    coworkers_json = list(coworkers)
-
-    school_json = serializers.serialize(
-        "json", [school], fields=["name", "postcode", "country"]
-    )
-=======
     teacher_json = {
         "id": teacher.id,
         "is_admin": teacher.is_admin,
@@ -182,7 +173,6 @@ def dashboard_teacher_view(request):
         for i in range(len(coworkers_json))
         if coworkers_json[i]["teacher_email"] == teacher.new_user.email
     ]
->>>>>>> development
 
     sent_invites = (
         SchoolTeacherInvitation.objects.filter(school=school).values(
@@ -199,21 +189,7 @@ def dashboard_teacher_view(request):
     )
     sent_invites_json = list(sent_invites)
 
-<<<<<<< HEAD
-    return JsonResponse(
-        data={
-            "is_admin": teacher.is_admin,
-            # "teacher": teacher,
-            "school": school_json,
-            "coworkers": coworkers_json,
-            "sent_invites": sent_invites_json,
-            # "requests": requests, # requests is for classes tab
-            # "backup_tokens": backup_tokens # backup_tokens is for account tab
-        }
-    )
-=======
     backup_tokens = check_backup_tokens(request)
->>>>>>> development
 
     classes = []
     classes_json = []
@@ -364,14 +340,9 @@ def check_backup_tokens(request):
     # For teachers using 2FA, find out how many backup tokens they have
     if using_two_factor(request.user):
         try:
-<<<<<<< HEAD
-            static_device = request.user.staticdevice_set.all()[0]
-            backup_tokens = static_device.token_set.count()
-=======
             backup_tokens = request.user.staticdevice_set.all()[
                 0
             ].token_set.count()
->>>>>>> development
         except Exception:
             backup_tokens = 0
 
@@ -421,17 +392,11 @@ def process_update_account_form(request):
         # Reset ratelimit cache after successful account details update
         clear_ratelimit_cache_for_user(teacher.new_user.username)
 
-<<<<<<< HEAD
-        return JsonResponse(
-            {"message": "Your account details have been successfully changed."}
-        )
-=======
         messages.success(
             request, "Your account details have been successfully changed."
         )
     else:
         anchor = old_anchor
->>>>>>> development
 
     return JsonResponse(
         {"error": update_account_form.errors},
@@ -734,60 +699,8 @@ def teacher_accept_student_request(request, pk):
     except Http404:
         return HttpResponse(status=status.HTTP_404_NOT_FOUND)
 
-<<<<<<< HEAD
-    check_student_request_can_be_handled(request, student)
-
-    students = Student.objects.filter(
-        class_field=student.pending_class_request
-    ).order_by("new_user__first_name")
-
-    if request.method == "POST":
-        form = TeacherAddExternalStudentForm(
-            student.pending_class_request, request.POST
-        )
-        if form.is_valid():
-            data = form.cleaned_data
-            student.class_field = student.pending_class_request
-            student.pending_class_request = None
-            student.new_user.username = get_random_username()
-            student.new_user.first_name = data["name"]
-            student.new_user.last_name = ""
-            student.new_user.email = ""
-
-            student.save()
-            student.new_user.save()
-            student.new_user.userprofile.save()
-
-            # log the data
-            joinrelease = JoinReleaseStudent.objects.create(
-                student=student, action_type=JoinReleaseStudent.JOIN
-            )
-            joinrelease.save()
-
-            return render(
-                request,
-                "portal/teach/teacher_added_external_student.html",
-                {"student": student, "class": student.class_field},
-            )
-    else:
-        form = TeacherAddExternalStudentForm(
-            student.pending_class_request,
-            initial={"name": student.new_user.first_name},
-        )
-
-    return render(
-        request,
-        "portal/teach/teacher_add_external_student.html",
-        {
-            "students": students,
-            "class": student.pending_class_request,
-            "student": student,
-            "form": form,
-        },
-=======
     form = TeacherAddExternalStudentForm(
         student.pending_class_request, request.POST
->>>>>>> development
     )
     if form.is_valid():
         data = form.cleaned_data
@@ -855,16 +768,7 @@ def teacher_reject_student_request(request, pk):
     student.pending_class_request = None
     student.save()
 
-<<<<<<< HEAD
-    messages.success(
-        request,
-        "Request from external/independent student has been rejected successfully.",
-    )
-
-    return HttpResponseRedirect(reverse_lazy("dashboard"))
-=======
     return HttpResponse()
->>>>>>> development
 
 
 def invited_teacher(request, token):

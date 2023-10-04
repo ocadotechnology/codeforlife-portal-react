@@ -29,7 +29,7 @@ import Setup2fa from './2fa/setup2fa/Setup2fa';
 import BackupTokens from './2fa/backupTokens/BackupTokens';
 import { paths } from '../../../app/router';
 import DeleteAccountForm from '../../../features/deleteAccountForm/DeleteAccountForm';
-import { useDisable2faMutation, useLogoutUserMutation, useTeacherHas2faQuery, useUpdateTeacherAccountDetailsMutation } from '../../../app/api';
+import { useDisable2faMutation, useLogoutMutation, useTeacherHas2faQuery, useUpdateTeacherAccountDetailsMutation } from '../../../app/api';
 
 const UserDoesNotHave2fa: React.FC = () => {
   const navigate = useNavigate();
@@ -136,7 +136,7 @@ const YourAccountForm: React.FC = () => {
 
   const theme = useTheme();
   const [updateTeacherAccount] = useUpdateTeacherAccountDetailsMutation();
-  const [logoutUser] = useLogoutUserMutation();
+  const [logoutUser] = useLogoutMutation();
   const navigate = useNavigate();
   const location = useLocation();
   return (
