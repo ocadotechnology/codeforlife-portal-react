@@ -6,11 +6,10 @@ import { CflHorizontalForm } from '../../../../../../components/form/CflForm';
 import StudentNameField from '../../../../../../components/form/StudentNameField';
 import CflPasswordFields from '../../../../../../features/cflPasswordFields/CflPasswordFields';
 import {
-  useEditStudentPasswordMutation,
+  useEditStudentPasswordMutation
 } from '../../../../../../app/api';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { paths } from '../../../../../../app/router';
-import teachApi from '../../../../../../app/api/teacher/teach';
 
 
 const UpdateNameForm: React.FC<{ accessCode: string; }> = ({ accessCode }) => {
@@ -24,7 +23,7 @@ const UpdateNameForm: React.FC<{ accessCode: string; }> = ({ accessCode }) => {
     name: ''
   };
 
-  const [editStudentName] = teachApi.useEditStudentNameMutation();
+  const [editStudentName] = useEditStudentPasswordMutation();
   const navigate = useNavigate();
   return (
     <CflHorizontalForm

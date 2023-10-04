@@ -104,6 +104,7 @@ def get_student_details(request, student_id):
         check_teacher_authorised(request, student_class.teacher)
     except (ObjectDoesNotExist, AttributeError) as error:
         return JsonResponse({"error": str(error)})
+    # TODO: make this into a method for the student so we can reuse it
     return JsonResponse(
         {
             "student": {

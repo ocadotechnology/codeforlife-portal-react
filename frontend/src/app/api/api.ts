@@ -37,7 +37,7 @@ const baseQuery: FetchBaseQuery = async (args, api, extraOptions) => {
     extraOptions
   );
 
-  // handleResponseError(result);
+  handleResponseError(result);
 
   parseResponseBody(result);
 

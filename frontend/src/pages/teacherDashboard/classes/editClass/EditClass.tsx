@@ -38,7 +38,7 @@ import EditStudent from './student/editStudent/EditStudent';
 import ReleaseStudent from './student/releaseStudent/ReleaseStudent';
 import MoveStudent from './student/moveStudent/MoveStudent';
 import ResetStudent from './student/resetStudent/ResetStudent';
-import teachApi from '../../../../app/api/teacher/teach';
+import { useGetStudentsByAccessCodeQuery } from '../../../../app/api/';
 
 const StudentsTable: React.FC<{
   accessCode: string;
@@ -82,7 +82,7 @@ const StudentsTable: React.FC<{
     selectedStudentsIds.push(idx);
   };
 
-  const { data, error, isLoading } = teachApi.useGetStudentsByAccessCodeQuery({ accessCode });
+  const { data, error, isLoading } = useGetStudentsByAccessCodeQuery({ accessCode });
   return (
     <Box>
       <Table>
@@ -203,7 +203,7 @@ const StudentsTable: React.FC<{
 };
 
 const DebugComponent: React.FC<any> = ({ accessCode }) => {
-  const { data, isLoading, error } = teachApi.useGetStudentsByAccessCodeQuery({ accessCode });
+  const { data, isLoading, error } = useGetStudentsByAccessCodeQuery({ accessCode });
   return (
     <div>
       <code>
