@@ -37,12 +37,6 @@ const _YourClasses: React.FC = () => {
         can also accept or deny requests from independent students wanting to
         join one of your classes.
       </Typography>
-
-      <code>
-        <pre>
-          {JSON.stringify(location, null, 2)}
-        </pre>
-      </code>
     </>
   );
 };

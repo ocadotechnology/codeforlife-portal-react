@@ -202,21 +202,6 @@ const StudentsTable: React.FC<{
   );
 };
 
-const DebugComponent: React.FC<any> = ({ accessCode }) => {
-  const { data, isLoading, error } = useGetStudentsByAccessCodeQuery({ accessCode });
-  return (
-    <div>
-      <code>
-        {
-          !isLoading
-            ? (error ? JSON.stringify(error, null, 2) : JSON.stringify(data))
-            : null
-        }
-
-      </code>
-    </div>
-  );
-};
 
 const EditClass: React.FC<{
   accessCode: string;
@@ -335,7 +320,6 @@ const EditClass: React.FC<{
         your classes or to another teacher within your school or club, or
         remove students altogether.
       </Typography>
-      <DebugComponent accessCode={accessCode} />
     </Page.Section>
     <Page.Section>
       <Box>
