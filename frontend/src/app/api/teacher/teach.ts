@@ -102,7 +102,7 @@ const teachApi = api.injectEndpoints({
 export default teachApi;
 export const {
   useGetClassQuery,
-  useUpdateClassMutation,
   useGetStudentsByAccessCodeQuery,
+  useUpdateClassMutation,
   useDeleteStudentMutation
 } = teachApi;

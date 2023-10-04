@@ -41,8 +41,8 @@ import {
 } from './teacher/dashboard';
 import {
   useGetClassQuery,
-  useUpdateClassMutation,
   useGetStudentsByAccessCodeQuery,
+  useUpdateClassMutation,
   useDeleteStudentMutation
 } from './teacher/teach';
 
@@ -86,7 +86,7 @@ export {
   useDeleteInviteMutation,
   // teacher/teach
   useGetClassQuery,
-  useUpdateClassMutation,
   useGetStudentsByAccessCodeQuery,
+  useUpdateClassMutation,
   useDeleteStudentMutation
 };
