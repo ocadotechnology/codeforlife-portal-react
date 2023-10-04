@@ -13,14 +13,11 @@ from ...views.teacher.dashboard import (
     invite_teacher,
     invited_teacher,
     update_school,
-<<<<<<< HEAD
     process_update_account_form,
     teacher_2fa_handler,
-=======
     create_new_class,
     get_student_request_data,
     get_students_from_access_code,
->>>>>>> development
 )
 
 from ...helpers.regexes import ACCESS_CODE_REGEX
@@ -29,10 +26,7 @@ urlpatterns = [
     path("teach/dashboard/", dashboard_manage, name="dashboard"),
     path("teach/invite/", invite_teacher, name="invite_teacher"),
     path("teach/update_school/", update_school, name="update_school"),
-<<<<<<< HEAD
-=======
     path("teach/create_new_class/", create_new_class, name="create_new_class"),
->>>>>>> development
     re_path(
         r"^invited_teacher/(?P<token>[0-9a-f]+)/$",
         invited_teacher,
@@ -78,14 +72,12 @@ urlpatterns = [
         teacher_reject_student_request,
         name="teacher_reject_student_request",
     ),
-<<<<<<< HEAD
     path(
         "teacher/update/account/",
         process_update_account_form,
         name="process_update_account_form",
     ),
     path("teacher/handle-2fa/", teacher_2fa_handler, name="teacher_has_2fa"),
-=======
     re_path(
         r"^teach/dashboard/student/request/(?P<pk>[0-9]+)/$",
         get_student_request_data,
@@ -96,5 +88,4 @@ urlpatterns = [
         get_students_from_access_code,
         name="get_students_from_acccess_code",
     ),
->>>>>>> development
 ]

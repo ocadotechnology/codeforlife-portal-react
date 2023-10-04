@@ -1,5 +1,21 @@
+
+
 from datetime import timedelta
 from uuid import uuid4
+
+from django.contrib import messages
+from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.models import User
+from django.core import serializers
+from django.db.models import F, Value
+from django.http import Http404, HttpResponse, HttpResponseRedirect, JsonResponse
+from django.shortcuts import get_object_or_404, render
+from django.urls import reverse_lazy
+from django.utils import timezone
+from django.views.decorators.http import require_POST
+from django_otp.plugins.otp_totp.models import TOTPDevice
+from rest_framework import status
 
 from common import email_messages
 from common.helpers.emails import (
@@ -11,50 +27,13 @@ from common.helpers.emails import (
     send_email,
     update_email,
 )
-<<<<<<< HEAD
-from common.helpers.generators import get_random_username
-=======
 from common.helpers.generators import get_random_username, generate_access_code
->>>>>>> development
-from common.models import (
-    Class,
-    JoinReleaseStudent,
-    SchoolTeacherInvitation,
-    Student,
-    Teacher,
-)
-<<<<<<< HEAD
+from common.models import Class, JoinReleaseStudent, SchoolTeacherInvitation, Student, Teacher
 from common.permissions import check_teacher_authorised, logged_in_as_teacher
-=======
-from common.permissions import logged_in_as_teacher, check_teacher_authorised
->>>>>>> development
 from common.utils import using_two_factor
-from django.contrib import messages as messages
-from django.contrib.auth import logout
-from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib.auth.models import User
-<<<<<<< HEAD
-from django.core import serializers
-from django.db.models import F
-from django.http import (
-    Http404,
-    HttpResponse,
-    HttpResponseRedirect,
-=======
-from django.db.models import F, Value
-from django.http import (
-    Http404,
-    HttpResponseRedirect,
-    HttpResponse,
->>>>>>> development
-    JsonResponse,
-)
-from django.shortcuts import get_object_or_404, render
-from django.urls import reverse_lazy
-from django.utils import timezone
-from django.views.decorators.http import require_POST
-from django_otp.plugins.otp_totp.models import TOTPDevice
+
 from game.level_management import levels_shared_with, unshare_level
+
 from portal.forms.invite_teacher import InviteTeacherForm
 from portal.forms.organisation import OrganisationForm
 from portal.forms.registration import DeleteAccountForm
@@ -72,14 +51,10 @@ from portal.helpers.ratelimit import (
     RATELIMIT_METHOD,
     clear_ratelimit_cache_for_user,
 )
-<<<<<<< HEAD
-from rest_framework import status
+
 from two_factor.utils import devices_for_user
 
 from .teach import create_class, teacher_view_class
-=======
-
-from common.permissions import check_teacher_authorised
 
 
 @login_required(login_url=reverse_lazy("teacher_login"))
@@ -108,7 +83,6 @@ def get_students_from_access_code(request, access_code):
     ]
 
     return JsonResponse({"students_per_access_code": students})
->>>>>>> development
 
 
 def _get_update_account_rate(group, request):
