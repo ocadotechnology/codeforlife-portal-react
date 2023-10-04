@@ -1,9 +1,9 @@
-import React from 'react';
 import { Route } from 'react-router-dom';
 
+// eslint-disable-next-line max-len
+import EmailVerification from '../../../pages/emailVerification/EmailVerification';
 import Login from '../../../pages/login/Login';
 import Register from '../../../pages/register/Register';
-import EmailVerification from '../../../pages/emailVerification/EmailVerification';
 import ResetPassword from '../../../pages/resetPassword/ResetPassword';
 import paths from '../paths';
 
@@ -21,16 +21,28 @@ const authentication = <>
     element={<EmailVerification />}
   />
   <Route
-    path={`${paths.login.teacher._}/:view?`}
-    element={<Login userType='teacher' />}
+    path={paths.login.teacher._}
+    element={<Login form={<Login.Form.Teacher.Credentials />} />}
   />
   <Route
-    path={`${paths.login.student._}/:accessCode?`}
-    element={<Login userType='student' />}
+    path={paths.login.teacher.otp._}
+    element={<Login form={<Login.Form.Teacher.Otp />} />}
+  />
+  <Route
+    path={paths.login.teacher.otp.bypassToken._}
+    element={<Login form={<Login.Form.Teacher.OtpBypassToken />} />}
+  />
+  <Route
+    path={paths.login.student._}
+    element={<Login form={<Login.Form.Student.AccessCode />} />}
+  />
+  <Route
+    path={paths.login.student.class._}
+    element={<Login form={<Login.Form.Student.Credentials />} />}
   />
   <Route
     path={paths.login.independent._}
-    element={<Login userType='independent' />}
+    element={<Login form={<Login.Form.Independent.Credentials />} />}
   />
 </>;
 
