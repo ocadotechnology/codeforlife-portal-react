@@ -240,17 +240,22 @@ def teacher_delete_class(request, access_code):
     games = Game.objects.filter(game_class=klass)
 
     # check user authorised to see class
-    check_teacher_authorised(request, klass.teacher)
+    try:
+        check_teacher_authorised(request, klass.teacher)
+    except Http404:
+        return JsonResponse(
+            {"error": "User not authorised."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
 
     if Student.objects.filter(
         class_field=klass, new_user__is_active=True
     ).exists():
-        messages.info(
-            request,
-            "This class still has students, please remove or delete them all before deleting the class.",
-        )
-        return HttpResponseRedirect(
-            reverse_lazy("view_class", kwargs={"access_code": access_code})
+        return JsonResponse(
+            {
+                "error": "This class still has students, please remove or delete them all before deleting the class."
+            },
+            status=status.HTTP_400_BAD_REQUEST,
         )
 
     for game in games:
@@ -258,7 +263,7 @@ def teacher_delete_class(request, access_code):
         game.save()
     klass.anonymise()
 
-    return HttpResponseRedirect(reverse_lazy("dashboard") + "#classes")
+    return HttpResponse(status=status.HTTP_204_NO_CONTENT)
 
 
 @login_required(login_url=reverse_lazy("teacher_login"))

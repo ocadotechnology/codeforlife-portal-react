@@ -1,5 +1,21 @@
 import api from '../api';
 
+export interface studentPerAccessCode {
+  id: number;
+  classField: number;
+  newUser: {
+    id: number;
+    firstName: string;
+    lastName: string;
+  };
+  pendingClassRequest: number;
+  blockedTime: string;
+}
+
+interface getStudentsByAccessCodeProps {
+  studentsPerAccessCode: studentPerAccessCode[];
+}
+
 const teachApi = api.injectEndpoints({
   endpoints: (build) => ({
     teacherHas2fa: build.query<{ has2fa: boolean }, null>({
@@ -38,20 +54,8 @@ const teachApi = api.injectEndpoints({
       ]
     }),
     getStudentsByAccessCode: build.query<
-      {
-        studentsPerAccessCode: Array<{
-          id: number;
-          classField: number;
-          newUser: {
-            id: number;
-            firstName: string;
-            lastName: string;
-          };
-          pendingClassRequest: number;
-          blockedTime: string;
-        }>;
-      },
-      { accessCode: string } // Specify the input type
+      getStudentsByAccessCodeProps,
+      { accessCode: string }
     >({
       query: ({ accessCode }) => ({
         url: `class/students/${accessCode}/`,
@@ -85,6 +89,20 @@ const teachApi = api.injectEndpoints({
         { type: 'class', id: accessCode }
       ]
     }),
+    deleteClass: build.mutation<
+      null,
+      { accessCode: string; }
+    >({
+      query: ({ accessCode, ...body }) => ({
+        url: `teach/class/delete/${accessCode}`,
+        method: 'POST',
+        body,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }),
+      invalidatesTags: ['teacher']
+    }),
     moveClass: build.mutation<void, {
       accessCode: string;
       teacherId: string;
@@ -107,6 +125,7 @@ export const {
   useGetClassQuery,
   useGetStudentsByAccessCodeQuery,
   useUpdateClassMutation,
+  useDeleteClassMutation,
   useMoveClassMutation,
   useTeacherHas2faQuery,
   useDisable2faMutation
