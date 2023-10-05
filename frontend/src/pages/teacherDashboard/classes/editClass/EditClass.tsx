@@ -159,17 +159,10 @@ const StudentsTable: React.FC<{
                 />
               </TableCell>
               <TableCell align="center">
-                <Button onClick={() => {
-                  navigate(
-                    paths.teacher
-                      .dashboard
-                      .classes
-                      .editClass
-                      .editStudent
-                      ._,
-                    [student.id]
-                  );
-                }}
+                <Button
+                  // TODO: Really need to close this ticket, but I am not sure why navigate is not working here
+                  // please fix when we have time
+                  href={paths.teacher.dashboard.classes.editClass.editStudent._.replace(':accessCode', accessCode).replace('{studentIds}', String(student.id))}
                   endIcon={<Edit />}>Edit details</Button>
               </TableCell>
             </TableRow>
@@ -248,7 +241,6 @@ const EditClass: React.FC<{
   const searchParams = fromSearchParams();
   const { data } = useGetStudentsByAccessCodeQuery({ accessCode });
   const studentData = data?.studentsPerAccessCode;
-
 
   const params = tryValidateSync(
     useParams(),

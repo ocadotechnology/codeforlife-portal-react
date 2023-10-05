@@ -130,12 +130,8 @@ const EditStudent: React.FC<{
 }> = ({ accessCode, studentId, goBack }) => {
   const theme = useTheme();
   // use cache to get student name
-  const { students } = useGetStudentsByAccessCodeQuery({ accessCode }, {
-    selectFromResult: ({ data }) => ({
-      students: data?.studentsPerAccessCode
-    })
-  });
-  const findCurrentStudent = students?.find((student) => student.id === studentId);
+  const { data } = useGetStudentsByAccessCodeQuery({ accessCode });
+  const findCurrentStudent = data?.studentsPerAccessCode.find((student) => student.id === studentId);
   const studentName = findCurrentStudent?.newUser.firstName;
 
   return (
