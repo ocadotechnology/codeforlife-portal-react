@@ -5,8 +5,8 @@ from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
-from django.core import serializers
-from django.db.models import F, Value
+from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import F
 from django.http import (
     Http404,
     HttpResponse,
@@ -94,9 +94,6 @@ def get_students_from_access_code(request, access_code):
     ]
 
     return JsonResponse({"students_per_access_code": students})
-
-
-from django.core.exceptions import ObjectDoesNotExist
 
 
 def get_student_details(request, student_id):

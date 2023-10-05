@@ -12,10 +12,6 @@ export interface studentPerAccessCode {
   blockedTime: string;
 }
 
-interface getStudentsByAccessCodeProps {
-  studentsPerAccessCode: studentPerAccessCode[];
-}
-
 const teachApi = api.injectEndpoints({
   endpoints: (build) => ({
     teacherHas2fa: build.query<{ has2fa: boolean }, null>({
@@ -32,9 +28,6 @@ const teachApi = api.injectEndpoints({
     }),
     getClass: build.query<
       {
-        // blockly_episodes
-        // python_episodes
-        // locked_levels
         class: {
           name: string;
           classmateProgress: boolean;
@@ -54,7 +47,9 @@ const teachApi = api.injectEndpoints({
       ]
     }),
     getStudentsByAccessCode: build.query<
-      getStudentsByAccessCodeProps,
+      {
+        studentsPerAccessCode: studentPerAccessCode[];
+      },
       { accessCode: string }
     >({
       query: ({ accessCode }) => ({
@@ -64,6 +59,17 @@ const teachApi = api.injectEndpoints({
       providesTags: (result, error, { accessCode }) => [
         { type: 'student', id: accessCode }
       ]
+    }),
+    getStudent: build.query<
+      {
+        student: studentPerAccessCode;
+      },
+      { studentId: string }
+    >({
+      query: ({ studentId }) => ({
+        url: `class/student/${studentId}/`,
+        method: 'GET'
+      })
     }),
     updateClass: build.mutation<
       null,
@@ -89,69 +95,10 @@ const teachApi = api.injectEndpoints({
         { type: 'class', id: accessCode }
       ]
     }),
-    deleteClass: build.mutation<null, { accessCode: string }>({
-      query: ({ accessCode, ...body }) => ({
-        url: `teach/class/delete/${accessCode}`,
-        method: 'POST',
-        body,
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        }
-      }),
-      invalidatesTags: ['teacher']
-    }),
-    moveClass: build.mutation<
-      void,
+    editStudentPassword: build.mutation<
       {
         accessCode: string;
-        teacherId: string;
-      }
-    >({
-      query: (body) => ({
-        url: 'teach/move_class/',
-        method: 'POST',
-        body,
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        }
-      }),
-      invalidatesTags: ['teacher']
-    })
-  })
-});
-
-export default teachApi;
-export const {
-  useGetClassQuery,
-  useGetStudentsByAccessCodeQuery,
-  useUpdateClassMutation,
-  useDeleteClassMutation,
-  useMoveClassMutation,
-  useTeacherHas2faQuery,
-  useDisable2faMutation
-} = teachApi;
-import api from '../api';
-
-interface StudentInfo {
-  id: number;
-  name: string;
-  password: string;
-  loginUrl: string;
-}
-
-export interface ResetStudentPasswordResponseProps {
-  class: string;
-  studentsInfo: StudentInfo[];
-  onboardingDone: boolean;
-  queryData: StudentInfo[];
-  classUrl: string;
-  accessCode: string;
-}
-
-const teachApi = api.injectEndpoints({
-  endpoints: (build) => ({
-    editStudentPassword: build.mutation<
-      ResetStudentPasswordResponseProps,
+      },
       {
         studentId: string;
         password: string;
@@ -188,97 +135,32 @@ const teachApi = api.injectEndpoints({
         }
       })
     }),
-    getClass: build.query<
-      {
-        // blockly_episodes
-        // python_episodes
-        // locked_levels
-        class: {
-          name: string;
-          classmateProgress: boolean;
-        };
-        externalRequestsMessage: string;
-      },
+    deleteClass: build.mutation<null, { accessCode: string }>({
+      query: ({ accessCode }) => ({
+        url: `teach/class/delete/${accessCode}`,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }),
+      invalidatesTags: ['teacher']
+    }),
+    moveClass: build.mutation<
+      void,
       {
         accessCode: string;
+        teacherId: string;
       }
     >({
-      query: ({ accessCode }) => ({
-        url: `teach/class/edit/${accessCode}`,
-        method: 'GET'
-      }),
-      providesTags: (result, error, { accessCode }) => [
-        { type: 'class', id: accessCode }
-      ]
-    }),
-    getStudentsByAccessCode: build.query<
-      {
-        studentsPerAccessCode: Array<{
-          id: number;
-          classField: number;
-          newUser: {
-            id: number;
-            firstName: string;
-            lastName: string;
-          };
-          pendingClassRequest: number;
-          blockedTime: string;
-        }>;
-      },
-      { accessCode: string } // Specify the input type
-    >({
-      query: ({ accessCode }) => ({
-        url: `class/students/${accessCode}/`,
-        method: 'GET'
-      }),
-      providesTags: (result, error, { accessCode }) => [
-        { type: 'student', id: accessCode }
-      ]
-    }),
-    getStudent: build.query<
-      {
-        student: {
-          id: number;
-          classField: number;
-          newUser: {
-            id: number;
-            firstName: string;
-            lastName: string;
-          };
-          pendingClassRequest: number;
-          blockedTime: string | null;
-        };
-      },
-      { studentId: string } // Specify the input type
-    >({
-      query: ({ studentId }) => ({
-        url: `class/student/${studentId}/`,
-        method: 'GET'
-      })
-    }),
-    updateClass: build.mutation<
-      null,
-      {
-        accessCode: string;
-        classEditSubmit?: boolean;
-        levelControlSubmit?: boolean;
-        classMoveSubmit?: boolean;
-        name: string;
-        classmateProgress: boolean;
-        externalRequests: string;
-      }
-    >({
-      query: ({ accessCode, ...body }) => ({
-        url: `teach/class/edit/${accessCode}`,
+      query: (body) => ({
+        url: 'teach/move_class/',
         method: 'POST',
         body,
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
       }),
-      invalidatesTags: (result, error, { accessCode }) => [
-        { type: 'class', id: accessCode }
-      ]
+      invalidatesTags: ['teacher']
     }),
     getReminderCards: build.mutation<null, { accessCode: string; data: any }>({
       query: ({ accessCode, data }) => ({
@@ -303,5 +185,9 @@ export const {
   useEditStudentPasswordMutation,
   useGetReminderCardsMutation,
   useGetStudentsByAccessCodeQuery,
-  useGetStudentQuery
+  useGetStudentQuery,
+  useTeacherHas2faQuery,
+  useDeleteClassMutation,
+  useMoveClassMutation,
+  useDisable2faMutation
 } = teachApi;

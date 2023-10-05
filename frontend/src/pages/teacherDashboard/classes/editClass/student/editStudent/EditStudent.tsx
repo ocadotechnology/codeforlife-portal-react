@@ -7,11 +7,11 @@ import StudentNameField from '../../../../../../components/form/StudentNameField
 import CflPasswordFields from '../../../../../../features/cflPasswordFields/CflPasswordFields';
 import {
   useEditStudentNameMutation,
-  useEditStudentPasswordMutation
+  useEditStudentPasswordMutation,
+  useGetStudentsByAccessCodeQuery
 } from '../../../../../../app/api';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { paths } from '../../../../../../app/router';
-
 
 const UpdateNameForm: React.FC = () => {
   const location = useLocation();
@@ -70,9 +70,14 @@ const UpdateNameForm: React.FC = () => {
   );
 };
 
+
+interface ResponseData {
+  access_code: string;
+}
 const UpdatePasswordForm: React.FC = () => {
   const [editStudentPassword] = useEditStudentPasswordMutation();
   const location = useLocation();
+  console.log(location);
   const studentId = new URLSearchParams(location.search).get('studentIds') ?? '';
   interface Values {
     password: string;
@@ -81,15 +86,14 @@ const UpdatePasswordForm: React.FC = () => {
 
   const initialValues: Values = {
     password: '',
-    confirmPassword: '',
+    confirmPassword: ''
   };
   const navigate = useNavigate();
-
   const handleSubmit: (values: Values) => void = (values) => {
     editStudentPassword({
       password: values.password,
       studentId,
-      confirmPassword: values.confirmPassword,
+      confirmPassword: values.confirmPassword
     })
       .unwrap()
       .then((response) => {
@@ -129,6 +133,14 @@ const EditStudent: React.FC<{
   goBack: () => void;
 }> = ({ accessCode, studentId, goBack }) => {
   const theme = useTheme();
+  // use cache to get student name
+  const { students } = useGetStudentsByAccessCodeQuery({ accessCode: '' }, {
+    selectFromResult: ({ data }) => ({
+      students: data?.studentsPerAccessCode
+    })
+  });
+  const findCurrentStudent = students?.find((student) => student.id === studentId);
+  const studentName = findCurrentStudent?.newUser.firstName;
 
   return (
     <>
@@ -138,7 +150,7 @@ const EditStudent: React.FC<{
           variant="h4"
           marginBottom={theme.spacing(11.5)}
         >
-          Edit student details for Florian from class Class 1 ({accessCode})
+          Edit student details for {studentName} from class Class 1 ({accessCode})
         </Typography>
         <Link className="back-to" onClick={goBack}>
           Class

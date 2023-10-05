@@ -617,12 +617,6 @@ def process_reset_password_form(request, student, password_form):
                 "students_info": students_info,
                 "onboarding_done": True,
                 "query_data": students_info,  # this field could be redundant
-                # "class_url": request.build_absolute_uri(
-                #     reverse(
-                #         "student_login",
-                #         kwargs={"access_code": student.class_field.access_code},
-                #     )
-                # ),
             }
         )
 
@@ -972,12 +966,10 @@ def expand_key(dictionary):
     return expanded
 
 
+# TODO: this function had a method that adds the download PDF analytic, we should
+# add it back in somewhere else at some point
 # @login_required(login_url=reverse_lazy("teacher_login"))
 # @user_passes_test(logged_in_as_teacher, login_url=reverse_lazy("teacher_login"))
-from django.views.decorators.csrf import csrf_exempt
-
-
-# @csrf_exempt
 # def teacher_print_reminder_cards(request, access_code):
 #     response = HttpResponse(content_type="application/pdf")
 #     response["Content-Disposition"] = 'filename="student_reminder_cards.pdf"'
@@ -1085,11 +1077,10 @@ from django.views.decorators.csrf import csrf_exempt
 
 #     p.save()
 
-#     count_student_details_click(DownloadType.LOGIN_CARDS)
+#     count_student_details_click(DownloadType.LOGIN_CARDS) TODO: <--- this had to be implemented before deploying for data
 #     return response
 
 
-@csrf_exempt
 def teacher_print_reminder_cards(request, access_code):
     klass = get_object_or_404(Class, access_code=access_code)
     check_teacher_authorised(request, klass.teacher)

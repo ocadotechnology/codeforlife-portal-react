@@ -93,14 +93,16 @@ export const DownloadButtonPDF: React.FC<DownloadButtonPDFProps> = ({ isButtonBa
       console.error(error);
     }
   };
-  const buttonStyles = isButtonBanner ? {
-    sx: {
-      border: '2px solid black',
-      '&:hover': {
+  const buttonStyles = !isButtonBanner
+    ? {}
+    : {
+      sx: {
         border: '2px solid black',
-      },
-    }
-  } : {};
+        '&:hover': {
+          border: '2px solid black'
+        }
+      }
+    };
 
   return (
     <>
@@ -227,7 +229,7 @@ const NewStudentsTable: React.FC<NewStudentsTableProps> = ({ students }) => {
               <Stack direction="row" width="100%" alignItems="center">
                 <Typography marginRight={2}>Class link:</Typography>
                 <Typography className="nowrap-ellipsis">
-                  {classLink} {'lol'}
+                  {classLink}
                 </Typography>
                 <CopyToClipboardIcon
                   stringToCopy={classLink}

@@ -3,27 +3,20 @@
     "browser": false, // disable new browser session on yarn start
     "es2021": true
   },
-  "extends": [
-    "plugin:react/recommended",
-    "standard-with-typescript"
-  ],
+  "extends": ["plugin:react/recommended", "standard-with-typescript"],
   "overrides": [],
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module",
     "project": [
+      "tsconfig.json",
       "frontend/tsconfig.json",
       "frontend/cypress/tsconfig.json"
     ]
   },
-  "plugins": [
-    "react"
-  ],
+  "plugins": ["react"],
   "rules": {
-    "@typescript-eslint/semi": [
-      2,
-      "always"
-    ],
+    "@typescript-eslint/semi": [2, "always"],
     "@typescript-eslint/member-delimiter-style": "off",
     "@typescript-eslint/space-before-function-paren": "off",
     "@typescript-eslint/no-invalid-void-type": "off",
@@ -31,7 +24,5 @@
     "@typescript-eslint/strict-boolean-expressions": "off",
     "@typescript-eslint/indent": "off"
   },
-  "ignorePatterns": [
-    "src/scripts/*.js"
-  ]
+  "ignorePatterns": ["src/scripts/*.js"]
 }

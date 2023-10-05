@@ -121,7 +121,6 @@ const StudentsTable: React.FC<{
     setChecked(newChecked);
   };
 
-  const { data, error, isLoading } = useGetStudentsByAccessCodeQuery({ accessCode });
   return (
     <Box>
       <Table>
@@ -239,7 +238,6 @@ const StudentsTable: React.FC<{
     </Box>
   );
 };
-
 
 const EditClass: React.FC<{
   accessCode: string;
