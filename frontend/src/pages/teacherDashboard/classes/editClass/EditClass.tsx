@@ -249,6 +249,7 @@ const EditClass: React.FC<{
   const { data } = useGetStudentsByAccessCodeQuery({ accessCode });
   const studentData = data?.studentsPerAccessCode;
 
+
   const params = tryValidateSync(
     useParams(),
     yup.object({
