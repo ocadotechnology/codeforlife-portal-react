@@ -484,22 +484,40 @@ def organisation_kick(request, pk):
             klass.teacher = new_teacher
             klass.save()
 
-    classes = Class.objects.filter(teacher=teacher).values(
-        "id", "name", "access_code"
-    )
-    teachers = (
-        Teacher.objects.filter(school=teacher.school)
-        .exclude(id=teacher.id)
-        .values("id", "new_user_id__first_name", "new_user_id__last_name")
-    )
-
+    classes = Class.objects.filter(teacher=teacher)
     if classes.exists():
+        classes = classes.values(
+            "name",
+            "access_code",
+            class_teacher_first_name=F("teacher__new_user__first_name"),
+            class_teacher_last_name=F("teacher__new_user__last_name"),
+            class_teacher_id=F("teacher__id"),
+        )
+        coworkers = (
+            Teacher.objects.filter(school=teacher.school)
+            .exclude(id=teacher.id)
+            .values(
+                "id",
+                is_teacher_admin=F("is_admin"),
+                teacher_first_name=F("new_user__first_name"),
+                teacher_last_name=F("new_user__last_name"),
+                teacher_email=F("new_user__email"),
+            )
+        )
+        teacher = {
+            "id": teacher.id,
+            "is_admin": teacher.is_admin,
+            "teacher_first_name": teacher.new_user.first_name,
+            "teacher_last_name": teacher.new_user.last_name,
+            "teacher_email": teacher.new_user.email,
+        }
+
         return JsonResponse(
-            status=status.HTTP_200_OK,
             data={
                 "source": "organisationKick",
+                "teacher": teacher,
                 "classes": list(classes),
-                "teachers": list(teachers),
+                "coworkers": list(coworkers),
             },
         )
 

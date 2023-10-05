@@ -89,6 +89,34 @@ const teachApi = api.injectEndpoints({
         { type: 'class', id: accessCode }
       ]
     }),
+    deleteClass: build.mutation<
+      null,
+      { accessCode: string; }
+    >({
+      query: ({ accessCode, ...body }) => ({
+        url: `teach/class/delete/${accessCode}`,
+        method: 'POST',
+        body,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }),
+      invalidatesTags: ['teacher']
+    }),
+    moveClass: build.mutation<void, {
+      accessCode: string;
+      teacherId: string;
+    }>({
+      query: (body) => ({
+        url: 'teach/move_class/',
+        method: 'POST',
+        body,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }),
+      invalidatesTags: ['teacher']
+    }),
     deleteStudent: build.mutation<
       any,
       {
@@ -116,6 +144,8 @@ export const {
   useGetClassQuery,
   useGetStudentsByAccessCodeQuery,
   useUpdateClassMutation,
+  useDeleteClassMutation,
+  useMoveClassMutation,
   useDeleteStudentMutation,
   useTeacherHas2faQuery,
   useDisable2faMutation

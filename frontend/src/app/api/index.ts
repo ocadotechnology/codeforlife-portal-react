@@ -43,6 +43,8 @@ import {
   useGetClassQuery,
   useGetStudentsByAccessCodeQuery,
   useUpdateClassMutation,
+  useDeleteClassMutation,
+  useMoveClassMutation,
   useDeleteStudentMutation,
   useTeacherHas2faQuery,
   useDisable2faMutation
@@ -91,6 +93,8 @@ export {
   useGetClassQuery,
   useGetStudentsByAccessCodeQuery,
   useUpdateClassMutation,
+  useDeleteClassMutation,
+  useMoveClassMutation,
   useDeleteStudentMutation,
   // teacher/account
   useUpdateTeacherAccountDetailsMutation,
