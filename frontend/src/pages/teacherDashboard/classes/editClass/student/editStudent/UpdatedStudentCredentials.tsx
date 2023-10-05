@@ -10,9 +10,9 @@ const UpdatedStudentCredentials: React.FC = () => {
   const className: string = location.state?.updatedStudentCredentials.class;
   return <Page.Container>
     <Page.Banner
-      header={`${className}, (${accessCode})`}
+      subheader={`${className}, (${accessCode})`}
       textAlign='center'
-      subheader='Class and class access code:' />
+      header='Class and class access code:' />
     <Page.Notification>
       <Box sx={{
         display: 'flex',
