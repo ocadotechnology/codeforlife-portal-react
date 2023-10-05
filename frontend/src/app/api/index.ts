@@ -44,6 +44,7 @@ import {
   useGetStudentsByAccessCodeQuery,
   useUpdateClassMutation,
   useDeleteClassMutation,
+  useMoveClassMutation,
   useTeacherHas2faQuery,
   useDisable2faMutation
 } from './teacher/teach';
@@ -92,6 +93,7 @@ export {
   useGetStudentsByAccessCodeQuery,
   useUpdateClassMutation,
   useDeleteClassMutation,
+  useMoveClassMutation,
   // teacher/account
   useUpdateTeacherAccountDetailsMutation,
   useTeacherHas2faQuery,

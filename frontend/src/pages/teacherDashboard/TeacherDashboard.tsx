@@ -29,7 +29,7 @@ const TeacherDashboard: React.FC<{
         ? (
           <Page.Container>
             <Page.TabBar
-              header={`Welcome back, ${data.teacher.teacherFirstName as string} ${data.teacher.teacherLastName as string}`}
+              header={`Welcome back, ${data.teacher.teacherFirstName} ${data.teacher.teacherLastName}`}
               value={tab}
               originalPath='/teacher/dashboard/:tab'
               tabs={[

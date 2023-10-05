@@ -1,18 +1,18 @@
 import api from '../api';
 
-export interface CreateClassFormType {
+export interface CreateClassFormProps {
   class: string,
   teacherName: string,
   seeClassmates: boolean,
   teacherId: string,
 };
 
-export interface CreatedClassType {
+export interface CreatedClassProps {
   name: string,
   accessCode: string,
 };
 
-export interface StudentRequestData {
+export interface StudentRequestProps {
   student: {
     studentUsername: string,
     className: string,
@@ -23,7 +23,7 @@ export interface StudentRequestData {
 
 const dashboardClassesApi = api.injectEndpoints({
   endpoints: (build) => ({
-    getStudentRequestData: build.query<StudentRequestData, {
+    getStudentRequestData: build.query<StudentRequestProps, {
       studentId: number
     }>({
       query: ({ studentId }) => ({
@@ -57,7 +57,7 @@ const dashboardClassesApi = api.injectEndpoints({
       }),
       invalidatesTags: ['teacher']
     }),
-    createNewClass: build.mutation<CreatedClassType, CreateClassFormType
+    createNewClass: build.mutation<CreatedClassProps, CreateClassFormProps
     >({
       query: (body) => ({
         url: 'teach/create_new_class/',

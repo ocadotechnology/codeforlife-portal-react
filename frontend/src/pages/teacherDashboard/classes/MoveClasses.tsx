@@ -13,40 +13,31 @@ import CflTable, {
   CflTableCellElement
 } from '../../../components/CflTable';
 import { paths } from '../../../app/router';
-import { classType, teacherType, useLeaveOrganisationMutation } from '../../../app/api/organisation';
-import { moveClassesType, organsationKickType, useOrganisationKickMutation } from '../../../app/api/teacher/dashboard';
+import { useLeaveOrganisationMutation } from '../../../app/api/organisation';
+import { MoveClassDataProps, MoveClassesFormProps, OrgansationKickProps, useOrganisationKickMutation } from '../../../app/api/teacher/dashboard';
 
 const MoveClassTeacherForm: React.FC<{
   source: string;
-  classes: classType[];
-  teachers: teacherType[];
+  classes: MoveClassDataProps['classes'];
+  coworkers: MoveClassDataProps['coworkers'];
   teacherId: string;
-}> = ({ source, classes, teachers, teacherId }) => {
-  interface classFormDataType extends classType {
-    newTeacher: string
-  };
-
-  interface teacherListType {
-    id: number,
-    fullName: string
-  };
-
+}> = ({ source, classes, coworkers, teacherId }) => {
   const theme = useTheme();
   const [leaveOrganisation] = useLeaveOrganisationMutation();
   const [organisationKick] = useOrganisationKickMutation();
   const navigate = useNavigate();
 
-  const onLeaveOrganisation = (info: moveClassesType[]): void => {
-    leaveOrganisation(info).unwrap()
+  const onLeaveOrganisation = (moveClassFormData: MoveClassesFormProps): void => {
+    leaveOrganisation(moveClassFormData).unwrap()
       .then(() => {
         navigate(paths.teacher.onboarding._, { state: { leftOrganisation: true } });
       })
       .catch((err) => { console.error('LeaveOrganisation error: ', err); });
   };
 
-  const onOrganisationKick = (info: organsationKickType): void => {
-    info.id = teacherId;
-    organisationKick(info).unwrap()
+  const onOrganisationKick = (moveClassFormData: MoveClassesFormProps): void => {
+    const organisationKickData: OrgansationKickProps = { ...moveClassFormData, id: teacherId };
+    organisationKick(organisationKickData).unwrap()
       .then(() => {
         navigate(paths.teacher.dashboard.school._, {
           state: {
@@ -58,21 +49,13 @@ const MoveClassTeacherForm: React.FC<{
       .catch((err) => { console.error('OrganisationKick error: ', err); });
   };
 
-  // TODO: clean this up
-  // initialValues: form value
-  // teacherList: for finding newTeacher ID (by findNewTeacherId)
-  // teacherOptions: showing form options
-  // Data type passed to backend would be {accessCode: newTeacherId} (e.g. {'ab124': '3', 'ab125': '4'})
-  const initialValues = classes.map((c: classType) => ({ ...c, newTeacher: '' }));
-  const teacherList = teachers.map((t: teacherType) => ({
-    id: t.id,
-    fullName: `${t.newUserIdFirstName} ${t.newUserIdLastName}`
-  }));
-  const teacherOptions = teacherList.map((t: teacherListType) => t.fullName);
-  const findNewTeacherId = (name: string): number => {
-    const selectedTeacher = teacherList.find((t: teacherListType) => (t.fullName === name));
-    return selectedTeacher ? (selectedTeacher.id) : -1;
+  const findNewTeacherId = (name: string): string => {
+    const selectedTeacher = coworkers.find((coworker) => (name === `${coworker.teacherFirstName} ${coworker.teacherLastName}`));
+    return selectedTeacher ? (selectedTeacher.id) : '-1';
   };
+
+  const coworkerOptions = coworkers.map((coworker) => `${coworker.teacherFirstName} ${coworker.teacherLastName}`);
+  const initialValues: MoveClassesFormProps = Object.assign({}, ...classes.map((klass) => ({ [klass.accessCode]: '' })));
 
   return (
     <>
@@ -82,11 +65,12 @@ const MoveClassTeacherForm: React.FC<{
       <Formik
         initialValues={initialValues}
         onSubmit={values => {
-          const info = Object.create(null);
-          values.forEach((v: classFormDataType) => {
-            info[v.accessCode.toLowerCase()] = findNewTeacherId(v.newTeacher);
-          });
-          (source === 'organisationLeave') ? onLeaveOrganisation(info) : onOrganisationKick(info);
+          const moveClassFormData: MoveClassesFormProps = Object.create(null);
+          for (const [key, value] of Object.entries(values)) {
+            moveClassFormData[key.toLowerCase()] = findNewTeacherId(value);
+          }
+          moveClassFormData.id = teacherId;
+          (source === 'organisationLeave') ? onLeaveOrganisation(moveClassFormData) : onOrganisationKick(moveClassFormData);
         }}
       >
         {() => (
@@ -99,30 +83,33 @@ const MoveClassTeacherForm: React.FC<{
                     className='body'
                     titles={['Class name', 'New teacher']}
                   >
-                    {classes.map((c: classType, index: number) =>
-                      <CflTableBody key={c.id}>
-                        <CflTableCellElement>
-                          <Typography variant="subtitle1">
-                            {c.name}
-                          </Typography>
-                        </CflTableCellElement>
-                        <CflTableCellElement
-                          direction="column"
-                          alignItems="flex-start"
-                        >
-                          <AutocompleteField
-                            options={teacherOptions}
-                            textFieldProps={{
-                              required: true,
-                              name: `${index}.newTeacher`
-                            }}
-                            freeSolo={true}
-                            forcePopupIcon={true}
-                            sx={{ width: 200 }}
-                          />
-                        </CflTableCellElement>
-                      </CflTableBody>
-                    )}
+                    {classes
+                      ? classes.map((klass: any) =>
+                        <CflTableBody key={klass.accessCode}>
+                          <CflTableCellElement>
+                            <Typography variant="subtitle1">
+                              {klass.name}
+                            </Typography>
+                          </CflTableCellElement>
+                          <CflTableCellElement
+                            direction="column"
+                            alignItems="flex-start"
+                          >
+                            <AutocompleteField
+                              options={coworkerOptions}
+                              textFieldProps={{
+                                required: true,
+                                name: klass.accessCode
+                              }}
+                              freeSolo={true}
+                              forcePopupIcon={true}
+                              sx={{ width: 200 }}
+                            />
+                          </CflTableCellElement>
+                        </CflTableBody>
+                      )
+                      : <></>
+                    }
                   </CflTable >
                   <Stack direction="row" spacing={2}>
                     <Button variant='outlined' onClick={() => {
@@ -147,38 +134,40 @@ const MoveClassTeacherForm: React.FC<{
 };
 
 const MoveClasses: React.FC = () => {
-  // TODO: get data from BE
-  const userName = 'John Doe';
   const navigate = useNavigate();
   const theme = useTheme();
   const location = useLocation();
+  const data: MoveClassDataProps = location.state;
 
-  return (
-    <>
-      <Page.Notification>
-        {location.state.source === 'organisationKick'
-          ? 'This teacher still has classes assigned to them. You must first move them to another teacher in your school or club.'
-          : 'You still have classes, you must first move them to another teacher within your school or club.'
-        }
-      </Page.Notification>
-      <Page.Section>
-        <Typography variant="h4" align="center" marginBottom={theme.spacing(5)}>
-          Move all classes for teacher {userName}
-        </Typography>
-        <Link className="back-to" onClick={() => {
-          navigate(paths.teacher.dashboard.school._);
-        }}>
-          dashboard
-        </Link>
-        <MoveClassTeacherForm
-          source={location.state.source}
-          classes={location.state.classes}
-          teachers={location.state.teachers}
-          teacherId={location.state.teacherId}
-        />
-      </Page.Section >
-    </>
-  );
+  return <>
+    {
+      data &&
+      <>
+        <Page.Notification>
+          {data.source === 'organisationKick'
+            ? 'This teacher still has classes assigned to them. You must first move them to another teacher in your school or club.'
+            : 'You still have classes, you must first move them to another teacher within your school or club.'
+          }
+        </Page.Notification>
+        <Page.Section>
+          <Typography variant="h4" align="center" marginBottom={theme.spacing(5)}>
+            Move all classes for teacher {data.teacher.teacherFirstName} {data.teacher.teacherLastName}
+          </Typography>
+          <Link className="back-to" onClick={() => {
+            navigate(paths.teacher.dashboard.school._);
+          }}>
+            dashboard
+          </Link>
+          <MoveClassTeacherForm
+            source={data.source}
+            classes={data.classes}
+            coworkers={data.coworkers}
+            teacherId={data.teacher.id}
+          />
+        </Page.Section >
+      </>
+    }
+  </>;
 };
 
 export default MoveClasses;

@@ -37,7 +37,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useLeaveOrganisationMutation } from '../../app/api';
 import { paths } from '../../app/router';
 import {
-  TeacherDashboardData,
+  TeacherDashboardProps,
   useDeleteInviteMutation,
   useInviteTeacherMutation,
   useInviteToggleAdminMutation,
@@ -192,7 +192,7 @@ const InviteTeacherForm: React.FC<{
   };
 
 const UpdateSchoolDetailsForm: React.FC<{
-  schoolData: TeacherDashboardData['school'];
+  schoolData: TeacherDashboardProps['school'];
 }> = ({ schoolData }) => {
   const navigate = useNavigate();
   const schoolName = schoolData.name;
@@ -263,15 +263,10 @@ const TeachersTableActions: React.FC<{
 
   const onOrganisationKick = (id: string): void => {
     organisationKick({ id }).unwrap()
-      .then((res) => {
-        if (res?.classes) {
+      .then((moveClassData) => {
+        if (moveClassData?.classes) {
           navigate(paths.teacher.dashboard.school.leave._, {
-            state: {
-              source: res.source,
-              classes: res.classes,
-              teachers: res.teachers,
-              teacherId: id
-            }
+            state: moveClassData
           });
         } else {
           navigate('.', {
@@ -381,6 +376,9 @@ const TeachersTableActions: React.FC<{
       return (
         <>
           <Button endIcon={<Add />} onClick={() => { onMakeAdmin(id); }}>Make admin</Button>
+          <Button className="alert" endIcon={<DeleteOutline />} onClick={() => { onOrganisationKick(id); }}>
+            Delete
+          </Button>
           {twoFactorAuthentication
             ? <Button endIcon={<DoDisturbOnOutlined />} className="alert">
               Disable 2FA
@@ -394,9 +392,9 @@ const TeachersTableActions: React.FC<{
 };
 
 const TeachersTable: React.FC<{
-  teacherData: TeacherDashboardData['teacher'];
-  coworkersData: TeacherDashboardData['coworkers'];
-  sentInvites: TeacherDashboardData['sentInvites'];
+  teacherData: TeacherDashboardProps['teacher'];
+  coworkersData: TeacherDashboardProps['coworkers'];
+  sentInvites: TeacherDashboardProps['sentInvites'];
   setDialog: SetDialogType;
 }> = ({ teacherData, coworkersData, sentInvites, setDialog }) => {
   const isUserAdmin = teacherData.isAdmin;
@@ -488,7 +486,7 @@ const TeachersTable: React.FC<{
 };
 
 const YourSchool: React.FC<{
-  data: TeacherDashboardData;
+  data: TeacherDashboardProps;
 }> = ({ data }) => {
   const theme = useTheme();
   const [leaveOrganisation] = useLeaveOrganisationMutation();
@@ -503,14 +501,10 @@ const YourSchool: React.FC<{
 
   const onLeaveOrganisation = (): void => {
     leaveOrganisation().unwrap()
-      .then((res) => {
-        if (res?.classes) {
+      .then((moveClassData) => {
+        if (moveClassData?.classes) {
           navigate(paths.teacher.dashboard.school.leave._, {
-            state: {
-              source: res.source,
-              classes: res.classes,
-              teachers: res.teachers
-            }
+            state: moveClassData
           });
         } else {
           navigate(paths.teacher.onboarding._, { state: { leftOrganisation: true } });
