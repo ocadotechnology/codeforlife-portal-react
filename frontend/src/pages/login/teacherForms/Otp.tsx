@@ -11,13 +11,13 @@ import {
   TextField
 } from 'codeforlife/lib/esm/components/form';
 
-import { useLoginMutation } from '../../../app/api';
+import { useLoginOptionsQuery } from '../../../app/api/login';
 import { paths } from '../../../app/router';
 import LoginForm from '../LoginForm';
 
 const Otp: React.FC = () => {
   const navigate = useNavigate();
-  const { data } = useLoginMutation()[1];
+  const { data } = useLoginOptionsQuery(null);
 
   return (
     <LoginForm

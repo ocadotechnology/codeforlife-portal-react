@@ -1,10 +1,5 @@
 import api from './api';
 
-export type LoginAuthFactor = 'otp';
-export interface LoginResult {
-  authFactors: LoginAuthFactor[];
-  otpBypassTokenExists?: boolean;
-};
 export type LoginQuery = {
   email: string;
   password: string;
@@ -24,7 +19,7 @@ export type LoginQuery = {
 // TODO: move this to sso service.
 const loginApi = api.injectEndpoints({
   endpoints: (build) => ({
-    login: build.mutation<LoginResult, LoginQuery>({
+    login: build.mutation<null, LoginQuery>({
       query: (body) => {
         let form: string;
         if ('email' in body) form = 'email';
@@ -43,11 +38,24 @@ const loginApi = api.injectEndpoints({
           }
         };
       }
+    }),
+    loginOptions: build.query<{
+      id: number;
+      otpBypassTokenExists?: boolean;
+    }, null>({
+      query: () => ({
+        url: 'session/login/options/',
+        method: 'GET'
+      }),
+      providesTags: (result, error, arg) => result === undefined
+        ? []
+        : [{ type: 'user', id: result.id }]
     })
   })
 });
 
 export default loginApi;
 export const {
-  useLoginMutation
+  useLoginMutation,
+  useLoginOptionsQuery
 } = loginApi;

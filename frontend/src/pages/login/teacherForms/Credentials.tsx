@@ -27,7 +27,7 @@ const Credentials: React.FC = () => {
         email: '',
         password: ''
       }}
-      onSubmit={({ authFactors }) => {
+      onSubmit={(authFactors) => {
         if (authFactors.includes('otp')) {
           return {
             navigateTo: paths.login.teacher.otp._,

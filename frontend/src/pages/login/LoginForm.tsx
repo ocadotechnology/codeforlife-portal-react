@@ -7,27 +7,24 @@ import {
 } from 'react-router-dom';
 
 import { ContainerState } from 'codeforlife/lib/esm/components/page';
-import {
-  isFormError,
-  submitForm
-} from 'codeforlife/lib/esm/helpers/formik';
+import { submitForm } from 'codeforlife/lib/esm/helpers/formik';
 
 import {
-  LoginAuthFactor,
   LoginQuery,
-  LoginResult,
   useLoginMutation
 } from '../../app/api/login';
 import { paths } from '../../app/router';
 import BaseForm, { BaseFormProps } from './BaseForm';
 
+type AuthFactor = 'otp';
+
 export interface LoginFormProps
   extends Omit<BaseFormProps<LoginQuery>, 'onSubmit'> {
   authFactors?: {
-    includes: LoginAuthFactor;
+    includes: AuthFactor;
     pathToFirstStep: string;
   };
-  onSubmit: (result: LoginResult) => {
+  onSubmit: (authFactors: AuthFactor[]) => {
     navigateTo: NavigateTo;
     navigateOptions?: NavigateOptions;
     isEnd: boolean;
@@ -40,19 +37,23 @@ const LoginForm: React.FC<LoginFormProps> = ({
   ...baseFormProps
 }) => {
   const navigate = useNavigate();
-  const [login, { data, error, isLoading }] = useLoginMutation();
+  const [login] = useLoginMutation();
+
+  function getSessionAuthFactors(): AuthFactor[] | undefined {
+    const cookie = Cookies.get('sessionid_httponly_false');
+    return cookie === undefined
+      ? undefined
+      : cookie.split(',').filter(af => af !== '') as AuthFactor[];
+  }
 
   React.useEffect(() => {
     if (authFactors === undefined) return;
 
     let errorMessage = '';
-    if (Cookies.get('sessionid') === undefined) {
+    const sessionAuthFactors = getSessionAuthFactors();
+    if (sessionAuthFactors === undefined) {
       errorMessage = 'You have not started your login session.';
-    } else if (data === undefined || (
-      error !== undefined && !isFormError(error)
-    )) {
-      errorMessage = 'An error occurred when calling our server.';
-    } else if (!data.authFactors.includes(authFactors.includes)) {
+    } else if (!sessionAuthFactors.includes(authFactors.includes)) {
       errorMessage = 'You are not required to submit this authentication' +
         ' factor.';
     }
@@ -71,16 +72,17 @@ const LoginForm: React.FC<LoginFormProps> = ({
 
       navigate(authFactors.pathToFirstStep, { state });
     }
-  }, [isLoading]);
+  }, []);
 
   return (
     <BaseForm
       {...baseFormProps}
       onSubmit={submitForm(login, {
-        then: (result) => {
-          const authFlow = onSubmit(result);
+        then: () => {
+          const sessionAuthFactors = getSessionAuthFactors() as AuthFactor[];
+          const authFlow = onSubmit(sessionAuthFactors);
 
-          if (authFlow.isEnd && result.authFactors.length !== 0) {
+          if (authFlow.isEnd && sessionAuthFactors.length !== 0) {
             const state: ContainerState = {
               notifications: [
                 {

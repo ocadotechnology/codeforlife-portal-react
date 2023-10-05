@@ -19,6 +19,7 @@ const BaseForm = <Values extends FormikValues = FormikValues>({
   ...formProps
 }: BaseFormProps<Values>): JSX.Element => {
   const theme = useTheme();
+
   return (
     <ThemedBox
       withShapes
