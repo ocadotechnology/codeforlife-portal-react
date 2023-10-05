@@ -14,6 +14,7 @@ interface ConfirmPopupProps {
   password: string;
   unsubscribeNewsletter: boolean;
   userType: string;
+  hasClasses: boolean;
   toggle: React.Dispatch<
     React.SetStateAction<{
       open: boolean;
@@ -24,6 +25,7 @@ export const ConfirmPopup: React.FC<ConfirmPopupProps> = ({
   open,
   userType,
   password,
+  hasClasses,
   unsubscribeNewsletter,
   toggle
 }) => {
@@ -31,12 +33,25 @@ export const ConfirmPopup: React.FC<ConfirmPopupProps> = ({
   const [deleteAccount] = useDeleteAccountMutation();
   return (
     <Dialog open={open}>
-      <Typography variant="h5" textAlign="center">
-        You are about to delete your account
-      </Typography>
-      <Typography>
-        This action is not reversible. Are you sure you wish to proceed?
-      </Typography>
+      <pre></pre>
+      {userType === 'teacher' && hasClasses
+        ? <>
+          <Typography variant="h5" textAlign="center">
+            You still have classes associated with this account
+          </Typography>
+          <Typography>
+            Review classes if you would like to download the scoreboard or transfer students first.
+          </Typography>
+        </>
+        : <>
+          <Typography variant="h5" textAlign="center">
+            You are about to delete your account
+          </Typography>
+          <Typography>
+            This action is not reversible. Are you sure you wish to proceed?
+          </Typography>
+        </>
+      }
       <Form
         initialValues={{
           password,
@@ -49,14 +64,20 @@ export const ConfirmPopup: React.FC<ConfirmPopupProps> = ({
         })}
       >
         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3}>
-          <Button
-            variant="outlined"
-            onClick={() => {
-              toggle({ open: !open });
-            }}
-          >
-            Cancel
-          </Button>
+          {userType === 'teacher' && hasClasses
+            ? <Button href={paths.teacher.dashboard.classes._}>
+              Review classes
+            </Button>
+            : <Button
+              variant="outlined"
+              onClick={() => {
+                toggle({ open: !open });
+              }}
+            >
+              Cancel
+            </Button>
+
+          }
           <Button
             type="submit"
             className="alert"

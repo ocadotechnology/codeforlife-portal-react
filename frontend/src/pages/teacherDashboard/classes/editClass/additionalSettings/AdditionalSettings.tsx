@@ -15,7 +15,6 @@ import {
 } from 'codeforlife/lib/esm/components/form';
 import Page from 'codeforlife/lib/esm/components/page';
 
-import { useGetClassQuery } from '../../../../../app/api';
 import RapidRouterTabTitles from './RapidRouterTabTitles';
 import RapidRouterTabs from './RapidRouterTabs';
 import UpdateClassForm from './UpdateClassForm';
@@ -24,6 +23,9 @@ import {
   PYTHON_LEVELS,
   RapidRouterGameTabs
 } from './rapidRouterLevelsProps';
+import { useGetClassQuery, useGetTeacherDataQuery, useMoveClassMutation } from '../../../../../app/api';
+import { useNavigate } from 'react-router-dom';
+import { paths } from '../../../../../app/router';
 
 const allLevelsChecked: string[] = Array.from({ length: 109 }, (_, i) =>
   (i + 1).toString()
@@ -111,9 +113,23 @@ const RapidRouterAccessSettings: React.FC = () => {
   );
 };
 
-const TransferClassToAnotherTeacher: React.FC = () => {
-  const options = ['Teacher 1', 'Teacher 2', 'Teacher 3'];
+const TransferClassToAnotherTeacher: React.FC<{
+  accessCode: string;
+}> = ({ accessCode }) => {
   const theme = useTheme();
+  const navigate = useNavigate();
+  const { teacher, coworkers } = useGetTeacherDataQuery(undefined, {
+    selectFromResult: ({ data }) => ({
+      teacher: data?.teacher,
+      coworkers: data?.coworkers
+    })
+  });
+  const options = (coworkers && teacher)
+    ? coworkers.filter((worker) => worker.teacherEmail !== teacher.teacherEmail)
+      .map((worker) => `${worker.teacherFirstName} ${worker.teacherLastName}`)
+    : [];
+  const [moveClass] = useMoveClassMutation();
+
   return (
     <Box
       sx={{
@@ -125,7 +141,16 @@ const TransferClassToAnotherTeacher: React.FC = () => {
           transferClassToAnotherTeacher: options[0]
         }}
         onSubmit={(values) => {
-          alert(JSON.stringify(values, null, 2));
+          const teacherId = coworkers?.find((worker) => `${worker.teacherFirstName} ${worker.teacherLastName}` === values.transferClassToAnotherTeacher)?.id as string;
+          moveClass({ accessCode, teacherId }).unwrap()
+            .then(() => {
+              navigate(paths.teacher.dashboard.classes._, {
+                state: {
+                  message: 'The class has been successfully assigned to a different teacher.'
+                }
+              });
+            })
+            .catch((err) => { console.error('MoveClass error: ', err); });
         }}
       >
         {(formik) => (
@@ -234,7 +259,7 @@ const AdditionalSettings: React.FC<{
       <RapidRouterAccessSettings />
     </Page.Section>
     <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
-      <TransferClassToAnotherTeacher />
+      <TransferClassToAnotherTeacher accessCode={accessCode} />
     </Page.Section>
   </>;
 };

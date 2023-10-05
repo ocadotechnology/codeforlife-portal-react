@@ -17,7 +17,7 @@ import {
   Button
 } from '@mui/material';
 import { paths } from '../../../app/router';
-import { StudentRequestData, useAcceptStudentRequestMutation, useGetStudentRequestDataQuery } from '../../../app/api/teacher/dashboardClasses';
+import { StudentRequestProps, useAcceptStudentRequestMutation, useGetStudentRequestDataQuery } from '../../../app/api/teacher/dashboardClasses';
 
 const CurrentStudentsList: React.FC<{
   students: string[];
@@ -37,7 +37,7 @@ const CurrentStudentsList: React.FC<{
 };
 
 const StudentsCurrentlyInClass: React.FC<{
-  data: StudentRequestData;
+  data: StudentRequestProps;
 }> = ({ data }) => {
   const theme = useTheme();
 
@@ -61,7 +61,7 @@ const StudentsCurrentlyInClass: React.FC<{
 
 const AddExternalStudentForm: React.FC<{
   studentId: number;
-  data: StudentRequestData;
+  data: StudentRequestProps;
 }> = ({ studentId, data }) => {
   const theme = useTheme();
   const navigate = useNavigate();

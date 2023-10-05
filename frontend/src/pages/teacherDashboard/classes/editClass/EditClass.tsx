@@ -15,6 +15,7 @@ import {
   Box,
   Button,
   Checkbox,
+  Dialog,
   Link,
   Stack,
   Table,
@@ -38,11 +39,50 @@ import EditStudent from './student/editStudent/EditStudent';
 import ReleaseStudent from './student/releaseStudent/ReleaseStudent';
 import MoveStudent from './student/moveStudent/MoveStudent';
 import ResetStudent from './student/resetStudent/ResetStudent';
-import { useGetStudentsByAccessCodeQuery } from '../../../../app/api/';
+import { useDeleteClassMutation, useGetStudentsByAccessCodeQuery } from '../../../../app/api';
+import { studentPerAccessCode } from '../../../../app/api/teacher/teach';
+
+const DeleteClassConfirmDialog: React.FC<{
+  open: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+}> = ({
+  open,
+  onClose,
+  onConfirm
+}) => {
+    const theme = useTheme();
+    return (
+      <Dialog open={open} onClose={onClose} maxWidth={'xs'}>
+        <Typography variant='h5' textAlign='center'>
+          Delete class
+        </Typography>
+        <Typography>
+          This class will be permanently deleted. Are you sure?
+        </Typography>
+
+        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3} mt={theme.spacing(5)}>
+          <Button
+            variant='outlined'
+            className='body'
+            onClick={onClose}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={onConfirm}
+          >
+            Confirm
+          </Button>
+        </Stack>
+      </Dialog>
+    );
+  };
 
 const StudentsTable: React.FC<{
   accessCode: string;
-}> = ({ accessCode }) => {
+  studentData: studentPerAccessCode[];
+}> = ({ accessCode, studentData }) => {
   const _navigate = useNavigate();
 
   function navigate(path: string, studentIds: number[]): void {
@@ -52,34 +92,33 @@ const StudentsTable: React.FC<{
     ));
   }
 
-  const randomStudentNames = [
-    'John Doe',
-    'John Smith',
-    'Jane Doe',
-    'Jane Smith',
-    'John Doe',
-    'John Smith'
-  ];
-
   const [checked, setChecked] = React.useState<boolean[]>(
-    Array(randomStudentNames.length).fill(false)
+    Array(studentData.length).fill(false)
   );
-  const selectedStudentsIds: number[] = [1, 2, 3];
 
   const handleSelectAllClick: () => void = () => {
     if (checked.includes(true)) {
-      setChecked(Array(randomStudentNames.length).fill(false));
+      setChecked(Array(studentData.length).fill(false));
     } else {
-      setChecked(Array(randomStudentNames.length).fill(true));
+      setChecked(Array(studentData.length).fill(true));
     }
   };
 
-  // TODO: fix student ids selection
+  const studentsIds = studentData.map((student) => student.id);
+  const getSelectedStudentsIds: () => number[] = () => {
+    const selectedIds: number[] = [];
+    for (let i = 0; i < checked.length; i += 1) {
+      if (checked[i]) {
+        selectedIds.push(studentsIds[i]);
+      }
+    }
+    return selectedIds;
+  };
+
   const handleChange: (idx: number) => void = (idx: number) => {
     const newChecked = [...checked];
     newChecked[idx] = !checked[idx];
     setChecked(newChecked);
-    selectedStudentsIds.push(idx);
   };
 
   const { data, error, isLoading } = useGetStudentsByAccessCodeQuery({ accessCode });
@@ -106,10 +145,10 @@ const StudentsTable: React.FC<{
           </TableRow>
         </TableHead>
         <TableBody>
-          {data?.studentsPerAccessCode.map((_student, idx) => (
-            <TableRow key={`${_student.newUser.firstName}-${idx}`}>
+          {studentData.map((student, idx) => (
+            <TableRow key={`${student.id}`}>
               <TableCell>
-                <Typography variant="body2">{_student.newUser.firstName}</Typography>
+                <Typography variant="body2">{student.newUser.firstName} {student.newUser.lastName}</Typography>
               </TableCell>
               <TableCell align="center">
                 <Checkbox
@@ -122,7 +161,6 @@ const StudentsTable: React.FC<{
               </TableCell>
               <TableCell align="center">
                 <Button onClick={() => {
-                  // TODO: Replace idx with actual student ID
                   navigate(
                     paths.teacher
                       .dashboard
@@ -130,7 +168,7 @@ const StudentsTable: React.FC<{
                       .editClass
                       .editStudent
                       ._,
-                    [_student.id]
+                    [student.id]
                   );
                 }}
                   endIcon={<Edit />}>Edit details</Button>
@@ -155,7 +193,7 @@ const StudentsTable: React.FC<{
                 .editClass
                 .releaseStudents
                 ._,
-              selectedStudentsIds
+              getSelectedStudentsIds()
             );
           }}
         >Release</Button>
@@ -169,7 +207,7 @@ const StudentsTable: React.FC<{
                 .editClass
                 .moveStudents
                 ._,
-              selectedStudentsIds
+              getSelectedStudentsIds()
             );
           }}
         >Move</Button>
@@ -183,7 +221,7 @@ const StudentsTable: React.FC<{
                 .editClass
                 .resetStudents
                 ._,
-              selectedStudentsIds
+              getSelectedStudentsIds()
             );
           }}
           endIcon={<SecurityOutlined />}
@@ -210,6 +248,8 @@ const EditClass: React.FC<{
   const navigate = useNavigate();
   const location = useLocation();
   const searchParams = fromSearchParams();
+  const { data } = useGetStudentsByAccessCodeQuery({ accessCode });
+  const studentData = data?.studentsPerAccessCode;
 
   const params = tryValidateSync(
     useParams(),
@@ -299,6 +339,42 @@ const EditClass: React.FC<{
       }
     }
   }
+
+  const [dialog, setDialog] = React.useState<{
+    open: boolean;
+    onConfirm?: () => void;
+  }>({ open: false });
+
+  const [deleteClass] = useDeleteClassMutation();
+
+  const classHasStudents = studentData?.length;
+  const onDeleteClass = (): void => {
+    setDialog({
+      open: true,
+      onConfirm: () => {
+        setDialog({ open: false });
+        if (classHasStudents) {
+          navigate('.', {
+            state: {
+              message: 'This class still has students, please remove or delete them all before deleting the class.'
+            }
+          });
+          navigate(0);
+        } else {
+          deleteClass({ accessCode }).unwrap()
+            .then(() => {
+              navigate(paths.teacher.dashboard.classes._, {
+                state: {
+                  message: 'The class has been deleted successfully.'
+                }
+              });
+            })
+            .catch((err) => { console.error('DeleteClass error ', err); });
+        }
+      }
+    });
+  };
+
   return <>
     {location.state?.message &&
       <Page.Notification>
@@ -331,7 +407,7 @@ const EditClass: React.FC<{
           your school and make them an independent Code for Life user, or delete
           them permanently.
         </Typography>
-        <StudentsTable accessCode={accessCode} />
+        {studentData && <StudentsTable accessCode={accessCode} studentData={studentData} />}
       </Box>
     </Page.Section>
     <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
@@ -363,11 +439,19 @@ const EditClass: React.FC<{
             variant="contained"
             className="alert"
             endIcon={<DeleteOutlineOutlined />}
+            onClick={onDeleteClass}
           >
             Delete class
           </Button>
         </Stack>
       </Stack>
+      {dialog.onConfirm !== undefined &&
+        <DeleteClassConfirmDialog
+          open={dialog.open}
+          onClose={() => { setDialog({ open: false }); }}
+          onConfirm={dialog.onConfirm}
+        />
+      }
     </Page.Section>
   </>;
 };

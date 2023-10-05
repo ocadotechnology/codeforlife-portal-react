@@ -13,6 +13,8 @@ from ...views.teacher.dashboard import (
     invite_teacher,
     invited_teacher,
     update_school,
+    process_update_account_form,
+    teacher_2fa_handler,
     create_new_class,
     get_student_request_data,
     get_students_from_access_code,
@@ -71,6 +73,12 @@ urlpatterns = [
         teacher_reject_student_request,
         name="teacher_reject_student_request",
     ),
+    path(
+        "teacher/update/account/",
+        process_update_account_form,
+        name="process_update_account_form",
+    ),
+    path("teacher/handle-2fa/", teacher_2fa_handler, name="teacher_has_2fa"),
     re_path(
         r"^teach/dashboard/student/request/(?P<pk>[0-9]+)/$",
         get_student_request_data,
