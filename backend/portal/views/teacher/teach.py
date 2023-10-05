@@ -346,10 +346,6 @@ def teacher_edit_class(request, access_code):
                 return process_level_control_form(
                     request, klass, blockly_episodes, python_episodes
                 )
-        # elif "class_move_submit" in request.POST:
-        #     class_move_form = ClassMoveForm(other_teachers, request.POST)
-        #     if class_move_form.is_valid():
-        #         return process_move_class_form(request, klass, class_move_form)
 
     # return render(
     #     request,
@@ -501,11 +497,11 @@ def teacher_move_class(request):
     access_code = request.POST.get("access_code", "")
     new_teacher_id = request.POST.get("teacher_id", "")
     try:
-        klass = get_object_or_404(Class, access_code=access_code)    
+        klass = get_object_or_404(Class, access_code=access_code)
         new_teacher = get_object_or_404(Teacher, id=new_teacher_id)
     except Http404:
         return HttpResponse(status=status.HTTP_404_NOT_FOUND)
-    
+
     klass.teacher = new_teacher
     klass.save()
     return HttpResponse()
