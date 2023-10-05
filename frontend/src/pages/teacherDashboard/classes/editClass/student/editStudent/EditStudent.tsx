@@ -70,7 +70,6 @@ const UpdateNameForm: React.FC = () => {
   );
 };
 
-
 const UpdatePasswordForm: React.FC = () => {
   const [editStudentPassword] = useEditStudentPasswordMutation();
   const location = useLocation();

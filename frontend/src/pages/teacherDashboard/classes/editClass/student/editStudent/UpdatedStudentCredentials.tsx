@@ -1,9 +1,8 @@
 import React from 'react';
 import ClassCredentials from '../../../../../teacherOnboarding/ClassCredentials';
 import Page from 'codeforlife/lib/esm/components/page';
-import { Print } from '@mui/icons-material';
 import { useLocation } from 'react-router-dom';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { DownloadButtonPDF } from '../../../../../../features/newStudentsTable/NewStudentsTable';
 const UpdatedStudentCredentials: React.FC = () => {
   const location = useLocation();

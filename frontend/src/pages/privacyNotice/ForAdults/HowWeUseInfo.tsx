@@ -6,7 +6,6 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  tableCellClasses,
   ListItemText
 } from '@mui/material';
 
@@ -14,7 +13,7 @@ import { ItemizedList } from 'codeforlife/lib/esm/components';
 
 const CustomTableRow: React.FC<{
   left: string,
-  right: any
+  right: any;
 }> = ({ left, right }) => (
   <TableRow>
     <TableCell>
