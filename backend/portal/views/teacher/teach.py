@@ -58,6 +58,7 @@ from reportlab.lib.colors import black, red
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen import canvas
+from rest_framework import status
 
 STUDENT_PASSWORD_LENGTH = 6
 REMINDER_CARDS_PDF_ROWS = 8
@@ -345,10 +346,6 @@ def teacher_edit_class(request, access_code):
                 return process_level_control_form(
                     request, klass, blockly_episodes, python_episodes
                 )
-        elif "class_move_submit" in request.POST:
-            class_move_form = ClassMoveForm(other_teachers, request.POST)
-            if class_move_form.is_valid():
-                return process_move_class_form(request, klass, class_move_form)
 
     # return render(
     #     request,
@@ -494,18 +491,20 @@ def mark_levels_to_lock_in_episodes(request, episodes, levels_to_lock_ids):
             ]
 
 
-def process_move_class_form(request, klass, form):
-    new_teacher_id = form.cleaned_data["new_teacher"]
-    new_teacher = get_object_or_404(Teacher, id=new_teacher_id)
+@login_required(login_url=reverse_lazy("teacher_login"))
+@user_passes_test(logged_in_as_teacher, login_url=reverse_lazy("teacher_login"))
+def teacher_move_class(request):
+    access_code = request.POST.get("access_code", "")
+    new_teacher_id = request.POST.get("teacher_id", "")
+    try:
+        klass = get_object_or_404(Class, access_code=access_code)
+        new_teacher = get_object_or_404(Teacher, id=new_teacher_id)
+    except Http404:
+        return HttpResponse(status=status.HTTP_404_NOT_FOUND)
 
     klass.teacher = new_teacher
     klass.save()
-
-    messages.success(
-        request,
-        "The class has been successfully assigned to a different teacher.",
-    )
-    return HttpResponseRedirect(reverse_lazy("dashboard"))
+    return HttpResponse()
 
 
 @login_required(login_url=reverse_lazy("teacher_login"))

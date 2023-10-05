@@ -84,6 +84,20 @@ const teachApi = api.injectEndpoints({
       invalidatesTags: (result, error, { accessCode }) => [
         { type: 'class', id: accessCode }
       ]
+    }),
+    moveClass: build.mutation<void, {
+      accessCode: string;
+      teacherId: string;
+    }>({
+      query: (body) => ({
+        url: 'teach/move_class/',
+        method: 'POST',
+        body,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }),
+      invalidatesTags: ['teacher']
     })
   })
 });
@@ -91,8 +105,9 @@ const teachApi = api.injectEndpoints({
 export default teachApi;
 export const {
   useGetClassQuery,
+  useGetStudentsByAccessCodeQuery,
   useUpdateClassMutation,
+  useMoveClassMutation,
   useTeacherHas2faQuery,
-  useDisable2faMutation,
-  useGetStudentsByAccessCodeQuery
+  useDisable2faMutation
 } = teachApi;

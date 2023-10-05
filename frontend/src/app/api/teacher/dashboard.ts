@@ -1,7 +1,6 @@
 import api from '../api';
-import { classType, teacherType } from '../organisation';
 
-export interface coworkersType {
+export interface CoworkersProps {
   id: string,
   isTeacherAdmin: boolean,
   teacherEmail: string,
@@ -9,7 +8,7 @@ export interface coworkersType {
   teacherLastName: string,
 };
 
-export interface sentInvitesType {
+export interface SentInvitesProps {
   id: string,
   invitedTeacherIsAdmin: boolean,
   invitedTeacherEmail: string,
@@ -20,13 +19,13 @@ export interface sentInvitesType {
   expiry: string,
 };
 
-export interface schoolType {
+export interface SchoolProps {
   name: string,
   postcode: string,
   country: string,
 };
 
-interface teacherDashboardType {
+interface TeacherProps {
   id: string,
   isAdmin: boolean,
   teacherEmail: string,
@@ -34,7 +33,7 @@ interface teacherDashboardType {
   teacherLastName: string,
 };
 
-interface classesDashboardType {
+interface ClassesProps {
   name: string,
   accessCode: string,
   classTeacherId: number,
@@ -42,7 +41,7 @@ interface classesDashboardType {
   classTeacherLastName: string,
 };
 
-interface externalRequestType {
+interface ExternalRequestProps {
   studentId: number,
   studentFirstName: string,
   studentEmail: string
@@ -54,44 +53,51 @@ interface externalRequestType {
   isRequestTeacher: boolean,
 };
 
-export interface TeacherDashboardData {
-  coworkers: coworkersType[],
-  teacher: teacherDashboardType,
-  sentInvites: sentInvitesType[],
+export interface TeacherDashboardProps {
+  coworkers: CoworkersProps[],
+  teacher: TeacherProps,
+  sentInvites: SentInvitesProps[],
   backupToken: number,
-  requests: externalRequestType[],
-  classes: classesDashboardType[],
-  school: schoolType
+  requests: ExternalRequestProps[],
+  classes: ClassesProps[],
+  school: SchoolProps
 }
 
-export type moveClassesType = Record<string, string>;
+export type MoveClassesFormProps = Record<string, string>;
 
-export interface organsationKickType extends moveClassesType {
+export interface OrgansationKickProps extends MoveClassesFormProps {
   id: string,
 };
 
-interface inviteTeacherReturnType {
+export interface MoveClassDataProps {
+  source: string,
+  teacher: TeacherProps,
+  classes: ClassesProps[],
+  coworkers: CoworkersProps[]
+};
+
+interface InviteTeacherReturnProps {
   hasError: boolean,
   error: string
 };
 
 const teacherDashboardApi = api.injectEndpoints({
   endpoints: (build) => ({
-    getTeacherData: build.query<TeacherDashboardData, void
+    getTeacherData: build.query<TeacherDashboardProps, void
     >({
       query: () => ({
         url: 'teach/dashboard/',
         method: 'GET'
       }),
-      transformResponse: (response: TeacherDashboardData) => {
-        response.sentInvites.forEach((s: sentInvitesType) => {
+      transformResponse: (response: TeacherDashboardProps) => {
+        response.sentInvites.forEach((s: SentInvitesProps) => {
           s.isExpired = Date.parse(s.expiry) < Date.now();
         });
         return response;
       },
       providesTags: ['teacher']
     }),
-    inviteTeacher: build.mutation<inviteTeacherReturnType, {
+    inviteTeacher: build.mutation<InviteTeacherReturnProps, {
       teacherFirstName: string;
       teacherLastName: string;
       teacherEmail: string;
@@ -136,11 +142,8 @@ const teacherDashboardApi = api.injectEndpoints({
       }),
       invalidatesTags: ['teacher']
     }),
-    organisationKick: build.mutation<{
-      source?: string,
-      classes?: classType,
-      teachers?: teacherType,
-    }, organsationKickType>({
+    organisationKick: build.mutation<MoveClassDataProps, OrgansationKickProps
+    >({
       query: (body) => ({
         url: `teach/dashboard/kick/${body.id}/`,
         method: 'POST',
