@@ -71,9 +71,6 @@ const UpdateNameForm: React.FC = () => {
 };
 
 
-interface ResponseData {
-  access_code: string;
-}
 const UpdatePasswordForm: React.FC = () => {
   const [editStudentPassword] = useEditStudentPasswordMutation();
   const location = useLocation();
