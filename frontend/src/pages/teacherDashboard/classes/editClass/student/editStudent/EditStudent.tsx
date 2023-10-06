@@ -73,13 +73,11 @@ const UpdateNameForm: React.FC = () => {
 const UpdatePasswordForm: React.FC = () => {
   const [editStudentPassword] = useEditStudentPasswordMutation();
   const location = useLocation();
-  console.log(location);
   const studentId = new URLSearchParams(location.search).get('studentIds') ?? '';
   interface Values {
     password: string;
     confirmPassword: string;
   }
-
   const initialValues: Values = {
     password: '',
     confirmPassword: ''
@@ -95,8 +93,6 @@ const UpdatePasswordForm: React.FC = () => {
       .then((response) => {
         const path = paths.teacher.dashboard.classes.editClass.updatedStudentCredentials._;
         const { accessCode } = response;
-        console.log(response, path, accessCode);
-
         navigate(
           path.replace(':accessCode', accessCode), // tried using generatePath but it says it is missing :accessCode 02/10/2023 22:32
           { state: { updatedStudentCredentials: response } }

@@ -1081,6 +1081,8 @@ def expand_key(dictionary):
 #     return response
 
 
+@login_required
+@user_passes_test(logged_in_as_teacher, login_url=reverse_lazy("teacher_login"))
 def teacher_print_reminder_cards(request, access_code):
     klass = get_object_or_404(Class, access_code=access_code)
     check_teacher_authorised(request, klass.teacher)
@@ -1138,11 +1140,11 @@ def teacher_print_reminder_cards(request, access_code):
 #     return response
 
 
-def get_student_data(request):
-    if request.method == "POST":
-        data = request.POST.get("data", "[]")
-        return json.loads(data)
-    return []
+# def get_student_data(request):
+#     if request.method == "POST":
+#         data = request.POST.get("data", "[]")
+#         return json.loads(data)
+#     return []
 
 
 def compute_show_page_character(p, x, y, NUM_Y):
