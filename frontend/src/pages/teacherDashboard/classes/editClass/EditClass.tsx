@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   useNavigate,
   useParams,
@@ -41,6 +41,43 @@ import MoveStudent from './student/moveStudent/MoveStudent';
 import ResetStudent from './student/resetStudent/ResetStudent';
 import { useGetStudentsByAccessCodeQuery, useDeleteClassMutation, useDeleteStudentMutation } from '../../../../app/api';
 import { studentPerAccessCode } from '../../../../app/api/teacher/teach';
+
+const DeleteStudentsConfirmDialog: React.FC<{
+  open: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+}> = ({
+  open,
+  onClose,
+  onConfirm
+}) => {
+    const theme = useTheme();
+    return (
+      <Dialog open={open} onClose={onClose} maxWidth={'xs'}>
+        <Typography variant='h5' textAlign='center'>
+          Delete students
+        </Typography>
+        <Typography>
+          These students will be permanently deleted. Are you sure?
+        </Typography>
+
+        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3} mt={theme.spacing(5)}>
+          <Button
+            variant='outlined'
+            className='body'
+            onClick={onClose}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={onConfirm}
+          >
+            Confirm
+          </Button>
+        </Stack>
+      </Dialog>
+    );
+  };
 
 const DeleteClassConfirmDialog: React.FC<{
   open: boolean;
@@ -97,6 +134,10 @@ const StudentsTable: React.FC<{
     Array(studentData.length).fill(false)
   );
 
+  useEffect(() => {
+    setChecked(Array(studentData.length).fill(false));
+  }, [studentData]);
+
   const handleSelectAllClick: () => void = () => {
     if (checked.includes(true)) {
       setChecked(Array(studentData.length).fill(false));
@@ -122,129 +163,149 @@ const StudentsTable: React.FC<{
     setChecked(newChecked);
   };
 
-  const onDelete = (): void => {
-    const selectedStudentsIds = JSON.stringify(getSelectedStudentsIds());
-    deleteStudent({ accessCode, transferStudents: selectedStudentsIds }).unwrap()
-      .then(() => { })
-      .catch((err) => { console.error('DeleteStudent error ', err); });
+  const [dialog, setDialog] = React.useState<{
+    open: boolean;
+    onConfirm?: () => void;
+  }>({ open: false });
+
+  const onDeleteStudents = (): void => {
+    setDialog({
+      open: true,
+      onConfirm: () => {
+        setDialog({ open: false });
+        const selectedStudentsIds = JSON.stringify(getSelectedStudentsIds());
+        deleteStudent({ accessCode, transferStudents: selectedStudentsIds }).unwrap()
+          .then(() => { })
+          .catch((err) => { console.error('DeleteStudent error ', err); });
+      }
+    });
   };
 
   return (
-    <Box>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>
-              <Typography>Student details</Typography>
-            </TableCell>
-            <TableCell align="center">
-              <Checkbox
-                checked={checked.every((el) => el)}
-                indeterminate={
-                  checked.includes(true) && !checked.every((el) => el)
-                }
-                onChange={handleSelectAllClick}
-              />
-            </TableCell>
-            <TableCell align="center">
-              <Typography>Action</Typography>
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {studentData.map((student, idx) => (
-            <TableRow key={`${student.id}`}>
+    <>
+      <Box>
+        <Table>
+          <TableHead>
+            <TableRow>
               <TableCell>
-                <Typography variant="body2">{student.newUser.firstName} {student.newUser.lastName}</Typography>
+                <Typography>Student details</Typography>
               </TableCell>
               <TableCell align="center">
                 <Checkbox
-                  color="primary"
-                  checked={checked[idx]}
-                  onChange={() => {
-                    handleChange(idx);
-                  }}
+                  checked={checked.every((el) => el)}
+                  indeterminate={
+                    checked.includes(true) && !checked.every((el) => el)
+                  }
+                  onChange={handleSelectAllClick}
                 />
               </TableCell>
               <TableCell align="center">
-                <Button onClick={() => {
-                  navigate(
-                    paths.teacher
-                      .dashboard
-                      .classes
-                      .editClass
-                      .editStudent
-                      ._,
-                    [student.id]
-                  );
-                }}
-                  endIcon={<Edit />}>Edit details</Button>
+                <Typography>Action</Typography>
               </TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-      <Stack direction="row" justifyContent="flex-end" spacing={2}>
-        <Typography variant="subtitle1">
-          {checked.filter((el) => el).length} / {checked.length} selected
-        </Typography>
-      </Stack>
-      <Stack direction="row" justifyContent="flex-end" spacing={2}>
-        <Button
-          disabled={!checked.includes(true)}
-          onClick={() => {
-            navigate(
-              paths.teacher
-                .dashboard
-                .classes
-                .editClass
-                .releaseStudents
-                ._,
-              getSelectedStudentsIds()
-            );
-          }}
-        >Release</Button>
-        <Button
-          disabled={!checked.includes(true)}
-          onClick={() => {
-            navigate(
-              paths.teacher
-                .dashboard
-                .classes
-                .editClass
-                .moveStudents
-                ._,
-              getSelectedStudentsIds()
-            );
-          }}
-        >Move</Button>
-        <Button
-          disabled={!checked.includes(true)}
-          onClick={() => {
-            navigate(
-              paths.teacher
-                .dashboard
-                .classes
-                .editClass
-                .resetStudents
-                ._,
-              getSelectedStudentsIds()
-            );
-          }}
-          endIcon={<SecurityOutlined />}
-        >
-          Reset password and login link
-        </Button>
-        <Button
-          disabled={!checked.includes(true)}
-          endIcon={<DeleteOutlined />}
-          className="alert"
-          onClick={onDelete}
-        >
-          Delete
-        </Button>
-      </Stack>
-    </Box>
+          </TableHead>
+          <TableBody>
+            {studentData.map((student, idx) => (
+              <TableRow key={`${student.id}`}>
+                <TableCell>
+                  <Typography variant="body2">{student.newUser.firstName} {student.newUser.lastName}</Typography>
+                </TableCell>
+                <TableCell align="center">
+                  <Checkbox
+                    color="primary"
+                    checked={checked[idx]}
+                    onChange={() => {
+                      handleChange(idx);
+                    }}
+                  />
+                </TableCell>
+                <TableCell align="center">
+                  <Button onClick={() => {
+                    navigate(
+                      paths.teacher
+                        .dashboard
+                        .classes
+                        .editClass
+                        .editStudent
+                        ._,
+                      [student.id]
+                    );
+                  }}
+                    endIcon={<Edit />}>Edit details</Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+        <Stack direction="row" justifyContent="flex-end" spacing={2}>
+          <Typography variant="subtitle1">
+            {checked.filter((el) => el).length} / {checked.length} selected
+          </Typography>
+        </Stack>
+        <Stack direction="row" justifyContent="flex-end" spacing={2}>
+          <Button
+            disabled={!checked.includes(true)}
+            onClick={() => {
+              navigate(
+                paths.teacher
+                  .dashboard
+                  .classes
+                  .editClass
+                  .releaseStudents
+                  ._,
+                getSelectedStudentsIds()
+              );
+            }}
+          >Release</Button>
+          <Button
+            disabled={!checked.includes(true)}
+            onClick={() => {
+              navigate(
+                paths.teacher
+                  .dashboard
+                  .classes
+                  .editClass
+                  .moveStudents
+                  ._,
+                getSelectedStudentsIds()
+              );
+            }}
+          >Move</Button>
+          <Button
+            disabled={!checked.includes(true)}
+            onClick={() => {
+              navigate(
+                paths.teacher
+                  .dashboard
+                  .classes
+                  .editClass
+                  .resetStudents
+                  ._,
+                getSelectedStudentsIds()
+              );
+            }}
+            endIcon={<SecurityOutlined />}
+          >
+            Reset password and login link
+          </Button>
+          <Button
+            disabled={!checked.includes(true)}
+            endIcon={<DeleteOutlined />}
+            className="alert"
+            onClick={onDeleteStudents}
+          >
+            Delete
+          </Button>
+        </Stack>
+      </Box>
+      {dialog.onConfirm !== undefined &&
+        <DeleteStudentsConfirmDialog
+          open={dialog.open}
+          onClose={() => { setDialog({ open: false }); }}
+          onConfirm={dialog.onConfirm}
+        />
+      }
+    </>
   );
 };
 
