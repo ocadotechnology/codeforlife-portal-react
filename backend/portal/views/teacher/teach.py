@@ -1081,8 +1081,10 @@ def expand_key(dictionary):
 #     return response
 
 
-@login_required
-@user_passes_test(logged_in_as_teacher, login_url=reverse_lazy("teacher_login"))
+@login_required(login_url=reverse_lazy("session-expired"))
+@user_passes_test(
+    logged_in_as_teacher, login_url=reverse_lazy("session-expired")
+)
 def teacher_print_reminder_cards(request, access_code):
     klass = get_object_or_404(Class, access_code=access_code)
     check_teacher_authorised(request, klass.teacher)
