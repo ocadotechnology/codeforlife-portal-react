@@ -33,11 +33,11 @@ const teacher = <>
     element={<TeacherDashboard tab={2} />}
   />
   <Route
-    path={`${paths.teacher.dashboard.student.accept._}`}
+    path={paths.teacher.dashboard.student.accept._}
     element={<AddExternalStudent />}
   />
   <Route
-    path={`${paths.teacher.dashboard.student.added._}`}
+    path={paths.teacher.dashboard.student.added._}
     element={<AddedExternalStudent />}
   />
 </>;

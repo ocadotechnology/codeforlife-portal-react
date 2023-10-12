@@ -1,17 +1,5 @@
 import api from './api';
-
-// TODO: clean this up
-export interface classType {
-  id: number,
-  name: string,
-  accessCode: string
-};
-
-export interface teacherType {
-  id: number,
-  newUserIdFirstName: string,
-  newUserIdLastName: string
-};
+import { MoveClassDataProps } from './teacher/dashboard';
 
 const organisationApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -29,11 +17,7 @@ const organisationApi = api.injectEndpoints({
         }
       })
     }),
-    leaveOrganisation: build.mutation<{
-      source?: string;
-      classes?: classType[],
-      teachers?: teacherType[]
-    }, void | object
+    leaveOrganisation: build.mutation<MoveClassDataProps, void | object
     >({
       query: (body) => ({
         url: 'teach/leave-organisation/',

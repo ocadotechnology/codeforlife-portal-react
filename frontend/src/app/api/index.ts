@@ -1,6 +1,4 @@
-import api, {
-  useLogoutMutation
-} from './api';
+import api, { useLogoutMutation } from './api';
 import {
   useSubscribeToNewsletterMutation,
   useConsentFormMutation
@@ -9,9 +7,7 @@ import {
   useRegisterUserMutation,
   useDownloadStudentPackMutation
 } from './home';
-import {
-  useLoginMutation
-} from './login';
+import { useLoginMutation } from './login';
 import {
   useCreateOrganisationMutation,
   useLeaveOrganisationMutation
@@ -43,7 +39,16 @@ import {
   useResendInviteMutation,
   useDeleteInviteMutation
 } from './teacher/dashboard';
-import { useGetClassQuery, useUpdateClassMutation } from './teacher/teach';
+import {
+  useGetClassQuery,
+  useGetStudentsByAccessCodeQuery,
+  useUpdateClassMutation,
+  useDeleteClassMutation,
+  useMoveClassMutation,
+  useTeacherHas2faQuery,
+  useDisable2faMutation
+} from './teacher/teach';
+import { useUpdateTeacherAccountDetailsMutation } from './teacher/account';
 
 export default api;
 export {
@@ -85,5 +90,12 @@ export {
   useDeleteInviteMutation,
   // teacher/teach
   useGetClassQuery,
-  useUpdateClassMutation
+  useGetStudentsByAccessCodeQuery,
+  useUpdateClassMutation,
+  useDeleteClassMutation,
+  useMoveClassMutation,
+  // teacher/account
+  useUpdateTeacherAccountDetailsMutation,
+  useTeacherHas2faQuery,
+  useDisable2faMutation
 };
