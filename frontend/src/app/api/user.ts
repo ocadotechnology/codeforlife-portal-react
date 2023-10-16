@@ -1,65 +1,16 @@
+import {
+  Model,
+  ReadArg,
+  ReadManyArg,
+  ReadManyResult,
+  ReadResult,
+  UpdateArg,
+  UpdateResult,
+  mapIdsToTag,
+  searchParamsToString
+} from 'codeforlife/lib/esm/helpers/rtkQuery';
+
 import api from './api';
-
-export type Fields = Record<string, unknown>;
-
-export type Model<
-  ID,
-  ReadAndWrite extends Fields = Fields,
-  ReadOnly extends Fields = Fields,
-  WriteOnly extends Fields = Fields
-> = ReadAndWrite & {
-  _readOnly: ReadOnly & { id: ID; };
-  _writeOnly: WriteOnly;
-};
-
-export type ID<M extends Model<any>> = M['_readOnly']['id'];
-
-export type TagArray<
-  Type extends string,
-  M extends Model<any>
-> = Array<{
-  type: Type;
-  id: ID<M>;
-}>;
-
-// Create
-
-export type CreateArg<M extends Model<any>> =
-  Omit<M, '_readOnly' | '_writeOnly'> & M['_writeOnly'];
-
-// Read
-
-export type ReadResult<M extends Model<any>> =
-  Omit<M, '_readOnly' | '_writeOnly'> & M['_readOnly'];
-
-export interface ReadArg<M extends Model<any>> {
-  id: ID<M>;
-}
-
-export interface ReadManyResult<M extends Model<any>> {
-  count: number;
-  offset: number;
-  limit: number;
-  maxLimit: number;
-  data: Array<ReadResult<M>>;
-}
-
-export type ReadManyArg<SearchParams extends Fields = Fields> =
-  null | Partial<SearchParams>;
-
-// Update
-
-export interface UpdateArg<
-  M extends Model<any>,
-  Required extends Fields = Fields
-> {
-  id: ID<M>;
-  body: Partial<CreateArg<M>> & Required;
-}
-
-// Delete
-
-export type DeleteArg<M extends Model<any>> = ReadArg<M>;
 
 export type User = Model<
   number,
@@ -96,33 +47,9 @@ export type User = Model<
   }
 >;
 
-export function searchParamsToString(searchParams: ReadManyArg): string {
-  if (searchParams !== null) {
-    const _searchParams = Object.entries(searchParams)
-      .filter(([key, value]) => value !== undefined)
-      .map(([key, value]) => [key, String(value)]);
-
-    if (_searchParams.length !== 0) {
-      return `?${new URLSearchParams(_searchParams).toString()}`;
-    }
-  }
-
-  return '';
-}
-
-export function mapIdsToTag<
-  Type extends string,
-  M extends Model<any>
->(
-  result: ReadManyResult<M>,
-  type: Type
-): TagArray<Type, M> {
-  return result.data.map(({ id }) => ({ type, id })) as TagArray<Type, M>;
-}
-
 const userApi = api.injectEndpoints({
   endpoints: (build) => ({
-    getUser: build.query<ReadResult<User>, ReadArg<User>>({
+    readUser: build.query<ReadResult<User>, ReadArg<User>>({
       query: ({ id }) => ({
         url: `users/${id}/`,
         method: 'GET'
@@ -132,7 +59,7 @@ const userApi = api.injectEndpoints({
         { type: 'user', id }
       ]
     }),
-    getUsers: build.query<ReadManyResult<User>, ReadManyArg<{
+    readUsers: build.query<ReadManyResult<User>, ReadManyArg<{
       studentClass: string;
     }>>({
       query: (arg) => ({
@@ -146,7 +73,7 @@ const userApi = api.injectEndpoints({
         ]
         : []
     }),
-    updateUser: build.mutation<null, UpdateArg<User, {
+    updateUser: build.mutation<UpdateResult<User>, UpdateArg<User, {
       currentPassword: string;
     }>>({
       query: ({ id, body }) => ({
@@ -166,7 +93,7 @@ const userApi = api.injectEndpoints({
 
 export default userApi;
 export const {
-  useGetUserQuery,
-  useGetUsersQuery,
+  useReadUserQuery,
+  useReadUsersQuery,
   useUpdateUserMutation
 } = userApi;

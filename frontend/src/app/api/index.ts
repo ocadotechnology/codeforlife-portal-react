@@ -1,105 +1,106 @@
 import api, { useLogoutMutation } from './api';
 import {
-  useSubscribeToNewsletterMutation,
-  useConsentFormMutation
+  useConsentFormMutation,
+  useSubscribeToNewsletterMutation
 } from './dotmailer';
 import {
-  useRegisterUserMutation,
-  useDownloadStudentPackMutation
+  useDownloadStudentPackMutation,
+  useRegisterUserMutation
 } from './home';
-import { useLoginMutation } from './login';
+import {
+  useLoginMutation
+} from './login';
 import {
   useCreateOrganisationMutation,
   useLeaveOrganisationMutation
 } from './organisation';
 import {
+  useDeleteAccountMutation,
   useRequestIndependentStudentPasswordResetMutation,
   useRequestTeacherPasswordResetMutation,
   useResetPasswordMutation,
-  useVerifyPasswordMutation,
-  useDeleteAccountMutation
+  useVerifyPasswordMutation
 } from './registration';
-
 import {
-  useGetStudentScoreQuery,
   useGetStudentKuronoGameDataQuery,
-  useUpdateSchoolStudentDetailsMutation,
-  useUpdateStudentDetailsMutation,
+  useGetStudentScoreQuery,
+  useIsRequestingToJoinSchoolQuery,
   useJoinSchoolRequestMutation,
   useRevokeSchoolRequestMutation,
-  useIsRequestingToJoinSchoolQuery
+  useUpdateSchoolStudentDetailsMutation,
+  useUpdateStudentDetailsMutation
 } from './student';
 import {
+  useUpdateTeacherAccountDetailsMutation
+} from './teacher/account';
+import {
+  useDeleteInviteMutation,
   useGetTeacherDataQuery,
   useInviteTeacherMutation,
-  useUpdateSchoolMutation,
-  useToggleAdminMutation,
-  useOrganisationKickMutation,
   useInviteToggleAdminMutation,
+  useOrganisationKickMutation,
   useResendInviteMutation,
-  useDeleteInviteMutation
+  useToggleAdminMutation,
+  useUpdateSchoolMutation
 } from './teacher/dashboard';
 import {
-  useGetClassQuery,
-  useGetStudentsByAccessCodeQuery,
-  useUpdateClassMutation,
+  useDeleteClassMutation,
+  useDisable2faMutation,
   useEditStudentNameMutation,
   useEditStudentPasswordMutation,
-  useDeleteClassMutation,
+  useGetClassQuery,
+  useGetStudentsByAccessCodeQuery,
   useMoveClassMutation,
   useTeacherHas2faQuery,
-  useDisable2faMutation
+  useUpdateClassMutation
 } from './teacher/teach';
-import { useUpdateTeacherAccountDetailsMutation } from './teacher/account';
+import {
+  useReadUserQuery,
+  useReadUsersQuery,
+  useUpdateUserMutation
+} from './user';
 
 export default api;
 export {
-  // api
-  useLogoutMutation,
-  // dotmailer
-  useSubscribeToNewsletterMutation,
   useConsentFormMutation,
-  // home
-  useRegisterUserMutation,
-  useDownloadStudentPackMutation,
-  // login
-  useLoginMutation,
-  // organisation
   useCreateOrganisationMutation,
-  useLeaveOrganisationMutation,
-  // registration
-  useRequestIndependentStudentPasswordResetMutation,
-  useRequestTeacherPasswordResetMutation,
-  useResetPasswordMutation,
-  useVerifyPasswordMutation,
   useDeleteAccountMutation,
-  // student
-  useGetStudentScoreQuery,
-  useGetStudentKuronoGameDataQuery,
-  useUpdateStudentDetailsMutation,
-  useUpdateSchoolStudentDetailsMutation,
-  useJoinSchoolRequestMutation,
-  useRevokeSchoolRequestMutation,
-  useIsRequestingToJoinSchoolQuery,
-  // teacher dashboard
-  useGetTeacherDataQuery,
-  useInviteTeacherMutation,
-  useUpdateSchoolMutation,
-  useToggleAdminMutation,
-  useOrganisationKickMutation,
-  useInviteToggleAdminMutation,
-  useResendInviteMutation,
+  useDeleteClassMutation,
   useDeleteInviteMutation,
-  // teacher/teach
-  useGetClassQuery,
-  useGetStudentsByAccessCodeQuery,
-  useUpdateClassMutation,
+  useDisable2faMutation,
+  useDownloadStudentPackMutation,
   useEditStudentNameMutation,
   useEditStudentPasswordMutation,
-  useDeleteClassMutation,
+  useGetClassQuery,
+  useGetStudentKuronoGameDataQuery,
+  useGetStudentScoreQuery,
+  useGetStudentsByAccessCodeQuery,
+  useGetTeacherDataQuery,
+  useInviteTeacherMutation,
+  useInviteToggleAdminMutation,
+  useIsRequestingToJoinSchoolQuery,
+  useJoinSchoolRequestMutation,
+  useLeaveOrganisationMutation,
+  useLoginMutation,
+  useLogoutMutation,
   useMoveClassMutation,
-  // teacher/account
-  useUpdateTeacherAccountDetailsMutation,
+  useOrganisationKickMutation,
+  useReadUserQuery,
+  useReadUsersQuery,
+  useRegisterUserMutation,
+  useRequestIndependentStudentPasswordResetMutation,
+  useRequestTeacherPasswordResetMutation,
+  useResendInviteMutation,
+  useResetPasswordMutation,
+  useRevokeSchoolRequestMutation,
+  useSubscribeToNewsletterMutation,
   useTeacherHas2faQuery,
-  useDisable2faMutation
+  useToggleAdminMutation,
+  useUpdateClassMutation,
+  useUpdateSchoolMutation,
+  useUpdateSchoolStudentDetailsMutation,
+  useUpdateStudentDetailsMutation,
+  useUpdateTeacherAccountDetailsMutation,
+  useUpdateUserMutation,
+  useVerifyPasswordMutation
 };
