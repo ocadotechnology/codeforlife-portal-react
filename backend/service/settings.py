@@ -10,7 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os
-
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -22,35 +21,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 ALLOWED_HOSTS = ["*"]
 
 # Application definition
-
-INSTALLED_APPS = [
-    "aimmo",
-    "game",
-    "pipeline",
-    "portal",
-    "captcha",
-    "common",
-    "django.contrib.admin",
-    "django.contrib.admindocs",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.sites",
-    "django.contrib.staticfiles",
-    "rest_framework",
-    "import_export",
-    "django_js_reverse",
-    "django_otp",
-    "django_otp.plugins.otp_static",
-    "django_otp.plugins.otp_totp",
-    "sekizai",  # for javascript and css management
-    "treebeard",
-    "two_factor",
-    "preventconcurrentlogins",
-    "codeforlife",
-    "corsheaders",
-]
 
 MIDDLEWARE = [
     "deploy.middleware.admin_access.AdminAccessMiddleware",
@@ -266,3 +236,30 @@ CSP_MANIFEST_SRC = (f"{domain()}/static/manifest.json",)
 
 
 from codeforlife.settings import *
+
+INSTALLED_APPS = [
+    "aimmo",
+    "game",
+    "pipeline",
+    "portal",
+    "captcha",
+    "common",
+    "django.contrib.admin",
+    "django.contrib.admindocs",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.sites",
+    "django.contrib.staticfiles",
+    "import_export",
+    "django_js_reverse",
+    "django_otp",
+    "django_otp.plugins.otp_static",
+    "django_otp.plugins.otp_totp",
+    "sekizai",  # for javascript and css management
+    "treebeard",
+    "two_factor",
+    "preventconcurrentlogins",
+    *INSTALLED_APPS,
+]
