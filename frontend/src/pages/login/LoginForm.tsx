@@ -43,7 +43,8 @@ const LoginForm: React.FC<LoginFormProps> = ({
     const cookie = Cookies.get('sessionid_httponly_false');
     return cookie === undefined
       ? undefined
-      : cookie.split(',').filter(af => af !== '') as AuthFactor[];
+      : cookie.split(',')
+        .filter(authFactor => authFactor !== '') as AuthFactor[];
   }
 
   React.useEffect(() => {
