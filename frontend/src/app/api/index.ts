@@ -55,8 +55,8 @@ import {
   useUpdateClassMutation
 } from './teacher/teach';
 import {
-  useReadUserQuery,
-  useReadUsersQuery,
+  useListUsersQuery,
+  useRetrieveUserQuery,
   useUpdateUserMutation
 } from './user';
 
@@ -81,17 +81,17 @@ export {
   useIsRequestingToJoinSchoolQuery,
   useJoinSchoolRequestMutation,
   useLeaveOrganisationMutation,
+  useListUsersQuery,
   useLoginMutation,
   useLogoutMutation,
   useMoveClassMutation,
   useOrganisationKickMutation,
-  useReadUserQuery,
-  useReadUsersQuery,
   useRegisterUserMutation,
   useRequestIndependentStudentPasswordResetMutation,
   useRequestTeacherPasswordResetMutation,
   useResendInviteMutation,
   useResetPasswordMutation,
+  useRetrieveUserQuery,
   useRevokeSchoolRequestMutation,
   useSubscribeToNewsletterMutation,
   useTeacherHas2faQuery,
