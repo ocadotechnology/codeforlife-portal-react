@@ -1,9 +1,9 @@
 import {
+  ListArg,
+  ListResult,
   Model,
-  ReadArg,
-  ReadManyArg,
-  ReadManyResult,
-  ReadResult,
+  RetrieveArg,
+  RetrieveResult,
   UpdateArg,
   UpdateResult,
   mapIdsToTag,
@@ -49,7 +49,7 @@ export type User = Model<
 
 const userApi = api.injectEndpoints({
   endpoints: (build) => ({
-    readUser: build.query<ReadResult<User>, ReadArg<User>>({
+    retrieveUser: build.query<RetrieveResult<User>, RetrieveArg<User>>({
       query: ({ id }) => ({
         url: `users/${id}/`,
         method: 'GET'
@@ -59,7 +59,7 @@ const userApi = api.injectEndpoints({
         { type: 'user', id }
       ]
     }),
-    readUsers: build.query<ReadManyResult<User>, ReadManyArg<{
+    listUsers: build.query<ListResult<User>, ListArg<{
       studentClass: string;
     }>>({
       query: (arg) => ({
@@ -93,7 +93,7 @@ const userApi = api.injectEndpoints({
 
 export default userApi;
 export const {
-  useReadUserQuery,
-  useReadUsersQuery,
+  useRetrieveUserQuery,
+  useListUsersQuery,
   useUpdateUserMutation
 } = userApi;
