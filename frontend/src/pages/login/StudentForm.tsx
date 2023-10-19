@@ -1,11 +1,11 @@
+import { ChevronRight as ChevronRightIcon } from '@mui/icons-material';
+import { Typography } from '@mui/material';
 import React from 'react';
 import {
+  generatePath,
   useNavigate,
-  useParams,
-  generatePath
+  useParams
 } from 'react-router-dom';
-import { Typography } from '@mui/material';
-import { ChevronRight as ChevronRightIcon } from '@mui/icons-material';
 import * as Yup from 'yup';
 
 import { tryValidateSync } from 'codeforlife/lib/esm/helpers/yup';
@@ -14,12 +14,12 @@ import { accessCodeSchema } from '../../app/schemas';
 import BaseForm from './BaseForm';
 
 import {
+  PasswordField,
   SubmitButton,
-  TextField,
-  PasswordField
+  TextField
 } from 'codeforlife/lib/esm/components/form';
-import { fromSearchParams } from 'codeforlife/lib/esm/hooks';
 import { submitForm } from 'codeforlife/lib/esm/helpers/formik';
+import { fromSearchParams } from 'codeforlife/lib/esm/hooks';
 
 import { useLoginMutation } from '../../app/api';
 import { paths } from '../../app/router';
@@ -108,7 +108,7 @@ const StudentForm: React.FC = () => {
   const searchParams = tryValidateSync(
     fromSearchParams(),
     Yup.object({
-      userId: Yup.string().required(),
+      userId: Yup.number().required(),
       loginId: Yup.string().required()
     })
   );
