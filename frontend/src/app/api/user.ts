@@ -18,6 +18,7 @@ export type User = Model<
     firstName: string;
     lastName: string;
     email: string;
+    password: null | string;
   },
   {
     username: string;
@@ -41,9 +42,6 @@ export type User = Model<
       blockedTime: null | Date;
       invitedBy: null | number;
     };
-  },
-  {
-    password: string;
   }
 >;
 
@@ -73,10 +71,10 @@ const userApi = api.injectEndpoints({
         ]
         : []
     }),
-    updateUser: build.mutation<UpdateResult<User>, UpdateArg<User, {
-      currentPassword: string;
-    }>>({
-      query: ({ id, body }) => ({
+    updateUser: build.mutation<UpdateResult<User>, UpdateArg<User> & {
+      currentPassword?: string;
+    }>({
+      query: ({ id, ...body }) => ({
         url: `users/${id}/`,
         method: 'PATCH',
         body,
