@@ -37,7 +37,7 @@ const baseQuery: FetchBaseQuery = async (args, api, extraOptions) => {
     extraOptions
   );
 
-  // handleResponseError(result);
+  handleResponseError(result);
 
   parseResponseBody(result);
 
@@ -54,4 +54,6 @@ const api = createApi({
 });
 
 export default api;
-export const { useLogoutMutation } = api;
+export const {
+  useLogoutMutation
+} = api;
