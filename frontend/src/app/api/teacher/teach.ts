@@ -46,12 +46,11 @@ const teachApi = api.injectEndpoints({
         { type: 'class', id: accessCode }
       ]
     }),
-    getStudentsByAccessCode: build.query<
-      {
-        studentsPerAccessCode: studentPerAccessCode[];
-      },
-      { accessCode: string }
-    >({
+    getStudentsByAccessCode: build.query<{
+      studentsPerAccessCode: studentPerAccessCode[];
+    }, {
+      accessCode: string
+    }>({
       query: ({ accessCode }) => ({
         url: `class/students/${accessCode}/`,
         method: 'GET'
@@ -60,29 +59,25 @@ const teachApi = api.injectEndpoints({
         { type: 'student', id: accessCode }
       ]
     }),
-    getStudent: build.query<
-      {
-        student: studentPerAccessCode;
-      },
-      { studentId: string }
-    >({
+    getStudent: build.query<{
+      student: studentPerAccessCode;
+    }, {
+      studentId: string
+    }>({
       query: ({ studentId }) => ({
         url: `class/student/${studentId}/`,
         method: 'GET'
       })
     }),
-    updateClass: build.mutation<
-      null,
-      {
-        accessCode: string;
-        classEditSubmit?: boolean;
-        levelControlSubmit?: boolean;
-        classMoveSubmit?: boolean;
-        name: string;
-        classmateProgress: boolean;
-        externalRequests: string;
-      }
-    >({
+    updateClass: build.mutation<null, {
+      accessCode: string;
+      classEditSubmit?: boolean;
+      levelControlSubmit?: boolean;
+      classMoveSubmit?: boolean;
+      name: string;
+      classmateProgress: boolean;
+      externalRequests: string;
+    }>({
       query: ({ accessCode, ...body }) => ({
         url: `teach/class/edit/${accessCode}`,
         method: 'POST',
@@ -95,16 +90,13 @@ const teachApi = api.injectEndpoints({
         { type: 'class', id: accessCode }
       ]
     }),
-    editStudentPassword: build.mutation<
-      {
-        accessCode: string;
-      },
-      {
-        studentId: string;
-        password: string;
-        confirmPassword: string;
-      }
-    >({
+    editStudentPassword: build.mutation<{
+      accessCode: string;
+    }, {
+      studentId: string;
+      password: string;
+      confirmPassword: string;
+    }>({
       query: ({ studentId, password, confirmPassword }) => ({
         url: `teach/student/edit/${studentId}`,
         method: 'POST',
@@ -117,13 +109,10 @@ const teachApi = api.injectEndpoints({
         }
       })
     }),
-    editStudentName: build.mutation<
-      null,
-      {
-        studentId: string;
-        name: string;
-      }
-    >({
+    editStudentName: build.mutation<null, {
+      studentId: string;
+      name: string;
+    }>({
       query: ({ studentId, name }) => ({
         url: `teach/student/edit/${studentId}`,
         method: 'POST',
@@ -135,7 +124,9 @@ const teachApi = api.injectEndpoints({
         }
       })
     }),
-    deleteClass: build.mutation<null, { accessCode: string }>({
+    deleteClass: build.mutation<null, {
+      accessCode: string
+    }>({
       query: ({ accessCode }) => ({
         url: `teach/class/delete/${accessCode}`,
         method: 'POST',
@@ -145,13 +136,10 @@ const teachApi = api.injectEndpoints({
       }),
       invalidatesTags: ['teacher']
     }),
-    moveClass: build.mutation<
-      void,
-      {
-        accessCode: string;
-        teacherId: string;
-      }
-    >({
+    moveClass: build.mutation<null, {
+      accessCode: string;
+      teacherId: string;
+    }>({
       query: (body) => ({
         url: 'teach/move_class/',
         method: 'POST',
@@ -162,7 +150,10 @@ const teachApi = api.injectEndpoints({
       }),
       invalidatesTags: ['teacher']
     }),
-    getReminderCards: build.mutation<null, { accessCode: string; data: any }>({
+    getReminderCards: build.mutation<null, {
+      accessCode: string;
+      data: any;
+    }>({
       query: ({ accessCode, data }) => ({
         url: `teach/onboarding-class/${accessCode}/print-reminder-cards/`,
         method: 'POST',
