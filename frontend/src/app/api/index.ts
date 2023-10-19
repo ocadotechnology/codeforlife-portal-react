@@ -8,6 +8,10 @@ import {
   useRegisterUserMutation
 } from './home';
 import {
+  useListClassesQuery,
+  useRetrieveClassQuery
+} from './klass';
+import {
   useLoginMutation
 } from './login';
 import {
@@ -81,6 +85,7 @@ export {
   useIsRequestingToJoinSchoolQuery,
   useJoinSchoolRequestMutation,
   useLeaveOrganisationMutation,
+  useListClassesQuery,
   useListUsersQuery,
   useLoginMutation,
   useLogoutMutation,
@@ -91,6 +96,7 @@ export {
   useRequestTeacherPasswordResetMutation,
   useResendInviteMutation,
   useResetPasswordMutation,
+  useRetrieveClassQuery,
   useRetrieveUserQuery,
   useRevokeSchoolRequestMutation,
   useSubscribeToNewsletterMutation,
