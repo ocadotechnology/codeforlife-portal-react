@@ -8,8 +8,12 @@ import {
   useRegisterUserMutation
 } from './home';
 import {
+  Class,
+  useCreateClassQuery,
+  useDestroyClassMutation,
   useListClassesQuery,
-  useRetrieveClassQuery
+  useRetrieveClassQuery,
+  useUpdateClassMutation
 } from './klass';
 import {
   useLoginMutation
@@ -25,6 +29,14 @@ import {
   useResetPasswordMutation,
   useVerifyPasswordMutation
 } from './registration';
+import {
+  School,
+  useCreateSchoolQuery,
+  useDestroySchoolMutation,
+  useListSchoolsQuery,
+  useRetrieveSchoolQuery,
+  useUpdateSchoolMutation
+} from './school';
 import {
   useGetStudentKuronoGameDataQuery,
   useGetStudentScoreQuery,
@@ -42,10 +54,10 @@ import {
   useGetTeacherDataQuery,
   useInviteTeacherMutation,
   useInviteToggleAdminMutation,
+  useOldUpdateSchoolMutation,
   useOrganisationKickMutation,
   useResendInviteMutation,
-  useToggleAdminMutation,
-  useUpdateSchoolMutation
+  useToggleAdminMutation
 } from './teacher/dashboard';
 import {
   useDeleteClassMutation,
@@ -55,10 +67,12 @@ import {
   useGetClassQuery,
   useGetStudentsByAccessCodeQuery,
   useMoveClassMutation,
-  useTeacherHas2faQuery,
-  useUpdateClassMutation
+  useTeacherHas2faQuery
 } from './teacher/teach';
 import {
+  User,
+  useCreateUserQuery,
+  useDestroyUserMutation,
   useListUsersQuery,
   useRetrieveUserQuery,
   useUpdateUserMutation
@@ -67,10 +81,16 @@ import {
 export default api;
 export {
   useConsentFormMutation,
+  useCreateClassQuery,
   useCreateOrganisationMutation,
+  useCreateSchoolQuery,
+  useCreateUserQuery,
   useDeleteAccountMutation,
   useDeleteClassMutation,
   useDeleteInviteMutation,
+  useDestroyClassMutation,
+  useDestroySchoolMutation,
+  useDestroyUserMutation,
   useDisable2faMutation,
   useDownloadStudentPackMutation,
   useEditStudentNameMutation,
@@ -86,10 +106,12 @@ export {
   useJoinSchoolRequestMutation,
   useLeaveOrganisationMutation,
   useListClassesQuery,
+  useListSchoolsQuery,
   useListUsersQuery,
   useLoginMutation,
   useLogoutMutation,
   useMoveClassMutation,
+  useOldUpdateSchoolMutation,
   useOrganisationKickMutation,
   useRegisterUserMutation,
   useRequestIndependentStudentPasswordResetMutation,
@@ -97,6 +119,7 @@ export {
   useResendInviteMutation,
   useResetPasswordMutation,
   useRetrieveClassQuery,
+  useRetrieveSchoolQuery,
   useRetrieveUserQuery,
   useRevokeSchoolRequestMutation,
   useSubscribeToNewsletterMutation,
@@ -108,5 +131,8 @@ export {
   useUpdateStudentDetailsMutation,
   useUpdateTeacherAccountDetailsMutation,
   useUpdateUserMutation,
-  useVerifyPasswordMutation
+  useVerifyPasswordMutation,
+  type Class,
+  type School,
+  type User
 };

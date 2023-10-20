@@ -1,4 +1,8 @@
 import {
+  CreateArg,
+  CreateResult,
+  DestroyArg,
+  DestroyResult,
   ListArg,
   ListResult,
   Model,
@@ -6,8 +10,8 @@ import {
   RetrieveResult,
   UpdateArg,
   UpdateResult,
-  mapIdsToTag,
-  searchParamsToString
+  searchParamsToString,
+  tagModels
 } from 'codeforlife/lib/esm/helpers/rtkQuery';
 
 import api from './api';
@@ -47,33 +51,59 @@ export type User = Model<
 
 const userApi = api.injectEndpoints({
   endpoints: (build) => ({
-    retrieveUser: build.query<RetrieveResult<User>, RetrieveArg<User>>({
+    createUser: build.query<
+      CreateResult<User>,
+      CreateArg<User>
+    >({
+      query: (body) => ({
+        url: 'users/',
+        method: 'POST',
+        body,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }),
+      providesTags: (result, error, data) => result && !error
+        ? [
+          'private',
+          { type: 'user', id: result.id }
+        ]
+        : []
+    }),
+    retrieveUser: build.query<
+      RetrieveResult<User>,
+      RetrieveArg<User>
+    >({
       query: ({ id }) => ({
         url: `users/${id}/`,
         method: 'GET'
       }),
-      providesTags: (result, error, { id }) => [
-        'private',
-        { type: 'user', id }
-      ]
+      providesTags: (result, error, { id }) => result && !error
+        ? [
+          'private',
+          { type: 'user', id }
+        ]
+        : []
     }),
-    listUsers: build.query<ListResult<User>, ListArg<{
-      studentClass: string;
-    }>>({
+    listUsers: build.query<
+      ListResult<User>,
+      ListArg<{ studentClass: string; }>
+    >({
       query: (arg) => ({
         url: `users/${searchParamsToString(arg)}`,
         method: 'GET'
       }),
-      providesTags: (result, error, arg) => result
+      providesTags: (result, error, arg) => result && !error
         ? [
           'private',
-          ...mapIdsToTag(result, 'user')
+          ...tagModels(result, 'user')
         ]
         : []
     }),
-    updateUser: build.mutation<UpdateResult<User>, UpdateArg<User> & {
-      currentPassword?: string;
-    }>({
+    updateUser: build.mutation<
+      UpdateResult<User>,
+      UpdateArg<User> & { currentPassword?: string; }
+    >({
       query: ({ id, ...body }) => ({
         url: `users/${id}/`,
         method: 'PATCH',
@@ -82,16 +112,30 @@ const userApi = api.injectEndpoints({
           'Content-Type': 'application/x-www-form-urlencoded'
         }
       }),
-      invalidatesTags: (result, error, { id }) => error
-        ? []
-        : [{ type: 'user', id }]
+      invalidatesTags: (result, error, { id }) => !error
+        ? [{ type: 'user', id }]
+        : []
+    }),
+    destroyUser: build.mutation<
+      DestroyResult,
+      DestroyArg<User>
+    >({
+      query: ({ id }) => ({
+        url: `users/${id}/`,
+        method: 'DELETE'
+      }),
+      invalidatesTags: (result, error, { id }) => !error
+        ? [{ type: 'user', id }]
+        : []
     })
   })
 });
 
 export default userApi;
 export const {
+  useCreateUserQuery,
   useRetrieveUserQuery,
   useListUsersQuery,
-  useUpdateUserMutation
+  useUpdateUserMutation,
+  useDestroyUserMutation
 } = userApi;
