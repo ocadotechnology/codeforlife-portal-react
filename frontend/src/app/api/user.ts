@@ -23,13 +23,6 @@ export type User = Model<
     lastName: string;
     email: string;
     password: null | string;
-  },
-  {
-    username: string;
-    isActive: boolean;
-    isStaff: boolean;
-    dateJoined: Date;
-    lastLogin: null | Date;
     student: null | {
       classField: null | number;
       loginId: null | string;
@@ -46,6 +39,13 @@ export type User = Model<
       blockedTime: null | Date;
       invitedBy: null | number;
     };
+  },
+  {
+    username: string;
+    isActive: boolean;
+    isStaff: boolean;
+    dateJoined: Date;
+    lastLogin: null | Date;
   }
 >;
 
