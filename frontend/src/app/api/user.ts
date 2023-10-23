@@ -1,4 +1,6 @@
 import {
+  BulkCreateArg,
+  BulkCreateResult,
   CreateArg,
   CreateResult,
   DestroyArg,
@@ -11,7 +13,7 @@ import {
   UpdateArg,
   UpdateResult,
   searchParamsToString,
-  tagModels
+  tagData
 } from 'codeforlife/lib/esm/helpers/rtkQuery';
 
 import api from './api';
@@ -70,6 +72,25 @@ const userApi = api.injectEndpoints({
         ]
         : []
     }),
+    bulkCreateUsers: build.query<
+      BulkCreateResult<User>,
+      BulkCreateArg<User>
+    >({
+      query: (body) => ({
+        url: 'users/',
+        method: 'POST',
+        body,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }),
+      providesTags: (result, error, arg) => result && !error
+        ? [
+          'private',
+          ...tagData(result, 'user')
+        ]
+        : []
+    }),
     retrieveUser: build.query<
       RetrieveResult<User>,
       RetrieveArg<User>
@@ -96,7 +117,7 @@ const userApi = api.injectEndpoints({
       providesTags: (result, error, arg) => result && !error
         ? [
           'private',
-          ...tagModels(result, 'user')
+          ...tagData(result, 'user')
         ]
         : []
     }),
@@ -133,7 +154,8 @@ const userApi = api.injectEndpoints({
 
 export default userApi;
 export const {
-  useCreateUserQuery,
+  useLazyCreateUserQuery,
+  useLazyBulkCreateUsersQuery,
   useRetrieveUserQuery,
   useListUsersQuery,
   useUpdateUserMutation,

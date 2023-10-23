@@ -10,7 +10,7 @@ import {
   RetrieveResult,
   UpdateArg,
   UpdateResult,
-  tagModels
+  tagData
 } from 'codeforlife/lib/esm/helpers/rtkQuery';
 
 import api from './api';
@@ -20,10 +20,10 @@ export type Class = Model<
   {
     name: string;
     teacher: number;
-    classmatesDataViewable: boolean;
-    alwaysAcceptRequests: boolean;
+    classmatesDataViewable?: boolean;
+    alwaysAcceptRequests?: boolean;
     acceptRequestsUntil: null | Date;
-    isActive: boolean;
+    isActive?: boolean;
   },
   {
     accessCode: string;
@@ -79,7 +79,7 @@ const classApi = api.injectEndpoints({
       providesTags: (result, error, arg) => result && !error
         ? [
           'private',
-          ...tagModels(result, 'class', 'accessCode')
+          ...tagData(result, 'class', 'accessCode')
         ]
         : []
     }),
@@ -116,7 +116,7 @@ const classApi = api.injectEndpoints({
 
 export default classApi;
 export const {
-  useCreateClassQuery,
+  useLazyCreateClassQuery,
   useRetrieveClassQuery,
   useListClassesQuery,
   useUpdateClassMutation,

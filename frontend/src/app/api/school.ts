@@ -10,7 +10,7 @@ import {
   RetrieveResult,
   UpdateArg,
   UpdateResult,
-  tagModels
+  tagData
 } from 'codeforlife/lib/esm/helpers/rtkQuery';
 
 import api from './api';
@@ -22,7 +22,7 @@ export type School = Model<
     postcode: null | string;
     country: string;
     county: null | string;
-    isActive: boolean;
+    isActive?: boolean;
   },
   {
     creationTime: null | Date;
@@ -76,7 +76,7 @@ const schoolApi = api.injectEndpoints({
       providesTags: (result, error, arg) => result && !error
         ? [
           'private',
-          ...tagModels(result, 'school')
+          ...tagData(result, 'school')
         ]
         : []
     }),
@@ -113,7 +113,7 @@ const schoolApi = api.injectEndpoints({
 
 export default schoolApi;
 export const {
-  useCreateSchoolQuery,
+  useLazyCreateSchoolQuery,
   useRetrieveSchoolQuery,
   useListSchoolsQuery,
   useUpdateSchoolMutation,

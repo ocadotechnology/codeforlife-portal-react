@@ -9,8 +9,8 @@ import {
 } from './home';
 import {
   Class,
-  useCreateClassQuery,
   useDestroyClassMutation,
+  useLazyCreateClassQuery,
   useListClassesQuery,
   useRetrieveClassQuery,
   useUpdateClassMutation
@@ -31,8 +31,8 @@ import {
 } from './registration';
 import {
   School,
-  useCreateSchoolQuery,
   useDestroySchoolMutation,
+  useLazyCreateSchoolQuery,
   useListSchoolsQuery,
   useRetrieveSchoolQuery,
   useUpdateSchoolMutation
@@ -71,8 +71,9 @@ import {
 } from './teacher/teach';
 import {
   User,
-  useCreateUserQuery,
   useDestroyUserMutation,
+  useLazyBulkCreateUsersQuery,
+  useLazyCreateUserQuery,
   useListUsersQuery,
   useRetrieveUserQuery,
   useUpdateUserMutation
@@ -81,10 +82,7 @@ import {
 export default api;
 export {
   useConsentFormMutation,
-  useCreateClassQuery,
   useCreateOrganisationMutation,
-  useCreateSchoolQuery,
-  useCreateUserQuery,
   useDeleteAccountMutation,
   useDeleteClassMutation,
   useDeleteInviteMutation,
@@ -104,6 +102,10 @@ export {
   useInviteToggleAdminMutation,
   useIsRequestingToJoinSchoolQuery,
   useJoinSchoolRequestMutation,
+  useLazyBulkCreateUsersQuery,
+  useLazyCreateClassQuery,
+  useLazyCreateSchoolQuery,
+  useLazyCreateUserQuery,
   useLeaveOrganisationMutation,
   useListClassesQuery,
   useListSchoolsQuery,
