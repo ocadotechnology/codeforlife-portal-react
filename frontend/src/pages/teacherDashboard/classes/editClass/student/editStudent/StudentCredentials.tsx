@@ -55,31 +55,33 @@ const StudentCredentials: React.FC = () => {
 
   const klass = useRetrieveClassQuery({ accessCode });
 
-  return (klass.data !== undefined &&
+  return (
     <Page.Container>
-      <Page.Banner
-        subheader={`${klass.data.name}, (${klass.data.accessCode})`}
-        textAlign='center'
-        header='Class and class access code:'
-      />
-      <Page.Notification>
-        <Stack
-          direction='row'
-          justifyContent='space-between'
-        >
-          <Typography mb={0}>
-            This is the only time you will be able to view this page. You can
-            print reminder cards or download as a CSV file.
-          </Typography>
-          <DownloadButtonPDF isButtonBanner={true} />
-        </Stack>
-      </Page.Notification>
-      <Page.Section>
-        <NewStudentsTable
-          accessCode={klass.data.accessCode}
-          users={state.users}
+      {klass.data !== undefined && <>
+        <Page.Banner
+          subheader={`${klass.data.name}, (${klass.data.accessCode})`}
+          textAlign='center'
+          header='Class and class access code:'
         />
-      </Page.Section>
+        <Page.Notification>
+          <Stack
+            direction='row'
+            justifyContent='space-between'
+          >
+            <Typography mb={0}>
+              This is the only time you will be able to view this page. You can
+              print reminder cards or download as a CSV file.
+            </Typography>
+            <DownloadButtonPDF isButtonBanner={true} />
+          </Stack>
+        </Page.Notification>
+        <Page.Section>
+          <NewStudentsTable
+            accessCode={klass.data.accessCode}
+            users={state.users}
+          />
+        </Page.Section>
+      </>}
     </Page.Container>
   );
 };

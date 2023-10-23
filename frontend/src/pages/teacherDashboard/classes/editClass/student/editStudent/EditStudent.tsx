@@ -36,7 +36,7 @@ const EditStudent: React.FC<EditStudentProps> = ({
   const user = useRetrieveUserQuery({ id });
   const klass = useRetrieveClassQuery({ accessCode });
 
-  return user.data !== undefined && klass.data !== undefined && <>
+  return <>{user.data !== undefined && klass.data !== undefined && <>
     <Page.Section style={{ paddingBottom: theme.spacing(1.5) }}>
       <Typography
         align="center"
@@ -132,7 +132,7 @@ const EditStudent: React.FC<EditStudentProps> = ({
         </SubmitButton>
       </Form>
     </Page.Section>
-  </>;
+  </>}</>;
 };
 
 export default EditStudent;
