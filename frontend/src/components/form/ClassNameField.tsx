@@ -15,7 +15,7 @@ export interface ClassNameFieldProps {
 }
 
 const ClassNameField: React.FC<ClassNameFieldProps> = ({
-  name = 'class'
+  name = 'name'
 }) => {
   return (
     <TextField

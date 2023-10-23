@@ -1,28 +1,32 @@
-import React from 'react';
-import {
-  Stack,
-  Typography,
-  Button,
-  Table,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableRowProps,
-  TableCell,
-  TableCellProps,
-  typographyClasses,
-  useTheme,
-  Box
-} from '@mui/material';
 import {
   Print as PrintIcon,
   SaveAlt as SaveAltIcon
 } from '@mui/icons-material';
-
-import { primary } from 'codeforlife/lib/esm/theme/colors';
-import CopyToClipboardIcon from '../../components/CopyToClipboardIcon';
-import { useLocation } from 'react-router-dom';
+import {
+  Box,
+  Button,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableCellProps,
+  TableHead,
+  TableRow,
+  TableRowProps,
+  Typography,
+  typographyClasses,
+  useTheme
+} from '@mui/material';
 import { pdf } from '@react-pdf/renderer';
+import React from 'react';
+import { generatePath, useLocation } from 'react-router-dom';
+
+import { BulkCreateResult } from 'codeforlife/lib/esm/helpers/rtkQuery';
+import { primary } from 'codeforlife/lib/esm/theme/colors';
+
+import { User } from '../../app/api';
+import { paths } from '../../app/router';
+import CopyToClipboardIcon from '../../components/CopyToClipboardIcon';
 import MyDocument from '../../pages/login/MyDocument';
 
 interface StudentInfo {
@@ -166,21 +170,21 @@ const BodyRowTableCell: React.FC<TableRowProps> = (props) => (
 );
 
 export interface NewStudentsTableProps {
-  classLink: string;
-  students: Array<{
-    name: string;
-    password: string;
-    link: string;
-  }>;
+  accessCode: string;
+  users: BulkCreateResult<User>;
 }
 
-const NewStudentsTable: React.FC<NewStudentsTableProps> = ({ students }) => {
+const NewStudentsTable: React.FC<NewStudentsTableProps> = ({
+  accessCode,
+  users
+}) => {
+  const theme = useTheme();
+
+  const classLink = generatePath(paths.login.student.class._, { accessCode });
+
   const nameCellWidth = '40%';
   const passwordCellWidth = '60%';
 
-  const location = useLocation();
-  const theme = useTheme();
-  const classLink = location.state.updatedStudentCredentials.classLink;
   return (
     <Box marginBottom={theme.spacing(2)}>
       <Box marginBottom={theme.spacing(6)}>
@@ -275,34 +279,42 @@ const NewStudentsTable: React.FC<NewStudentsTableProps> = ({ students }) => {
               </TableCell>
             </HeadRowTableCell>
           </TableRow>
-          {students.map((student) => (
-            <TableRow key={student.name}>
-              <BodyRowTableCell>
-                <TableCell width={nameCellWidth}>
-                  <Typography>{student.name}</Typography>
-                </TableCell>
-                <TableCell width={passwordCellWidth}>
-                  <Typography>{student.password}</Typography>
-                </TableCell>
-              </BodyRowTableCell>
-              <WhiteTableCell />
-              <BodyRowTableCell>
-                <TableCell>
-                  <Stack direction="row" width="100%" alignItems="center">
-                    <Typography className="nowrap-ellipsis">
-                      {student.link}
-                    </Typography>
-                    <CopyToClipboardIcon
-                      stringToCopy={student.link}
-                      sx={{
-                        marginLeft: 'auto'
-                      }}
-                    />
-                  </Stack>
-                </TableCell>
-              </BodyRowTableCell>
-            </TableRow>
-          ))}
+          {users.map((user) => {
+            if (!user.student?.loginId) throw new Error();
+
+            const link = classLink +
+              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+              `?userId=${user.id}&loginId=${user.student.loginId}`;
+
+            return (
+              <TableRow key={user.firstName}>
+                <BodyRowTableCell>
+                  <TableCell width={nameCellWidth}>
+                    <Typography>{user.firstName}</Typography>
+                  </TableCell>
+                  <TableCell width={passwordCellWidth}>
+                    <Typography>{user.password}</Typography>
+                  </TableCell>
+                </BodyRowTableCell>
+                <WhiteTableCell />
+                <BodyRowTableCell>
+                  <TableCell>
+                    <Stack direction="row" width="100%" alignItems="center">
+                      <Typography className="nowrap-ellipsis">
+                        {link}
+                      </Typography>
+                      <CopyToClipboardIcon
+                        stringToCopy={link}
+                        sx={{
+                          marginLeft: 'auto'
+                        }}
+                      />
+                    </Stack>
+                  </TableCell>
+                </BodyRowTableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
       {/* TODO: fix margin bottom */}
