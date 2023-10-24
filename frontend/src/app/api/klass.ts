@@ -108,7 +108,7 @@ const classApi = api.injectEndpoints({
         method: 'DELETE'
       }),
       invalidatesTags: (result, error, { accessCode }) => !error
-        ? [{ type: 'school', id: accessCode }]
+        ? [{ type: 'class', id: accessCode }]
         : []
     })
   })
