@@ -4,12 +4,11 @@ import {
   Typography,
   Stack,
   Divider,
-  Link,
-  Box
+  Link
 } from '@mui/material';
 
 export interface TableOfContentsProps {
-  contents: Array<{ header: string, element: React.ReactElement }>;
+  contents: Array<{ header: string, element: React.ReactElement; }>;
 }
 
 export const ids = {

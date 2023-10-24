@@ -7,7 +7,7 @@ import {
 const SeeClassmatesProgressField: React.FC = () => {
   return (
     <CheckboxField
-      name='seeClassmates'
+      name='classmatesDataViewable'
       formControlLabelProps={{
         label: 'Allow students to see their classmates\' progress?'
       }}

@@ -1,13 +1,7 @@
-import React, { useEffect } from 'react';
+/* eslint-disable max-len */
 import {
-  useNavigate,
-  useParams,
-  generatePath,
-  useLocation
-} from 'react-router-dom';
-import {
-  DeleteOutlined,
   DeleteOutlineOutlined,
+  DeleteOutlined,
   Edit,
   SecurityOutlined
 } from '@mui/icons-material';
@@ -26,21 +20,33 @@ import {
   Typography,
   useTheme
 } from '@mui/material';
+import React, { useEffect } from 'react';
+import {
+  generatePath,
+  useLocation,
+  useNavigate,
+  useParams
+} from 'react-router-dom';
 import * as yup from 'yup';
 
 import Page from 'codeforlife/lib/esm/components/page';
 import { tryValidateSync } from 'codeforlife/lib/esm/helpers/yup';
 import { fromSearchParams } from 'codeforlife/lib/esm/hooks';
 
+import {
+  useDeleteClassMutation,
+  useDeleteStudentMutation,
+  useGetStudentsByAccessCodeQuery
+} from '../../../../app/api';
+import { studentPerAccessCode } from '../../../../app/api/teacher/teach';
 import { paths } from '../../../../app/router';
 import AddStudentsForm from '../../../../features/addStudentsForm/AddStudentsForm';
 import AdditionalSettings from './additionalSettings/AdditionalSettings';
 import EditStudent from './student/editStudent/EditStudent';
-import ReleaseStudent from './student/releaseStudent/ReleaseStudent';
 import MoveStudent from './student/moveStudent/MoveStudent';
+import ReleaseStudent from './student/releaseStudent/ReleaseStudent';
 import ResetStudent from './student/resetStudent/ResetStudent';
-import { useGetStudentsByAccessCodeQuery, useDeleteClassMutation, useDeleteStudentMutation } from '../../../../app/api';
-import { studentPerAccessCode } from '../../../../app/api/teacher/teach';
+/* eslint-enable */
 
 const DeleteStudentsConfirmDialog: React.FC<{
   open: boolean;
@@ -60,8 +66,11 @@ const DeleteStudentsConfirmDialog: React.FC<{
         <Typography>
           These students will be permanently deleted. Are you sure?
         </Typography>
-
-        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3} mt={theme.spacing(5)}>
+        <Stack
+          direction={{ xs: 'column', sm: 'row' }}
+          spacing={3}
+          mt={theme.spacing(5)}
+        >
           <Button
             variant='outlined'
             className='body'
@@ -97,8 +106,11 @@ const DeleteClassConfirmDialog: React.FC<{
         <Typography>
           This class will be permanently deleted. Are you sure?
         </Typography>
-
-        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3} mt={theme.spacing(5)}>
+        <Stack
+          direction={{ xs: 'column', sm: 'row' }}
+          spacing={3}
+          mt={theme.spacing(5)}
+        >
           <Button
             variant='outlined'
             className='body'
@@ -174,7 +186,8 @@ const StudentsTable: React.FC<{
       onConfirm: () => {
         setDialog({ open: false });
         const selectedStudentsIds = JSON.stringify(getSelectedStudentsIds());
-        deleteStudent({ accessCode, transferStudents: selectedStudentsIds }).unwrap()
+        deleteStudent({ accessCode, transferStudents: selectedStudentsIds })
+          .unwrap()
           .then(() => { })
           .catch((err) => { console.error('DeleteStudent error ', err); });
       }
@@ -201,6 +214,13 @@ const StudentsTable: React.FC<{
               </TableCell>
               <TableCell align="center">
                 <Typography>Action</Typography>
+                <Button
+                  /* eslint-disable max-len */
+                  // TODO: Really need to close this ticket, but I am not sure why navigate is not working here
+                  // please fix when we have time
+                  // href={paths.teacher.dashboard.classes.editClass.editStudent._.replace(':accessCode', accessCode).replace('{studentIds}', String(student.id))}
+                  /* eslint-enable */
+                  endIcon={<Edit />}>Edit details</Button>
               </TableCell>
             </TableRow>
           </TableHead>
@@ -208,7 +228,9 @@ const StudentsTable: React.FC<{
             {studentData.map((student, idx) => (
               <TableRow key={`${student.id}`}>
                 <TableCell>
-                  <Typography variant="body2">{student.newUser.firstName} {student.newUser.lastName}</Typography>
+                  <Typography variant="body2">
+                    {student.newUser.firstName} {student.newUser.lastName}
+                  </Typography>
                 </TableCell>
                 <TableCell align="center">
                   <Checkbox
@@ -383,7 +405,7 @@ const EditClass: React.FC<{
         case 'edit':
           return <EditStudent
             accessCode={accessCode}
-            studentId={studentIds[0]}
+            id={studentIds[0]}
             goBack={goBack}
           />;
         case 'release':
@@ -424,7 +446,8 @@ const EditClass: React.FC<{
         if (classHasStudents) {
           navigate('.', {
             state: {
-              message: 'This class still has students, please remove or delete them all before deleting the class.'
+              message: 'This class still has students, please remove or' +
+                ' delete them all before deleting the class.'
             }
           });
           navigate(0);
@@ -475,7 +498,10 @@ const EditClass: React.FC<{
           your school and make them an independent Code for Life user, or delete
           them permanently.
         </Typography>
-        {studentData && <StudentsTable accessCode={accessCode} studentData={studentData} />}
+        {studentData && <StudentsTable
+          accessCode={accessCode}
+          studentData={studentData}
+        />}
       </Box>
     </Page.Section>
     <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>

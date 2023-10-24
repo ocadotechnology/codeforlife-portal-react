@@ -3,8 +3,9 @@ import { path as _ } from 'codeforlife/lib/esm/helpers';
 const paths = _('', {
   login: _('/login', {
     teacher: _('/teacher', {
-      twoFA: _('/2fa'),
-      backupToken: _('/backup-token')
+      otp: _('/otp', {
+        bypassToken: _('/bypass-token')
+      })
     }),
     student: _('/student', {
       class: _('/:accessCode')
@@ -24,6 +25,7 @@ const paths = _('', {
       classes: _('/classes', {
         editClass: _('/:accessCode', {
           additional: _('/additional'),
+          studentCredentials: _('/student-credentials'),
           editStudent: _('/edit/?studentIds={studentIds}'),
           resetStudents: _('/reset/?studentIds={studentIds}'),
           moveStudents: _('/move/?studentIds={studentIds}'),

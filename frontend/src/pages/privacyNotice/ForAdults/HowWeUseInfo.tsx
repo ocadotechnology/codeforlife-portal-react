@@ -6,7 +6,6 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  tableCellClasses,
   ListItemText
 } from '@mui/material';
 

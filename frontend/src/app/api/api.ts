@@ -1,10 +1,7 @@
 import { fetchBaseQuery } from '@reduxjs/toolkit/query';
 import { createApi } from '@reduxjs/toolkit/query/react';
 
-import {
-  endpoints,
-  tagTypes
-} from 'codeforlife/lib/esm/api';
+import { endpoints, tagTypes } from 'codeforlife/lib/esm/api';
 import {
   FetchBaseQuery,
   fetch,
@@ -14,10 +11,7 @@ import {
   parseResponseBody
 } from 'codeforlife/lib/esm/api/baseQuery';
 
-import {
-  SSO_SERVICE_API_URL,
-  SSO_SERVICE_NAME
-} from './env';
+import { SSO_SERVICE_API_URL, SSO_SERVICE_NAME } from './env';
 
 // TODO: remove this hot switching code and migrate login pages to SSO service.
 const ssoFetch = fetchBaseQuery({
@@ -37,7 +31,11 @@ const baseQuery: FetchBaseQuery = async (args, api, extraOptions) => {
   parseRequestBody(args);
 
   // Send the HTTP request and fetch the response.
-  const result = await (isLoginRequest ? ssoFetch : fetch)(args, api, extraOptions);
+  const result = await (isLoginRequest ? ssoFetch : fetch)(
+    args,
+    api,
+    extraOptions
+  );
 
   handleResponseError(result);
 
