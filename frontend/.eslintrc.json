@@ -31,7 +31,15 @@
     "@typescript-eslint/strict-boolean-expressions": "off",
     "@typescript-eslint/indent": "off",
     "react/jsx-uses-react": 0,
-    "react/react-in-jsx-scope": 0
+    "react/react-in-jsx-scope": 0,
+    "max-len": [
+      "error",
+      {
+        "code": 80,
+        "tabWidth": 2
+      }
+    ],
+    "react/prop-types": "off"
   },
   "ignorePatterns": [
     "src/scripts/*.js"
