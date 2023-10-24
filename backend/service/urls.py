@@ -19,4 +19,5 @@ from codeforlife.urls import service_urlpatterns
 urlpatterns = service_urlpatterns(
     api_urls_path="portal.urls",  # TODO: standardize path
     frontend_template_name="portal.html",  # TODO: standardize name
+    include_user_urls=False,
 )

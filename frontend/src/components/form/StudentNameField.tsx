@@ -1,7 +1,7 @@
-import React, { CSSProperties } from 'react';
-import { InputAdornment } from '@mui/material';
 import { PersonOutlined } from '@mui/icons-material';
+import { InputAdornment } from '@mui/material';
 import { TextField, TextFieldProps } from 'codeforlife/lib/esm/components/form';
+import React, { CSSProperties } from 'react';
 import * as Yup from 'yup';
 
 const StudentNameField: React.FC<Omit<TextFieldProps, 'name'> & {
@@ -9,7 +9,7 @@ const StudentNameField: React.FC<Omit<TextFieldProps, 'name'> & {
   disabled?: boolean;
   style?: CSSProperties;
 }> = ({
-  name = 'name',
+  name = 'firstName',
   helperText = 'Choose a name',
   disabled = false,
   style

@@ -1,26 +1,128 @@
-import React from 'react';
-import {
-  Stack,
-  Typography,
-  Button,
-  Table,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableRowProps,
-  TableCell,
-  TableCellProps,
-  typographyClasses,
-  useTheme,
-  Box
-} from '@mui/material';
 import {
   Print as PrintIcon,
   SaveAlt as SaveAltIcon
 } from '@mui/icons-material';
+import {
+  Box,
+  Button,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableCellProps,
+  TableHead,
+  TableRow,
+  TableRowProps,
+  Typography,
+  typographyClasses,
+  useTheme
+} from '@mui/material';
+import { pdf } from '@react-pdf/renderer';
+import React from 'react';
+import { generatePath, useLocation } from 'react-router-dom';
 
+import { BulkCreateResult } from 'codeforlife/lib/esm/helpers/rtkQuery';
 import { primary } from 'codeforlife/lib/esm/theme/colors';
+
+import { User } from '../../app/api';
+import { paths } from '../../app/router';
 import CopyToClipboardIcon from '../../components/CopyToClipboardIcon';
+import MyDocument from '../../pages/login/MyDocument';
+
+interface StudentInfo {
+  name: string;
+  password: string;
+  classLink: string;
+  loginUrl: string;
+}
+
+const DownloadButtonCSV: React.FC = () => {
+  const generateCSV: (
+    studentsInfo: StudentInfo[],
+    classLink: string
+  ) => string = (studentsInfo, classLink) => {
+    let csvContent = 'Name,Password,Class Link,Login URL\n';
+    studentsInfo.forEach((student) => {
+      csvContent += `${student.name},${student.password},${classLink},${student.loginUrl}\n`;
+    });
+    return csvContent;
+  };
+  const location = useLocation();
+  const { studentsInfo } = location.state.updatedStudentCredentials;
+  const { classLink } = location.state.updatedStudentCredentials;
+
+  const downloadCSV: () => void = () => {
+    const csvContent = generateCSV(studentsInfo, classLink);
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const linkRef = React.useRef<HTMLAnchorElement | null>(null);
+    if (linkRef.current) {
+      linkRef.current.href = url;
+      linkRef.current.download = 'data.csv';
+      linkRef.current.click();
+    }
+    URL.revokeObjectURL(url);
+  };
+
+  return (
+    <Button endIcon={<SaveAltIcon />} className="body" onClick={downloadCSV}>
+      Download CSV
+    </Button>
+  );
+};
+
+interface DownloadButtonPDFProps {
+  isButtonBanner?: boolean;
+}
+
+export const DownloadButtonPDF: React.FC<DownloadButtonPDFProps> = ({ isButtonBanner }) => {
+  const location = useLocation();
+  const { studentsInfo, classLink } = location.state.updatedStudentCredentials;
+  const linkRef = React.useRef<HTMLAnchorElement | null>(null);
+
+  const downloadPdf = async (): Promise<void> => {
+    try {
+      const blob = await pdf(
+        <MyDocument classLink={classLink} studentsInfo={studentsInfo} />
+      ).toBlob();
+      const url = URL.createObjectURL(blob);
+
+      if (linkRef.current) {
+        linkRef.current.href = url;
+        linkRef.current.download = 'document.pdf';
+        linkRef.current.click();
+        URL.revokeObjectURL(url);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const buttonStyles = !isButtonBanner
+    ? {}
+    : {
+      sx: {
+        border: '2px solid black',
+        '&:hover': {
+          border: '2px solid black'
+        }
+      }
+    };
+
+  return (
+    <>
+      <Button
+        endIcon={<PrintIcon />}
+        onClick={() => { void downloadPdf(); }}
+        className="body"
+        {...buttonStyles}
+      >
+        Print password reminder cards
+      </Button>
+      {/* Invisible anchor tag to trigger the download */}
+      <a ref={linkRef} style={{ display: 'none' }}></a>
+    </>
+  );
+};
 
 const WhiteTableCell: React.FC<TableCellProps> = ({
   style,
@@ -68,22 +170,21 @@ const BodyRowTableCell: React.FC<TableRowProps> = (props) => (
 );
 
 export interface NewStudentsTableProps {
-  classLink: string;
-  students: Array<{
-    name: string;
-    password: string;
-    link: string;
-  }>;
+  accessCode: string;
+  users: BulkCreateResult<User>;
 }
 
 const NewStudentsTable: React.FC<NewStudentsTableProps> = ({
-  classLink,
-  students
+  accessCode,
+  users
 }) => {
+  const theme = useTheme();
+
+  const classLink = generatePath(paths.login.student.class._, { accessCode });
+
   const nameCellWidth = '40%';
   const passwordCellWidth = '60%';
 
-  const theme = useTheme();
   return (
     <Box marginBottom={theme.spacing(2)}>
       <Box marginBottom={theme.spacing(6)}>
@@ -131,7 +232,9 @@ const NewStudentsTable: React.FC<NewStudentsTableProps> = ({
             <TableCell>
               <Stack direction="row" width="100%" alignItems="center">
                 <Typography marginRight={2}>Class link:</Typography>
-                <Typography className="nowrap-ellipsis">{classLink}</Typography>
+                <Typography className="nowrap-ellipsis">
+                  {classLink}
+                </Typography>
                 <CopyToClipboardIcon
                   stringToCopy={classLink}
                   sx={{ marginLeft: 'auto' }}
@@ -176,56 +279,48 @@ const NewStudentsTable: React.FC<NewStudentsTableProps> = ({
               </TableCell>
             </HeadRowTableCell>
           </TableRow>
-          {students.map((student) => (
-            <TableRow key={student.name}>
-              <BodyRowTableCell>
-                <TableCell width={nameCellWidth}>
-                  <Typography>{student.name}</Typography>
-                </TableCell>
-                <TableCell width={passwordCellWidth}>
-                  <Typography>{student.password}</Typography>
-                </TableCell>
-              </BodyRowTableCell>
-              <WhiteTableCell />
-              <BodyRowTableCell>
-                <TableCell>
-                  <Stack direction="row" width="100%" alignItems="center">
-                    <Typography className="nowrap-ellipsis">
-                      {student.link}
-                    </Typography>
-                    <CopyToClipboardIcon
-                      stringToCopy={student.link}
-                      sx={{
-                        marginLeft: 'auto'
-                      }}
-                    />
-                  </Stack>
-                </TableCell>
-              </BodyRowTableCell>
-            </TableRow>
-          ))}
+          {users.map((user) => {
+            if (!user.student?.loginId) throw new Error();
+
+            const link = classLink +
+              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+              `?userId=${user.id}&loginId=${user.student.loginId}`;
+
+            return (
+              <TableRow key={user.firstName}>
+                <BodyRowTableCell>
+                  <TableCell width={nameCellWidth}>
+                    <Typography>{user.firstName}</Typography>
+                  </TableCell>
+                  <TableCell width={passwordCellWidth}>
+                    <Typography>{user.password}</Typography>
+                  </TableCell>
+                </BodyRowTableCell>
+                <WhiteTableCell />
+                <BodyRowTableCell>
+                  <TableCell>
+                    <Stack direction="row" width="100%" alignItems="center">
+                      <Typography className="nowrap-ellipsis">
+                        {link}
+                      </Typography>
+                      <CopyToClipboardIcon
+                        stringToCopy={link}
+                        sx={{
+                          marginLeft: 'auto'
+                        }}
+                      />
+                    </Stack>
+                  </TableCell>
+                </BodyRowTableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
       {/* TODO: fix margin bottom */}
       <Stack direction="row" justifyContent="space-between">
-        <Button
-          endIcon={<PrintIcon />}
-          onClick={() => {
-            alert('TODO: call api');
-          }}
-          className="body"
-        >
-          Print password reminder cards
-        </Button>
-        <Button
-          endIcon={<SaveAltIcon />}
-          onClick={() => {
-            alert('TODO: call api');
-          }}
-          className="body"
-        >
-          Download CSV
-        </Button>
+        <DownloadButtonPDF />
+        <DownloadButtonCSV />
       </Stack>
     </Box>
   );

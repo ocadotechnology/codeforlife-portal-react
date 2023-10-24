@@ -25,6 +25,7 @@ const paths = _('', {
       classes: _('/classes', {
         editClass: _('/:accessCode', {
           additional: _('/additional'),
+          studentCredentials: _('/student-credentials'),
           editStudent: _('/edit/?studentIds={studentIds}'),
           resetStudents: _('/reset/?studentIds={studentIds}'),
           moveStudents: _('/move/?studentIds={studentIds}'),

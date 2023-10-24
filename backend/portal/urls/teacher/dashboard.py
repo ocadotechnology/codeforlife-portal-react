@@ -18,6 +18,7 @@ from ...views.teacher.dashboard import (
     create_new_class,
     get_student_request_data,
     get_students_from_access_code,
+    get_student_details,
 )
 
 from ...helpers.regexes import ACCESS_CODE_REGEX
@@ -87,5 +88,10 @@ urlpatterns = [
         rf"^class/students/(?P<access_code>{ACCESS_CODE_REGEX})/$",
         get_students_from_access_code,
         name="get_students_from_acccess_code",
+    ),
+    re_path(
+        r"^class/student/(?P<student_id>[0-9]+)/$",
+        get_student_details,
+        name="get_student_details",
     ),
 ]

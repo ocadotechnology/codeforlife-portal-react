@@ -1,13 +1,6 @@
-import React from 'react';
 import {
-  useNavigate,
-  useParams,
-  generatePath,
-  useLocation
-} from 'react-router-dom';
-import {
-  DeleteOutlined,
   DeleteOutlineOutlined,
+  DeleteOutlined,
   Edit,
   SecurityOutlined
 } from '@mui/icons-material';
@@ -26,21 +19,28 @@ import {
   Typography,
   useTheme
 } from '@mui/material';
+import React from 'react';
+import {
+  generatePath,
+  useLocation,
+  useNavigate,
+  useParams
+} from 'react-router-dom';
 import * as yup from 'yup';
 
 import Page from 'codeforlife/lib/esm/components/page';
 import { tryValidateSync } from 'codeforlife/lib/esm/helpers/yup';
 import { fromSearchParams } from 'codeforlife/lib/esm/hooks';
 
+import { useDeleteClassMutation, useGetStudentsByAccessCodeQuery } from '../../../../app/api';
+import { studentPerAccessCode } from '../../../../app/api/teacher/teach';
 import { paths } from '../../../../app/router';
 import AddStudentsForm from '../../../../features/addStudentsForm/AddStudentsForm';
 import AdditionalSettings from './additionalSettings/AdditionalSettings';
 import EditStudent from './student/editStudent/EditStudent';
-import ReleaseStudent from './student/releaseStudent/ReleaseStudent';
 import MoveStudent from './student/moveStudent/MoveStudent';
+import ReleaseStudent from './student/releaseStudent/ReleaseStudent';
 import ResetStudent from './student/resetStudent/ResetStudent';
-import { useDeleteClassMutation, useGetStudentsByAccessCodeQuery } from '../../../../app/api';
-import { studentPerAccessCode } from '../../../../app/api/teacher/teach';
 
 const DeleteClassConfirmDialog: React.FC<{
   open: boolean;
@@ -159,17 +159,10 @@ const StudentsTable: React.FC<{
                 />
               </TableCell>
               <TableCell align="center">
-                <Button onClick={() => {
-                  navigate(
-                    paths.teacher
-                      .dashboard
-                      .classes
-                      .editClass
-                      .editStudent
-                      ._,
-                    [student.id]
-                  );
-                }}
+                <Button
+                  // TODO: Really need to close this ticket, but I am not sure why navigate is not working here
+                  // please fix when we have time
+                  href={paths.teacher.dashboard.classes.editClass.editStudent._.replace(':accessCode', accessCode).replace('{studentIds}', String(student.id))}
                   endIcon={<Edit />}>Edit details</Button>
               </TableCell>
             </TableRow>
@@ -313,7 +306,7 @@ const EditClass: React.FC<{
         case 'edit':
           return <EditStudent
             accessCode={accessCode}
-            studentId={studentIds[0]}
+            id={studentIds[0]}
             goBack={goBack}
           />;
         case 'release':

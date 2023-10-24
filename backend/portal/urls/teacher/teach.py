@@ -5,6 +5,8 @@ from ...views.teacher.teach import (
     teacher_edit_class,
     teacher_delete_class,
     teacher_move_class,
+    teacher_edit_student,
+    teacher_print_reminder_cards,
 )
 
 
@@ -23,5 +25,15 @@ urlpatterns = [
         "move_class/",
         teacher_move_class,
         name="teacher_move_class",
+    ),
+    path(
+        "student/edit/<int:pk>",
+        teacher_edit_student,
+        name="teacher_edit_student",
+    ),
+    re_path(
+        rf"onboarding-class/(?P<access_code>{ACCESS_CODE_REGEX})/print-reminder-cards/",
+        teacher_print_reminder_cards,
+        name="teacher_print_reminder_cards",
     ),
 ]

@@ -12,10 +12,6 @@ export interface studentPerAccessCode {
   blockedTime: string;
 }
 
-interface getStudentsByAccessCodeProps {
-  studentsPerAccessCode: studentPerAccessCode[];
-}
-
 const teachApi = api.injectEndpoints({
   endpoints: (build) => ({
     teacherHas2fa: build.query<{ has2fa: boolean }, null>({
@@ -32,9 +28,6 @@ const teachApi = api.injectEndpoints({
     }),
     getClass: build.query<
       {
-        // blockly_episodes
-        // python_episodes
-        // locked_levels
         class: {
           name: string;
           classmateProgress: boolean;
@@ -53,10 +46,11 @@ const teachApi = api.injectEndpoints({
         { type: 'class', id: accessCode }
       ]
     }),
-    getStudentsByAccessCode: build.query<
-      getStudentsByAccessCodeProps,
-      { accessCode: string }
-    >({
+    getStudentsByAccessCode: build.query<{
+      studentsPerAccessCode: studentPerAccessCode[];
+    }, {
+      accessCode: string
+    }>({
       query: ({ accessCode }) => ({
         url: `class/students/${accessCode}/`,
         method: 'GET'
@@ -65,18 +59,25 @@ const teachApi = api.injectEndpoints({
         { type: 'student', id: accessCode }
       ]
     }),
-    updateClass: build.mutation<
-      null,
-      {
-        accessCode: string;
-        classEditSubmit?: boolean;
-        levelControlSubmit?: boolean;
-        classMoveSubmit?: boolean;
-        name: string;
-        classmateProgress: boolean;
-        externalRequests: string;
-      }
-    >({
+    getStudent: build.query<{
+      student: studentPerAccessCode;
+    }, {
+      studentId: string
+    }>({
+      query: ({ studentId }) => ({
+        url: `class/student/${studentId}/`,
+        method: 'GET'
+      })
+    }),
+    updateClass: build.mutation<null, {
+      accessCode: string;
+      classEditSubmit?: boolean;
+      levelControlSubmit?: boolean;
+      classMoveSubmit?: boolean;
+      name: string;
+      classmateProgress: boolean;
+      externalRequests: string;
+    }>({
       query: ({ accessCode, ...body }) => ({
         url: `teach/class/edit/${accessCode}`,
         method: 'POST',
@@ -89,21 +90,53 @@ const teachApi = api.injectEndpoints({
         { type: 'class', id: accessCode }
       ]
     }),
-    deleteClass: build.mutation<
-      null,
-      { accessCode: string; }
-    >({
-      query: ({ accessCode, ...body }) => ({
+    editStudentPassword: build.mutation<{
+      accessCode: string;
+    }, {
+      studentId: string;
+      password: string;
+      confirmPassword: string;
+    }>({
+      query: ({ studentId, password, confirmPassword }) => ({
+        url: `teach/student/edit/${studentId}`,
+        method: 'POST',
+        body: {
+          password,
+          confirmPassword
+        },
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      })
+    }),
+    editStudentName: build.mutation<null, {
+      studentId: string;
+      name: string;
+    }>({
+      query: ({ studentId, name }) => ({
+        url: `teach/student/edit/${studentId}`,
+        method: 'POST',
+        body: {
+          name
+        },
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      })
+    }),
+    deleteClass: build.mutation<null, {
+      accessCode: string
+    }>({
+      query: ({ accessCode }) => ({
         url: `teach/class/delete/${accessCode}`,
         method: 'POST',
-        body,
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
       }),
       invalidatesTags: ['teacher']
     }),
-    moveClass: build.mutation<void, {
+    moveClass: build.mutation<null, {
       accessCode: string;
       teacherId: string;
     }>({
@@ -116,6 +149,21 @@ const teachApi = api.injectEndpoints({
         }
       }),
       invalidatesTags: ['teacher']
+    }),
+    getReminderCards: build.mutation<null, {
+      accessCode: string;
+      data: any;
+    }>({
+      query: ({ accessCode, data }) => ({
+        url: `teach/onboarding-class/${accessCode}/print-reminder-cards/`,
+        method: 'POST',
+        body: data,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          Accept: 'application/pdf'
+        },
+        responseType: 'blob'
+      })
     })
   })
 });
@@ -123,10 +171,14 @@ const teachApi = api.injectEndpoints({
 export default teachApi;
 export const {
   useGetClassQuery,
-  useGetStudentsByAccessCodeQuery,
   useUpdateClassMutation,
+  useEditStudentNameMutation,
+  useEditStudentPasswordMutation,
+  useGetReminderCardsMutation,
+  useGetStudentsByAccessCodeQuery,
+  useGetStudentQuery,
+  useTeacherHas2faQuery,
   useDeleteClassMutation,
   useMoveClassMutation,
-  useTeacherHas2faQuery,
   useDisable2faMutation
 } = teachApi;

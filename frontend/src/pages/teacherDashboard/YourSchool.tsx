@@ -1,14 +1,4 @@
 import {
-  Grid,
-  Typography,
-  Button,
-  useTheme,
-  InputAdornment,
-  Stack,
-  Dialog
-} from '@mui/material';
-import React from 'react';
-import {
   Add,
   Create,
   DeleteOutline,
@@ -17,35 +7,45 @@ import {
   EmailOutlined,
   PersonOutlined
 } from '@mui/icons-material';
-import { INVITE_TEACHER_SCHEMA, SCHOOL_DETAILS_UPDATE_SCHEMA } from './schemas';
-import { INVITE_TEACHER_INITIAL_VALUES } from './constants';
-import CflTable, {
-  CflTableBody,
-  CflTableCellElement
-} from '../../components/CflTable';
 import {
-  TextField,
+  Button,
+  Dialog,
+  Grid,
+  InputAdornment,
+  Stack,
+  Typography,
+  useTheme
+} from '@mui/material';
+import {
   CheckboxField,
-  SubmitButton
+  SubmitButton,
+  TextField
 } from 'codeforlife/lib/esm/components/form';
-import { CflHorizontalForm } from '../../components/form/CflForm';
 import Page from 'codeforlife/lib/esm/components/page';
-import SchoolNameField from '../../components/form/SchoolNameField';
-import SchoolPostcodeField from '../../components/form/SchoolPostcodeField';
-import SchoolCountryField from '../../components/form/SchoolCountryField';
+import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useLeaveOrganisationMutation } from '../../app/api';
-import { paths } from '../../app/router';
 import {
   TeacherDashboardProps,
   useDeleteInviteMutation,
   useInviteTeacherMutation,
   useInviteToggleAdminMutation,
+  useOldUpdateSchoolMutation,
   useOrganisationKickMutation,
   useResendInviteMutation,
-  useToggleAdminMutation,
-  useUpdateSchoolMutation
+  useToggleAdminMutation
 } from '../../app/api/teacher/dashboard';
+import { paths } from '../../app/router';
+import CflTable, {
+  CflTableBody,
+  CflTableCellElement
+} from '../../components/CflTable';
+import { CflHorizontalForm } from '../../components/form/CflForm';
+import SchoolCountryField from '../../components/form/SchoolCountryField';
+import SchoolNameField from '../../components/form/SchoolNameField';
+import SchoolPostcodeField from '../../components/form/SchoolPostcodeField';
+import { INVITE_TEACHER_INITIAL_VALUES } from './constants';
+import { INVITE_TEACHER_SCHEMA, SCHOOL_DETAILS_UPDATE_SCHEMA } from './schemas';
 
 interface DialogProps {
   open: boolean;
@@ -198,7 +198,7 @@ const UpdateSchoolDetailsForm: React.FC<{
   const schoolName = schoolData.name;
   const schoolPostcode = schoolData.postcode;
   const schoolCountry = schoolData.country;
-  const [updateSchool] = useUpdateSchoolMutation();
+  const [updateSchool] = useOldUpdateSchoolMutation();
 
   return (
     <CflHorizontalForm

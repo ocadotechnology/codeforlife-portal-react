@@ -113,7 +113,7 @@ const teacherDashboardApi = api.injectEndpoints({
       }),
       invalidatesTags: ['teacher']
     }),
-    updateSchool: build.mutation<void, {
+    oldUpdateSchool: build.mutation<void, {
       name: string;
       postcode: string;
       country: string;
@@ -198,7 +198,7 @@ export default teacherDashboardApi;
 export const {
   useGetTeacherDataQuery,
   useInviteTeacherMutation,
-  useUpdateSchoolMutation,
+  useOldUpdateSchoolMutation,
   useToggleAdminMutation,
   useOrganisationKickMutation,
   useInviteToggleAdminMutation,
