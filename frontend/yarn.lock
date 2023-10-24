@@ -4398,9 +4398,9 @@ coa@^2.0.2:
     chalk "^2.4.1"
     q "^1.1.2"
 
-"codeforlife@github:ocadotechnology/codeforlife-package-javascript#158-teacher-teach-edit-student-details":
-  version "1.27.7"
-  resolved "https://codeload.github.com/ocadotechnology/codeforlife-package-javascript/tar.gz/f3c89b582b783a240baa2ebf6e47e4bd3022a68e"
+"codeforlife@github:ocadotechnology/codeforlife-package-javascript#v1.27.5":
+  version "1.27.5"
+  resolved "https://codeload.github.com/ocadotechnology/codeforlife-package-javascript/tar.gz/b404ec48072d681bfcee6dec6e83c0e6b4d5cba5"
   dependencies:
     "@emotion/react" "^11.10.6"
     "@emotion/styled" "^11.10.6"
