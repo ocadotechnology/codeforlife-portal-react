@@ -8,7 +8,7 @@ export type LoginQuery = {
   password: string;
   classId: string;
 } | {
-  userId: string;
+  userId: number;
   loginId: string;
 } | {
   otp: string;

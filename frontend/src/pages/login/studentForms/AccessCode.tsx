@@ -21,7 +21,7 @@ const AccessCode: React.FC = () => {
   const searchParams = tryValidateSync(
     fromSearchParams(),
     Yup.object({
-      userId: Yup.string().required(),
+      userId: Yup.number().required(),
       loginId: Yup.string().required()
     })
   );
