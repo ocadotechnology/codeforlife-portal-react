@@ -1,6 +1,10 @@
 import {
   BulkCreateArg,
   BulkCreateResult,
+  BulkDestroyArg,
+  BulkDestroyResult,
+  BulkUpdateArg,
+  BulkUpdateResult,
   CreateArg,
   CreateResult,
   DestroyArg,
@@ -51,6 +55,8 @@ export type User = Model<
   }
 >;
 
+const baseUrl = 'users';
+
 const userApi = api.injectEndpoints({
   endpoints: (build) => ({
     createUser: build.query<
@@ -58,7 +64,7 @@ const userApi = api.injectEndpoints({
       CreateArg<User>
     >({
       query: (body) => ({
-        url: 'users/',
+        url: `${baseUrl}/`,
         method: 'POST',
         body,
         headers: {
@@ -77,7 +83,7 @@ const userApi = api.injectEndpoints({
       BulkCreateArg<User>
     >({
       query: (body) => ({
-        url: 'users/',
+        url: `${baseUrl}/`,
         method: 'POST',
         body,
         headers: {
@@ -96,7 +102,7 @@ const userApi = api.injectEndpoints({
       RetrieveArg<User>
     >({
       query: ({ id }) => ({
-        url: `users/${id}/`,
+        url: `${baseUrl}/${id}/`,
         method: 'GET'
       }),
       providesTags: (result, error, { id }) => result && !error
@@ -111,7 +117,7 @@ const userApi = api.injectEndpoints({
       ListArg<{ studentClass: string; }>
     >({
       query: (arg) => ({
-        url: `users/${searchParamsToString(arg)}`,
+        url: `${baseUrl}/${searchParamsToString(arg)}`,
         method: 'GET'
       }),
       providesTags: (result, error, arg) => result && !error
@@ -126,7 +132,7 @@ const userApi = api.injectEndpoints({
       UpdateArg<User> & { currentPassword?: string; }
     >({
       query: ({ id, ...body }) => ({
-        url: `users/${id}/`,
+        url: `${baseUrl}/${id}/`,
         method: 'PATCH',
         body,
         headers: {
@@ -137,16 +143,48 @@ const userApi = api.injectEndpoints({
         ? [{ type: 'user', id }]
         : []
     }),
+    bulkUpdateUsers: build.mutation<
+      BulkUpdateResult<User>,
+      BulkUpdateArg<User>
+    >({
+      query: (body) => ({
+        url: `${baseUrl}/`,
+        method: 'PATCH',
+        body,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }),
+      invalidatesTags: (result, error, arg) => result && !error
+        ? tagData(result, 'user')
+        : []
+    }),
     destroyUser: build.mutation<
       DestroyResult,
       DestroyArg<User>
     >({
       query: ({ id }) => ({
-        url: `users/${id}/`,
+        url: `${baseUrl}/${id}/`,
         method: 'DELETE'
       }),
       invalidatesTags: (result, error, { id }) => !error
         ? [{ type: 'user', id }]
+        : []
+    }),
+    bulkDestroyUsers: build.mutation<
+      BulkDestroyResult,
+      BulkDestroyArg<User>
+    >({
+      query: (body) => ({
+        url: `${baseUrl}/`,
+        method: 'DELETE',
+        body,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }),
+      invalidatesTags: (result, error, arg) => result && !error
+        ? tagData(result, 'user')
         : []
     })
   })
@@ -159,5 +197,7 @@ export const {
   useRetrieveUserQuery,
   useListUsersQuery,
   useUpdateUserMutation,
-  useDestroyUserMutation
+  useBulkUpdateUsersMutation,
+  useDestroyUserMutation,
+  useBulkDestroyUsersMutation
 } = userApi;

@@ -4,5 +4,5 @@ from ..serializers import SchoolSerializer
 
 
 class SchoolViewSet(_SchoolViewSet):
-    http_method_names = ["get", "post", "patch", "delete"]
+    http_method_names = ["get", "post", "patch"]
     serializer_class = SchoolSerializer

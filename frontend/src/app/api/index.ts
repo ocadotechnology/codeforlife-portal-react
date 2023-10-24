@@ -71,6 +71,8 @@ import {
 } from './teacher/teach';
 import {
   User,
+  useBulkDestroyUsersMutation,
+  useBulkUpdateUsersMutation,
   useDestroyUserMutation,
   useLazyBulkCreateUsersQuery,
   useLazyCreateUserQuery,
@@ -81,6 +83,8 @@ import {
 
 export default api;
 export {
+  useBulkDestroyUsersMutation,
+  useBulkUpdateUsersMutation,
   useConsentFormMutation,
   useCreateOrganisationMutation,
   useDeleteAccountMutation,
