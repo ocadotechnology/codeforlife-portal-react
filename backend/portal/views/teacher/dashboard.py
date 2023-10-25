@@ -91,6 +91,7 @@ def get_students_from_access_code(request, access_code):
             else "",
         }
         for student in students_query
+        if student.new_user.is_active
     ]
 
     return JsonResponse({"students_per_access_code": students})

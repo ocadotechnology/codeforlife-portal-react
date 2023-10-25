@@ -150,6 +150,25 @@ const teachApi = api.injectEndpoints({
       }),
       invalidatesTags: ['teacher']
     }),
+    deleteStudent: build.mutation<
+      any,
+      {
+        accessCode: string,
+        transferStudents: string
+      }
+    >({
+      query: ({ accessCode, ...body }) => ({
+        url: `teach/class/${accessCode}/students/delete/`,
+        method: 'POST',
+        body,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }),
+      invalidatesTags: (result, error, { accessCode }) => [
+        { type: 'student', id: accessCode }
+      ]
+    }),
     getReminderCards: build.mutation<null, {
       accessCode: string;
       data: any;
@@ -180,5 +199,6 @@ export const {
   useTeacherHas2faQuery,
   useDeleteClassMutation,
   useMoveClassMutation,
+  useDeleteStudentMutation,
   useDisable2faMutation
 } = teachApi;

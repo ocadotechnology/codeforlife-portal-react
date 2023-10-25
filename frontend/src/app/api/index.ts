@@ -61,6 +61,7 @@ import {
 } from './teacher/dashboard';
 import {
   useDeleteClassMutation,
+  useDeleteStudentMutation,
   useDisable2faMutation,
   useEditStudentNameMutation,
   useEditStudentPasswordMutation,
@@ -89,8 +90,7 @@ export {
   useCreateOrganisationMutation,
   useDeleteAccountMutation,
   useDeleteClassMutation,
-  useDeleteInviteMutation,
-  useDestroyClassMutation,
+  useDeleteInviteMutation, useDeleteStudentMutation, useDestroyClassMutation,
   useDestroySchoolMutation,
   useDestroyUserMutation,
   useDisable2faMutation,
@@ -116,8 +116,7 @@ export {
   useListUsersQuery,
   useLoginMutation,
   useLogoutMutation,
-  useMoveClassMutation,
-  useOldUpdateSchoolMutation,
+  useMoveClassMutation, useOldUpdateSchoolMutation,
   useOrganisationKickMutation,
   useRegisterUserMutation,
   useRequestIndependentStudentPasswordResetMutation,

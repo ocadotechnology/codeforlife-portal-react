@@ -2,13 +2,13 @@ from django.urls import path, re_path
 
 from ...helpers.regexes import ACCESS_CODE_REGEX
 from ...views.teacher.teach import (
-    teacher_edit_class,
     teacher_delete_class,
-    teacher_move_class,
+    teacher_delete_students,
+    teacher_edit_class,
     teacher_edit_student,
+    teacher_move_class,
     teacher_print_reminder_cards,
 )
-
 
 urlpatterns = [
     re_path(
@@ -25,6 +25,11 @@ urlpatterns = [
         "move_class/",
         teacher_move_class,
         name="teacher_move_class",
+    ),
+    re_path(
+        rf"class/(?P<access_code>{ACCESS_CODE_REGEX})/students/delete/$",
+        teacher_delete_students,
+        name="teacher_delete_students",
     ),
     path(
         "student/edit/<int:pk>",

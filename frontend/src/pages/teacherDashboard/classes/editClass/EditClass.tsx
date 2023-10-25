@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import {
   DeleteOutlineOutlined,
   DeleteOutlined,
@@ -19,7 +20,7 @@ import {
   Typography,
   useTheme
 } from '@mui/material';
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   generatePath,
   useLocation,
@@ -32,7 +33,11 @@ import Page from 'codeforlife/lib/esm/components/page';
 import { tryValidateSync } from 'codeforlife/lib/esm/helpers/yup';
 import { fromSearchParams } from 'codeforlife/lib/esm/hooks';
 
-import { useDeleteClassMutation, useGetStudentsByAccessCodeQuery } from '../../../../app/api';
+import {
+  useDeleteClassMutation,
+  useDeleteStudentMutation,
+  useGetStudentsByAccessCodeQuery
+} from '../../../../app/api';
 import { studentPerAccessCode } from '../../../../app/api/teacher/teach';
 import { paths } from '../../../../app/router';
 import AddStudentsForm from '../../../../features/addStudentsForm/AddStudentsForm';
@@ -41,6 +46,47 @@ import EditStudent from './student/editStudent/EditStudent';
 import MoveStudent from './student/moveStudent/MoveStudent';
 import ReleaseStudent from './student/releaseStudent/ReleaseStudent';
 import ResetStudent from './student/resetStudent/ResetStudent';
+/* eslint-enable */
+
+const DeleteStudentsConfirmDialog: React.FC<{
+  open: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+}> = ({
+  open,
+  onClose,
+  onConfirm
+}) => {
+    const theme = useTheme();
+    return (
+      <Dialog open={open} onClose={onClose} maxWidth={'xs'}>
+        <Typography variant='h5' textAlign='center'>
+          Delete students
+        </Typography>
+        <Typography>
+          These students will be permanently deleted. Are you sure?
+        </Typography>
+        <Stack
+          direction={{ xs: 'column', sm: 'row' }}
+          spacing={3}
+          mt={theme.spacing(5)}
+        >
+          <Button
+            variant='outlined'
+            className='body'
+            onClick={onClose}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={onConfirm}
+          >
+            Confirm
+          </Button>
+        </Stack>
+      </Dialog>
+    );
+  };
 
 const DeleteClassConfirmDialog: React.FC<{
   open: boolean;
@@ -60,8 +106,11 @@ const DeleteClassConfirmDialog: React.FC<{
         <Typography>
           This class will be permanently deleted. Are you sure?
         </Typography>
-
-        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3} mt={theme.spacing(5)}>
+        <Stack
+          direction={{ xs: 'column', sm: 'row' }}
+          spacing={3}
+          mt={theme.spacing(5)}
+        >
           <Button
             variant='outlined'
             className='body'
@@ -84,6 +133,7 @@ const StudentsTable: React.FC<{
   studentData: studentPerAccessCode[];
 }> = ({ accessCode, studentData }) => {
   const _navigate = useNavigate();
+  const [deleteStudent] = useDeleteStudentMutation();
 
   function navigate(path: string, studentIds: number[]): void {
     _navigate(generatePath(
@@ -95,6 +145,10 @@ const StudentsTable: React.FC<{
   const [checked, setChecked] = React.useState<boolean[]>(
     Array(studentData.length).fill(false)
   );
+
+  useEffect(() => {
+    setChecked(Array(studentData.length).fill(false));
+  }, [studentData]);
 
   const handleSelectAllClick: () => void = () => {
     if (checked.includes(true)) {
@@ -121,114 +175,159 @@ const StudentsTable: React.FC<{
     setChecked(newChecked);
   };
 
+  const [dialog, setDialog] = React.useState<{
+    open: boolean;
+    onConfirm?: () => void;
+  }>({ open: false });
+
+  const onDeleteStudents = (): void => {
+    setDialog({
+      open: true,
+      onConfirm: () => {
+        setDialog({ open: false });
+        const selectedStudentsIds = JSON.stringify(getSelectedStudentsIds());
+        deleteStudent({ accessCode, transferStudents: selectedStudentsIds })
+          .unwrap()
+          .then(() => { })
+          .catch((err) => { console.error('DeleteStudent error ', err); });
+      }
+    });
+  };
+
   return (
-    <Box>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>
-              <Typography>Student details</Typography>
-            </TableCell>
-            <TableCell align="center">
-              <Checkbox
-                checked={checked.every((el) => el)}
-                indeterminate={
-                  checked.includes(true) && !checked.every((el) => el)
-                }
-                onChange={handleSelectAllClick}
-              />
-            </TableCell>
-            <TableCell align="center">
-              <Typography>Action</Typography>
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {studentData.map((student, idx) => (
-            <TableRow key={`${student.id}`}>
+    <>
+      <Box>
+        <Table>
+          <TableHead>
+            <TableRow>
               <TableCell>
-                <Typography variant="body2">{student.newUser.firstName} {student.newUser.lastName}</Typography>
+                <Typography>Student details</Typography>
               </TableCell>
               <TableCell align="center">
                 <Checkbox
-                  color="primary"
-                  checked={checked[idx]}
-                  onChange={() => {
-                    handleChange(idx);
-                  }}
+                  checked={checked.every((el) => el)}
+                  indeterminate={
+                    checked.includes(true) && !checked.every((el) => el)
+                  }
+                  onChange={handleSelectAllClick}
                 />
               </TableCell>
               <TableCell align="center">
+                <Typography>Action</Typography>
                 <Button
+                  /* eslint-disable max-len */
                   // TODO: Really need to close this ticket, but I am not sure why navigate is not working here
                   // please fix when we have time
-                  href={paths.teacher.dashboard.classes.editClass.editStudent._.replace(':accessCode', accessCode).replace('{studentIds}', String(student.id))}
+                  // href={paths.teacher.dashboard.classes.editClass.editStudent._.replace(':accessCode', accessCode).replace('{studentIds}', String(student.id))}
+                  /* eslint-enable */
                   endIcon={<Edit />}>Edit details</Button>
               </TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-      <Stack direction="row" justifyContent="flex-end" spacing={2}>
-        <Typography variant="subtitle1">
-          {checked.filter((el) => el).length} / {checked.length} selected
-        </Typography>
-      </Stack>
-      <Stack direction="row" justifyContent="flex-end" spacing={2}>
-        <Button
-          disabled={!checked.includes(true)}
-          onClick={() => {
-            navigate(
-              paths.teacher
-                .dashboard
-                .classes
-                .editClass
-                .releaseStudents
-                ._,
-              getSelectedStudentsIds()
-            );
-          }}
-        >Release</Button>
-        <Button
-          disabled={!checked.includes(true)}
-          onClick={() => {
-            navigate(
-              paths.teacher
-                .dashboard
-                .classes
-                .editClass
-                .moveStudents
-                ._,
-              getSelectedStudentsIds()
-            );
-          }}
-        >Move</Button>
-        <Button
-          disabled={!checked.includes(true)}
-          onClick={() => {
-            navigate(
-              paths.teacher
-                .dashboard
-                .classes
-                .editClass
-                .resetStudents
-                ._,
-              getSelectedStudentsIds()
-            );
-          }}
-          endIcon={<SecurityOutlined />}
-        >
-          Reset password and login link
-        </Button>
-        <Button
-          disabled={!checked.includes(true)}
-          endIcon={<DeleteOutlined />}
-          className="alert"
-        >
-          Delete
-        </Button>
-      </Stack>
-    </Box>
+          </TableHead>
+          <TableBody>
+            {studentData.map((student, idx) => (
+              <TableRow key={`${student.id}`}>
+                <TableCell>
+                  <Typography variant="body2">
+                    {student.newUser.firstName} {student.newUser.lastName}
+                  </Typography>
+                </TableCell>
+                <TableCell align="center">
+                  <Checkbox
+                    color="primary"
+                    checked={checked[idx]}
+                    onChange={() => {
+                      handleChange(idx);
+                    }}
+                  />
+                </TableCell>
+                <TableCell align="center">
+                  <Button onClick={() => {
+                    navigate(
+                      paths.teacher
+                        .dashboard
+                        .classes
+                        .editClass
+                        .editStudent
+                        ._,
+                      [student.id]
+                    );
+                  }}
+                    endIcon={<Edit />}>Edit details</Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+        <Stack direction="row" justifyContent="flex-end" spacing={2}>
+          <Typography variant="subtitle1">
+            {checked.filter((el) => el).length} / {checked.length} selected
+          </Typography>
+        </Stack>
+        <Stack direction="row" justifyContent="flex-end" spacing={2}>
+          <Button
+            disabled={!checked.includes(true)}
+            onClick={() => {
+              navigate(
+                paths.teacher
+                  .dashboard
+                  .classes
+                  .editClass
+                  .releaseStudents
+                  ._,
+                getSelectedStudentsIds()
+              );
+            }}
+          >Release</Button>
+          <Button
+            disabled={!checked.includes(true)}
+            onClick={() => {
+              navigate(
+                paths.teacher
+                  .dashboard
+                  .classes
+                  .editClass
+                  .moveStudents
+                  ._,
+                getSelectedStudentsIds()
+              );
+            }}
+          >Move</Button>
+          <Button
+            disabled={!checked.includes(true)}
+            onClick={() => {
+              navigate(
+                paths.teacher
+                  .dashboard
+                  .classes
+                  .editClass
+                  .resetStudents
+                  ._,
+                getSelectedStudentsIds()
+              );
+            }}
+            endIcon={<SecurityOutlined />}
+          >
+            Reset password and login link
+          </Button>
+          <Button
+            disabled={!checked.includes(true)}
+            endIcon={<DeleteOutlined />}
+            className="alert"
+            onClick={onDeleteStudents}
+          >
+            Delete
+          </Button>
+        </Stack>
+      </Box>
+      {dialog.onConfirm !== undefined &&
+        <DeleteStudentsConfirmDialog
+          open={dialog.open}
+          onClose={() => { setDialog({ open: false }); }}
+          onConfirm={dialog.onConfirm}
+        />
+      }
+    </>
   );
 };
 
@@ -347,7 +446,8 @@ const EditClass: React.FC<{
         if (classHasStudents) {
           navigate('.', {
             state: {
-              message: 'This class still has students, please remove or delete them all before deleting the class.'
+              message: 'This class still has students, please remove or' +
+                ' delete them all before deleting the class.'
             }
           });
           navigate(0);
@@ -398,7 +498,10 @@ const EditClass: React.FC<{
           your school and make them an independent Code for Life user, or delete
           them permanently.
         </Typography>
-        {studentData && <StudentsTable accessCode={accessCode} studentData={studentData} />}
+        {studentData && <StudentsTable
+          accessCode={accessCode}
+          studentData={studentData}
+        />}
       </Box>
     </Page.Section>
     <Page.Section gridProps={{ bgcolor: theme.palette.info.main }}>
