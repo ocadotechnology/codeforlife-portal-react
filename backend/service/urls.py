@@ -15,9 +15,17 @@ Including another URLconf
 """
 
 from codeforlife.urls import service_urlpatterns
+from django.urls import include, path
 
-urlpatterns = service_urlpatterns(
-    api_urls_path="portal.urls",  # TODO: standardize path
-    frontend_template_name="portal.html",  # TODO: standardize name
-    include_user_urls=False,
-)
+urlpatterns = [
+    *service_urlpatterns(
+        api_urls_path="portal.urls",  # TODO: standardize path
+        frontend_template_name="portal.html",  # TODO: standardize name
+        include_user_urls=False,
+    ),
+    path(
+        "api/",
+        include("sso.urls"),
+        name="sso",
+    ),
+]

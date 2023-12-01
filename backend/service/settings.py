@@ -234,7 +234,7 @@ CSP_MEDIA_SRC = (
 )
 CSP_MANIFEST_SRC = (f"{domain()}/static/manifest.json",)
 
-
+# pylint: disable-next=wrong-import-position,wildcard-import,unused-wildcard-import
 from codeforlife.settings import *
 
 INSTALLED_APPS = [
@@ -261,5 +261,6 @@ INSTALLED_APPS = [
     "treebeard",
     "two_factor",
     "preventconcurrentlogins",
+    "sso",
     *INSTALLED_APPS,
 ]
