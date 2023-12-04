@@ -238,6 +238,7 @@ CSP_MANIFEST_SRC = (f"{domain()}/static/manifest.json",)
 from codeforlife.settings import *
 
 INSTALLED_APPS = [
+    "api",
     "aimmo",
     "game",
     "pipeline",

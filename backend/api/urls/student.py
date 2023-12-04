@@ -1,13 +1,14 @@
 from django.urls import path
-from portal.views.student import (
-    handle_rapid_router_scores,
+
+from ..views.student import (
     handle_kurono_game_data,
-    student_join_organisation,
+    handle_rapid_router_scores,
     is_pending_class_request,
+    student_join_organisation,
 )
-from portal.views.student.edit_account_details import (
-    change_independent_details,
+from ..views.student.edit_account_details import (
     SchoolStudentEditAccountView,
+    change_independent_details,
     delete_independent_account,
 )
 

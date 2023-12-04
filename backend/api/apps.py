@@ -1,6 +1,11 @@
+"""
+© Ocado Group
+Created on 04/12/2023 at 12:46:47(+00:00).
+"""
+
 from django.apps import AppConfig
 
 
-class PortalConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'portal'
+class ApiConfig(AppConfig):
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "api"
