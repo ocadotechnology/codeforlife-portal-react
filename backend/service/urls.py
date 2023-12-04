@@ -14,10 +14,30 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
+from aimmo import urls as aimmo_urls
 from codeforlife.urls import service_urlpatterns
 from django.urls import include, path
+from portal.views.aimmo.dashboard import (
+    StudentAimmoDashboard,
+    TeacherAimmoDashboard,
+)
 
 urlpatterns = [
+    path(
+        "teach/kurono/dashboard/",
+        TeacherAimmoDashboard.as_view(),
+        name="teacher_aimmo_dashboard",
+    ),
+    path(
+        "play/kurono/dashboard/",
+        StudentAimmoDashboard.as_view(),
+        name="student_aimmo_dashboard",
+    ),
+    path(
+        "kurono/",
+        include(aimmo_urls),
+        name="kurono",
+    ),
     *service_urlpatterns(
         frontend_template_name="portal.html",  # TODO: standardize name
         include_user_urls=False,
