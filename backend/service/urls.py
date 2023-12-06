@@ -24,6 +24,11 @@ from portal.views.aimmo.dashboard import (
 
 urlpatterns = [
     path(
+        "rapidrouter/",
+        include("game.urls"),
+        name="rapidrouter",
+    ),
+    path(
         "teach/kurono/dashboard/",
         TeacherAimmoDashboard.as_view(),
         name="teacher_aimmo_dashboard",

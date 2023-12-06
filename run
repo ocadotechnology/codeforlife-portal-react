@@ -18,7 +18,7 @@ fi
 cd ../backend
 
 export SERVICE_NAME="portal"
-export SERVICE_IS_ROOT="1" 
+export SERVICE_IS_ROOT="1"
 
 pip install pipenv
 
