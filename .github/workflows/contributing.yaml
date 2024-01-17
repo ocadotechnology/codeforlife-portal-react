@@ -4,20 +4,8 @@ on:
   pull_request:
 
 jobs:
-  validate-branches:
-    runs-on: ubuntu-latest
-    env:
-      PROD_REF: production
-      STAGING_REF: user_update #staging
-      DEV_REF: user_update_pr #development
-    steps:
-      - name: Merge into "${{ env.STAGING_REF }}" from "${{ env.DEV_REF }}"
-        if: github.event.pull_request.base.ref == env.STAGING_REF
-        run: if [ ${{ github.event.pull_request.head.ref }} != ${{ env.DEV_REF }} ]; then exit 1; fi
-      
-      - name: Merge into "${{ env.PROD_REF }}" from "${{ env.STAGING_REF }}"
-        if: github.event.pull_request.base.ref == env.PROD_REF
-        run: if [ ${{ github.event.pull_request.head.ref }} != ${{ env.STAGING_REF }} ]; then exit 1; fi
+  validate-pr-refs:
+    uses: ocadotechnology/codeforlife-workspace/.github/workflows/validate-pull-request-refs.yaml@main
 
   validate-existing-contributors:
     uses: ocadotechnology/codeforlife-workspace/.github/workflows/validate-existing-contributors.yaml@main
