@@ -12,9 +12,6 @@ check_untyped_defs = true
 [tool.django-stubs]
 django_settings_module = "service.settings"
 
-[tool.pylint.main]
-init-hook = "import os; os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'service.settings')"
-
 [tool.pylint.format]
 max-line-length = 80
 
