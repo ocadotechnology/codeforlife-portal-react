@@ -23,19 +23,19 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 MIDDLEWARE = [
-    "deploy.middleware.admin_access.AdminAccessMiddleware",
+    # "deploy.middleware.admin_access.AdminAccessMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
-    "deploy.middleware.security.CustomSecurityMiddleware",
+    # "deploy.middleware.security.CustomSecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     # "deploy.middleware.session_timeout.SessionTimeoutMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "deploy.middleware.exceptionlogging.ExceptionLoggingMiddleware",
+    # "deploy.middleware.exceptionlogging.ExceptionLoggingMiddleware",
     "django_otp.middleware.OTPMiddleware",
     "preventconcurrentlogins.middleware.PreventConcurrentLoginsMiddleware",
     "csp.middleware.CSPMiddleware",
