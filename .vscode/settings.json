@@ -18,26 +18,29 @@
     "black-formatter.args": [
         "--config=backend/pyproject.toml"
     ],
+    "mypy-type-checker.cwd": "${workspaceFolder}/backend",
     "mypy-type-checker.path": [
-        "backend/.venv/bin/python",
+        ".venv/bin/python",
         "-m",
         "mypy"
     ],
     "mypy-type-checker.args": [
-        "--config-file=backend/pyproject.toml"
+        "--config-file=pyproject.toml"
     ],
+    "pylint.cwd": "${workspaceFolder}/backend",
     "pylint.path": [
-        "backend/.venv/bin/python",
+        ".venv/bin/python",
         "-m",
         "pylint"
     ],
     "pylint.args": [
-        "--rcfile=backend/pyproject.toml"
+        "--rcfile=pyproject.toml"
     ],
+    "python.testing.cwd": "${workspaceFolder}/backend",
     "python.testing.pytestArgs": [
         "-n=auto",
-        "-c=backend/pyproject.toml",
-        "backend"
+        "-c=pyproject.toml",
+        "."
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true
