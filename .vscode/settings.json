@@ -2,16 +2,42 @@
     "editor.tabSize": 2,
     "javascript.preferences.quoteStyle": "single",
     "typescript.preferences.quoteStyle": "single",
-    "black-formatter.args": [
-        "--config",
-        "backend/pyproject.toml"
+    "isort.path": [
+        "backend/.venv/bin/python",
+        "-m",
+        "isort"
     ],
-    "python.testing.pytestArgs": [
-        "-c=backend/pyproject.toml",
-        "backend"
+    "isort.args": [
+        "--settings-file=backend/pyproject.toml"
+    ],
+    "black-formatter.path": [
+        "backend/.venv/bin/python",
+        "-m",
+        "black"
+    ],
+    "black-formatter.args": [
+        "--config=backend/pyproject.toml"
+    ],
+    "mypy-type-checker.path": [
+        "backend/.venv/bin/python",
+        "-m",
+        "mypy"
+    ],
+    "mypy-type-checker.args": [
+        "--config-file=backend/pyproject.toml"
+    ],
+    "pylint.path": [
+        "backend/.venv/bin/python",
+        "-m",
+        "pylint"
     ],
     "pylint.args": [
         "--rcfile=backend/pyproject.toml"
+    ],
+    "python.testing.pytestArgs": [
+        "-n=auto",
+        "-c=backend/pyproject.toml",
+        "backend"
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true
