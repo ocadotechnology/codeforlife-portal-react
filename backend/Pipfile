@@ -28,7 +28,7 @@ google-cloud-logging = "==1.*"
 google-auth = "==2.*"
 google-cloud-container = "==2.3.0"
 "django-anymail[amazon_ses]" = "==7.0.*"
-codeforlife = {ref = "v0.9.3", git = "https://github.com/ocadotechnology/codeforlife-package-python.git"}
+codeforlife = {ref = "code-checkers", git = "https://github.com/ocadotechnology/codeforlife-package-python.git"}
 django = "==3.2.20"
 djangorestframework = "==3.13.1"
 django-cors-headers = "==4.1.0"
@@ -60,6 +60,7 @@ mypy = "==1.6.1"
 django-stubs = {version = "==4.2.6", extras = ["compatible-mypy"]}
 djangorestframework-stubs = {version = "==3.14.4", extras = ["compatible-mypy"]}
 pylint = "==3.0.2"
+pylint-django = "==2.5.5"
 isort = "==5.13.2"
 
 [requires]
