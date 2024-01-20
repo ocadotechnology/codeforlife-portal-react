@@ -16,10 +16,3 @@ class UserSerializer(_UserSerializer):
             *_UserSerializer.Meta.fields,
             "current_password",
         ]
-
-    def update(self, instance, validated_data):
-        email = validated_data.get("email")
-        if email is not None:
-            instance.username = email
-
-        return super().update(instance, validated_data)
