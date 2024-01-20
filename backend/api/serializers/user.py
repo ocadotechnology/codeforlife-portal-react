@@ -7,20 +7,15 @@ from codeforlife.user.serializers import UserSerializer as _UserSerializer
 from rest_framework import serializers
 
 
+# pylint: disable-next=missing-class-docstring
 class UserSerializer(_UserSerializer):
     current_password = serializers.CharField(write_only=True)
 
     class Meta(_UserSerializer.Meta):
         fields = [
-            "id",
-            "password",
-            "first_name",
-            "last_name",
-            "email",
+            *_UserSerializer.Meta.fields,
+            "current_password",
         ]
-        extra_kwargs = {
-            **_UserSerializer.Meta.extra_kwargs,
-        }
 
     def update(self, instance, validated_data):
         email = validated_data.get("email")
