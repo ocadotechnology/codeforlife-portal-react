@@ -1,12 +1,17 @@
 #!/bin/bash
 set -e
+
 cd "${BASH_SOURCE%/*}"
+
+source ./setup.sh
 
 cd frontend
 
-# TODO: fix dependencies in package.json. Ignore NODE_ENV for now.
-yarn install --production=false
+printf "\nBuilding front end\n\n"
+
 yarn run build
+
+printf "\nBundling front end\n\n"
 
 if [ "$NODE_ENV" != "production" ]
 then
@@ -20,14 +25,7 @@ cd ../backend
 export SERVICE_NAME="portal"
 export SERVICE_IS_ROOT="1"
 
-pip install pipenv
-
-if [ "$NODE_ENV" != "production" ]
-then
-  pipenv install --dev
-else
-  pipenv install
-fi
+printf "\nRunning Django server\n\n"
 
 pipenv run python ./manage.py migrate --noinput
 pipenv run python ./manage.py collectstatic --noinput --clear
