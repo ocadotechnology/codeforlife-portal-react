@@ -19,3 +19,5 @@ def user__pre_save(sender, instance: User, *args, **kwargs):
 
     if previous_values_are_unequal(instance, {"email"}):
         instance.username = instance.email
+
+        # TODO: send verification email

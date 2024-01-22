@@ -3,7 +3,7 @@ from django.test import TestCase
 
 
 class TestUser(TestCase):
-    def test_partial_update__email(self):
+    def test_pre_save__email(self):
         """
         Updating the email field also updates the username field.
         """
@@ -17,3 +17,5 @@ class TestUser(TestCase):
         user.email = email
         user.save()
         assert user.username == email
+
+        # TODO: assert verification email is sent.
