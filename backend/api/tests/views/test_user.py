@@ -21,22 +21,23 @@ class TestUserViewSet(ModelViewSetTestCase[UserViewSet, UserSerializer, User]):
 
     basename = "user"
 
-    def _login_teacher(self):
-        return self.client.login_teacher(
-            email="maxplanck@codeforlife.com",
-            password="Password1",
-            is_admin=False,
+    def test_is_unique_email(self):
+        """
+        Check email is unique.
+        """
+
+        user = User.objects.first()
+        assert user is not None
+
+        viewname = self.client.reverse("is-unique-email")
+
+        response = self.client.post(viewname, data={"email": user.email})
+
+        self.assertFalse(response.json())
+
+        response = self.client.post(
+            viewname,
+            data={"email": "unique.email@codeforlife.com"},
         )
 
-    def test_partial_update__email(self):
-        """
-        Updating the email field also updates the username field.
-        """
-
-        user = self._login_teacher()
-
-        email = "example@codeforelife.com"
-
-        self.client.partial_update(user, {"email": email})
-
-        assert user.username == email
+        self.assertTrue(response.json())
