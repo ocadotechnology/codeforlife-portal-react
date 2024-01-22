@@ -7,17 +7,22 @@ All signals for the User model.
 
 from codeforlife.models.signals.pre_save import previous_values_are_unequal
 from codeforlife.user.models import User
-from django.db.models.signals import pre_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
 # pylint: disable=unused-argument
 
 
 @receiver(pre_save, sender=User)
-def user__pre_save(sender, instance: User, *args, **kwargs):
-    """User's pre-save logic."""
+def user__pre_save__email(sender, instance: User, *args, **kwargs):
+    """Before a user's email field is updated."""
 
     if previous_values_are_unequal(instance, {"email"}):
         instance.username = instance.email
 
-        # TODO: send verification email
+
+@receiver(post_save, sender=User)
+def user__post_save__email(sender, instance: User, *args, **kwargs):
+    """After a user's email field is updated."""
+
+    # TODO: send verification email
