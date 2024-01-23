@@ -5,7 +5,13 @@ Created on 18/01/2024 at 10:27:54(+00:00).
 
 from rest_framework.routers import DefaultRouter
 
-from .views import AuthFactorViewSet, ClassViewSet, SchoolViewSet, UserViewSet
+from .views import (
+    AuthFactorViewSet,
+    ClassViewSet,
+    OtpBypassTokenViewSet,
+    SchoolViewSet,
+    UserViewSet,
+)
 
 router = DefaultRouter()
 router.register(
@@ -17,6 +23,11 @@ router.register(
     "classes",
     ClassViewSet,
     basename="class",
+)
+router.register(
+    "otp-bypass-tokens",
+    OtpBypassTokenViewSet,
+    basename="otp-bypass-token",
 )
 router.register(
     "schools",
