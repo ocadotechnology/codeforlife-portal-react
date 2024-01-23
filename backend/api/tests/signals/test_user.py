@@ -40,4 +40,4 @@ class TestUser(TestCase):
         Updating the email field sends a verification email.
         """
 
-        raise NotImplementedError()  # TODO
+        raise NotImplementedError()  # TODO: implement
