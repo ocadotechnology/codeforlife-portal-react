@@ -1,16 +1,18 @@
+"""
+© Ocado Group
+Created on 18/01/2024 at 15:14:32(+00:00).
+"""
+
 from codeforlife.user.serializers import UserSerializer as _UserSerializer
 from rest_framework import serializers
 
 
+# pylint: disable-next=missing-class-docstring
 class UserSerializer(_UserSerializer):
     current_password = serializers.CharField(write_only=True)
 
     class Meta(_UserSerializer.Meta):
-        extra_kwargs = {
-            **_UserSerializer.Meta.extra_kwargs,
-            "username": {"read_only": True},
-            "isActive": {"read_only": True},
-            "isStaff": {"read_only": True},
-            "dateJoined": {"read_only": True},
-            "lastLogin": {"read_only": True},
-        }
+        fields = [
+            *_UserSerializer.Meta.fields,
+            "current_password",
+        ]

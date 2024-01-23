@@ -4,5 +4,8 @@ on:
   pull_request:
 
 jobs:
+  validate-pr-refs:
+    uses: ocadotechnology/codeforlife-workspace/.github/workflows/validate-pull-request-refs.yaml@main
+
   validate-existing-contributors:
     uses: ocadotechnology/codeforlife-workspace/.github/workflows/validate-existing-contributors.yaml@main
