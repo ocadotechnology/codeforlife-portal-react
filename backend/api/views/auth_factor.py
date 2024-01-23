@@ -14,7 +14,6 @@ from ..serializers import AuthFactorSerializer
 class AuthFactorViewSet(ModelViewSet):
     http_method_names = ["get", "post", "delete"]
     serializer_class = AuthFactorSerializer
-    # permission_classes =  [IsAuthenticated, ListOnly] TODO
 
     def get_queryset(self):
         user: User = self.request.user  # type: ignore[assignment]
