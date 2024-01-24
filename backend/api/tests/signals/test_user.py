@@ -15,9 +15,9 @@ class TestUser(TestCase):
             first_name="John",
             last_name="Doe",
         )
-        
+
         profile = UserProfile.objects.create(user=user)
-        
+
         assert profile.otp_secret is not None
 
     def test_pre_save__email(self):
