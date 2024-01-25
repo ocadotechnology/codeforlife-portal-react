@@ -8,15 +8,15 @@ import typing as t
 from codeforlife.permissions import AllowNone
 from codeforlife.request import Request
 from codeforlife.user.models import OtpBypassToken, User
-from django.utils.crypto import get_random_string
+from codeforlife.user.permissions import IsTeacher
+from codeforlife.views import ModelViewSet
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
 
 
 # pylint: disable-next=missing-class-docstring,too-many-ancestors
-class OtpBypassTokenViewSet(ModelViewSet):
+class OtpBypassTokenViewSet(ModelViewSet[OtpBypassToken]):
     http_method_names = ["post"]
 
     def get_queryset(self):
@@ -27,7 +27,7 @@ class OtpBypassTokenViewSet(ModelViewSet):
         if self.action == "create":
             return [AllowNone()]
 
-        return super().get_permissions()
+        return [IsTeacher()]
 
     @action(detail=False, methods=["post"])
     def generate(self, request: Request):
@@ -37,12 +37,7 @@ class OtpBypassTokenViewSet(ModelViewSet):
 
         OtpBypassToken.objects.filter(user=user).delete()
 
-        tokens = [
-            get_random_string(
-                OtpBypassToken.token.max_length  # type: ignore[attr-defined]
-            )
-            for _ in range(OtpBypassToken.max_count)
-        ]
+        tokens = OtpBypassToken.generate_tokens()
 
         OtpBypassToken.objects.bulk_create(
             [OtpBypassToken(user=user, token=token) for token in tokens]
