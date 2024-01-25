@@ -6,11 +6,10 @@ Created on 20/01/2024 at 10:58:52(+00:00).
 from codeforlife.tests import ModelViewSetTestCase
 from codeforlife.user.models import User
 
-from ...serializers import UserSerializer
 from ...views import UserViewSet
 
 
-class TestUserViewSet(ModelViewSetTestCase[UserViewSet, UserSerializer, User]):
+class TestUserViewSet(ModelViewSetTestCase[User]):
     """
     Base naming convention:
         test_{action}
@@ -20,6 +19,7 @@ class TestUserViewSet(ModelViewSetTestCase[UserViewSet, UserSerializer, User]):
     """
 
     basename = "user"
+    model_view_set_class = UserViewSet
 
     def test_is_unique_email(self):
         """
