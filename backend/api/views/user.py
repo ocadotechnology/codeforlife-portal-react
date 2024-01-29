@@ -1,3 +1,8 @@
+"""
+© Ocado Group
+Created on 23/01/2024 at 17:53:44(+00:00).
+"""
+
 import typing as t
 
 from codeforlife.user.views import UserViewSet as _UserViewSet
@@ -14,6 +19,7 @@ from rest_framework.response import Response
 from ..serializers import PasswordResetSerializer, UserSerializer
 
 
+# pylint: disable-next=missing-class-docstring,too-many-ancestors
 class UserViewSet(_UserViewSet):
     http_method_names = ["get", "post", "patch", "delete"]
     serializer_class = UserSerializer

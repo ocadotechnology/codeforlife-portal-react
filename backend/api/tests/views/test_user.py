@@ -7,6 +7,8 @@ from codeforlife.tests import ModelViewSetTestCase
 from codeforlife.user.models import User
 from rest_framework import status
 
+from ...views import UserViewSet
+
 
 class TestUserViewSet(ModelViewSetTestCase[User]):
     """
@@ -18,6 +20,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
     """
 
     basename = "user"
+    model_view_set_class = UserViewSet
 
     def test_is_unique_email(self):
         """
