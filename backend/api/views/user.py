@@ -6,6 +6,7 @@ Created on 23/01/2024 at 17:53:44(+00:00).
 import typing as t
 
 from codeforlife.user.models import User
+from codeforlife.user.permissions import IsTeacher
 from codeforlife.user.views import UserViewSet as _UserViewSet
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
@@ -18,6 +19,12 @@ from ..serializers import UserSerializer
 class UserViewSet(_UserViewSet):
     http_method_names = ["get", "post", "patch", "delete"]
     serializer_class = UserSerializer
+
+    def get_permissions(self):
+        if self.action == "bulk":
+            return [IsTeacher()]
+
+        return super().get_permissions()
 
     @action(detail=False, methods=["post"], permission_classes=[AllowAny])
     def is_unique_email(self, request):
