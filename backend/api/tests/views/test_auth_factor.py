@@ -7,14 +7,9 @@ from codeforlife.tests import ModelViewSetTestCase
 from codeforlife.user.models import AuthFactor, User, UserProfile
 from rest_framework import status
 
-from ...serializers import AuthFactorSerializer
-from ...views import AuthFactorViewSet
-
 
 # pylint: disable-next=missing-class-docstring
-class TestAuthFactorViewSet(
-    ModelViewSetTestCase[AuthFactorViewSet, AuthFactorSerializer, AuthFactor]
-):
+class TestAuthFactorViewSet(ModelViewSetTestCase[AuthFactor]):
     basename = "auth-factor"
 
     def setUp(self):
@@ -75,7 +70,7 @@ class TestAuthFactorViewSet(
 
     def test_create(self):
         """
-        Can enable a auth-factor.
+        Can enable an auth-factor.
         """
 
         user = self.client.login(**self.one_factor_credentials)
@@ -85,7 +80,7 @@ class TestAuthFactorViewSet(
 
     def test_destroy(self):
         """
-        Can disable a auth-factor.
+        Can disable an auth-factor.
         """
 
         user = self.client.login(**self.two_factor_credentials)

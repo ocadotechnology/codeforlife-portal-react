@@ -3,7 +3,7 @@ set -e
 
 cd "${BASH_SOURCE%/*}"
 
-source ./setup.sh
+source ./setup
 
 cd frontend
 

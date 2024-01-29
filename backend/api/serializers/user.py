@@ -3,7 +3,13 @@
 Created on 18/01/2024 at 15:14:32(+00:00).
 """
 
+from codeforlife.serializers import ModelSerializer
+from codeforlife.user.auth.password_validators import (
+    IndependentStudentPasswordValidator,
+    TeacherPasswordValidator,
+)
 from codeforlife.user.serializers import UserSerializer as _UserSerializer
+from django.contrib.auth.models import User
 from rest_framework import serializers
 
 
@@ -16,3 +22,31 @@ class UserSerializer(_UserSerializer):
             *_UserSerializer.Meta.fields,
             "current_password",
         ]
+
+
+# pylint: disable-next=missing-class-docstring
+class PasswordResetSerializer(ModelSerializer[User]):
+    class Meta:
+        model = User
+        fields = ["password"]
+        extra_kwargs = {"password": {"write_only": True}}
+
+    def validate_password(self, value: str):
+        """
+        Validate the new password depending on user type.
+        :param value: the new password
+        """
+        user = getattr(self, "instance", None)
+        validator = (
+            TeacherPasswordValidator
+            if hasattr(user, "new_teacher")
+            else IndependentStudentPasswordValidator
+        )()
+
+        validator.validate(value)
+        return value
+
+    def update(self, instance, validated_data):
+        instance.set_password(validated_data["password"])
+        instance.save()
+        return instance
