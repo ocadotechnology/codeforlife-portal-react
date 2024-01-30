@@ -80,19 +80,8 @@ class UserListSerializer(ModelListSerializer[User]):
 
         attrs.sort(key=get_access_code)
         for access_code, group in groupby(attrs, key=get_access_code):
-            data = list(group)
-
-            # Validate first names are not already taken in class.
-            if User.objects.filter(
-                first_name__in=set(map(get_first_name, data)),
-                new_student__class_field__access_code=access_code,
-            ).exists():
-                raise serializers.ValidationError(
-                    "One or more first names is already taken in class"
-                    f" {access_code}."
-                )
-
             # Validate first name is not specified more than once in data.
+            data = list(group)
             data.sort(key=get_first_name)
             for first_name, group in groupby(data, key=get_first_name):
                 if len(list(group)) > 1:
@@ -100,6 +89,16 @@ class UserListSerializer(ModelListSerializer[User]):
                         f'First name "{first_name}" is specified more than once'
                         f" in data for class {access_code}."
                     )
+
+            # Validate first names are not already taken in class.
+            if User.objects.filter(
+                first_name__in=list(map(get_first_name, data)),
+                new_student__class_field__access_code=access_code,
+            ).exists():
+                raise serializers.ValidationError(
+                    "One or more first names is already taken in class"
+                    f" {access_code}."
+                )
 
         return attrs
 

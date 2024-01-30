@@ -25,7 +25,7 @@ class TestUser(TestCase):
         Updating the email field also updates the username field.
         """
 
-        user = User.objects.filter(new_teacher__id__isnull=False).first()
+        user = User.objects.filter(new_teacher__isnull=False).first()
         assert user is not None
 
         email = "example@codeforelife.com"
