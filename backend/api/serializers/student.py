@@ -25,12 +25,20 @@ class StudentSerializer(_StudentSerializer):
             raise serializers.ValidationError(
                 "The requesting teacher must be in a school."
             )
-        if not Class.objects.filter(
-            access_code=value,
+
+        queryset = Class.objects.filter(access_code=value)
+        if not queryset.filter(
             teacher__school=self.request_user.teacher.school_id,
         ).exists():
             raise serializers.ValidationError(
                 "Class must belong to the same school as requesting teacher."
+            )
+        if (
+            not self.request_user.teacher.is_admin
+            and not queryset.filter(teacher=self.request_user.teacher).exists()
+        ):
+            raise serializers.ValidationError(
+                "The requesting teacher must be an admin or own the class."
             )
 
         return value

@@ -5,6 +5,7 @@ Created on 18/01/2024 at 15:14:32(+00:00).
 
 import string
 import typing as t
+from itertools import groupby
 
 from codeforlife.serializers import ModelListSerializer
 from codeforlife.user.models import Class, Student, User, UserProfile
@@ -41,8 +42,6 @@ class UserListSerializer(ModelListSerializer[User]):
 
             user = User.objects.create_user(
                 first_name=user_fields["first_name"],
-                # last_name="",
-                # email="",
                 username=get_random_string(length=30),
                 password=make_password(password),
             )
@@ -69,6 +68,40 @@ class UserListSerializer(ModelListSerializer[User]):
             )
 
         return users
+
+    def validate(self, attrs):
+        super().validate(attrs)
+
+        def get_access_code(user_fields: t.Dict[str, t.Any]):
+            return user_fields["new_student"]["class_field"]["access_code"]
+
+        def get_first_name(user_fields: t.Dict[str, t.Any]):
+            return user_fields["first_name"]
+
+        attrs.sort(key=get_access_code)
+        for access_code, group in groupby(attrs, key=get_access_code):
+            data = list(group)
+
+            # Validate first names are not already taken in class.
+            if User.objects.filter(
+                first_name__in=set(map(get_first_name, data)),
+                new_student__class_field__access_code=access_code,
+            ).exists():
+                raise serializers.ValidationError(
+                    "One or more first names is already taken in class"
+                    f" {access_code}."
+                )
+
+            # Validate first name is not specified more than once in data.
+            data.sort(key=get_first_name)
+            for first_name, group in groupby(data, key=get_first_name):
+                if len(list(group)) > 1:
+                    raise serializers.ValidationError(
+                        f'First name "{first_name}" is specified more than once'
+                        f" in data for class {access_code}."
+                    )
+
+        return attrs
 
 
 # pylint: disable-next=missing-class-docstring,too-many-ancestors
