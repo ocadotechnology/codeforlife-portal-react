@@ -87,7 +87,8 @@ class UserListSerializer(ModelListSerializer[User]):
                 if len(list(group)) > 1:
                     raise serializers.ValidationError(
                         f'First name "{first_name}" is specified more than once'
-                        f" in data for class {access_code}."
+                        f" in data for class {access_code}.",
+                        code="first_name_not_unique_per_class_in_data",
                     )
 
             # Validate first names are not already taken in class.
@@ -97,7 +98,8 @@ class UserListSerializer(ModelListSerializer[User]):
             ).exists():
                 raise serializers.ValidationError(
                     "One or more first names is already taken in class"
-                    f" {access_code}."
+                    f" {access_code}.",
+                    code="first_name_not_unique_per_class_in_db",
                 )
 
         return attrs
