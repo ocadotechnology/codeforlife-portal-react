@@ -14,6 +14,8 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
     """
     Base naming convention:
         test_{action}
+        test_{action}__{method_name}
+        test_{action}__{case}
 
     action: The view set action.
         https://www.django-rest-framework.org/api-guide/viewsets/#viewset-actions
@@ -135,7 +137,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         # Check successful GET
         self.client.get(reset_password_url)
 
-    def test_reset_password__teacher_patch(self):
+    def test_reset_password__patch__teacher(self):
         """Check teacher can successfully update password."""
         user = User.objects.first()
         assert user is not None
@@ -154,7 +156,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         self.client.login(email=user.email, password="N3wPassword!")
         self.client.logout()
 
-    def test_reset_password__indy_patch(self):
+    def test_reset_password__patch__indy(self):
         """Check indy can successfully update password."""
         user = User.objects.filter(
             new_teacher__isnull=True, new_student__isnull=True
