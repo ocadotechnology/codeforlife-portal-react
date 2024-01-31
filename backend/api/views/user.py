@@ -5,8 +5,8 @@ Created on 23/01/2024 at 17:53:44(+00:00).
 
 import typing as t
 
+from codeforlife.user.models import User
 from codeforlife.user.views import UserViewSet as _UserViewSet
-from django.contrib.auth.models import User
 from django.contrib.auth.tokens import default_token_generator
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.encoding import force_bytes, force_str

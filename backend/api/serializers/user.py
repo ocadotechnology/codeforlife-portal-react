@@ -5,11 +5,11 @@ Created on 18/01/2024 at 15:14:32(+00:00).
 
 from codeforlife.serializers import ModelSerializer
 from codeforlife.user.auth.password_validators import (
-    IndependentStudentPasswordValidator,
+    IndependentPasswordValidator,
     TeacherPasswordValidator,
 )
+from codeforlife.user.models import User
 from codeforlife.user.serializers import UserSerializer as _UserSerializer
-from django.contrib.auth.models import User
 from rest_framework import serializers
 
 
@@ -39,11 +39,11 @@ class PasswordResetSerializer(ModelSerializer[User]):
         user = getattr(self, "instance", None)
         validator = (
             TeacherPasswordValidator
-            if hasattr(user, "new_teacher")
-            else IndependentStudentPasswordValidator
+            if hasattr(user, "teacher")
+            else IndependentPasswordValidator
         )()
 
-        validator.validate(value)
+        validator.validate(value, user)
         return value
 
     def update(self, instance, validated_data):

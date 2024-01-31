@@ -114,7 +114,10 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         self.client.login(email=user.email, password="N3wPassword!")
         self.client.logout()
 
-        user = User.objects.get(id=11)
+        # Repeat logic as indy
+        user = User.objects.filter(
+            new_teacher__isnull=True, new_student__isnull=True
+        ).first()
         assert user is not None
 
         # Generate a password reset URL
