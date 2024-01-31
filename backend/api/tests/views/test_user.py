@@ -16,6 +16,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         test_{action}
         test_{action}__{method_name}
         test_{action}__{case}
+        test_{action}__{method_name}__{case}
 
     action: The view set action.
         https://www.django-rest-framework.org/api-guide/viewsets/#viewset-actions
