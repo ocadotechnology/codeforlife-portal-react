@@ -46,7 +46,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
     def test_request_password_reset__invalid_email(self):
         """
         Check request password reset doesn't generate reset password URL if
-        email is invalid.
+        email is invalid but still returns a 200.
         """
         viewname = self.client.reverse("request-password-reset")
 
