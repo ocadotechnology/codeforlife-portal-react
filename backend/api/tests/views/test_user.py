@@ -43,13 +43,11 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
         self.assertTrue(response.json())
 
-    def test_request_password_reset(self):
+    def test_request_password_reset__invalid_email(self):
         """
-        Check request password reset generates a reset password URL, if email exists.
+        Check request password reset doesn't generate reset password URL if
+        email is invalid.
         """
-        user = User.objects.first()
-        assert user is not None
-
         viewname = self.client.reverse("request-password-reset")
 
         response = self.client.post(
@@ -58,16 +56,24 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
         assert response.data is None
 
+    def test_request_password_reset__valid_email(self):
+        """
+        Check request password reset generates reset password URL for valid
+        email.
+        """
+        user = User.objects.first()
+        assert user is not None
+
+        viewname = self.client.reverse("request-password-reset")
+
         response = self.client.post(viewname, data={"email": user.email})
 
         assert response.data["reset_password_url"] is not None
         assert response.data["uidb64"] is not None
         assert response.data["token"] is not None
 
-    def test_reset_password(self):
-        """
-        Check reset password logic: requires valid encoded uid, user token and check password update.
-        """
+    def test_reset_password__invalid_uidb64(self):
+        """Check reset password raises 400 on GET with invalid uidb64"""
         user = User.objects.first()
         assert user is not None
 
@@ -75,7 +81,6 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         viewname = self.client.reverse("request-password-reset")
 
         response = self.client.post(viewname, data={"email": user.email})
-        reset_password_url = response.data["reset_password_url"]
 
         # Test reset-password GET
         # Check invalid uid raises 400
@@ -92,6 +97,16 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
             "no user found for given uid"
         ]
 
+    def test_reset_password__invalid_token(self):
+        """Check reset password raises 400 on GET with invalid token"""
+        user = User.objects.first()
+        assert user is not None
+
+        # Generate a password reset URL
+        viewname = self.client.reverse("request-password-reset")
+
+        response = self.client.post(viewname, data={"email": user.email})
+
         # Check invalid token raises 400
         viewname = self.client.reverse(
             "reset-password",
@@ -106,6 +121,31 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
             "token doesn't match given user"
         ]
 
+    def test_reset_password__get(self):
+        """Check reset password GET succeeds."""
+        user = User.objects.first()
+        assert user is not None
+
+        # Generate a password reset URL
+        viewname = self.client.reverse("request-password-reset")
+
+        response = self.client.post(viewname, data={"email": user.email})
+        reset_password_url = response.data["reset_password_url"]
+
+        # Check successful GET
+        self.client.get(reset_password_url)
+
+    def test_reset_password__teacher_patch(self):
+        """Check teacher can successfully update password."""
+        user = User.objects.first()
+        assert user is not None
+
+        # Generate a password reset URL
+        viewname = self.client.reverse("request-password-reset")
+
+        response = self.client.post(viewname, data={"email": user.email})
+        reset_password_url = response.data["reset_password_url"]
+
         # Check successful GET
         self.client.get(reset_password_url)
 
@@ -114,7 +154,8 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         self.client.login(email=user.email, password="N3wPassword!")
         self.client.logout()
 
-        # Repeat logic as indy
+    def test_reset_password__indy_patch(self):
+        """Check indy can successfully update password."""
         user = User.objects.filter(
             new_teacher__isnull=True, new_student__isnull=True
         ).first()
@@ -126,6 +167,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         response = self.client.post(viewname, data={"email": user.email})
         reset_password_url = response.data["reset_password_url"]
 
+        # Check successful GET
         self.client.get(reset_password_url)
 
         # Test reset-password PATCH for indy
