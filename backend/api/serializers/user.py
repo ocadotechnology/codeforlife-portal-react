@@ -50,7 +50,6 @@ class UserListSerializer(ModelListSerializer[User]):
             # pylint: disable-next=protected-access
             user._password = password
 
-            # TODO: Is this needed?
             login_id = None
             while (
                 login_id is None
@@ -108,10 +107,11 @@ class UserListSerializer(ModelListSerializer[User]):
 # pylint: disable-next=missing-class-docstring,too-many-ancestors
 class UserSerializer(_UserSerializer):
     student = StudentSerializer(source="new_student", required=False)
-
     teacher = TeacherSerializer(source="new_teacher", required=False)
-
-    current_password = serializers.CharField(write_only=True, required=False)
+    current_password = serializers.CharField(
+        write_only=True,
+        required=False,
+    )
 
     class Meta(_UserSerializer.Meta):
         fields = [

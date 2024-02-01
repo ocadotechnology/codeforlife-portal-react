@@ -36,7 +36,8 @@ class StudentSerializerTestCase(ModelSerializerTestCase[Student]):
 
     def test_validate_klass__does_not_exist(self):
         """
-        Requesting teacher cannot assign a student to a call that doesn't exist.
+        Requesting teacher cannot assign a student to a class that doesn't
+        exist.
         """
 
         user = User.objects.get(email="teacher@school1.com")
