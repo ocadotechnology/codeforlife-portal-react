@@ -7,7 +7,7 @@ import string
 import typing as t
 from itertools import groupby
 
-from codeforlife.serializers import ModelSerializer, ModelListSerializer
+from codeforlife.serializers import ModelListSerializer, ModelSerializer
 from codeforlife.user.auth.password_validators import (
     IndependentPasswordValidator,
     TeacherPasswordValidator,
