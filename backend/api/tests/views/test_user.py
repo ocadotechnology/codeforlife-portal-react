@@ -3,8 +3,10 @@
 Created on 20/01/2024 at 10:58:52(+00:00).
 """
 
+import typing as t
+
 from codeforlife.tests import ModelViewSetTestCase
-from codeforlife.user.models import User
+from codeforlife.user.models import Class, User
 
 from ...views import UserViewSet
 
@@ -20,6 +22,13 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
     basename = "user"
     model_view_set_class = UserViewSet
+
+    def _login_teacher(self):
+        return self.client.login_teacher(
+            email="maxplanck@codeforlife.com",
+            password="Password1",
+            is_admin=False,
+        )
 
     def test_is_unique_email(self):
         """
@@ -41,3 +50,27 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         )
 
         self.assertTrue(response.json())
+
+    def test_bulk_create__students(self):
+        """
+        Teacher can bulk create students.
+        """
+
+        user = self._login_teacher()
+        assert user.teacher.school is not None
+
+        klass: t.Optional[Class] = user.teacher.class_teacher.first()
+        assert klass is not None
+
+        self.client.bulk_create(
+            [
+                {
+                    "first_name": "Peter",
+                    "student": {"klass": klass.access_code},
+                },
+                {
+                    "first_name": "Mary",
+                    "student": {"klass": klass.access_code},
+                },
+            ]
+        )

@@ -30,7 +30,9 @@ def user__pre_save__otp_secret(sender, instance: UserProfile, *args, **kwargs):
 def user__pre_save__email(sender, instance: User, *args, **kwargs):
     """Before a user's email field is updated."""
 
-    if previous_values_are_unequal(instance, {"email"}):
+    if instance.teacher is not None and previous_values_are_unequal(
+        instance, {"email"}
+    ):
         instance.username = instance.email
 
 
