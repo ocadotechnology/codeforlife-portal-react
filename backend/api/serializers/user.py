@@ -8,9 +8,8 @@ import typing as t
 from itertools import groupby
 
 from codeforlife.serializers import ModelListSerializer, ModelSerializer
-from codeforlife.user.auth.password_validators import (
-    IndependentPasswordValidator,
-    TeacherPasswordValidator,
+from django.contrib.auth.password_validation import (
+    validate_password as _validate_password,
 )
 from codeforlife.user.models import Class, Student, User, UserProfile
 from codeforlife.user.serializers import UserSerializer as _UserSerializer
@@ -131,9 +130,28 @@ class UserSerializer(_UserSerializer):
         list_serializer_class = UserListSerializer
 
     def validate(self, attrs):
-        # TODO: make current password required when changing self-profile.
+        if self.view.action != "reset-password":
+            pass
+            # TODO: make current password required when changing self-profile.
 
         return attrs
+
+    def validate_password(self, value: str):
+        """
+        Validate the new password depending on user type.
+        :param value: the new password
+        """
+        _validate_password(value, self.instance)
+        return value
+
+    def update(self, instance, validated_data):
+        password = validated_data["password"]
+
+        if password is not None:
+            instance.set_password(password)
+            instance.save()
+
+        return instance
 
     def to_representation(self, instance: User):
         representation = super().to_representation(instance)
@@ -149,31 +167,3 @@ class UserSerializer(_UserSerializer):
                 representation["password"] = password
 
         return representation
-
-
-# pylint: disable-next=missing-class-docstring
-class PasswordResetSerializer(ModelSerializer[User]):
-    class Meta:
-        model = User
-        fields = ["password"]
-        extra_kwargs = {"password": {"write_only": True}}
-
-    def validate_password(self, value: str):
-        """
-        Validate the new password depending on user type.
-        :param value: the new password
-        """
-        user = getattr(self, "instance", None)
-        validator = (
-            TeacherPasswordValidator
-            if hasattr(user, "teacher")
-            else IndependentPasswordValidator
-        )()
-
-        validator.validate(value, user)
-        return value
-
-    def update(self, instance, validated_data):
-        instance.set_password(validated_data["password"])
-        instance.save()
-        return instance

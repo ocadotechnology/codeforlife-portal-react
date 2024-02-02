@@ -44,9 +44,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         return self.client.post(viewname, data={"email": email})
 
     def test_is_unique_email(self):
-        """
-        Check email is unique.
-        """
+        """Check email is unique."""
 
         user = User.objects.first()
         assert user is not None
@@ -65,9 +63,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         self.assertTrue(response.json())
 
     def test_bulk_create__students(self):
-        """
-        Teacher can bulk create students.
-        """
+        """Teacher can bulk create students."""
 
         user = self._login_teacher()
         assert user.teacher.school is not None
@@ -101,6 +97,16 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
         assert response.data is None
 
+    def test_request_password_reset__empty_email(self):
+        """Check email field is required."""
+        viewname = self.client.reverse("request-password-reset")
+
+        response = self.client.post(
+            viewname, status_code_assertion=status.HTTP_400_BAD_REQUEST
+        )
+
+        assert response.data["email"] == ["Field is required."]
+
     def test_request_password_reset__valid_email(self):
         """
         Check request password reset generates reset password URL for valid
@@ -109,16 +115,16 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         response = self._request_reset_password_response(self.teacher_email)
 
         assert response.data["reset_password_url"] is not None
-        assert response.data["uidb64"] is not None
+        assert response.data["pk"] is not None
         assert response.data["token"] is not None
 
-    def test_reset_password__invalid_uidb64(self):
-        """Check reset password raises 400 on GET with invalid uidb64"""
+    def test_reset_password__invalid_pk(self):
+        """Check reset password raises 400 on GET with invalid pk"""
         response = self._request_reset_password_response(self.teacher_email)
 
         viewname = self.client.reverse(
             "reset-password",
-            kwargs={"uidb64": "whatever", "token": response.data["token"]},
+            kwargs={"pk": "whatever", "token": response.data["token"]},
         )
 
         invalid_uid_response = self.client.get(
@@ -126,7 +132,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         )
 
         assert invalid_uid_response.data["non_field_errors"] == [
-            "no user found for given uid"
+            "No user found for given ID."
         ]
 
     def test_reset_password__invalid_token(self):
@@ -135,7 +141,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
         viewname = self.client.reverse(
             "reset-password",
-            kwargs={"uidb64": response.data["uidb64"], "token": "whatever"},
+            kwargs={"pk": response.data["pk"], "token": "whatever"},
         )
 
         invalid_token_response = self.client.get(
@@ -143,23 +149,14 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         )
 
         assert invalid_token_response.data["non_field_errors"] == [
-            "token doesn't match given user"
+            "Token doesn't match given user."
         ]
-
-    def test_reset_password__get(self):
-        """Check reset password GET succeeds."""
-        response = self._request_reset_password_response(self.teacher_email)
-        reset_password_url = response.data["reset_password_url"]
-
-        # Check successful GET
-        self.client.get(reset_password_url)
 
     def test_reset_password__patch__teacher(self):
         """Check teacher can successfully update password."""
         response = self._request_reset_password_response(self.teacher_email)
         reset_password_url = response.data["reset_password_url"]
 
-        # Check successful GET
         self.client.get(reset_password_url)
 
         # Test reset-password PATCH for teacher
@@ -172,7 +169,6 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         response = self._request_reset_password_response(self.indy_email)
         reset_password_url = response.data["reset_password_url"]
 
-        # Check successful GET
         self.client.get(reset_password_url)
 
         # Test reset-password PATCH for indy
