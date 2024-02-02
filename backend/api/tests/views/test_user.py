@@ -7,6 +7,7 @@ import typing as t
 
 from codeforlife.tests import ModelViewSetTestCase
 from codeforlife.user.models import Class, User
+from django.contrib.auth.tokens import default_token_generator
 from rest_framework import status
 
 from ...views import UserViewSet
@@ -28,7 +29,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
     model_view_set_class = UserViewSet
     fixtures = ["independent", "non_school_teacher"]
 
-    teacher_email = "teacher@noschool.com"
+    non_school_teacher_email = "teacher@noschool.com"
     indy_email = "indy@man.com"
 
     def _login_teacher(self):
@@ -38,13 +39,14 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
             is_admin=False,
         )
 
-    def _request_reset_password_response(self, email: str):
-        viewname = self.client.reverse("request-password-reset")
+    def _get_pk_and_token_for_user(self, email: str):
+        user = User.objects.get(email__iexact=email)
+        token = default_token_generator.make_token(user)
 
-        return self.client.post(viewname, data={"email": email})
+        return user.pk, token
 
     def test_is_unique_email(self):
-        """Check email is unique."""
+        """Email is unique."""
 
         user = User.objects.first()
         assert user is not None
@@ -86,19 +88,21 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
     def test_request_password_reset__invalid_email(self):
         """
-        Check request password reset doesn't generate reset password URL if
-        email is invalid but still returns a 200.
+        Request password reset doesn't generate reset password URL if email
+        is invalid but still returns a 200.
         """
         viewname = self.client.reverse("request-password-reset")
 
         response = self.client.post(
-            viewname, data={"email": "nonexistent@email.com"}
+            viewname,
+            data={"email": "nonexistent@email.com"},
+            status_code_assertion=status.HTTP_200_OK,
         )
 
         assert response.data is None
 
     def test_request_password_reset__empty_email(self):
-        """Check email field is required."""
+        """Email field is required."""
         viewname = self.client.reverse("request-password-reset")
 
         response = self.client.post(
@@ -109,68 +113,93 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
     def test_request_password_reset__valid_email(self):
         """
-        Check request password reset generates reset password URL for valid
-        email.
+        Request password reset generates reset password URL for valid email.
         """
-        response = self._request_reset_password_response(self.teacher_email)
+        viewname = self.client.reverse("request-password-reset")
+
+        response = self.client.post(
+            viewname, data={"email": self.non_school_teacher_email}
+        )
 
         assert response.data["reset_password_url"] is not None
         assert response.data["pk"] is not None
         assert response.data["token"] is not None
 
     def test_reset_password__invalid_pk(self):
-        """Check reset password raises 400 on GET with invalid pk"""
-        response = self._request_reset_password_response(self.teacher_email)
+        """Reset password raises 400 on GET with invalid pk"""
+        _, token = self._get_pk_and_token_for_user(
+            self.non_school_teacher_email
+        )
 
         viewname = self.client.reverse(
             "reset-password",
-            kwargs={"pk": "whatever", "token": response.data["token"]},
+            kwargs={"pk": "whatever", "token": token},
         )
 
-        invalid_uid_response = self.client.get(
+        response = self.client.get(
             viewname, status_code_assertion=status.HTTP_400_BAD_REQUEST
         )
 
-        assert invalid_uid_response.data["non_field_errors"] == [
+        assert response.data["non_field_errors"] == [
             "No user found for given ID."
         ]
 
     def test_reset_password__invalid_token(self):
-        """Check reset password raises 400 on GET with invalid token"""
-        response = self._request_reset_password_response(self.teacher_email)
+        """Reset password raises 400 on GET with invalid token"""
+        pk, _ = self._get_pk_and_token_for_user(self.non_school_teacher_email)
 
         viewname = self.client.reverse(
             "reset-password",
-            kwargs={"pk": response.data["pk"], "token": "whatever"},
+            kwargs={"pk": pk, "token": "whatever"},
         )
 
-        invalid_token_response = self.client.get(
+        response = self.client.get(
             viewname, status_code_assertion=status.HTTP_400_BAD_REQUEST
         )
 
-        assert invalid_token_response.data["non_field_errors"] == [
+        assert response.data["non_field_errors"] == [
             "Token doesn't match given user."
         ]
 
+    def test_reset_password__get(self):
+        """Reset password GET succeeds."""
+        pk, token = self._get_pk_and_token_for_user(
+            self.non_school_teacher_email
+        )
+
+        viewname = self.client.reverse(
+            "reset-password",
+            kwargs={"pk": pk, "token": token},
+        )
+
+        self.client.get(viewname)
+
     def test_reset_password__patch__teacher(self):
-        """Check teacher can successfully update password."""
-        response = self._request_reset_password_response(self.teacher_email)
-        reset_password_url = response.data["reset_password_url"]
+        """Teacher can successfully update password."""
+        pk, token = self._get_pk_and_token_for_user(
+            self.non_school_teacher_email
+        )
 
-        self.client.get(reset_password_url)
+        viewname = self.client.reverse(
+            "reset-password",
+            kwargs={"pk": pk, "token": token},
+        )
 
-        # Test reset-password PATCH for teacher
-        self.client.patch(reset_password_url, data={"password": "N3wPassword!"})
-        self.client.login(email=self.teacher_email, password="N3wPassword!")
-        self.client.logout()
+        self.client.patch(viewname, data={"password": "N3wPassword!"})
+        user = self.client.login(
+            email=self.non_school_teacher_email, password="N3wPassword!"
+        )
+        assert user is not None
 
     def test_reset_password__patch__indy(self):
-        """Check indy can successfully update password."""
-        response = self._request_reset_password_response(self.indy_email)
-        reset_password_url = response.data["reset_password_url"]
+        """Indy can successfully update password."""
+        pk, token = self._get_pk_and_token_for_user(self.indy_email)
 
-        self.client.get(reset_password_url)
+        viewname = self.client.reverse(
+            "reset-password",
+            kwargs={"pk": pk, "token": token},
+        )
 
-        # Test reset-password PATCH for indy
-        self.client.patch(reset_password_url, data={"password": "N3wPassword"})
-        self.client.login(email=self.indy_email, password="N3wPassword")
+        self.client.patch(viewname, data={"password": "N3wPassword"})
+        user = self.client.login(email=self.indy_email, password="N3wPassword")
+        assert user is not None

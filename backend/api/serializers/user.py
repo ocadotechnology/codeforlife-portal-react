@@ -145,12 +145,12 @@ class UserSerializer(_UserSerializer):
         return value
 
     def update(self, instance, validated_data):
-        password = validated_data["password"]
+        password = validated_data.get("password")
 
         if password is not None:
             instance.set_password(password)
-            instance.save()
 
+        instance.save()
         return instance
 
     def to_representation(self, instance: User):

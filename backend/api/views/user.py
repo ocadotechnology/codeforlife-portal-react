@@ -10,7 +10,6 @@ from codeforlife.user.models import User
 from codeforlife.user.permissions import IsTeacher
 from codeforlife.user.views import UserViewSet as _UserViewSet
 from django.contrib.auth.tokens import default_token_generator
-from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
@@ -46,7 +45,7 @@ class UserViewSet(_UserViewSet):
         permission_classes=[AllowAny],
     )
     def reset_password(
-        self, request: Request, pk: int = None, token: str = None
+        self, request: Request, pk: str = None, token: str = None
     ):
         """
         Handles password reset for a user. On GET, checks validity of user PK
@@ -56,8 +55,8 @@ class UserViewSet(_UserViewSet):
         after 1 hour.
         """
         try:
-            user = User.objects.get(pk=pk)
-        except (TypeError, ValueError, OverflowError, ObjectDoesNotExist):
+            user = User.objects.get(pk=int(pk))
+        except (ValueError, User.DoesNotExist):
             return Response(
                 {"non_field_errors": ["No user found for given ID."]},
                 status=status.HTTP_400_BAD_REQUEST,
@@ -94,7 +93,7 @@ class UserViewSet(_UserViewSet):
 
         try:
             user = User.objects.get(email__iexact=email)
-        except ObjectDoesNotExist:
+        except User.DoesNotExist:
             # NOTE: Always return a 200 here - a noticeable change in behaviour would allow email enumeration.
             return Response()
 
