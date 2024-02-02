@@ -7,13 +7,13 @@ import string
 import typing as t
 from itertools import groupby
 
-from codeforlife.serializers import ModelListSerializer, ModelSerializer
-from django.contrib.auth.password_validation import (
-    validate_password as _validate_password,
-)
+from codeforlife.serializers import ModelListSerializer
 from codeforlife.user.models import Class, Student, User, UserProfile
 from codeforlife.user.serializers import UserSerializer as _UserSerializer
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.password_validation import (
+    validate_password as _validate_password,
+)
 from django.utils.crypto import get_random_string
 from rest_framework import serializers
 
