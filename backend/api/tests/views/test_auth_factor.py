@@ -73,7 +73,7 @@ class TestAuthFactorViewSet(ModelViewSetTestCase[AuthFactor]):
 
     def test_create(self):
         """
-        Can enable a auth-factor.
+        Can enable an auth-factor.
         """
 
         user = self.client.login(**self.one_factor_credentials)
@@ -83,7 +83,7 @@ class TestAuthFactorViewSet(ModelViewSetTestCase[AuthFactor]):
 
     def test_destroy(self):
         """
-        Can disable a auth-factor.
+        Can disable an auth-factor.
         """
 
         user = self.client.login(**self.two_factor_credentials)
