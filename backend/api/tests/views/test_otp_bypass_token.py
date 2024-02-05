@@ -57,7 +57,7 @@ class TestOtpBypassTokenViewSet(ModelViewSetTestCase[OtpBypassToken]):
             OtpBypassToken, "generate_tokens", return_value=tokens
         ) as generate_tokens:
             response = self.client.post(
-                self.client.reverse("generate"),
+                self.reverse_action("generate"),
                 status_code_assertion=status.HTTP_201_CREATED,
             )
 

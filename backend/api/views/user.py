@@ -9,13 +9,19 @@ from codeforlife.request import Request
 from codeforlife.user.models import User
 from codeforlife.user.permissions import IsTeacher
 from codeforlife.user.views import UserViewSet as _UserViewSet
-from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth.tokens import (
+    PasswordResetTokenGenerator,
+    default_token_generator,
+)
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from ..serializers import UserSerializer
+
+# NOTE: type hint to help Intellisense.
+default_token_generator: PasswordResetTokenGenerator = default_token_generator
 
 
 # pylint: disable-next=missing-class-docstring,too-many-ancestors
@@ -29,15 +35,6 @@ class UserViewSet(_UserViewSet):
 
         return super().get_permissions()
 
-    @action(detail=False, methods=["post"], permission_classes=[AllowAny])
-    def is_unique_email(self, request: Request):
-        """Checks if an email is unique."""
-
-        email: t.Optional[str] = request.data.get("email")
-        return Response(
-            email and not User.objects.filter(email__iexact=email).exists()
-        )
-
     @action(
         detail=True,
         methods=["get", "patch"],
@@ -45,7 +42,10 @@ class UserViewSet(_UserViewSet):
         permission_classes=[AllowAny],
     )
     def reset_password(
-        self, request: Request, pk: str = None, token: str = None
+        self,
+        request: Request,
+        pk: t.Optional[str] = None,
+        token: t.Optional[str] = None,
     ):
         """
         Handles password reset for a user. On GET, checks validity of user PK
@@ -54,13 +54,19 @@ class UserViewSet(_UserViewSet):
         :param token: Django-generated user token for password reset, expires
         after 1 hour.
         """
+
+        user_not_found_response = Response(
+            {"non_field_errors": ["No user found for given ID."]},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+        if pk is None:
+            return user_not_found_response
+
         try:
             user = User.objects.get(pk=int(pk))
         except (ValueError, User.DoesNotExist):
-            return Response(
-                {"non_field_errors": ["No user found for given ID."]},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            return user_not_found_response
 
         if not default_token_generator.check_token(user, token):
             return Response(
