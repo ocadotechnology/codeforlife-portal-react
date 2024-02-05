@@ -11,6 +11,9 @@ from codeforlife.serializers import ModelListSerializer
 from codeforlife.user.models import Class, Student, User, UserProfile
 from codeforlife.user.serializers import UserSerializer as _UserSerializer
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.password_validation import (
+    validate_password as _validate_password,
+)
 from django.utils.crypto import get_random_string
 from rest_framework import serializers
 
@@ -127,9 +130,28 @@ class UserSerializer(_UserSerializer):
         list_serializer_class = UserListSerializer
 
     def validate(self, attrs):
-        # TODO: make current password required when changing self-profile.
+        if self.view.action != "reset-password":
+            pass
+            # TODO: make current password required when changing self-profile.
 
         return attrs
+
+    def validate_password(self, value: str):
+        """
+        Validate the new password depending on user type.
+        :param value: the new password
+        """
+        _validate_password(value, self.instance)
+        return value
+
+    def update(self, instance, validated_data):
+        password = validated_data.get("password")
+
+        if password is not None:
+            instance.set_password(password)
+
+        instance.save()
+        return instance
 
     def to_representation(self, instance: User):
         representation = super().to_representation(instance)
