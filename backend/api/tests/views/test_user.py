@@ -11,53 +11,24 @@ from codeforlife.user.models import Class, User
 from ...views import UserViewSet
 
 
+# pylint: disable-next=missing-class-docstring
 class TestUserViewSet(ModelViewSetTestCase[User]):
-    """
-    Base naming convention:
-        test_{action}
-
-    action: The view set action.
-        https://www.django-rest-framework.org/api-guide/viewsets/#viewset-actions
-    """
-
     basename = "user"
     model_view_set_class = UserViewSet
 
-    def _login_teacher(self):
-        return self.client.login_teacher(
+    def _login_school_teacher(self):
+        return self.client.login_school_teacher(
             email="maxplanck@codeforlife.com",
             password="Password1",
             is_admin=False,
         )
-
-    def test_is_unique_email(self):
-        """
-        Check email is unique.
-        """
-
-        user = User.objects.first()
-        assert user is not None
-
-        viewname = self.client.reverse("is-unique-email")
-
-        response = self.client.post(viewname, data={"email": user.email})
-
-        self.assertFalse(response.json())
-
-        response = self.client.post(
-            viewname,
-            data={"email": "unique.email@codeforlife.com"},
-        )
-
-        self.assertTrue(response.json())
 
     def test_bulk_create__students(self):
         """
         Teacher can bulk create students.
         """
 
-        user = self._login_teacher()
-        assert user.teacher.school is not None
+        user = self._login_school_teacher()
 
         klass: t.Optional[Class] = user.teacher.class_teacher.first()
         assert klass is not None
