@@ -7,10 +7,16 @@ import typing as t
 
 from codeforlife.tests import ModelViewSetTestCase
 from codeforlife.user.models import Class, User
-from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth.tokens import (
+    PasswordResetTokenGenerator,
+    default_token_generator,
+)
 from rest_framework import status
 
 from ...views import UserViewSet
+
+# NOTE: type hint to help Intellisense.
+default_token_generator: PasswordResetTokenGenerator = default_token_generator
 
 
 # pylint: disable-next=missing-class-docstring
@@ -61,7 +67,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         Request password reset doesn't generate reset password URL if email
         is invalid but still returns a 200.
         """
-        viewname = self.client.reverse("request-password-reset")
+        viewname = self.reverse_action("request-password-reset")
 
         response = self.client.post(
             viewname,
@@ -73,7 +79,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
     def test_request_password_reset__empty_email(self):
         """Email field is required."""
-        viewname = self.client.reverse("request-password-reset")
+        viewname = self.reverse_action("request-password-reset")
 
         response = self.client.post(
             viewname, status_code_assertion=status.HTTP_400_BAD_REQUEST
@@ -85,7 +91,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         """
         Request password reset generates reset password URL for valid email.
         """
-        viewname = self.client.reverse("request-password-reset")
+        viewname = self.reverse_action("request-password-reset")
 
         response = self.client.post(
             viewname, data={"email": self.non_school_teacher_email}
@@ -101,7 +107,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
             self.non_school_teacher_email
         )
 
-        viewname = self.client.reverse(
+        viewname = self.reverse_action(
             "reset-password",
             kwargs={"pk": "whatever", "token": token},
         )
@@ -118,7 +124,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         """Reset password raises 400 on GET with invalid token"""
         pk, _ = self._get_pk_and_token_for_user(self.non_school_teacher_email)
 
-        viewname = self.client.reverse(
+        viewname = self.reverse_action(
             "reset-password",
             kwargs={"pk": pk, "token": "whatever"},
         )
@@ -137,7 +143,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
             self.non_school_teacher_email
         )
 
-        viewname = self.client.reverse(
+        viewname = self.reverse_action(
             "reset-password",
             kwargs={"pk": pk, "token": token},
         )
@@ -150,7 +156,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
             self.non_school_teacher_email
         )
 
-        viewname = self.client.reverse(
+        viewname = self.reverse_action(
             "reset-password",
             kwargs={"pk": pk, "token": token},
         )
@@ -165,7 +171,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         """Indy can successfully update password."""
         pk, token = self._get_pk_and_token_for_user(self.indy_email)
 
-        viewname = self.client.reverse(
+        viewname = self.reverse_action(
             "reset-password",
             kwargs={"pk": pk, "token": token},
         )
