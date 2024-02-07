@@ -4,7 +4,7 @@ Created on 05/02/2024 at 15:31:59(+00:00).
 """
 
 from codeforlife.tests import ModelSerializerTestCase
-from codeforlife.user.models import Class, SchoolTeacherUser
+from codeforlife.user.models import Class, SchoolTeacherUser, Teacher
 
 from ...serializers import ClassSerializer
 
@@ -20,6 +20,61 @@ class ClassSerializerTestCase(ModelSerializerTestCase[Class]):
         )
         self.class_1 = Class.objects.get(name="Class 1 @ School 1")
 
+    def test_validate_teacher__does_not_exist(self):
+        """
+        Teacher must exist.
+        """
+
+        self.assert_validate_field(
+            name="teacher",
+            value=-1,
+            error_code="does_not_exist",
+        )
+
+    def test_validate_teacher__not_in_school(self):
+        """
+        Teacher must be in school.
+        """
+
+        teacher = Teacher.objects.exclude(
+            school=self.school_teacher_user.teacher.school
+        ).first()
+        assert teacher
+
+        self.assert_validate_field(
+            name="teacher",
+            value=teacher.id,
+            error_code="not_in_school",
+            context={
+                "request": self.init_request("POST", self.school_teacher_user)
+            },
+        )
+
+    def test_validate_teacher__not_admin(self):
+        """
+        Teacher cannot assign another teacher if they're not an admin.
+        """
+
+        assert not self.school_teacher_user.teacher.is_admin
+
+        teacher = (
+            Teacher.objects.filter(
+                school=self.school_teacher_user.teacher.school
+            )
+            .exclude(pk=self.school_teacher_user.teacher.pk)
+            .first()
+        )
+        assert teacher
+
+        self.assert_validate_field(
+            name="teacher",
+            value=teacher.id,
+            error_code="not_admin",
+            context={
+                "request": self.init_request("POST", self.school_teacher_user)
+            },
+        )
+
     def test_validate_name__name_not_unique(self):
         """
         Class names must be unique per school.
@@ -29,12 +84,14 @@ class ClassSerializerTestCase(ModelSerializerTestCase[Class]):
             name="name",
             value=self.class_1.name,
             error_code="name_not_unique",
-            user=self.school_teacher_user,
+            context={
+                "request": self.init_request("POST", self.school_teacher_user)
+            },
         )
 
-    def test_create(self):
+    def test_create__teacher(self):
         """
-        Creates an instance of the Class model.
+        Can successfully create with setting the teacher field.
         """
 
         self.assert_create(
@@ -42,10 +99,25 @@ class ClassSerializerTestCase(ModelSerializerTestCase[Class]):
                 "name": "ExampleClass",
                 "teacher": {
                     "id": self.school_teacher_user.teacher.id,
-                    "school": {
-                        "id": self.school_teacher_user.teacher.school.id,
-                    },
                 },
                 "classmates_data_viewable": False,
             }
+        )
+
+    def test_create__no_teacher(self):
+        """
+        Can successfully create without setting the teacher field.
+        """
+
+        self.assert_create(
+            {
+                "name": "ExampleClass",
+                "classmates_data_viewable": False,
+            },
+            new_data={
+                "teacher": self.school_teacher_user.teacher.id,
+            },
+            context={
+                "request": self.init_request("POST", self.school_teacher_user),
+            },
         )

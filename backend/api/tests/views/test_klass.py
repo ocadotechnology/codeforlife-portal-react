@@ -7,7 +7,7 @@ from datetime import timedelta
 
 from codeforlife.permissions import AllowNone
 from codeforlife.tests import ModelViewSetTestCase
-from codeforlife.user.models import Class
+from codeforlife.user.models import Class, Teacher
 from codeforlife.user.permissions import InSchool, IsTeacher
 from django.utils import timezone
 
@@ -80,9 +80,9 @@ class TestClassViewSet(ModelViewSetTestCase[Class]):
             action="retrieve",
         )
 
-    def test_create(self):
+    def test_create__self(self):
         """
-        Create a new class.
+        Teacher can create a class with their self as the class owner.
         """
 
         user = self.client.login_school_teacher(
@@ -95,7 +95,34 @@ class TestClassViewSet(ModelViewSetTestCase[Class]):
                 "name": "ExampleClass",
                 "school": user.teacher.school.id,
                 "read_classmates_data": False,
-                "teacher": user.teacher.id,
                 "receive_requests_until": timezone.now() + timedelta(days=1),
+            },
+        )
+
+    def test_create__other(self):
+        """
+        Teacher can create a class with another teacher as the class owner.
+        """
+
+        user = self.client.login_school_teacher(
+            email="admin.teacher@school1.com",
+            password="password",
+            is_admin=True,
+        )
+
+        teacher = (
+            Teacher.objects.filter(school=user.teacher.school)
+            .exclude(pk=user.teacher.pk)
+            .first()
+        )
+        assert teacher
+
+        self.client.create(
+            {
+                "name": "ExampleClass",
+                "school": user.teacher.school.id,
+                "read_classmates_data": False,
+                "receive_requests_until": timezone.now() + timedelta(days=1),
+                "teacher": teacher.id,
             },
         )
