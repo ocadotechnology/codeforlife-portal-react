@@ -15,12 +15,10 @@ from ...views import SchoolViewSet
 class TestSchoolViewSet(ModelViewSetTestCase[School]):
     basename = "school"
     model_view_set_class = SchoolViewSet
-    fixtures = ["non_school_teacher"]
+    fixtures = ["non_school_teacher", "school_1"]
 
     def test_get_permissions__bulk(self):
-        """
-        No one is allowed to perform bulk actions.
-        """
+        """No one is allowed to perform bulk actions."""
 
         self.assert_get_permissions(
             permissions=[AllowNone()],
@@ -28,9 +26,7 @@ class TestSchoolViewSet(ModelViewSetTestCase[School]):
         )
 
     def test_get_permissions__list(self):
-        """
-        No one is allowed to list schools.
-        """
+        """No one is allowed to list schools."""
 
         self.assert_get_permissions(
             permissions=[AllowNone()],
@@ -38,9 +34,7 @@ class TestSchoolViewSet(ModelViewSetTestCase[School]):
         )
 
     def test_get_permissions__create(self):
-        """
-        Only teachers not in a school can create a school.
-        """
+        """Only teachers not in a school can create a school."""
 
         self.assert_get_permissions(
             permissions=[IsTeacher(), NOT(InSchool())],
@@ -48,9 +42,7 @@ class TestSchoolViewSet(ModelViewSetTestCase[School]):
         )
 
     def test_get_permissions__update(self):
-        """
-        Only admin-teachers in a school can update a school.
-        """
+        """Only admin-teachers in a school can update a school."""
 
         self.assert_get_permissions(
             permissions=[IsTeacher(is_admin=True), InSchool()],
@@ -58,9 +50,7 @@ class TestSchoolViewSet(ModelViewSetTestCase[School]):
         )
 
     def test_get_permissions__retrieve(self):
-        """
-        Anyone in a school can retrieve a school.
-        """
+        """Anyone in a school can retrieve a school."""
 
         self.assert_get_permissions(
             permissions=[InSchool()],
@@ -68,9 +58,7 @@ class TestSchoolViewSet(ModelViewSetTestCase[School]):
         )
 
     def test_create(self):
-        """
-        Can successfully create a school.
-        """
+        """Can successfully create a school."""
 
         self.client.login_non_school_teacher(
             email="teacher@noschool.com",
@@ -80,6 +68,24 @@ class TestSchoolViewSet(ModelViewSetTestCase[School]):
         self.client.create(
             {
                 "name": "ExampleSchool",
+                "uk_county": "Surrey",
+                "country": "GB",
+            },
+        )
+
+    def test_partial_update(self):
+        """Can successfully update a school."""
+
+        user = self.client.login_school_teacher(
+            is_admin=True,
+            email="admin.teacher@school1.com",
+            password="password",
+        )
+
+        self.client.partial_update(
+            user.teacher.school,
+            {
+                "name": "NewSchoolName",
                 "uk_county": "Surrey",
                 "country": "GB",
             },
