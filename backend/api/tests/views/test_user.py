@@ -4,15 +4,19 @@ Created on 20/01/2024 at 10:58:52(+00:00).
 """
 
 import typing as t
+from datetime import timedelta
+from uuid import uuid4
 
 from codeforlife.tests import ModelViewSetTestCase
-from codeforlife.user.models import Class, User
+from codeforlife.user.models import Class, School, Teacher, User
 from django.contrib.auth.tokens import (
     PasswordResetTokenGenerator,
     default_token_generator,
 )
+from django.utils import timezone
 from rest_framework import status
 
+from ...models import SchoolTeacherInvitation
 from ...views import UserViewSet
 
 # NOTE: type hint to help Intellisense.
@@ -23,16 +27,26 @@ default_token_generator: PasswordResetTokenGenerator = default_token_generator
 class TestUserViewSet(ModelViewSetTestCase[User]):
     basename = "user"
     model_view_set_class = UserViewSet
-    fixtures = ["independent", "non_school_teacher"]
+    fixtures = ["independent", "non_school_teacher", "school_1"]
 
     non_school_teacher_email = "teacher@noschool.com"
+    school_teacher_email = "teacher@school1.com"
+    school_admin_teacher_email = "admin.teacher@school1.com"
+    school_name = "School 1"
     indy_email = "indy@man.com"
 
     def _login_school_teacher(self):
         return self.client.login_school_teacher(
-            email="maxplanck@codeforlife.com",
-            password="Password1",
+            email=self.school_teacher_email,
+            password="password",
             is_admin=False,
+        )
+
+    def _login_admin_school_teacher(self):
+        return self.client.login_school_teacher(
+            email=self.school_admin_teacher_email,
+            password="password",
+            is_admin=True,
         )
 
     def _get_pk_and_token_for_user(self, email: str):
@@ -40,6 +54,31 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         token = default_token_generator.make_token(user)
 
         return user.pk, token
+
+    def _invite_teacher(
+        self,
+        host_teacher_email: str,
+        first_name: str,
+        last_name: str,
+        invited_teacher_email: str,
+        is_admin: bool,
+    ):
+        host_teacher = Teacher.objects.get(
+            new_user__email__iexact=host_teacher_email
+        )
+        token = uuid4().hex
+        invitation = SchoolTeacherInvitation.objects.create(
+            token=token,
+            school=host_teacher.school,
+            from_teacher=host_teacher,
+            invited_teacher_first_name=first_name,
+            invited_teacher_last_name=last_name,
+            invited_teacher_email=invited_teacher_email,
+            invited_teacher_is_admin=is_admin,
+            expiry=timezone.now() + timedelta(days=30),
+        )
+
+        return invitation
 
     def test_bulk_create__students(self):
         """Teacher can bulk create students."""
@@ -108,8 +147,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         )
 
         viewname = self.reverse_action(
-            "reset-password",
-            kwargs={"pk": "whatever", "token": token},
+            "reset-password", kwargs={"pk": "whatever", "token": token}
         )
 
         response = self.client.get(
@@ -125,8 +163,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         pk, _ = self._get_pk_and_token_for_user(self.non_school_teacher_email)
 
         viewname = self.reverse_action(
-            "reset-password",
-            kwargs={"pk": pk, "token": "whatever"},
+            "reset-password", kwargs={"pk": pk, "token": "whatever"}
         )
 
         response = self.client.get(
@@ -144,8 +181,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         )
 
         viewname = self.reverse_action(
-            "reset-password",
-            kwargs={"pk": pk, "token": token},
+            "reset-password", kwargs={"pk": pk, "token": token}
         )
 
         self.client.get(viewname)
@@ -157,8 +193,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         )
 
         viewname = self.reverse_action(
-            "reset-password",
-            kwargs={"pk": pk, "token": token},
+            "reset-password", kwargs={"pk": pk, "token": token}
         )
 
         self.client.patch(viewname, data={"password": "N3wPassword!"})
@@ -179,3 +214,193 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         self.client.patch(viewname, data={"password": "N3wPassword"})
         user = self.client.login(email=self.indy_email, password="N3wPassword")
         assert user is not None
+
+    def test_invite_teacher__empty_first_name(self):
+        """First name field is required."""
+        self._login_admin_school_teacher()
+
+        viewname = self.reverse_action("invite-teacher")
+
+        response = self.client.post(
+            viewname,
+            data={"last_name": "NewTeacher", "email": "invited@teacher.com"},
+            status_code_assertion=status.HTTP_400_BAD_REQUEST,
+        )
+
+        assert response.data["first_name"] == ["Field is required."]
+
+    def test_invite_teacher__empty_last_name(self):
+        """Last name field is required."""
+        self._login_admin_school_teacher()
+
+        viewname = self.reverse_action("invite-teacher")
+
+        response = self.client.post(
+            viewname,
+            data={"first_name": "NewTeacher", "email": "invited@teacher.com"},
+            status_code_assertion=status.HTTP_400_BAD_REQUEST,
+        )
+
+        assert response.data["last_name"] == ["Field is required."]
+
+    def test_invite_teacher__empty_email(self):
+        """Email field is required."""
+        self._login_admin_school_teacher()
+
+        viewname = self.reverse_action("invite-teacher")
+
+        response = self.client.post(
+            viewname,
+            data={"first_name": "NewTeacher", "last_name": "NewTeacher"},
+            status_code_assertion=status.HTTP_400_BAD_REQUEST,
+        )
+
+        assert response.data["email"] == ["Field is required."]
+
+    def test_invite_teacher__existing_email(self):
+        """
+        Inviting a teacher doesn't generate a SchoolTeacherInvitation nor an
+        invitation URL for a pre-existing email, but still returns a 200.
+        """
+        self._login_admin_school_teacher()
+
+        viewname = self.reverse_action("invite-teacher")
+
+        response = self.client.post(
+            viewname,
+            data={
+                "first_name": "NewTeacher",
+                "last_name": "NewTeacher",
+                "email": self.school_teacher_email,
+            },
+            status_code_assertion=status.HTTP_200_OK,
+        )
+
+        assert response.data is None
+        assert SchoolTeacherInvitation.objects.count() == 0
+
+    def test_invite_teacher__lol(self):
+        """
+        Inviting a teacher doesn't generate a SchoolTeacherInvitation nor an
+        invitation URL for a pre-existing email, but still returns a 200.
+        """
+        self._login_admin_school_teacher()
+
+        viewname = self.reverse_action("invite-teacher")
+
+        response = self.client.post(
+            viewname,
+            data={
+                "first_name": "NewTeacher",
+                "last_name": "NewTeacher",
+                "email": "invited@teacher.com",
+                "is_admin": False
+            },
+            status_code_assertion=status.HTTP_200_OK,
+            content_type="application/json",
+        )
+
+        assert response.data is None
+        assert SchoolTeacherInvitation.objects.count() == 0
+
+    def test_accept_invite__invalid_token(self):
+        """Accept invite raises 400 on GET with invalid token"""
+        viewname = self.reverse_action(
+            "accept-invite", kwargs={"token": "whatever"}
+        )
+
+        response = self.client.get(
+            viewname, status_code_assertion=status.HTTP_400_BAD_REQUEST
+        )
+
+        assert response.data["non_field_errors"] == [
+            "The invitation does not exist."
+        ]
+
+    def test_accept_invite__expired(self):
+        """Accept invite raises 400 on GET with expired invite"""
+        invitation = self._invite_teacher(
+            self.school_admin_teacher_email,
+            "NewTeacher",
+            "NewTeacher",
+            "invited@teacher.com",
+            False,
+        )
+
+        invitation.expiry = timezone.now() - timedelta(days=1)
+        invitation.save()
+
+        viewname = self.reverse_action(
+            "accept-invite", kwargs={"token": invitation.token}
+        )
+
+        response = self.client.get(
+            viewname, status_code_assertion=status.HTTP_400_BAD_REQUEST
+        )
+
+        assert response.data["non_field_errors"] == [
+            "The invitation has expired."
+        ]
+
+    def test_accept_invite__existing_email(self):
+        """Accept invite raises 400 on GET with pre-existing email"""
+        invitation = self._invite_teacher(
+            self.school_admin_teacher_email,
+            "NewTeacher",
+            "NewTeacher",
+            self.non_school_teacher_email,
+            False,
+        )
+
+        viewname = self.reverse_action(
+            "accept-invite", kwargs={"token": invitation.token}
+        )
+
+        response = self.client.get(
+            viewname, status_code_assertion=status.HTTP_400_BAD_REQUEST
+        )
+
+        assert response.data["non_field_errors"] == [
+            "It looks like an account is already registered with this email "
+            "address. You will need to delete the other account first or "
+            "change the email associated with it in order to proceed. You will "
+            "then be able to access this page."
+        ]
+
+    def test_accept_invite__get(self):
+        """Accept invite GET succeeds"""
+        invitation = self._invite_teacher(
+            self.school_admin_teacher_email,
+            "NewTeacher",
+            "NewTeacher",
+            "invited@teacher.com",
+            False,
+        )
+
+        viewname = self.reverse_action(
+            "accept-invite", kwargs={"token": invitation.token}
+        )
+
+        self.client.get(viewname)
+
+    def test_accept_invite__post(self):
+        """Invited teacher can set password and their account is created"""
+        invitation = self._invite_teacher(
+            self.school_admin_teacher_email,
+            "NewTeacher",
+            "NewTeacher",
+            "invited@teacher.com",
+            False,
+        )
+
+        viewname = self.reverse_action(
+            "accept-invite", kwargs={"token": invitation.token}
+        )
+
+        self.client.post(viewname, data={"password": "InvitedPassword1!"})
+
+        user = self.client.login(
+            email="invited@teacher.com", password="InvitedPassword1!"
+        )
+        assert user is not None
+        assert user.teacher.school == School.objects.get(name="School 1")

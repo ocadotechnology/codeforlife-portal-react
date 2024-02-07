@@ -8,7 +8,7 @@ import typing as t
 from itertools import groupby
 
 from codeforlife.serializers import ModelListSerializer
-from codeforlife.user.models import Class, Student, User, UserProfile
+from codeforlife.user.models import Class, Student, User, UserProfile, Teacher
 from codeforlife.user.serializers import UserSerializer as _UserSerializer
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.password_validation import (
@@ -129,8 +129,36 @@ class UserSerializer(_UserSerializer):
         }
         list_serializer_class = UserListSerializer
 
+    def create(self, validated_data):
+        if self.view.action == "accept_invite":
+            invitation = self.context["invitation"]
+
+            user = User.objects.create_user(
+                username=invitation.invited_teacher_email,
+                email=invitation.invited_teacher_email,
+                password=validated_data["password"],
+                first_name=invitation.invited_teacher_first_name,
+                last_name=invitation.invited_teacher_last_name,
+            )
+
+            user_profile = UserProfile.objects.create(
+                user=user, is_verified=True
+            )
+
+            Teacher.objects.create(
+                user=user_profile,
+                new_user=user,
+                is_admin=invitation.invited_teacher_is_admin,
+                school=invitation.school,
+            )
+
+            # TODO: Handle signing new user up to newsletter if checkbox ticked
+
+            return user
+
     def validate(self, attrs):
-        if self.view.action != "reset-password":
+        if self.view.action not in ("reset-password", "invite-teacher",
+                                    "accept-invite"):
             pass
             # TODO: make current password required when changing self-profile.
 
@@ -141,7 +169,12 @@ class UserSerializer(_UserSerializer):
         Validate the new password depending on user type.
         :param value: the new password
         """
-        _validate_password(value, self.instance)
+        _validate_password(
+            value,
+            self.instance
+            if self.instance is not None
+            else self.context["user"],
+        )
         return value
 
     def update(self, instance, validated_data):
