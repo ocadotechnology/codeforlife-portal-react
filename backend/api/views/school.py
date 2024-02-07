@@ -3,9 +3,7 @@
 Created on 23/01/2024 at 17:53:50(+00:00).
 """
 
-import typing as t
-
-from codeforlife.permissions import NOT, AllowNone, Permission
+from codeforlife.permissions import NOT, AllowNone
 from codeforlife.user.permissions import InSchool, IsTeacher
 from codeforlife.user.views import SchoolViewSet as _SchoolViewSet
 
