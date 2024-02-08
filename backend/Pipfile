@@ -28,7 +28,7 @@ google-cloud-logging = "==1.*"
 google-auth = "==2.*"
 google-cloud-container = "==2.3.0"
 # "django-anymail[amazon_ses]" = "==7.0.*"
-codeforlife = {ref = "v0.12.4", git = "https://github.com/ocadotechnology/codeforlife-package-python.git"}
+codeforlife = {ref = "v0.12.8", git = "https://github.com/ocadotechnology/codeforlife-package-python.git"}
 django = "==3.2.23"
 djangorestframework = "==3.13.1"
 django-cors-headers = "==4.1.0"

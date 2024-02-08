@@ -17,7 +17,7 @@ class SchoolViewSet(_SchoolViewSet):
 
     def get_permissions(self):
         # Bulk actions not allowed for schools.
-        if self.action in ["bulk", "list"]:
+        if self.action == "bulk":
             return [AllowNone()]
         # Only teachers not in a school can create a school.
         if self.action == "create":
@@ -26,4 +26,4 @@ class SchoolViewSet(_SchoolViewSet):
         if self.action == "update":
             return [IsTeacher(is_admin=True), InSchool()]
 
-        return [InSchool()]
+        return super().get_permissions()

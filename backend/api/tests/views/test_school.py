@@ -63,7 +63,6 @@ class TestSchoolViewSet(ModelViewSetTestCase[School]):
         self.client.login_non_school_teacher(
             email="teacher@noschool.com",
             password="password",
-            in_school=False,
         )
 
         self.client.create(
