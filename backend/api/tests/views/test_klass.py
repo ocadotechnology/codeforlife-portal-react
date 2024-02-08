@@ -82,7 +82,7 @@ class TestClassViewSet(ModelViewSetTestCase[Class]):
 
     def test_create__self(self):
         """
-        Teacher can create a class with their self as the class owner.
+        Teacher can create a class with themself as the class owner.
         """
 
         user = self.client.login_school_teacher(
