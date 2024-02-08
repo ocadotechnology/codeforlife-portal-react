@@ -266,7 +266,6 @@ class SchoolSerializer(_SchoolSerializer):
 
     uk_county = serializers.ChoiceField(  # type: ignore[assignment]
         source="county",
-        default="",
         choices=[
             "Aberdeen City",
             "Aberdeenshire",

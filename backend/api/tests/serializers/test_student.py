@@ -31,7 +31,7 @@ class StudentSerializerTestCase(ModelSerializerTestCase[Student]):
             name="klass",
             value="",
             error_code="teacher_not_in_school",
-            user=user,
+            context={"request": self.init_request("POST", user)},
         )
 
     def test_validate_klass__does_not_exist(self):
@@ -47,7 +47,7 @@ class StudentSerializerTestCase(ModelSerializerTestCase[Student]):
             name="klass",
             value="",
             error_code="does_not_exist",
-            user=user,
+            context={"request": self.init_request("POST", user)},
         )
 
     def test_validate_klass__teacher_not_in_same_school(self):
@@ -68,7 +68,7 @@ class StudentSerializerTestCase(ModelSerializerTestCase[Student]):
             name="klass",
             value=klass.access_code,
             error_code="teacher_not_in_same_school",
-            user=user,
+            context={"request": self.init_request("POST", user)},
         )
 
     def test_validate_klass__teacher_not_admin_or_class_owner(self):
@@ -93,5 +93,5 @@ class StudentSerializerTestCase(ModelSerializerTestCase[Student]):
             name="klass",
             value=klass.access_code,
             error_code="teacher_not_admin_or_class_owner",
-            user=user,
+            context={"request": self.init_request("POST", user)},
         )

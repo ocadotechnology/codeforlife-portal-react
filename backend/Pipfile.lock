@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "6ef3be9e49bc02002dd44d1f3b17d6822f638ed1afe1408dcda45de95fa4b043"
+            "sha256": "eaaeae63a1ea6566c6008ffc0f3ecd38cbb4a3c8e36db2ce148bec03125b0442"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -170,7 +170,7 @@
         },
         "codeforlife": {
             "git": "https://github.com/ocadotechnology/codeforlife-package-python.git",
-            "ref": "8afb1bb8d20aac1d091886dadaed906b52a1907a"
+            "ref": "8e078930e3f1e6796d939cde3bf847711140916d"
         },
         "codeforlife-portal": {
             "hashes": [
@@ -816,7 +816,6 @@
                 "sha256:a6f5977418eff3b2d5500d54d9db50c8277a368436f4e4f8ddb1be3422870184",
                 "sha256:f91456ead12ab3c6c2e9491cf33ba6d08357d802192379bb482f1033ade496f5"
             ],
-            "markers": "python_version >= '3.6'",
             "version": "==3.1.2"
         },
         "pandas": {
@@ -1317,7 +1316,6 @@
                 "sha256:6a33ee89877bd9abc1158129f6e94be74e2679636b8a205b43b85206c3f0bbdd",
                 "sha256:f72f148f54442c6b056bf931dbc34f986fd0c3b0b6b5a58d013c9aef274d0c88"
             ],
-            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4, 3.5'",
             "version": "==2.0.1"
         },
         "xlwt": {
@@ -1768,7 +1766,6 @@
                 "sha256:a6f5977418eff3b2d5500d54d9db50c8277a368436f4e4f8ddb1be3422870184",
                 "sha256:f91456ead12ab3c6c2e9491cf33ba6d08357d802192379bb482f1033ade496f5"
             ],
-            "markers": "python_version >= '3.6'",
             "version": "==3.1.2"
         },
         "packaging": {
@@ -2123,7 +2120,6 @@
                 "sha256:6a33ee89877bd9abc1158129f6e94be74e2679636b8a205b43b85206c3f0bbdd",
                 "sha256:f72f148f54442c6b056bf931dbc34f986fd0c3b0b6b5a58d013c9aef274d0c88"
             ],
-            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4, 3.5'",
             "version": "==2.0.1"
         },
         "xlwt": {
