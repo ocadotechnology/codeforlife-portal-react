@@ -7,7 +7,7 @@ import typing as t
 
 from codeforlife.request import Request
 from codeforlife.user.models import User
-from codeforlife.user.permissions import IsTeacher
+from codeforlife.user.permissions import InSchool, IsTeacher
 from codeforlife.user.views import UserViewSet as _UserViewSet
 from django.contrib.auth.tokens import (
     PasswordResetTokenGenerator,
@@ -31,7 +31,12 @@ class UserViewSet(_UserViewSet):
 
     def get_permissions(self):
         if self.action == "bulk":
-            return [IsTeacher()]
+            return [IsTeacher(), InSchool()]
+        if self.action == "partial_update":
+            if "teacher" in self.request.data:
+                return [IsTeacher(is_admin=True), InSchool()]
+            if "student" in self.request.data:
+                return [IsTeacher(), InSchool()]
 
         return super().get_permissions()
 

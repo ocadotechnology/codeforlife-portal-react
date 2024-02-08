@@ -11,7 +11,7 @@ from ...views import SchoolViewSet
 
 
 # pylint: disable-next=missing-class-docstring
-class SchoolSerializerTestCase(ModelSerializerTestCase[School]):
+class TestSchoolSerializer(ModelSerializerTestCase[School]):
     model_serializer_class = SchoolSerializer
     fixtures = ["school_1"]
 

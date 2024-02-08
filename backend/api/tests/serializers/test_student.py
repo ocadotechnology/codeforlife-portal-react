@@ -4,13 +4,18 @@ Created on 30/01/2024 at 19:03:45(+00:00).
 """
 
 from codeforlife.tests import ModelSerializerTestCase
-from codeforlife.user.models import Class, Student, User
+from codeforlife.user.models import (
+    Class,
+    NonSchoolTeacherUser,
+    SchoolTeacherUser,
+    Student,
+)
 
 from ...serializers import StudentSerializer
 
 
 # pylint: disable-next=missing-class-docstring
-class StudentSerializerTestCase(ModelSerializerTestCase[Student]):
+class TestStudentSerializer(ModelSerializerTestCase[Student]):
     model_serializer_class = StudentSerializer
     fixtures = [
         "non_school_teacher",
@@ -24,14 +29,13 @@ class StudentSerializerTestCase(ModelSerializerTestCase[Student]):
         a school.
         """
 
-        user = User.objects.get(email="teacher@noschool.com")
-        assert user.teacher and not user.teacher.school
+        user = NonSchoolTeacherUser.objects.get(email="teacher@noschool.com")
 
         self.assert_validate_field(
             name="klass",
             value="",
             error_code="teacher_not_in_school",
-            context={"request": self.init_request("POST", user)},
+            context={"request": self.request_factory.post(user=user)},
         )
 
     def test_validate_klass__does_not_exist(self):
@@ -40,14 +44,13 @@ class StudentSerializerTestCase(ModelSerializerTestCase[Student]):
         exist.
         """
 
-        user = User.objects.get(email="teacher@school1.com")
-        assert user.teacher and user.teacher.school
+        user = SchoolTeacherUser.objects.get(email="teacher@school1.com")
 
         self.assert_validate_field(
             name="klass",
             value="",
             error_code="does_not_exist",
-            context={"request": self.init_request("POST", user)},
+            context={"request": self.request_factory.post(user=user)},
         )
 
     def test_validate_klass__teacher_not_in_same_school(self):
@@ -56,8 +59,7 @@ class StudentSerializerTestCase(ModelSerializerTestCase[Student]):
         the same school.
         """
 
-        user = User.objects.get(email="teacher@school1.com")
-        assert user.teacher and user.teacher.school
+        user = SchoolTeacherUser.objects.get(email="teacher@school1.com")
 
         klass = Class.objects.exclude(
             teacher__school=user.teacher.school
@@ -68,7 +70,7 @@ class StudentSerializerTestCase(ModelSerializerTestCase[Student]):
             name="klass",
             value=klass.access_code,
             error_code="teacher_not_in_same_school",
-            context={"request": self.init_request("POST", user)},
+            context={"request": self.request_factory.post(user=user)},
         )
 
     def test_validate_klass__teacher_not_admin_or_class_owner(self):
@@ -77,10 +79,8 @@ class StudentSerializerTestCase(ModelSerializerTestCase[Student]):
         admin or they don't own the class.
         """
 
-        user = User.objects.get(email="teacher@school1.com")
-        assert (
-            user.teacher and user.teacher.school and not user.teacher.is_admin
-        )
+        user = SchoolTeacherUser.objects.get(email="teacher@school1.com")
+        assert not user.teacher.is_admin
 
         klass = (
             Class.objects.filter(teacher__school=user.teacher.school)
@@ -93,5 +93,5 @@ class StudentSerializerTestCase(ModelSerializerTestCase[Student]):
             name="klass",
             value=klass.access_code,
             error_code="teacher_not_admin_or_class_owner",
-            context={"request": self.init_request("POST", user)},
+            context={"request": self.request_factory.post(user=user)},
         )
