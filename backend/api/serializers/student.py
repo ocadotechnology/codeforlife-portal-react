@@ -5,7 +5,7 @@ Created on 29/01/2024 at 10:14:59(+00:00).
 
 import typing as t
 
-from codeforlife.user.models import Class, Teacher
+from codeforlife.user.models import Class, User
 from codeforlife.user.serializers import StudentSerializer as _StudentSerializer
 from rest_framework import serializers
 
@@ -20,13 +20,7 @@ class StudentSerializer(_StudentSerializer):
     # pylint: disable-next=missing-function-docstring
     def validate_klass(self, value: str):
         # Only teachers can manage students.
-        teacher = t.cast(Teacher, self.request_user.teacher)
-
-        if teacher.school is None:
-            raise serializers.ValidationError(
-                "The requesting teacher must be in a school.",
-                code="teacher_not_in_school",
-            )
+        teacher = self.request_school_teacher_user.teacher
 
         try:
             klass = Class.objects.get(access_code=value)
@@ -48,3 +42,13 @@ class StudentSerializer(_StudentSerializer):
             )
 
         return value
+
+    def validate(self, attrs):
+        instance = t.cast(t.Optional[User], self.parent.instance)
+        if instance and not instance.student:
+            raise serializers.ValidationError(
+                "Target user is not a student.",
+                code="not_student",
+            )
+
+        return attrs

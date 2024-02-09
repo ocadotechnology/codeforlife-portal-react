@@ -10,7 +10,7 @@ from ...serializers import UserSerializer
 
 
 # pylint: disable-next=missing-class-docstring
-class UserSerializerTestCase(ModelSerializerTestCase[User]):
+class TestUserSerializer(ModelSerializerTestCase[User]):
     model_serializer_class = UserSerializer
     fixtures = ["school_1"]
 

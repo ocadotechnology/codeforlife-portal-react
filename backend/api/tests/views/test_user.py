@@ -6,7 +6,8 @@ Created on 20/01/2024 at 10:58:52(+00:00).
 import typing as t
 
 from codeforlife.tests import ModelViewSetTestCase
-from codeforlife.user.models import Class, User
+from codeforlife.user.models import Class, SchoolTeacherUser, User
+from codeforlife.user.permissions import InSchool, IsTeacher
 from django.contrib.auth.tokens import (
     PasswordResetTokenGenerator,
     default_token_generator,
@@ -23,7 +24,7 @@ default_token_generator: PasswordResetTokenGenerator = default_token_generator
 class TestUserViewSet(ModelViewSetTestCase[User]):
     basename = "user"
     model_view_set_class = UserViewSet
-    fixtures = ["independent", "non_school_teacher"]
+    fixtures = ["independent", "non_school_teacher", "school_1"]
 
     non_school_teacher_email = "teacher@noschool.com"
     indy_email = "indy@man.com"
@@ -40,6 +41,38 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         token = default_token_generator.make_token(user)
 
         return user.pk, token
+
+    def test_get_permissions__bulk(self):
+        """
+        Only school-teachers can perform bulk actions.
+        """
+
+        self.assert_get_permissions(
+            permissions=[IsTeacher(), InSchool()],
+            action="bulk",
+        )
+
+    def test_get_permissions__partial_update__teacher(self):
+        """
+        Only admin-school-teachers can update a teacher.
+        """
+
+        self.assert_get_permissions(
+            permissions=[IsTeacher(is_admin=True), InSchool()],
+            action="partial_update",
+            request=self.client.request_factory.patch(data={"teacher": {}}),
+        )
+
+    def test_get_permissions__partial_update__student(self):
+        """
+        Only school-teachers can update a student.
+        """
+
+        self.assert_get_permissions(
+            permissions=[IsTeacher(), InSchool()],
+            action="partial_update",
+            request=self.client.request_factory.patch(data={"student": {}}),
+        )
 
     def test_bulk_create__students(self):
         """Teacher can bulk create students."""
@@ -165,10 +198,10 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         )
 
         self.client.patch(viewname, data={"password": "N3wPassword!"})
-        user = self.client.login(
-            email=self.non_school_teacher_email, password="N3wPassword!"
+        self.client.login(
+            email=self.non_school_teacher_email,
+            password="N3wPassword!",
         )
-        assert user is not None
 
     def test_reset_password__patch__indy(self):
         """Indy can successfully update password."""
@@ -180,5 +213,33 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         )
 
         self.client.patch(viewname, data={"password": "N3wPassword"})
-        user = self.client.login(email=self.indy_email, password="N3wPassword")
-        assert user is not None
+        self.client.login(email=self.indy_email, password="N3wPassword")
+
+    def test_partial_update__teacher(self):
+        """
+        Admin-school-teacher can update another teacher's profile.
+        """
+
+        admin_school_teacher_user = self.client.login_school_teacher(
+            email="admin.teacher@school1.com",
+            password="password",
+            is_admin=True,
+        )
+
+        other_school_teacher_user = (
+            SchoolTeacherUser.objects.filter(
+                new_teacher__school=admin_school_teacher_user.teacher.school
+            )
+            .exclude(pk=admin_school_teacher_user.pk)
+            .first()
+        )
+        assert other_school_teacher_user
+
+        self.client.partial_update(
+            other_school_teacher_user,
+            {
+                "teacher": {
+                    "is_admin": not other_school_teacher_user.teacher.is_admin,
+                },
+            },
+        )
