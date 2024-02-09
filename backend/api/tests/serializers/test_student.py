@@ -9,9 +9,10 @@ from codeforlife.user.models import (
     NonSchoolTeacherUser,
     SchoolTeacherUser,
     Student,
+    TeacherUser,
 )
 
-from ...serializers import StudentSerializer
+from ...serializers import StudentSerializer, UserSerializer
 
 
 # pylint: disable-next=missing-class-docstring
@@ -22,21 +23,6 @@ class TestStudentSerializer(ModelSerializerTestCase[Student]):
         "school_1",
         "school_2",
     ]
-
-    def test_validate_klass__teacher_not_in_school(self):
-        """
-        Requesting teacher cannot assign a student to a class if they're not in
-        a school.
-        """
-
-        user = NonSchoolTeacherUser.objects.get(email="teacher@noschool.com")
-
-        self.assert_validate_field(
-            name="klass",
-            value="",
-            error_code="teacher_not_in_school",
-            context={"request": self.request_factory.post(user=user)},
-        )
 
     def test_validate_klass__does_not_exist(self):
         """
@@ -50,7 +36,9 @@ class TestStudentSerializer(ModelSerializerTestCase[Student]):
             name="klass",
             value="",
             error_code="does_not_exist",
-            context={"request": self.request_factory.post(user=user)},
+            parent=UserSerializer(
+                context={"request": self.request_factory.post(user=user)}
+            ),
         )
 
     def test_validate_klass__teacher_not_in_same_school(self):
@@ -70,7 +58,9 @@ class TestStudentSerializer(ModelSerializerTestCase[Student]):
             name="klass",
             value=klass.access_code,
             error_code="teacher_not_in_same_school",
-            context={"request": self.request_factory.post(user=user)},
+            parent=UserSerializer(
+                context={"request": self.request_factory.post(user=user)}
+            ),
         )
 
     def test_validate_klass__teacher_not_admin_or_class_owner(self):
@@ -93,5 +83,21 @@ class TestStudentSerializer(ModelSerializerTestCase[Student]):
             name="klass",
             value=klass.access_code,
             error_code="teacher_not_admin_or_class_owner",
-            context={"request": self.request_factory.post(user=user)},
+            parent=UserSerializer(
+                context={"request": self.request_factory.post(user=user)}
+            ),
+        )
+
+    def test_validate__not_student(self):
+        """
+        Target user must be a student.
+        """
+
+        teacher_user = TeacherUser.objects.first()
+        assert teacher_user
+
+        self.assert_validate(
+            attrs={},
+            error_code="not_student",
+            parent=UserSerializer(instance=teacher_user),
         )

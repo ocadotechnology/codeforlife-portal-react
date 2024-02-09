@@ -33,18 +33,10 @@ class TeacherSerializer(_TeacherSerializer):
 
     def validate(self, attrs):
         instance = t.cast(t.Optional[User], self.parent.instance)
-        if instance:
-            if not instance.teacher:
-                raise serializers.ValidationError(
-                    "Target user is not a teacher",
-                    code="not_teacher",
-                )
-
-            user = self.request_school_teacher_user
-            if user.teacher.school != instance.teacher.school:
-                raise serializers.ValidationError(
-                    "Teacher is not in your school.",
-                    code="not_in_school",
-                )
+        if instance and not instance.teacher:
+            raise serializers.ValidationError(
+                "Target user is not a teacher.",
+                code="not_teacher",
+            )
 
         return attrs

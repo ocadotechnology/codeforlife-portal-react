@@ -4,12 +4,7 @@ Created on 08/02/2024 at 13:01:42(+00:00).
 """
 
 from codeforlife.tests import ModelSerializerTestCase
-from codeforlife.user.models import (
-    AdminSchoolTeacherUser,
-    SchoolTeacherUser,
-    StudentUser,
-    Teacher,
-)
+from codeforlife.user.models import AdminSchoolTeacherUser, StudentUser, Teacher
 
 from ...serializers import TeacherSerializer, UserSerializer
 
@@ -23,7 +18,6 @@ class TestTeacherSerializer(ModelSerializerTestCase[Teacher]):
         self.admin_school_teacher_user = AdminSchoolTeacherUser.objects.get(
             email="admin.teacher@school1.com",
         )
-        assert self.admin_school_teacher_user
 
     def test_validate_is_admin__is_self(self):
         """
@@ -56,27 +50,4 @@ class TestTeacherSerializer(ModelSerializerTestCase[Teacher]):
             attrs={},
             error_code="not_teacher",
             parent=UserSerializer(instance=student_user),
-        )
-
-    def test_validate__not_in_school(self):
-        """
-        Teacher cannot update own permissions.
-        """
-
-        school_teacher_user = SchoolTeacherUser.objects.exclude(
-            new_teacher__school=self.admin_school_teacher_user.teacher.school
-        ).first()
-        assert school_teacher_user
-
-        self.assert_validate(
-            attrs={},
-            error_code="not_in_school",
-            parent=UserSerializer(
-                instance=school_teacher_user,
-                context={
-                    "request": self.request_factory.patch(
-                        user=self.admin_school_teacher_user
-                    ),
-                },
-            ),
         )
