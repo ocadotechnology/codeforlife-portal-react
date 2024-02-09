@@ -8,7 +8,7 @@ import typing as t
 from itertools import groupby
 
 from codeforlife.serializers import ModelListSerializer
-from codeforlife.user.models import Class, Student, User, UserProfile, Teacher
+from codeforlife.user.models import Class, Student, Teacher, User, UserProfile
 from codeforlife.user.serializers import UserSerializer as _UserSerializer
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.password_validation import (

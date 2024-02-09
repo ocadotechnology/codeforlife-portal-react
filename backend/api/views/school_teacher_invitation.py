@@ -7,8 +7,8 @@ from codeforlife.permissions import AllowNone
 from codeforlife.user.permissions import InSchool, IsTeacher
 from codeforlife.views import ModelViewSet
 
-from ..serializers import SchoolTeacherInvitationSerializer
 from ..models import SchoolTeacherInvitation
+from ..serializers import SchoolTeacherInvitationSerializer
 
 
 # pylint: disable-next=missing-class-docstring,too-many-ancestors
