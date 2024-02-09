@@ -39,6 +39,11 @@ class UserViewSet(_UserViewSet):
             return [IsTeacher(is_admin=True), InSchool()]
         if self.action == "bulk":
             return [IsTeacher(), InSchool()]
+        if self.action == "partial_update":
+            if "teacher" in self.request.data:
+                return [IsTeacher(is_admin=True), InSchool()]
+            if "student" in self.request.data:
+                return [IsTeacher(), InSchool()]
 
         return super().get_permissions()
 

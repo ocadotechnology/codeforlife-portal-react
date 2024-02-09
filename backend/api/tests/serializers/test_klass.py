@@ -10,7 +10,7 @@ from ...serializers import ClassSerializer
 
 
 # pylint: disable-next=missing-class-docstring
-class ClassSerializerTestCase(ModelSerializerTestCase[Class]):
+class TestClassSerializer(ModelSerializerTestCase[Class]):
     model_serializer_class = ClassSerializer
     fixtures = ["school_1"]
 
@@ -46,7 +46,9 @@ class ClassSerializerTestCase(ModelSerializerTestCase[Class]):
             value=teacher.id,
             error_code="not_in_school",
             context={
-                "request": self.init_request("POST", self.school_teacher_user)
+                "request": self.request_factory.post(
+                    user=self.school_teacher_user
+                )
             },
         )
 
@@ -71,7 +73,9 @@ class ClassSerializerTestCase(ModelSerializerTestCase[Class]):
             value=teacher.id,
             error_code="not_admin",
             context={
-                "request": self.init_request("POST", self.school_teacher_user)
+                "request": self.request_factory.post(
+                    user=self.school_teacher_user
+                )
             },
         )
 
@@ -85,7 +89,9 @@ class ClassSerializerTestCase(ModelSerializerTestCase[Class]):
             value=self.class_1.name,
             error_code="name_not_unique",
             context={
-                "request": self.init_request("POST", self.school_teacher_user)
+                "request": self.request_factory.post(
+                    user=self.school_teacher_user
+                )
             },
         )
 
@@ -118,6 +124,8 @@ class ClassSerializerTestCase(ModelSerializerTestCase[Class]):
                 "teacher": self.school_teacher_user.teacher.id,
             },
             context={
-                "request": self.init_request("POST", self.school_teacher_user),
+                "request": self.request_factory.post(
+                    user=self.school_teacher_user
+                ),
             },
         )
