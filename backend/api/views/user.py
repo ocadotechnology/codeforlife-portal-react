@@ -3,6 +3,7 @@
 Created on 23/01/2024 at 17:53:44(+00:00).
 """
 
+import json
 import typing as t
 from datetime import timedelta
 from uuid import uuid4
@@ -230,7 +231,7 @@ class UserViewSet(_UserViewSet):
             return Response()
 
         token = uuid4().hex
-        invitation = SchoolTeacherInvitation.objects.create(
+        SchoolTeacherInvitation.objects.create(
             token=token,
             school=school,
             from_teacher=host_teacher,
@@ -249,4 +250,4 @@ class UserViewSet(_UserViewSet):
         # TODO: Send email to invited teacher with URL to finish setting up
         #  account. Remember that email content changes depending on whether
         #  the invited teacher already has an account or not.
-        return Response({"url": url, "token": token, "invitation": invitation})
+        return Response({"url": url, "token": token})

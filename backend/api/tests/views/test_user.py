@@ -3,6 +3,7 @@
 Created on 20/01/2024 at 10:58:52(+00:00).
 """
 
+import json
 import typing as t
 from datetime import timedelta
 from uuid import uuid4
@@ -282,10 +283,9 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         assert response.data is None
         assert SchoolTeacherInvitation.objects.count() == 0
 
-    def test_invite_teacher__lol(self):
+    def test_invite_teacher(self):
         """
-        Inviting a teacher doesn't generate a SchoolTeacherInvitation nor an
-        invitation URL for a pre-existing email, but still returns a 200.
+        Inviting a teacher creates a SchoolTeacherInvitation, a token and URL.
         """
         self._login_admin_school_teacher()
 
@@ -293,18 +293,23 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
         response = self.client.post(
             viewname,
-            data={
-                "first_name": "NewTeacher",
-                "last_name": "NewTeacher",
-                "email": "invited@teacher.com",
-                "is_admin": False
-            },
+            data=json.dumps(
+                {
+                    "first_name": "NewTeacher",
+                    "last_name": "NewTeacher",
+                    "email": "invited@teacher.com",
+                    "is_admin": "False",
+                }
+            ),
             status_code_assertion=status.HTTP_200_OK,
             content_type="application/json",
         )
 
-        assert response.data is None
-        assert SchoolTeacherInvitation.objects.count() == 0
+        assert response.data["token"] is not None
+        assert response.data["url"] is not None
+        assert SchoolTeacherInvitation.objects.filter(
+            invited_teacher_email="invited@teacher.com"
+        ).exists()
 
     def test_accept_invite__invalid_token(self):
         """Accept invite raises 400 on GET with invalid token"""

@@ -157,8 +157,11 @@ class UserSerializer(_UserSerializer):
             return user
 
     def validate(self, attrs):
-        if self.view.action not in ("reset-password", "invite-teacher",
-                                    "accept-invite"):
+        if self.view.action not in (
+            "reset-password",
+            "invite-teacher",
+            "accept-invite",
+        ):
             pass
             # TODO: make current password required when changing self-profile.
 
