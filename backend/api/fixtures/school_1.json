@@ -108,5 +108,19 @@
       "access_code": "ZZ222",
       "teacher": 7
     }
+  },
+  {
+    "model": "common.schoolteacherinvitation",
+    "pk": 1,
+    "fields": {
+      "token": "cc03982e89fc469597d3b413703282bc",
+      "school": 2,
+      "from_teacher": 7,
+      "invited_teacher_first_name": "Invited",
+      "invited_teacher_last_name": "Teacher",
+      "invited_teacher_email": "invited@teacher.com",
+      "invited_teacher_is_admin": "False",
+      "expiry": "2024-02-09 20:26:08.298402"
+    }
   }
 ]

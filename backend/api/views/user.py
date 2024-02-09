@@ -3,10 +3,7 @@
 Created on 23/01/2024 at 17:53:44(+00:00).
 """
 
-import json
 import typing as t
-from datetime import timedelta
-from uuid import uuid4
 
 from codeforlife.request import Request
 from codeforlife.user.models import Teacher, User, UserProfile
@@ -16,7 +13,6 @@ from django.contrib.auth.tokens import (
     PasswordResetTokenGenerator,
     default_token_generator,
 )
-from django.utils import timezone
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
@@ -140,16 +136,14 @@ class UserViewSet(_UserViewSet):
     )
     def accept_invite(self, request: Request, token: t.Optional[str] = None):
         """
-        Handles password reset for a user. On GET, checks validity of user PK
-        and token. On PATCH, rechecks these params and performs new password
-        validation and update.
-        :param token: Django-generated user token for password reset, expires
-        after 1 hour.
+        Handles accepting a teacher's invitation to join their school. On GET,
+        checks validity of the invitation token. On PATCH, rechecks this
+        param, performs password validation and creates the new Teacher.
         """
         try:
             invitation = SchoolTeacherInvitation.objects.get(token=token)
 
-            if invitation.expiry < timezone.now():
+            if invitation.is_expired:
                 return Response(
                     {"non_field_errors": ["The invitation has expired."]},
                     status=status.HTTP_400_BAD_REQUEST,
@@ -177,7 +171,6 @@ class UserViewSet(_UserViewSet):
             )
 
         if request.method == "POST":
-
             user = User(
                 username=invitation.invited_teacher_email,
                 email=invitation.invited_teacher_email,
@@ -203,56 +196,6 @@ class UserViewSet(_UserViewSet):
             serializer.is_valid(raise_exception=True)
             serializer.save()
 
+            invitation.delete()
+
         return Response()
-
-    @action(detail=False, methods=["post"])
-    def invite_teacher(self, request: Request):
-        """Invite teacher"""
-        first_name = request.data.get("first_name")
-        last_name = request.data.get("last_name")
-        email = request.data.get("email")
-        is_admin = request.data.get("is_admin")
-        host_teacher = request.user.new_teacher
-        school = host_teacher.school
-
-        fields = {
-            "first_name": first_name,
-            "last_name": last_name,
-            "email": email,
-        }
-
-        for field_name, field in fields.items():
-            if field is None:
-                return Response(
-                    {field_name: ["Field is required."]},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-
-        if User.objects.filter(email__iexact=email).exists():
-            # NOTE: Always return a 200 here - a noticeable change in
-            # behaviour would allow email enumeration.
-            # TODO: Once the email logic is in place below, we will probably
-            #  need to remove this.
-            return Response()
-
-        token = uuid4().hex
-        SchoolTeacherInvitation.objects.create(
-            token=token,
-            school=school,
-            from_teacher=host_teacher,
-            invited_teacher_first_name=first_name,
-            invited_teacher_last_name=last_name,
-            invited_teacher_email=email,
-            invited_teacher_is_admin=is_admin,
-            expiry=timezone.now() + timedelta(days=30),
-        )
-
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        url = self.reverse_action("accept-invite", kwargs={"token": token})
-
-        # TODO: Send email to invited teacher with URL to finish setting up
-        #  account. Remember that email content changes depending on whether
-        #  the invited teacher already has an account or not.
-        return Response({"url": url, "token": token})

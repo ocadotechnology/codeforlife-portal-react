@@ -3,14 +3,18 @@
 Created on 20/01/2024 at 10:58:52(+00:00).
 """
 
-import json
 import typing as t
 from datetime import timedelta
 from uuid import uuid4
 
 from codeforlife.tests import ModelViewSetTestCase
-from codeforlife.user.models import (Class, School, SchoolTeacherUser,
-                                     Teacher, User)
+from codeforlife.user.models import (
+    Class,
+    School,
+    SchoolTeacherUser,
+    Teacher,
+    User,
+)
 from codeforlife.user.permissions import InSchool, IsTeacher
 from django.contrib.auth.tokens import (
     PasswordResetTokenGenerator,
@@ -281,98 +285,6 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
             },
         )
 
-    def test_invite_teacher__empty_first_name(self):
-        """First name field is required."""
-        self._login_admin_school_teacher()
-
-        viewname = self.reverse_action("invite-teacher")
-
-        response = self.client.post(
-            viewname,
-            data={"last_name": "NewTeacher", "email": "invited@teacher.com"},
-            status_code_assertion=status.HTTP_400_BAD_REQUEST,
-        )
-
-        assert response.data["first_name"] == ["Field is required."]
-
-    def test_invite_teacher__empty_last_name(self):
-        """Last name field is required."""
-        self._login_admin_school_teacher()
-
-        viewname = self.reverse_action("invite-teacher")
-
-        response = self.client.post(
-            viewname,
-            data={"first_name": "NewTeacher", "email": "invited@teacher.com"},
-            status_code_assertion=status.HTTP_400_BAD_REQUEST,
-        )
-
-        assert response.data["last_name"] == ["Field is required."]
-
-    def test_invite_teacher__empty_email(self):
-        """Email field is required."""
-        self._login_admin_school_teacher()
-
-        viewname = self.reverse_action("invite-teacher")
-
-        response = self.client.post(
-            viewname,
-            data={"first_name": "NewTeacher", "last_name": "NewTeacher"},
-            status_code_assertion=status.HTTP_400_BAD_REQUEST,
-        )
-
-        assert response.data["email"] == ["Field is required."]
-
-    def test_invite_teacher__existing_email(self):
-        """
-        Inviting a teacher doesn't generate a SchoolTeacherInvitation nor an
-        invitation URL for a pre-existing email, but still returns a 200.
-        """
-        self._login_admin_school_teacher()
-
-        viewname = self.reverse_action("invite-teacher")
-
-        response = self.client.post(
-            viewname,
-            data={
-                "first_name": "NewTeacher",
-                "last_name": "NewTeacher",
-                "email": self.school_teacher_email,
-            },
-            status_code_assertion=status.HTTP_200_OK,
-        )
-
-        assert response.data is None
-        assert SchoolTeacherInvitation.objects.count() == 0
-
-    def test_invite_teacher(self):
-        """
-        Inviting a teacher creates a SchoolTeacherInvitation, a token and URL.
-        """
-        self._login_admin_school_teacher()
-
-        viewname = self.reverse_action("invite-teacher")
-
-        response = self.client.post(
-            viewname,
-            data=json.dumps(
-                {
-                    "first_name": "NewTeacher",
-                    "last_name": "NewTeacher",
-                    "email": "invited@teacher.com",
-                    "is_admin": "False",
-                }
-            ),
-            status_code_assertion=status.HTTP_200_OK,
-            content_type="application/json",
-        )
-
-        assert response.data["token"] is not None
-        assert response.data["url"] is not None
-        assert SchoolTeacherInvitation.objects.filter(
-            invited_teacher_email="invited@teacher.com"
-        ).exists()
-
     def test_accept_invite__invalid_token(self):
         """Accept invite raises 400 on GET with invalid token"""
         viewname = self.reverse_action(
@@ -473,4 +385,38 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
             email="invited@teacher.com", password="InvitedPassword1!"
         )
         assert user is not None
+
         assert user.teacher.school == School.objects.get(name="School 1")
+        assert not user.teacher.is_admin
+        assert not SchoolTeacherInvitation.objects.filter(
+            pk=invitation.pk
+        ).exists()
+
+    def test_accept_invite__post__is_admin(self):
+        """
+        Invited admin teacher can set password and their account is created
+        """
+        invitation = self._invite_teacher(
+            self.school_admin_teacher_email,
+            "NewTeacher",
+            "NewTeacher",
+            "invited@teacher.com",
+            True,
+        )
+
+        viewname = self.reverse_action(
+            "accept-invite", kwargs={"token": invitation.token}
+        )
+
+        self.client.post(viewname, data={"password": "InvitedPassword1!"})
+
+        user = self.client.login(
+            email="invited@teacher.com", password="InvitedPassword1!"
+        )
+        assert user is not None
+
+        assert user.teacher.school == School.objects.get(name="School 1")
+        assert user.teacher.is_admin
+        assert not SchoolTeacherInvitation.objects.filter(
+            pk=invitation.pk
+        ).exists()
