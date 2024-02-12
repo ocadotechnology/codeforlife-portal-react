@@ -16,5 +16,5 @@ from ..models import SchoolTeacherInvitation
 def user__post_save(sender, instance: SchoolTeacherInvitation, *args, **kwargs):
     """After a SchoolTeacherInvitation is created."""
 
-    # TODO: send email to invited teacher with differing content based on
-    #  whether the email is already linked to an account or not.
+    instance._token  # TODO: send email to invited teacher with differing
+    # content based on whether the email is already linked to an account or not.

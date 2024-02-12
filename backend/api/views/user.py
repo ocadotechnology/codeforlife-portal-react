@@ -6,7 +6,7 @@ Created on 23/01/2024 at 17:53:44(+00:00).
 import typing as t
 
 from codeforlife.request import Request
-from codeforlife.user.models import Teacher, User, UserProfile
+from codeforlife.user.models import User
 from codeforlife.user.permissions import InSchool, IsTeacher
 from codeforlife.user.views import UserViewSet as _UserViewSet
 from django.contrib.auth.tokens import (
@@ -18,7 +18,6 @@ from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
-from ..models import SchoolTeacherInvitation
 from ..serializers import UserSerializer
 
 # NOTE: type hint to help Intellisense.
@@ -127,75 +126,3 @@ class UserViewSet(_UserViewSet):
                 "token": token,
             }
         )
-
-    @action(
-        detail=False,
-        methods=["get", "post"],
-        url_path="accept-invite/(?P<token>.+)",
-        permission_classes=[AllowAny],
-    )
-    def accept_invite(self, request: Request, token: t.Optional[str] = None):
-        """
-        Handles accepting a teacher's invitation to join their school. On GET,
-        checks validity of the invitation token. On PATCH, rechecks this
-        param, performs password validation and creates the new Teacher.
-        """
-        try:
-            invitation = SchoolTeacherInvitation.objects.get(token=token)
-
-            if invitation.is_expired:
-                return Response(
-                    {"non_field_errors": ["The invitation has expired."]},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-        except SchoolTeacherInvitation.DoesNotExist:
-            return Response(
-                {"non_field_errors": ["The invitation does not exist."]},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        if User.objects.filter(
-            email__iexact=invitation.invited_teacher_email
-        ).exists():
-            return Response(
-                {
-                    "non_field_errors": [
-                        "It looks like an account is already registered with "
-                        "this email address. You will need to delete the other "
-                        "account first or change the email associated with it "
-                        "in order to proceed. You will then be able to access "
-                        "this page."
-                    ]
-                },
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        if request.method == "POST":
-            user = User(
-                username=invitation.invited_teacher_email,
-                email=invitation.invited_teacher_email,
-                password=request.data["password"],
-                first_name=invitation.invited_teacher_first_name,
-                last_name=invitation.invited_teacher_last_name,
-            )
-
-            user_profile = UserProfile(user=user, is_verified=True)
-
-            Teacher(
-                user=user_profile,
-                new_user=user,
-                is_admin=invitation.invited_teacher_is_admin,
-                school=invitation.school,
-            )
-
-            context = self.get_serializer_context()
-            context["invitation"] = invitation
-            context["user"] = user
-
-            serializer = self.get_serializer(data=request.data, context=context)
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-
-            invitation.delete()
-
-        return Response()

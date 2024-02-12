@@ -119,42 +119,19 @@ class UserSerializer(_UserSerializer):
     class Meta(_UserSerializer.Meta):
         fields = [
             *_UserSerializer.Meta.fields,
+            "student",
+            "teacher",
             "password",
             "current_password",
         ]
         extra_kwargs = {
             **_UserSerializer.Meta.extra_kwargs,
             "first_name": {"read_only": False},
+            "last_name": {"read_only": False, "required": False},
+            "email_name": {"read_only": False},
             "password": {"write_only": True, "required": False},
         }
         list_serializer_class = UserListSerializer
-
-    def create(self, validated_data):
-        if self.view.action == "accept_invite":
-            invitation = self.context["invitation"]
-
-            user = User.objects.create_user(
-                username=invitation.invited_teacher_email,
-                email=invitation.invited_teacher_email,
-                password=validated_data["password"],
-                first_name=invitation.invited_teacher_first_name,
-                last_name=invitation.invited_teacher_last_name,
-            )
-
-            user_profile = UserProfile.objects.create(
-                user=user, is_verified=True
-            )
-
-            Teacher.objects.create(
-                user=user_profile,
-                new_user=user,
-                is_admin=invitation.invited_teacher_is_admin,
-                school=invitation.school,
-            )
-
-            # TODO: Handle signing new user up to newsletter if checkbox ticked
-
-            return user
 
     def validate(self, attrs):
         if self.view.action not in (
@@ -165,6 +142,8 @@ class UserSerializer(_UserSerializer):
             pass
             # TODO: make current password required when changing self-profile.
 
+        # TODO: validate last_name is required if teacher-user.
+
         return attrs
 
     def validate_password(self, value: str):
@@ -172,13 +151,46 @@ class UserSerializer(_UserSerializer):
         Validate the new password depending on user type.
         :param value: the new password
         """
-        _validate_password(
-            value,
-            self.instance
-            if self.instance is not None
-            else self.context["user"],
-        )
+
+        instance = self.instance
+        if (
+            not instance
+            and self.view.basename == "school-teacher-invitation"
+            and self.view.action == "accept"
+        ):
+            instance = User()
+            user_profile = UserProfile(user=instance)
+            Teacher(user=user_profile, new_user=instance)
+
+        _validate_password(value, instance)
+
         return value
+
+    def create(self, validated_data):
+        user = User.objects.create_user(
+            username=validated_data["email"],
+            email=validated_data["email"],
+            password=validated_data["password"],
+            first_name=validated_data["first_name"],
+            last_name=validated_data["last_name"],
+        )
+
+        user_profile = UserProfile.objects.create(
+            user=user,
+            is_verified=self.context.get("is_verified", False),
+        )
+
+        if "new_teacher" in validated_data:
+            Teacher.objects.create(
+                user=user_profile,
+                new_user=user,
+                is_admin=validated_data["new_teacher"]["is_admin"],
+                school_id=validated_data["new_teacher"]["school"],
+            )
+
+        # TODO: Handle signing new user up to newsletter if checkbox ticked
+
+        return user
 
     def update(self, instance, validated_data):
         password = validated_data.get("password")

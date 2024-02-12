@@ -7,7 +7,9 @@ from datetime import timedelta
 from uuid import uuid4
 
 from codeforlife.serializers import ModelSerializer
+from django.contrib.auth.hashers import make_password
 from django.utils import timezone
+from rest_framework import serializers
 
 from ..models import SchoolTeacherInvitation
 
@@ -16,35 +18,36 @@ from ..models import SchoolTeacherInvitation
 class SchoolTeacherInvitationSerializer(
     ModelSerializer[SchoolTeacherInvitation]
 ):
+    first_name = serializers.CharField(source="invited_teacher_first_name")
+    last_name = serializers.CharField(source="invited_teacher_last_name")
+    email = serializers.EmailField(source="invited_teacher_email")
+    is_admin = serializers.BooleanField(source="invited_teacher_is_admin")
+
     class Meta:
         model = SchoolTeacherInvitation
         fields = [
-            "token",
-            "school",
-            "from_teacher",
-            "invited_teacher_first_name",
-            "invited_teacher_last_name",
-            "invited_teacher_email",
-            "invited_teacher_is_admin",
+            "first_name",
+            "last_name",
+            "email",
+            "is_admin",
             "expiry",
         ]
+        extra_kwargs = {
+            "expiry": {"read_only": True},
+        }
 
     def create(self, validated_data):
-        token = uuid4().hex
         user = self.request_admin_school_teacher_user
 
-        return super().create(
-            {
-                "token": token,
-                "school": user.teacher.school,
-                "from_teacher": user.teacher,
-                "invited_teacher_first_name": validated_data["first_name"],
-                "invited_teacher_last_name": validated_data["last_name"],
-                "invited_teacher_email": validated_data["email"],
-                "invited_teacher_is_admin": validated_data["is_admin"],
-                "expiry": timezone.now() + timedelta(days=30),
-            }
-        )
+        token = uuid4().hex
+        validated_data["token"] = make_password(token)
+        validated_data["school"] = user.teacher.school
+        validated_data["from_teacher"] = user.teacher
+        validated_data["expiry"] = timezone.now() + timedelta(days=30)
+
+        invitation = super().create(validated_data)
+        invitation._token = token
+        return invitation
 
     def update(self, instance, validated_data):
         instance.expiry = timezone.now() + timedelta(days=30)

@@ -9,6 +9,7 @@ from .views import (
     AuthFactorViewSet,
     ClassViewSet,
     OtpBypassTokenViewSet,
+    SchoolTeacherInvitationViewSet,
     SchoolViewSet,
     UserViewSet,
 )
@@ -28,6 +29,11 @@ router.register(
     "otp-bypass-tokens",
     OtpBypassTokenViewSet,
     basename="otp-bypass-token",
+)
+router.register(
+    r"schools/(?P<school>.+)/teacher-invitations",
+    SchoolTeacherInvitationViewSet,
+    basename="school-teacher-invitation",
 )
 router.register(
     "schools",
