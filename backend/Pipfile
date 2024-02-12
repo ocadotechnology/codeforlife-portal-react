@@ -29,7 +29,6 @@ google-cloud-logging = "==1.*"
 google-auth = "==2.*"
 google-cloud-container = "==2.3.0"
 # "django-anymail[amazon_ses]" = "==7.0.*"
-django-cors-headers = "==4.1.0"
 
 [dev-packages]
 # Before adding a new package, check it's not listed under [dev-packages] at
