@@ -18,7 +18,7 @@ from ...views import SchoolTeacherInvitationViewSet
 class TestSchoolTeacherInvitationViewSet(
     ModelViewSetTestCase[SchoolTeacherInvitation]
 ):
-    basename = "school_teacher_invitation"
+    basename = "school-teacher-invitation"
     model_view_set_class = SchoolTeacherInvitationViewSet
     fixtures = ["school_1"]
 
