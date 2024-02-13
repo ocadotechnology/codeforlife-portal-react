@@ -229,8 +229,7 @@ class TestSchoolTeacherInvitationViewSet(
     def test_accept_invite__post(self):
         """Invited teacher can set password and their account is created"""
 
-        email = "invited@teacher.com"
-        password = "InvitedPassword1!"
+        email, password = "invited@teacher.com", "InvitedPassword1!"
 
         invitation = self._invite_teacher(
             host_teacher_email=self.school_admin_teacher_email,
