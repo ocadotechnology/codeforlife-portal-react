@@ -4,10 +4,10 @@ Created on 13/02/2024 at 13:44:00(+00:00).
 """
 
 from codeforlife.tests import ModelSerializerTestCase
-from codeforlife.user.models import Class, AdminSchoolTeacherUser, Teacher
+from codeforlife.user.models import AdminSchoolTeacherUser
 
-from ...serializers import SchoolTeacherInvitationSerializer
 from ...models import SchoolTeacherInvitation
+from ...serializers import SchoolTeacherInvitationSerializer
 
 
 # pylint: disable-next=missing-class-docstring
