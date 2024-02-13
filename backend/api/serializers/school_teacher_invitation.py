@@ -26,6 +26,7 @@ class SchoolTeacherInvitationSerializer(
     class Meta:
         model = SchoolTeacherInvitation
         fields = [
+            "id",
             "first_name",
             "last_name",
             "email",
@@ -33,6 +34,7 @@ class SchoolTeacherInvitationSerializer(
             "expiry",
         ]
         extra_kwargs = {
+            "id": {"read_only": True},
             "expiry": {"read_only": True},
         }
 

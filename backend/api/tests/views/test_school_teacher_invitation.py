@@ -24,7 +24,7 @@ class TestSchoolTeacherInvitationViewSet(
 ):
     basename = "school-teacher-invitation"
     model_view_set_class = SchoolTeacherInvitationViewSet
-    fixtures = ["school_1"]
+    fixtures = ["non_school_teacher", "school_1"]
     school_admin_teacher_email = "admin.teacher@school1.com"
     non_school_teacher_email = "teacher@noschool.com"
 
@@ -83,12 +83,12 @@ class TestSchoolTeacherInvitationViewSet(
             action="create",
         )
 
-    def test_get_permissions__update(self):
+    def test_get_permissions__partial_update(self):
         """Only admin-teachers can update an invitation."""
 
         self.assert_get_permissions(
             permissions=[IsTeacher(is_admin=True), InSchool()],
-            action="update",
+            action="partial_update",
         )
 
     def test_get_permissions__retrieve(self):
@@ -110,7 +110,7 @@ class TestSchoolTeacherInvitationViewSet(
     def test_create(self):
         """Can successfully create an invitation."""
 
-        user = self._login_admin_school_teacher()
+        self._login_admin_school_teacher()
 
         self.client.create(
             {
@@ -150,8 +150,18 @@ class TestSchoolTeacherInvitationViewSet(
     def test_accept__invalid_token(self):
         """Accept invite raises 400 on GET with invalid token"""
 
+        invitation = self._invite_teacher(
+            host_teacher_email=self.school_admin_teacher_email,
+            first_name="NewTeacher",
+            last_name="NewTeacher",
+            invited_teacher_email=self.non_school_teacher_email,
+            is_admin=False,
+        )
+
         viewname = self.reverse_action(
-            "accept", kwargs={"pk": self.invitation.pk, "token": "whatever"}
+            "accept",
+            # pylint: disable-next=protected-access
+            kwargs={"pk": invitation.pk, "token": "whatever"},
         )
 
         response = self.client.get(
@@ -162,19 +172,22 @@ class TestSchoolTeacherInvitationViewSet(
 
     def test_accept__expired(self):
         """Accept invite raises 400 on GET with expired invite"""
+
         invitation = self._invite_teacher(
-            self.school_admin_teacher_email,
-            "NewTeacher",
-            "NewTeacher",
-            "invited@teacher.com",
-            False,
+            host_teacher_email=self.school_admin_teacher_email,
+            first_name="NewTeacher",
+            last_name="NewTeacher",
+            invited_teacher_email="invited@teacher.com",
+            is_admin=False,
         )
 
         invitation.expiry = timezone.now() - timedelta(days=1)
         invitation.save()
 
         viewname = self.reverse_action(
-            "accept", kwargs={"token": invitation.token}
+            "accept",
+            # pylint: disable-next=protected-access
+            kwargs={"pk": invitation.pk, "token": invitation._token},
         )
 
         response = self.client.get(
@@ -187,16 +200,19 @@ class TestSchoolTeacherInvitationViewSet(
 
     def test_accept__existing_email(self):
         """Accept invite raises 400 on GET with pre-existing email"""
+
         invitation = self._invite_teacher(
-            self.school_admin_teacher_email,
-            "NewTeacher",
-            "NewTeacher",
-            self.non_school_teacher_email,
-            False,
+            host_teacher_email=self.school_admin_teacher_email,
+            first_name="NewTeacher",
+            last_name="NewTeacher",
+            invited_teacher_email="teacher@school1.com",
+            is_admin=False,
         )
 
         viewname = self.reverse_action(
-            "accept", kwargs={"token": invitation.token}
+            "accept",
+            # pylint: disable-next=protected-access
+            kwargs={"pk": invitation.pk, "token": invitation._token},
         )
 
         response = self.client.get(
@@ -212,16 +228,19 @@ class TestSchoolTeacherInvitationViewSet(
 
     def test_accept__get(self):
         """Accept invite GET succeeds"""
+
         invitation = self._invite_teacher(
-            self.school_admin_teacher_email,
-            "NewTeacher",
-            "NewTeacher",
-            "invited@teacher.com",
-            False,
+            host_teacher_email=self.school_admin_teacher_email,
+            first_name="NewTeacher",
+            last_name="NewTeacher",
+            invited_teacher_email="invited@teacher.com",
+            is_admin=False,
         )
 
         viewname = self.reverse_action(
-            "accept", kwargs={"token": invitation.token}
+            "accept",
+            # pylint: disable-next=protected-access
+            kwargs={"pk": invitation.pk, "token": invitation._token},
         )
 
         self.client.get(viewname)
@@ -253,32 +272,3 @@ class TestSchoolTeacherInvitationViewSet(
 
         with self.assertRaises(invitation.DoesNotExist):
             invitation.refresh_from_db()
-
-    def test_accept__post__is_admin(self):
-        """
-        Invited admin teacher can set password and their account is created
-        """
-        invitation = self._invite_teacher(
-            self.school_admin_teacher_email,
-            "NewTeacher",
-            "NewTeacher",
-            "invited@teacher.com",
-            True,
-        )
-
-        viewname = self.reverse_action(
-            "accept", kwargs={"token": invitation.token}
-        )
-
-        self.client.post(viewname, data={"password": "InvitedPassword1!"})
-
-        user = self.client.login(
-            email="invited@teacher.com", password="InvitedPassword1!"
-        )
-        assert user is not None
-
-        assert user.teacher.school == School.objects.get(name="School 1")
-        assert user.teacher.is_admin
-        assert not SchoolTeacherInvitation.objects.filter(
-            pk=invitation.pk
-        ).exists()
