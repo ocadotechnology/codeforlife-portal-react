@@ -56,12 +56,17 @@ class TestSchoolTeacherInvitationSerializer(
 
     def test_update(self):
         """Can successfully update."""
-        self.assert_update(
-            self.invitation,
-            {},
-            context={
-                "request": self.request_factory.post(
-                    user=self.admin_school_teacher_user
-                )
-            },
-        )
+        now = timezone.now()
+        with patch.object(timezone, "now", return_value=now):
+            self.assert_update(
+                self.invitation,
+                {},
+                new_data={
+                    "expiry": now + datetime.timedelta(days=30),
+                },
+                context={
+                    "request": self.request_factory.post(
+                        user=self.admin_school_teacher_user
+                    )
+                },
+            )
