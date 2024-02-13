@@ -119,8 +119,8 @@
       "invited_teacher_first_name": "Invited",
       "invited_teacher_last_name": "Teacher",
       "invited_teacher_email": "invited@teacher.com",
-      "invited_teacher_is_admin": "False",
-      "expiry": "2024-02-09 20:26:08.298402"
+      "invited_teacher_is_admin": false,
+      "expiry": "2024-02-09 20:26:08.298402+00:00"
     }
   }
 ]

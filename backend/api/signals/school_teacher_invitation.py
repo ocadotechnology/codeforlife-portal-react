@@ -13,8 +13,10 @@ from ..models import SchoolTeacherInvitation
 
 # pylint: disable=unused-argument
 @receiver(post_save, sender=SchoolTeacherInvitation)
-def user__post_save(sender, instance: SchoolTeacherInvitation, *args, **kwargs):
-    """After a SchoolTeacherInvitation is created."""
+def school_teacher_invitation__post_save(
+    sender, instance: SchoolTeacherInvitation, *args, **kwargs
+):
+    """Send invitation email to invited teacher."""
 
     instance._token  # TODO: send email to invited teacher with differing
     # content based on whether the email is already linked to an account or not.
