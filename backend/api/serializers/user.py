@@ -134,15 +134,14 @@ class UserSerializer(_UserSerializer):
         list_serializer_class = UserListSerializer
 
     def validate(self, attrs):
-        if self.view.action not in (
-            "reset-password",
-            "invite-teacher",
-            "accept-invite",
-        ):
-            pass
+        if self.instance is not None and self.view.action != "reset-password":
             # TODO: make current password required when changing self-profile.
+            pass
 
-        # TODO: validate last_name is required if teacher-user.
+        if "new_teacher" in attrs and "last_name" not in attrs:
+            raise serializers.ValidationError(
+                "Last name is required.", code="last_name_required"
+            )
 
         return attrs
 
@@ -174,7 +173,7 @@ class UserSerializer(_UserSerializer):
             email=validated_data["email"],
             password=validated_data["password"],
             first_name=validated_data["first_name"],
-            last_name=validated_data["last_name"],
+            last_name=validated_data.get("last_name"),
         )
 
         user_profile = UserProfile.objects.create(

@@ -30,8 +30,6 @@ class UserViewSet(_UserViewSet):
     serializer_class = UserSerializer
 
     def get_permissions(self):
-        if self.action == "invite_teacher":
-            return [IsTeacher(is_admin=True), InSchool()]
         if self.action == "bulk":
             return [IsTeacher(), InSchool()]
         if self.action == "partial_update":

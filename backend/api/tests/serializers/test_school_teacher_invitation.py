@@ -2,9 +2,12 @@
 © Ocado Group
 Created on 13/02/2024 at 13:44:00(+00:00).
 """
+import datetime
+from unittest.mock import patch
 
 from codeforlife.tests import ModelSerializerTestCase
 from codeforlife.user.models import AdminSchoolTeacherUser
+from django.utils import timezone
 
 from ...models import SchoolTeacherInvitation
 from ...serializers import SchoolTeacherInvitationSerializer
@@ -23,24 +26,35 @@ class TestSchoolTeacherInvitationSerializer(
         )
         self.invitation = SchoolTeacherInvitation.objects.get(pk=1)
 
-    def test_create(self):
+    @patch(
+        "backend.api.serializers.school_teacher_invitation.make_password",
+        return_value="token",
+    )
+    def test_create(self, _):
         """
         Can successfully create.
         """
-
-        self.assert_create(
-            {
-                "invited_teacher_first_name": "NewTeacher",
-                "invited_teacher_last_name": "NewTeacher",
-                "invited_teacher_email": "invited@teacher.com",
-                "invited_teacher_is_admin": False,
-            },
-            context={
-                "request": self.request_factory.post(
-                    user=self.admin_school_teacher_user
-                )
-            },
-        )
+        now = timezone.now()
+        with patch.object(timezone, "now", return_value=now):
+            self.assert_create(
+                {
+                    "invited_teacher_first_name": "NewTeacher",
+                    "invited_teacher_last_name": "NewTeacher",
+                    "invited_teacher_email": "invited@teacher.com",
+                    "invited_teacher_is_admin": False,
+                },
+                new_data={
+                    "token": "token",
+                    "school": self.admin_school_teacher_user.teacher.school.id,
+                    "from_teacher": self.admin_school_teacher_user.teacher.id,
+                    "expiry": now + datetime.timedelta(days=30),
+                },
+                context={
+                    "request": self.request_factory.post(
+                        user=self.admin_school_teacher_user
+                    )
+                },
+            )
 
     def test_update(self):
         """

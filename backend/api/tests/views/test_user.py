@@ -28,7 +28,6 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
     non_school_teacher_email = "teacher@noschool.com"
     school_teacher_email = "teacher@school1.com"
-    school_admin_teacher_email = "admin.teacher@school1.com"
     school_name = "School 1"
     indy_email = "indy@man.com"
 
@@ -37,13 +36,6 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
             email=self.school_teacher_email,
             password="password",
             is_admin=False,
-        )
-
-    def _login_admin_school_teacher(self):
-        return self.client.login_school_teacher(
-            email=self.school_admin_teacher_email,
-            password="password",
-            is_admin=True,
         )
 
     def _get_pk_and_token_for_user(self, email: str):
@@ -244,6 +236,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         self.client.partial_update(
             other_school_teacher_user,
             {
+                "last_name": other_school_teacher_user.first_name,
                 "teacher": {
                     "is_admin": not other_school_teacher_user.teacher.is_admin,
                 },
