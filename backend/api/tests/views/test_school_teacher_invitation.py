@@ -240,7 +240,9 @@ class TestSchoolTeacherInvitationViewSet(
         )
 
         viewname = self.reverse_action(
-            "accept", kwargs={"pk": invitation.pk, "token": invitation._token}
+            "accept",
+            # pylint: disable-next=protected-access
+            kwargs={"pk": invitation.pk, "token": invitation._token},
         )
 
         self.client.post(viewname, data={"password": password}, format="json")
