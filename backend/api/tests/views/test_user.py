@@ -4,26 +4,16 @@ Created on 20/01/2024 at 10:58:52(+00:00).
 """
 
 import typing as t
-from datetime import timedelta
-from uuid import uuid4
 
 from codeforlife.tests import ModelViewSetTestCase
-from codeforlife.user.models import (
-    Class,
-    School,
-    SchoolTeacherUser,
-    Teacher,
-    User,
-)
+from codeforlife.user.models import Class, SchoolTeacherUser, User
 from codeforlife.user.permissions import InSchool, IsTeacher
 from django.contrib.auth.tokens import (
     PasswordResetTokenGenerator,
     default_token_generator,
 )
-from django.utils import timezone
 from rest_framework import status
 
-from ...models import SchoolTeacherInvitation
 from ...views import UserViewSet
 
 # NOTE: type hint to help Intellisense.
@@ -93,31 +83,6 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
             action="partial_update",
             request=self.client.request_factory.patch(data={"student": {}}),
         )
-
-    def _invite_teacher(
-        self,
-        host_teacher_email: str,
-        first_name: str,
-        last_name: str,
-        invited_teacher_email: str,
-        is_admin: bool,
-    ):
-        host_teacher = Teacher.objects.get(
-            new_user__email__iexact=host_teacher_email
-        )
-        token = uuid4().hex
-        invitation = SchoolTeacherInvitation.objects.create(
-            token=token,
-            school=host_teacher.school,
-            from_teacher=host_teacher,
-            invited_teacher_first_name=first_name,
-            invited_teacher_last_name=last_name,
-            invited_teacher_email=invited_teacher_email,
-            invited_teacher_is_admin=is_admin,
-            expiry=timezone.now() + timedelta(days=30),
-        )
-
-        return invitation
 
     def test_bulk_create__students(self):
         """Teacher can bulk create students."""
@@ -284,139 +249,3 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
                 },
             },
         )
-
-    def test_accept_invite__invalid_token(self):
-        """Accept invite raises 400 on GET with invalid token"""
-        viewname = self.reverse_action(
-            "accept-invite", kwargs={"token": "whatever"}
-        )
-
-        response = self.client.get(
-            viewname, status_code_assertion=status.HTTP_400_BAD_REQUEST
-        )
-
-        assert response.data["non_field_errors"] == [
-            "The invitation does not exist."
-        ]
-
-    def test_accept_invite__expired(self):
-        """Accept invite raises 400 on GET with expired invite"""
-        invitation = self._invite_teacher(
-            self.school_admin_teacher_email,
-            "NewTeacher",
-            "NewTeacher",
-            "invited@teacher.com",
-            False,
-        )
-
-        invitation.expiry = timezone.now() - timedelta(days=1)
-        invitation.save()
-
-        viewname = self.reverse_action(
-            "accept-invite", kwargs={"token": invitation.token}
-        )
-
-        response = self.client.get(
-            viewname, status_code_assertion=status.HTTP_400_BAD_REQUEST
-        )
-
-        assert response.data["non_field_errors"] == [
-            "The invitation has expired."
-        ]
-
-    def test_accept_invite__existing_email(self):
-        """Accept invite raises 400 on GET with pre-existing email"""
-        invitation = self._invite_teacher(
-            self.school_admin_teacher_email,
-            "NewTeacher",
-            "NewTeacher",
-            self.non_school_teacher_email,
-            False,
-        )
-
-        viewname = self.reverse_action(
-            "accept-invite", kwargs={"token": invitation.token}
-        )
-
-        response = self.client.get(
-            viewname, status_code_assertion=status.HTTP_400_BAD_REQUEST
-        )
-
-        assert response.data["non_field_errors"] == [
-            "It looks like an account is already registered with this email "
-            "address. You will need to delete the other account first or "
-            "change the email associated with it in order to proceed. You will "
-            "then be able to access this page."
-        ]
-
-    def test_accept_invite__get(self):
-        """Accept invite GET succeeds"""
-        invitation = self._invite_teacher(
-            self.school_admin_teacher_email,
-            "NewTeacher",
-            "NewTeacher",
-            "invited@teacher.com",
-            False,
-        )
-
-        viewname = self.reverse_action(
-            "accept-invite", kwargs={"token": invitation.token}
-        )
-
-        self.client.get(viewname)
-
-    def test_accept_invite__post(self):
-        """Invited teacher can set password and their account is created"""
-        invitation = self._invite_teacher(
-            self.school_admin_teacher_email,
-            "NewTeacher",
-            "NewTeacher",
-            "invited@teacher.com",
-            False,
-        )
-
-        viewname = self.reverse_action(
-            "accept-invite", kwargs={"token": invitation.token}
-        )
-
-        self.client.post(viewname, data={"password": "InvitedPassword1!"})
-
-        user = self.client.login(
-            email="invited@teacher.com", password="InvitedPassword1!"
-        )
-        assert user is not None
-
-        assert user.teacher.school == School.objects.get(name="School 1")
-        assert not user.teacher.is_admin
-        assert not SchoolTeacherInvitation.objects.filter(
-            pk=invitation.pk
-        ).exists()
-
-    def test_accept_invite__post__is_admin(self):
-        """
-        Invited admin teacher can set password and their account is created
-        """
-        invitation = self._invite_teacher(
-            self.school_admin_teacher_email,
-            "NewTeacher",
-            "NewTeacher",
-            "invited@teacher.com",
-            True,
-        )
-
-        viewname = self.reverse_action(
-            "accept-invite", kwargs={"token": invitation.token}
-        )
-
-        self.client.post(viewname, data={"password": "InvitedPassword1!"})
-
-        user = self.client.login(
-            email="invited@teacher.com", password="InvitedPassword1!"
-        )
-        assert user is not None
-
-        assert user.teacher.school == School.objects.get(name="School 1")
-        assert user.teacher.is_admin
-        assert not SchoolTeacherInvitation.objects.filter(
-            pk=invitation.pk
-        ).exists()

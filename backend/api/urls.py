@@ -31,7 +31,7 @@ router.register(
     basename="otp-bypass-token",
 )
 router.register(
-    r"schools/(?P<school>.+)/teacher-invitations",
+    "schools/teacher-invitations",
     SchoolTeacherInvitationViewSet,
     basename="school-teacher-invitation",
 )

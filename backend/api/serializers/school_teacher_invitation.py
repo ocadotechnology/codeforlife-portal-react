@@ -4,11 +4,11 @@ Created on 09/02/2024 at 16:14:00(+00:00).
 """
 
 from datetime import timedelta
-from uuid import uuid4
 
 from codeforlife.serializers import ModelSerializer
 from django.contrib.auth.hashers import make_password
 from django.utils import timezone
+from django.utils.crypto import get_random_string
 from rest_framework import serializers
 
 from ..models import SchoolTeacherInvitation
@@ -39,7 +39,7 @@ class SchoolTeacherInvitationSerializer(
     def create(self, validated_data):
         user = self.request_admin_school_teacher_user
 
-        token = uuid4().hex
+        token = get_random_string(length=32)
         validated_data["token"] = make_password(token)
         validated_data["school"] = user.teacher.school
         validated_data["from_teacher"] = user.teacher

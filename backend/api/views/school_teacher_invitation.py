@@ -3,11 +3,9 @@
 Created on 09/02/2024 at 16:14:00(+00:00).
 """
 
-import typing as t
-
 from codeforlife.permissions import AllowNone
 from codeforlife.request import Request
-from codeforlife.user.models import Teacher, User, UserProfile
+from codeforlife.user.models import User
 from codeforlife.user.permissions import InSchool, IsTeacher
 from codeforlife.views import ModelViewSet
 from django.contrib.auth.hashers import check_password
@@ -40,8 +38,12 @@ class SchoolTeacherInvitationViewSet(ModelViewSet[SchoolTeacherInvitation]):
         return super().get_permissions()
 
     def get_queryset(self):
-        return SchoolTeacherInvitation.objects.filter(
-            school=self.kwargs["school"]
+        queryset = SchoolTeacherInvitation.objects.all()
+        if self.action == "accept":
+            return queryset
+
+        return queryset.filter(
+            school=self.request_admin_school_teacher_user.teacher.school
         )
 
     @action(
@@ -57,16 +59,13 @@ class SchoolTeacherInvitationViewSet(ModelViewSet[SchoolTeacherInvitation]):
         param, performs password validation and creates the new Teacher.
         """
 
-        try:
-            invitation = SchoolTeacherInvitation.objects.get(pk=int(pk))
-        except (ValueError, SchoolTeacherInvitation.DoesNotExist):
+        invitation = self.get_object()
+
+        if not check_password(token, invitation.token):
             return Response(
-                {"non_field_errors": ["The invitation does not exist."]},
+                {"non_field_errors": ["Incorrect token."]},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-
-        # if not check_password(token):
-        #     pass  # Return error response.
 
         if invitation.is_expired:
             return Response(
@@ -93,8 +92,21 @@ class SchoolTeacherInvitationViewSet(ModelViewSet[SchoolTeacherInvitation]):
         if request.method == "POST":
             context = self.get_serializer_context()
             context["is_verified"] = True
+            context["user_type"] = "teacher"
+            context["school"] = invitation.school
 
-            serializer = UserSerializer(data=request.data, context=context)
+            data = {
+                "first_name": invitation.invited_teacher_first_name,
+                "last_name": invitation.invited_teacher_last_name,
+                "email": invitation.invited_teacher_email,
+                **request.data,
+                "teacher": {
+                    "is_admin": invitation.invited_teacher_is_admin,
+                    **request.data.get("teacher", {}),
+                },
+            }
+
+            serializer = UserSerializer(data=data, context=context)
             serializer.is_valid(raise_exception=True)
             serializer.save()
 

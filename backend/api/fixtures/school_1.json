@@ -113,7 +113,7 @@
     "model": "common.schoolteacherinvitation",
     "pk": 1,
     "fields": {
-      "token": "cc03982e89fc469597d3b413703282bc",
+      "token": "pbkdf2_sha256$260000$hbsAadmrRo744BTM6NofUb$ePs/7vi6sSzOPpiWxNhXMZnNnE7aXOpzIhxrAa/rdiU=",
       "school": 2,
       "from_teacher": 7,
       "invited_teacher_first_name": "Invited",

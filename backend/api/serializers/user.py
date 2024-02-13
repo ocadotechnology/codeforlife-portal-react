@@ -128,7 +128,7 @@ class UserSerializer(_UserSerializer):
             **_UserSerializer.Meta.extra_kwargs,
             "first_name": {"read_only": False},
             "last_name": {"read_only": False, "required": False},
-            "email_name": {"read_only": False},
+            "email": {"read_only": False},
             "password": {"write_only": True, "required": False},
         }
         list_serializer_class = UserListSerializer
@@ -149,18 +149,20 @@ class UserSerializer(_UserSerializer):
     def validate_password(self, value: str):
         """
         Validate the new password depending on user type.
-        :param value: the new password
         """
 
+        # If we're creating a new user, we do not yet have the user object.
+        # Therefore, we need to create a dummy user and pass it to the password
+        # validators so they know what type of user we have.
         instance = self.instance
-        if (
-            not instance
-            and self.view.basename == "school-teacher-invitation"
-            and self.view.action == "accept"
-        ):
+        if not instance:
             instance = User()
-            user_profile = UserProfile(user=instance)
-            Teacher(user=user_profile, new_user=instance)
+
+            user_type: str = self.context["user_type"]
+            if user_type == "teacher":
+                Teacher(new_user=instance)
+            elif user_type == "student":
+                Student(new_user=instance)
 
         _validate_password(value, instance)
 
@@ -185,8 +187,10 @@ class UserSerializer(_UserSerializer):
                 user=user_profile,
                 new_user=user,
                 is_admin=validated_data["new_teacher"]["is_admin"],
-                school_id=validated_data["new_teacher"]["school"],
+                school=self.context.get("school"),
             )
+        elif "new_student" in validated_data:
+            pass  # TODO
 
         # TODO: Handle signing new user up to newsletter if checkbox ticked
 
