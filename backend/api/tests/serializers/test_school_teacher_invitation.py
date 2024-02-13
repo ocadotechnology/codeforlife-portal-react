@@ -31,9 +31,7 @@ class TestSchoolTeacherInvitationSerializer(
         return_value="token",
     )
     def test_create(self, _):
-        """
-        Can successfully create.
-        """
+        """Can successfully create."""
         now = timezone.now()
         with patch.object(timezone, "now", return_value=now):
             self.assert_create(
@@ -57,10 +55,7 @@ class TestSchoolTeacherInvitationSerializer(
             )
 
     def test_update(self):
-        """
-        Can successfully update.
-        """
-
+        """Can successfully update."""
         self.assert_update(
             self.invitation,
             {},

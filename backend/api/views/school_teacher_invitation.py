@@ -58,7 +58,6 @@ class SchoolTeacherInvitationViewSet(ModelViewSet[SchoolTeacherInvitation]):
         checks validity of the invitation token. On PATCH, rechecks this
         param, performs password validation and creates the new Teacher.
         """
-
         invitation = self.get_object()
 
         if not check_password(token, invitation.token):

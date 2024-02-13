@@ -45,20 +45,14 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         return user.pk, token
 
     def test_get_permissions__bulk(self):
-        """
-        Only school-teachers can perform bulk actions.
-        """
-
+        """Only school-teachers can perform bulk actions."""
         self.assert_get_permissions(
             permissions=[IsTeacher(), InSchool()],
             action="bulk",
         )
 
     def test_get_permissions__partial_update__teacher(self):
-        """
-        Only admin-school-teachers can update a teacher.
-        """
-
+        """Only admin-school-teachers can update a teacher."""
         self.assert_get_permissions(
             permissions=[IsTeacher(is_admin=True), InSchool()],
             action="partial_update",
@@ -66,10 +60,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         )
 
     def test_get_permissions__partial_update__student(self):
-        """
-        Only school-teachers can update a student.
-        """
-
+        """Only school-teachers can update a student."""
         self.assert_get_permissions(
             permissions=[IsTeacher(), InSchool()],
             action="partial_update",
@@ -78,7 +69,6 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
     def test_bulk_create__students(self):
         """Teacher can bulk create students."""
-
         user = self._login_school_teacher()
 
         klass: t.Optional[Class] = user.teacher.class_teacher.first()
@@ -214,10 +204,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         self.client.login(email=self.indy_email, password="N3wPassword")
 
     def test_partial_update__teacher(self):
-        """
-        Admin-school-teacher can update another teacher's profile.
-        """
-
+        """Admin-school-teacher can update another teacher's profile."""
         admin_school_teacher_user = self.client.login_school_teacher(
             email="admin.teacher@school1.com",
             password="password",

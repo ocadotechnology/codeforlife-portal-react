@@ -76,7 +76,6 @@ class TestSchoolTeacherInvitationViewSet(
 
     def test_get_permissions__bulk(self):
         """No one is allowed to perform bulk actions."""
-
         self.assert_get_permissions(
             permissions=[AllowNone()],
             action="bulk",
@@ -84,7 +83,6 @@ class TestSchoolTeacherInvitationViewSet(
 
     def test_get_permissions__create(self):
         """Only admin-teachers can create an invitation."""
-
         self.assert_get_permissions(
             permissions=[IsTeacher(is_admin=True), InSchool()],
             action="create",
@@ -92,7 +90,6 @@ class TestSchoolTeacherInvitationViewSet(
 
     def test_get_permissions__partial_update(self):
         """Only admin-teachers can update an invitation."""
-
         self.assert_get_permissions(
             permissions=[IsTeacher(is_admin=True), InSchool()],
             action="partial_update",
@@ -100,7 +97,6 @@ class TestSchoolTeacherInvitationViewSet(
 
     def test_get_permissions__retrieve(self):
         """Only admin-teachers can retrieve an invitation."""
-
         self.assert_get_permissions(
             permissions=[IsTeacher(is_admin=True), InSchool()],
             action="retrieve",
@@ -108,7 +104,6 @@ class TestSchoolTeacherInvitationViewSet(
 
     def test_get_permissions__list(self):
         """Only admin-teachers can list invitations."""
-
         self.assert_get_permissions(
             permissions=[IsTeacher(is_admin=True), InSchool()],
             action="list",
@@ -116,7 +111,6 @@ class TestSchoolTeacherInvitationViewSet(
 
     def test_get_permissions__destroy(self):
         """Only admin-teachers can destroy an invitation."""
-
         self.assert_get_permissions(
             permissions=[IsTeacher(is_admin=True), InSchool()],
             action="destroy",
@@ -124,7 +118,6 @@ class TestSchoolTeacherInvitationViewSet(
 
     def test_create(self):
         """Can successfully create an invitation."""
-
         self._login_admin_school_teacher()
 
         self.client.create(
@@ -138,7 +131,6 @@ class TestSchoolTeacherInvitationViewSet(
 
     def test_partial_update(self):
         """Can successfully update an invitation's expiry."""
-
         self._login_admin_school_teacher()
 
         invitation = self.expired_invitation
@@ -151,7 +143,6 @@ class TestSchoolTeacherInvitationViewSet(
 
     def test_destroy(self):
         """Can successfully destroy an invitation."""
-
         self._login_admin_school_teacher()
 
         invitation = self.valid_invitation
@@ -163,7 +154,6 @@ class TestSchoolTeacherInvitationViewSet(
 
     def test_accept__get__invalid_token(self):
         """Accept invite raises 400 on GET with invalid token"""
-
         invitation = self.invalid_token_invitation
 
         viewname = self.reverse_action(
@@ -180,7 +170,6 @@ class TestSchoolTeacherInvitationViewSet(
 
     def test_accept__get__expired(self):
         """Accept invite raises 400 on GET with expired invite"""
-
         invitation = self.expired_invitation
 
         viewname = self.reverse_action(
@@ -199,7 +188,6 @@ class TestSchoolTeacherInvitationViewSet(
 
     def test_accept__get__existing_email(self):
         """Accept invite raises 400 on GET with pre-existing email"""
-
         invitation = self.existing_teacher_invitation
 
         viewname = self.reverse_action(
@@ -221,7 +209,6 @@ class TestSchoolTeacherInvitationViewSet(
 
     def test_accept__get(self):
         """Accept invite GET succeeds"""
-
         invitation = self.valid_invitation
 
         viewname = self.reverse_action(
@@ -234,7 +221,6 @@ class TestSchoolTeacherInvitationViewSet(
 
     def test_accept__post(self):
         """Invited teacher can set password and their account is created"""
-
         password = "InvitedPassword1!"
 
         invitation = self.valid_invitation
