@@ -147,7 +147,7 @@ class TestSchoolTeacherInvitationViewSet(
 
         assert not SchoolTeacherInvitation.objects.filter(pk=1).exists()
 
-    def test_accept_invite__invalid_token(self):
+    def test_accept__invalid_token(self):
         """Accept invite raises 400 on GET with invalid token"""
 
         viewname = self.reverse_action(
@@ -160,7 +160,7 @@ class TestSchoolTeacherInvitationViewSet(
 
         assert response.data["non_field_errors"] == ["Incorrect token."]
 
-    def test_accept_invite__expired(self):
+    def test_accept__expired(self):
         """Accept invite raises 400 on GET with expired invite"""
         invitation = self._invite_teacher(
             self.school_admin_teacher_email,
@@ -185,7 +185,7 @@ class TestSchoolTeacherInvitationViewSet(
             "The invitation has expired."
         ]
 
-    def test_accept_invite__existing_email(self):
+    def test_accept__existing_email(self):
         """Accept invite raises 400 on GET with pre-existing email"""
         invitation = self._invite_teacher(
             self.school_admin_teacher_email,
@@ -210,7 +210,7 @@ class TestSchoolTeacherInvitationViewSet(
             "then be able to access this page."
         ]
 
-    def test_accept_invite__get(self):
+    def test_accept__get(self):
         """Accept invite GET succeeds"""
         invitation = self._invite_teacher(
             self.school_admin_teacher_email,
@@ -226,7 +226,7 @@ class TestSchoolTeacherInvitationViewSet(
 
         self.client.get(viewname)
 
-    def test_accept_invite__post(self):
+    def test_accept__post(self):
         """Invited teacher can set password and their account is created"""
 
         email, password = "invited@teacher.com", "InvitedPassword1!"
@@ -252,7 +252,7 @@ class TestSchoolTeacherInvitationViewSet(
         with self.assertRaises(invitation.DoesNotExist):
             invitation.refresh_from_db()
 
-    def test_accept_invite__post__is_admin(self):
+    def test_accept__post__is_admin(self):
         """
         Invited admin teacher can set password and their account is created
         """
