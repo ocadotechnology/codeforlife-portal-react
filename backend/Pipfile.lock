@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "6ae7e27489a2d7bb282f88822980d097fd377b5ee247f05edd9b05c6654b3472"
+            "sha256": "aa20b3ed4d82aaf4d97f12b18edab56b035a527ad60843347b2be4ae534d370d"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -168,7 +168,7 @@
         },
         "codeforlife": {
             "git": "https://github.com/ocadotechnology/codeforlife-package-python.git",
-            "ref": "9361a531c264e6d637798d93424d818cef6be042"
+            "ref": "9ea8d46ad270fc152f56dfe45b5054739c7c2202"
         },
         "codeforlife-portal": {
             "hashes": [
@@ -1260,11 +1260,11 @@
         },
         "tzdata": {
             "hashes": [
-                "sha256:aa3ace4329eeacda5b7beb7ea08ece826c28d761cda36e747cfbf97996d39bf3",
-                "sha256:dd54c94f294765522c77399649b4fefd95522479a664a0cec87f41bebc6148c9"
+                "sha256:2674120f8d891909751c38abcdfd386ac0a5a1127954fbc332af6b5ceae07efd",
+                "sha256:9068bc196136463f5245e51efda838afa15aaeca9903f49050dfa2679db4d252"
             ],
             "markers": "python_version >= '2'",
-            "version": "==2023.4"
+            "version": "==2024.1"
         },
         "urllib3": {
             "hashes": [
@@ -1512,7 +1512,7 @@
         },
         "codeforlife": {
             "git": "https://github.com/ocadotechnology/codeforlife-package-python.git",
-            "ref": "9361a531c264e6d637798d93424d818cef6be042"
+            "ref": "9ea8d46ad270fc152f56dfe45b5054739c7c2202"
         },
         "codeforlife-portal": {
             "hashes": [
@@ -2822,11 +2822,11 @@
         },
         "tzdata": {
             "hashes": [
-                "sha256:aa3ace4329eeacda5b7beb7ea08ece826c28d761cda36e747cfbf97996d39bf3",
-                "sha256:dd54c94f294765522c77399649b4fefd95522479a664a0cec87f41bebc6148c9"
+                "sha256:2674120f8d891909751c38abcdfd386ac0a5a1127954fbc332af6b5ceae07efd",
+                "sha256:9068bc196136463f5245e51efda838afa15aaeca9903f49050dfa2679db4d252"
             ],
             "markers": "python_version >= '2'",
-            "version": "==2023.4"
+            "version": "==2024.1"
         },
         "urllib3": {
             "hashes": [
