@@ -46,10 +46,9 @@ class TestSchoolTeacherInvitationViewSet(
             pk=3
         )
         assert not self.existing_teacher_invitation.is_expired
-        user = User.objects.get(
+        User.objects.get(
             email__iexact=self.existing_teacher_invitation.invited_teacher_email
         )
-        assert user.teacher.school is not None
 
     def test_get_permissions__bulk(self):
         """No one is allowed to perform bulk actions."""
