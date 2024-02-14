@@ -8,7 +8,7 @@ import typing as t
 from itertools import groupby
 
 from codeforlife.serializers import ModelListSerializer
-from codeforlife.user.models import Class, Student, User, UserProfile
+from codeforlife.user.models import Class, Student, Teacher, User, UserProfile
 from codeforlife.user.serializers import UserSerializer as _UserSerializer
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.password_validation import (
@@ -119,30 +119,81 @@ class UserSerializer(_UserSerializer):
     class Meta(_UserSerializer.Meta):
         fields = [
             *_UserSerializer.Meta.fields,
+            "student",
+            "teacher",
             "password",
             "current_password",
         ]
         extra_kwargs = {
             **_UserSerializer.Meta.extra_kwargs,
             "first_name": {"read_only": False},
+            "last_name": {"read_only": False, "required": False},
+            "email": {"read_only": False},
             "password": {"write_only": True, "required": False},
         }
         list_serializer_class = UserListSerializer
 
     def validate(self, attrs):
-        if self.view.action != "reset-password":
-            pass
+        if self.instance is not None and self.view.action != "reset-password":
             # TODO: make current password required when changing self-profile.
+            pass
+
+        if "new_teacher" in attrs and "last_name" not in attrs:
+            raise serializers.ValidationError(
+                "Last name is required.", code="last_name_required"
+            )
 
         return attrs
 
     def validate_password(self, value: str):
         """
         Validate the new password depending on user type.
-        :param value: the new password
         """
-        _validate_password(value, self.instance)
+
+        # If we're creating a new user, we do not yet have the user object.
+        # Therefore, we need to create a dummy user and pass it to the password
+        # validators so they know what type of user we have.
+        instance = self.instance
+        if not instance:
+            instance = User()
+
+            user_type: str = self.context["user_type"]
+            if user_type == "teacher":
+                Teacher(new_user=instance)
+            elif user_type == "student":
+                Student(new_user=instance)
+
+        _validate_password(value, instance)
+
         return value
+
+    def create(self, validated_data):
+        user = User.objects.create_user(
+            username=validated_data["email"],
+            email=validated_data["email"],
+            password=validated_data["password"],
+            first_name=validated_data["first_name"],
+            last_name=validated_data.get("last_name"),
+        )
+
+        user_profile = UserProfile.objects.create(
+            user=user,
+            is_verified=self.context.get("is_verified", False),
+        )
+
+        if "new_teacher" in validated_data:
+            Teacher.objects.create(
+                user=user_profile,
+                new_user=user,
+                is_admin=validated_data["new_teacher"]["is_admin"],
+                school=self.context.get("school"),
+            )
+        elif "new_student" in validated_data:
+            pass  # TODO
+
+        # TODO: Handle signing new user up to newsletter if checkbox ticked
+
+        return user
 
     def update(self, instance, validated_data):
         password = validated_data.get("password")

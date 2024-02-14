@@ -27,12 +27,13 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
     fixtures = ["independent", "non_school_teacher", "school_1"]
 
     non_school_teacher_email = "teacher@noschool.com"
+    school_teacher_email = "teacher@school1.com"
     indy_email = "indy@man.com"
 
     def _login_school_teacher(self):
         return self.client.login_school_teacher(
-            email="maxplanck@codeforlife.com",
-            password="Password1",
+            email=self.school_teacher_email,
+            password="password",
             is_admin=False,
         )
 
@@ -43,20 +44,14 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         return user.pk, token
 
     def test_get_permissions__bulk(self):
-        """
-        Only school-teachers can perform bulk actions.
-        """
-
+        """Only school-teachers can perform bulk actions."""
         self.assert_get_permissions(
             permissions=[IsTeacher(), InSchool()],
             action="bulk",
         )
 
     def test_get_permissions__partial_update__teacher(self):
-        """
-        Only admin-school-teachers can update a teacher.
-        """
-
+        """Only admin-school-teachers can update a teacher."""
         self.assert_get_permissions(
             permissions=[IsTeacher(is_admin=True), InSchool()],
             action="partial_update",
@@ -64,10 +59,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         )
 
     def test_get_permissions__partial_update__student(self):
-        """
-        Only school-teachers can update a student.
-        """
-
+        """Only school-teachers can update a student."""
         self.assert_get_permissions(
             permissions=[IsTeacher(), InSchool()],
             action="partial_update",
@@ -76,7 +68,6 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
     def test_bulk_create__students(self):
         """Teacher can bulk create students."""
-
         user = self._login_school_teacher()
 
         klass: t.Optional[Class] = user.teacher.class_teacher.first()
@@ -144,8 +135,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         )
 
         viewname = self.reverse_action(
-            "reset-password",
-            kwargs={"pk": "whatever", "token": token},
+            "reset-password", kwargs={"pk": "whatever", "token": token}
         )
 
         response = self.client.get(
@@ -161,8 +151,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         pk, _ = self._get_pk_and_token_for_user(self.non_school_teacher_email)
 
         viewname = self.reverse_action(
-            "reset-password",
-            kwargs={"pk": pk, "token": "whatever"},
+            "reset-password", kwargs={"pk": pk, "token": "whatever"}
         )
 
         response = self.client.get(
@@ -180,8 +169,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         )
 
         viewname = self.reverse_action(
-            "reset-password",
-            kwargs={"pk": pk, "token": token},
+            "reset-password", kwargs={"pk": pk, "token": token}
         )
 
         self.client.get(viewname)
@@ -193,8 +181,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         )
 
         viewname = self.reverse_action(
-            "reset-password",
-            kwargs={"pk": pk, "token": token},
+            "reset-password", kwargs={"pk": pk, "token": token}
         )
 
         self.client.patch(viewname, data={"password": "N3wPassword!"})
@@ -216,10 +203,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         self.client.login(email=self.indy_email, password="N3wPassword")
 
     def test_partial_update__teacher(self):
-        """
-        Admin-school-teacher can update another teacher's profile.
-        """
-
+        """Admin-school-teacher can update another teacher's profile."""
         admin_school_teacher_user = self.client.login_school_teacher(
             email="admin.teacher@school1.com",
             password="password",
@@ -238,6 +222,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         self.client.partial_update(
             other_school_teacher_user,
             {
+                "last_name": other_school_teacher_user.first_name,
                 "teacher": {
                     "is_admin": not other_school_teacher_user.teacher.is_admin,
                 },

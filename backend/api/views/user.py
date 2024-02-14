@@ -84,7 +84,8 @@ class UserViewSet(_UserViewSet):
             serializer.is_valid(raise_exception=True)
             serializer.save()
 
-            # TODO: Check if need to handle resetting ratelimit & unblocking of user
+            # TODO: Check if need to handle resetting ratelimit & unblocking
+            #  of user
 
         return Response()
 
@@ -105,7 +106,8 @@ class UserViewSet(_UserViewSet):
         try:
             user = User.objects.get(email__iexact=email)
         except User.DoesNotExist:
-            # NOTE: Always return a 200 here - a noticeable change in behaviour would allow email enumeration.
+            # NOTE: Always return a 200 here - a noticeable change in
+            # behaviour would allow email enumeration.
             return Response()
 
         token = default_token_generator.make_token(user)

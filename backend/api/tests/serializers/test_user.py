@@ -15,10 +15,7 @@ class TestUserSerializer(ModelSerializerTestCase[User]):
     fixtures = ["school_1"]
 
     def test_validate__first_name_not_unique_per_class_in_data(self):
-        """
-        First name must be unique per class in data.
-        """
-
+        """First name must be unique per class in data."""
         self.assert_validate(
             attrs=[
                 {
@@ -43,10 +40,7 @@ class TestUserSerializer(ModelSerializerTestCase[User]):
         )
 
     def test_validate__first_name_not_unique_per_class_in_db(self):
-        """
-        First name must be unique per class in database.
-        """
-
+        """First name must be unique per class in database."""
         klass = Class.objects.get(name="Class 1 @ School 1")
         assert klass is not None
 

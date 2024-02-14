@@ -7,4 +7,5 @@ from .auth_factor import AuthFactorViewSet
 from .klass import ClassViewSet
 from .otp_bypass_token import OtpBypassTokenViewSet
 from .school import SchoolViewSet
+from .school_teacher_invitation import SchoolTeacherInvitationViewSet
 from .user import UserViewSet
