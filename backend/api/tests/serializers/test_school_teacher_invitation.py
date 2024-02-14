@@ -51,7 +51,7 @@ class TestSchoolTeacherInvitationSerializer(
                     "request": self.request_factory.post(
                         user=self.admin_school_teacher_user
                     )
-                }
+                },
             )
 
     def test_update(self):
@@ -63,5 +63,5 @@ class TestSchoolTeacherInvitationSerializer(
                 {},
                 new_data={
                     "expiry": now + datetime.timedelta(days=30),
-                }
+                },
             )
