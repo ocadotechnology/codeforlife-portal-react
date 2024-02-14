@@ -28,7 +28,6 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
     non_school_teacher_email = "teacher@noschool.com"
     school_teacher_email = "teacher@school1.com"
-    school_name = "School 1"
     indy_email = "indy@man.com"
 
     def _login_school_teacher(self):

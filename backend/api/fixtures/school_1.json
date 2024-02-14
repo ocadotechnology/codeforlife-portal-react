@@ -127,20 +127,6 @@
     "model": "common.schoolteacherinvitation",
     "pk": 2,
     "fields": {
-      "token": "whatever",
-      "school": 2,
-      "from_teacher": 7,
-      "invited_teacher_first_name": "Invited",
-      "invited_teacher_last_name": "Teacher",
-      "invited_teacher_email": "invited@teacher.com",
-      "invited_teacher_is_admin": false,
-      "expiry": "9999-02-09 20:26:08.298402+00:00"
-    }
-  },
-  {
-    "model": "common.schoolteacherinvitation",
-    "pk": 3,
-    "fields": {
       "token": "pbkdf2_sha256$260000$hbsAadmrRo744BTM6NofUb$ePs/7vi6sSzOPpiWxNhXMZnNnE7aXOpzIhxrAa/rdiU=",
       "school": 2,
       "from_teacher": 7,
@@ -153,7 +139,7 @@
   },
   {
     "model": "common.schoolteacherinvitation",
-    "pk": 4,
+    "pk": 3,
     "fields": {
       "token": "pbkdf2_sha256$260000$hbsAadmrRo744BTM6NofUb$ePs/7vi6sSzOPpiWxNhXMZnNnE7aXOpzIhxrAa/rdiU=",
       "school": 2,

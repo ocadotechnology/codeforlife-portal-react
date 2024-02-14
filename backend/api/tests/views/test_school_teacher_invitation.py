@@ -3,15 +3,10 @@
 Created on 09/02/2024 at 17:18:00(+00:00).
 """
 
-from datetime import timedelta
-
 from codeforlife.permissions import AllowNone
 from codeforlife.tests import ModelViewSetTestCase
-from codeforlife.user.models import AdminSchoolTeacher, School, Teacher
+from codeforlife.user.models import User
 from codeforlife.user.permissions import InSchool, IsTeacher
-from django.contrib.auth.hashers import make_password
-from django.utils import timezone
-from django.utils.crypto import get_random_string
 from rest_framework import status
 
 from ...models import SchoolTeacherInvitation
@@ -35,44 +30,26 @@ class TestSchoolTeacherInvitationViewSet(
             is_admin=True,
         )
 
-    def _invite_teacher(
-        self,
-        host_teacher_email: str,
-        first_name: str,
-        last_name: str,
-        invited_teacher_email: str,
-        is_admin: bool,
-    ):
-        host_teacher = AdminSchoolTeacher.objects.get(
-            new_user__email__iexact=host_teacher_email
-        )
-
-        token = get_random_string(length=32)
-
-        invitation = SchoolTeacherInvitation.objects.create(
-            token=make_password(token),
-            school=host_teacher.school,
-            from_teacher=host_teacher,
-            invited_teacher_first_name=first_name,
-            invited_teacher_last_name=last_name,
-            invited_teacher_email=invited_teacher_email,
-            invited_teacher_is_admin=is_admin,
-            expiry=timezone.now() + timedelta(days=30),
-        )
-
-        invitation._token = token
-
-        return invitation
-
     def setUp(self):
         self.expired_invitation = SchoolTeacherInvitation.objects.get(pk=1)
-        self.invalid_token_invitation = SchoolTeacherInvitation.objects.get(
-            pk=2
-        )
-        self.valid_invitation = SchoolTeacherInvitation.objects.get(pk=3)
+        assert self.expired_invitation.is_expired
+
+        self.new_teacher_invitation = SchoolTeacherInvitation.objects.get(pk=2)
+        assert not self.new_teacher_invitation.is_expired
+
+        with self.assertRaises(User.DoesNotExist):
+            User.objects.get(
+                email__iexact=self.new_teacher_invitation.invited_teacher_email
+            )
+
         self.existing_teacher_invitation = SchoolTeacherInvitation.objects.get(
-            pk=4
+            pk=3
         )
+        assert not self.existing_teacher_invitation.is_expired
+        user = User.objects.get(
+            email__iexact=self.existing_teacher_invitation.invited_teacher_email
+        )
+        assert user.teacher.school is not None
 
     def test_get_permissions__bulk(self):
         """No one is allowed to perform bulk actions."""
@@ -145,7 +122,7 @@ class TestSchoolTeacherInvitationViewSet(
         """Can successfully destroy an invitation."""
         self._login_admin_school_teacher()
 
-        invitation = self.valid_invitation
+        invitation = self.new_teacher_invitation
 
         self.client.destroy(invitation)
 
@@ -154,12 +131,12 @@ class TestSchoolTeacherInvitationViewSet(
 
     def test_accept__get__invalid_token(self):
         """Accept invite raises 400 on GET with invalid token"""
-        invitation = self.invalid_token_invitation
+        invitation = self.new_teacher_invitation
 
         viewname = self.reverse_action(
             "accept",
             # pylint: disable-next=protected-access
-            kwargs={"pk": invitation.pk, "token": "token"},
+            kwargs={"pk": invitation.pk, "token": "whatever"},
         )
 
         response = self.client.get(
@@ -209,7 +186,7 @@ class TestSchoolTeacherInvitationViewSet(
 
     def test_accept__get(self):
         """Accept invite GET succeeds"""
-        invitation = self.valid_invitation
+        invitation = self.new_teacher_invitation
 
         viewname = self.reverse_action(
             "accept",
@@ -223,7 +200,7 @@ class TestSchoolTeacherInvitationViewSet(
         """Invited teacher can set password and their account is created"""
         password = "InvitedPassword1!"
 
-        invitation = self.valid_invitation
+        invitation = self.new_teacher_invitation
 
         viewname = self.reverse_action(
             "accept",
