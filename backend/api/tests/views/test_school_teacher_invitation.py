@@ -34,20 +34,20 @@ class TestSchoolTeacherInvitationViewSet(
         self.expired_invitation = SchoolTeacherInvitation.objects.get(pk=1)
         assert self.expired_invitation.is_expired
 
-        self.new_teacher_invitation = SchoolTeacherInvitation.objects.get(pk=2)
-        assert not self.new_teacher_invitation.is_expired
+        self.new_user_invitation = SchoolTeacherInvitation.objects.get(pk=2)
+        assert not self.new_user_invitation.is_expired
 
         with self.assertRaises(User.DoesNotExist):
             User.objects.get(
-                email__iexact=self.new_teacher_invitation.invited_teacher_email
+                email__iexact=self.new_user_invitation.invited_teacher_email
             )
 
-        self.existing_teacher_invitation = SchoolTeacherInvitation.objects.get(
+        self.existing_user_invitation = SchoolTeacherInvitation.objects.get(
             pk=3
         )
-        assert not self.existing_teacher_invitation.is_expired
+        assert not self.existing_user_invitation.is_expired
         User.objects.get(
-            email__iexact=self.existing_teacher_invitation.invited_teacher_email
+            email__iexact=self.existing_user_invitation.invited_teacher_email
         )
 
     def test_get_permissions__bulk(self):
@@ -121,7 +121,7 @@ class TestSchoolTeacherInvitationViewSet(
         """Can successfully destroy an invitation."""
         self._login_admin_school_teacher()
 
-        invitation = self.new_teacher_invitation
+        invitation = self.new_user_invitation
 
         self.client.destroy(invitation)
 
@@ -130,7 +130,7 @@ class TestSchoolTeacherInvitationViewSet(
 
     def test_accept__get__invalid_token(self):
         """Accept invite raises 400 on GET with invalid token"""
-        invitation = self.new_teacher_invitation
+        invitation = self.new_user_invitation
 
         viewname = self.reverse_action(
             "accept",
@@ -164,7 +164,7 @@ class TestSchoolTeacherInvitationViewSet(
 
     def test_accept__get__existing_email(self):
         """Accept invite raises 400 on GET with pre-existing email"""
-        invitation = self.existing_teacher_invitation
+        invitation = self.existing_user_invitation
 
         viewname = self.reverse_action(
             "accept",
@@ -185,7 +185,7 @@ class TestSchoolTeacherInvitationViewSet(
 
     def test_accept__get(self):
         """Accept invite GET succeeds"""
-        invitation = self.new_teacher_invitation
+        invitation = self.new_user_invitation
 
         viewname = self.reverse_action(
             "accept",
@@ -199,7 +199,7 @@ class TestSchoolTeacherInvitationViewSet(
         """Invited teacher can set password and their account is created"""
         password = "InvitedPassword1!"
 
-        invitation = self.new_teacher_invitation
+        invitation = self.new_user_invitation
 
         viewname = self.reverse_action(
             "accept",
