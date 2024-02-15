@@ -30,11 +30,10 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
     school_teacher_email = "teacher@school1.com"
     indy_email = "indy@man.com"
 
-    def _login_school_teacher(self):
-        return self.client.login_school_teacher(
+    def _login_non_admin_school_teacher(self):
+        return self.client.login_non_admin_school_teacher(
             email=self.school_teacher_email,
             password="password",
-            is_admin=False,
         )
 
     def _get_pk_and_token_for_user(self, email: str):
@@ -68,7 +67,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
     def test_bulk_create__students(self):
         """Teacher can bulk create students."""
-        user = self._login_school_teacher()
+        user = self._login_non_admin_school_teacher()
 
         klass: t.Optional[Class] = user.teacher.class_teacher.first()
         assert klass is not None
@@ -204,10 +203,9 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
     def test_partial_update__teacher(self):
         """Admin-school-teacher can update another teacher's profile."""
-        admin_school_teacher_user = self.client.login_school_teacher(
+        admin_school_teacher_user = self.client.login_admin_school_teacher(
             email="admin.teacher@school1.com",
             password="password",
-            is_admin=True,
         )
 
         other_school_teacher_user = (

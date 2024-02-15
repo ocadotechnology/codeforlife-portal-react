@@ -76,8 +76,7 @@ class TestSchoolViewSet(ModelViewSetTestCase[School]):
     def test_partial_update(self):
         """Can successfully update a school."""
 
-        user = self.client.login_school_teacher(
-            is_admin=True,
+        user = self.client.login_admin_school_teacher(
             email="admin.teacher@school1.com",
             password="password",
         )

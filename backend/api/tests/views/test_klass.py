@@ -104,10 +104,9 @@ class TestClassViewSet(ModelViewSetTestCase[Class]):
         Teacher can create a class with another teacher as the class owner.
         """
 
-        user = self.client.login_school_teacher(
+        user = self.client.login_admin_school_teacher(
             email="admin.teacher@school1.com",
             password="password",
-            is_admin=True,
         )
 
         teacher = (

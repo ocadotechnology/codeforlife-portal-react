@@ -24,10 +24,9 @@ class TestSchoolTeacherInvitationViewSet(
     non_school_teacher_email = "teacher@noschool.com"
 
     def _login_admin_school_teacher(self):
-        return self.client.login_school_teacher(
+        return self.client.login_admin_school_teacher(
             email=self.school_admin_teacher_email,
             password="password",
-            is_admin=True,
         )
 
     def setUp(self):
