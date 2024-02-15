@@ -226,3 +226,31 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
                 },
             },
         )
+
+    def test_bulk_destroy(self):
+        """School-teacher can bulk anonymize students."""
+        school_teacher_user = self.client.login_school_teacher(
+            email="teacher@school1.com",
+            password="password",
+        )
+
+        student_user_queryset = User.objects.filter(
+            new_student__class_field__teacher=school_teacher_user.teacher,
+        )
+        student_user_ids = list(
+            student_user_queryset.values_list("id", flat=True)
+        )
+        assert student_user_ids
+
+        self.client.bulk_destroy(student_user_ids, make_assertions=False)
+
+        assert (
+            len(student_user_ids)
+            == student_user_queryset.filter(
+                username="",
+                email="",
+                first_name="",
+                last_name="",
+                is_active=False,
+            ).count()
+        )

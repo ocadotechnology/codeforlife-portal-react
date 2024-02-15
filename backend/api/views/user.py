@@ -40,6 +40,24 @@ class UserViewSet(_UserViewSet):
 
         return super().get_permissions()
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if self.action == "bulk" and self.request.method in ["PATCH", "DELETE"]:
+            queryset = queryset.filter(
+                new_student__isnull=False,
+                new_student__class_field__isnull=False,
+            )
+        return queryset
+
+    def perform_bulk_destroy(self, queryset):
+        queryset.update(
+            username="",
+            email="",
+            first_name="",
+            last_name="",
+            is_active=False,
+        )
+
     @action(
         detail=True,
         methods=["get", "patch"],
@@ -89,7 +107,12 @@ class UserViewSet(_UserViewSet):
 
         return Response()
 
-    @action(detail=False, methods=["post"], permission_classes=[AllowAny])
+    @action(
+        detail=False,
+        methods=["post"],
+        url_path="request-password-reset",
+        permission_classes=[AllowAny],
+    )
     def request_password_reset(self, request: Request):
         """
         Generates a reset password URL to be emailed to the user if the
