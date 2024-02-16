@@ -50,13 +50,7 @@ class UserViewSet(_UserViewSet):
         return queryset
 
     def perform_bulk_destroy(self, queryset):
-        queryset.update(
-            username="",
-            email="",
-            first_name="",
-            last_name="",
-            is_active=False,
-        )
+        queryset.update(first_name="", is_active=False)
 
     @action(
         detail=True,
