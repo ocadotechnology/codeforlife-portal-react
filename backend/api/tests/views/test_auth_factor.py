@@ -32,13 +32,11 @@ class TestAuthFactorViewSet(ModelViewSetTestCase[AuthFactor]):
 
     def test_get_queryset(self):
         """Can only access your own auth factors."""
-        request = self.client.request_factory.get(
-            user=self.multi_auth_factor_teacher_user
-        )
-
         self.assert_get_queryset(
             list(self.multi_auth_factor_teacher_user.auth_factors.all()),
-            request=request,
+            request=self.client.request_factory.get(
+                user=self.multi_auth_factor_teacher_user
+            ),
         )
 
     # test: get permissions
