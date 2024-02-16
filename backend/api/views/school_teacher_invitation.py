@@ -6,7 +6,7 @@ Created on 09/02/2024 at 16:14:00(+00:00).
 from codeforlife.permissions import AllowNone
 from codeforlife.request import Request
 from codeforlife.user.models import User
-from codeforlife.user.permissions import InSchool, IsTeacher
+from codeforlife.user.permissions import IsTeacher
 from codeforlife.views import ModelViewSet
 from django.contrib.auth.hashers import check_password
 from rest_framework import status
@@ -31,7 +31,7 @@ class SchoolTeacherInvitationViewSet(ModelViewSet[SchoolTeacherInvitation]):
             "partial_update",
             "destroy",
         ]:
-            return [IsTeacher(is_admin=True), InSchool()]
+            return [IsTeacher(is_admin=True)]
         if self.action == "bulk":
             return [AllowNone()]
 

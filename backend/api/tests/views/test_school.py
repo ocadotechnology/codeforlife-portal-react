@@ -3,10 +3,10 @@
 Created on 02/02/2024 at 15:31:21(+00:00).
 """
 
-from codeforlife.permissions import NOT, AllowNone
+from codeforlife.permissions import OR, AllowNone
 from codeforlife.tests import ModelViewSetTestCase
 from codeforlife.user.models import School
-from codeforlife.user.permissions import InSchool, IsTeacher
+from codeforlife.user.permissions import IsStudent, IsTeacher
 
 from ...views import SchoolViewSet
 
@@ -37,7 +37,7 @@ class TestSchoolViewSet(ModelViewSetTestCase[School]):
         """Only teachers not in a school can create a school."""
 
         self.assert_get_permissions(
-            permissions=[IsTeacher(), NOT(InSchool())],
+            permissions=[IsTeacher(in_school=False)],
             action="create",
         )
 
@@ -45,7 +45,7 @@ class TestSchoolViewSet(ModelViewSetTestCase[School]):
         """Only admin-teachers in a school can update a school."""
 
         self.assert_get_permissions(
-            permissions=[IsTeacher(is_admin=True), InSchool()],
+            permissions=[IsTeacher(is_admin=True)],
             action="update",
         )
 
@@ -53,7 +53,7 @@ class TestSchoolViewSet(ModelViewSetTestCase[School]):
         """Anyone in a school can retrieve a school."""
 
         self.assert_get_permissions(
-            permissions=[InSchool()],
+            permissions=[OR(IsStudent(), IsTeacher(in_school=True))],
             action="retrieve",
         )
 
@@ -76,8 +76,7 @@ class TestSchoolViewSet(ModelViewSetTestCase[School]):
     def test_partial_update(self):
         """Can successfully update a school."""
 
-        user = self.client.login_school_teacher(
-            is_admin=True,
+        user = self.client.login_admin_school_teacher(
             email="admin.teacher@school1.com",
             password="password",
         )

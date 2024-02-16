@@ -3,8 +3,8 @@
 Created on 23/01/2024 at 17:53:37(+00:00).
 """
 
-from codeforlife.permissions import AllowNone
-from codeforlife.user.permissions import InSchool, IsTeacher
+from codeforlife.permissions import OR, AllowNone
+from codeforlife.user.permissions import IsTeacher
 from codeforlife.user.views import ClassViewSet as _ClassViewSet
 
 from ..serializers import ClassSerializer
@@ -19,7 +19,9 @@ class ClassViewSet(_ClassViewSet):
         # Bulk actions not allowed for classes.
         if self.action == "bulk":
             return [AllowNone()]
-        if self.action in ["create", "update", "destroy"]:
-            return [IsTeacher(), InSchool()]
+        if self.action == "create":
+            return [IsTeacher(in_school=True)]
+        if self.action in ["update", "destroy"]:
+            return [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))]
 
         return super().get_permissions()

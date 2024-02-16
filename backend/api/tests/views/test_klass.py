@@ -5,10 +5,10 @@ Created on 05/02/2024 at 16:13:46(+00:00).
 
 from datetime import timedelta
 
-from codeforlife.permissions import AllowNone
+from codeforlife.permissions import OR, AllowNone
 from codeforlife.tests import ModelViewSetTestCase
 from codeforlife.user.models import Class, Teacher
-from codeforlife.user.permissions import InSchool, IsTeacher
+from codeforlife.user.permissions import IsStudent, IsTeacher
 from django.utils import timezone
 
 from ...views import ClassViewSet
@@ -20,63 +20,60 @@ class TestClassViewSet(ModelViewSetTestCase[Class]):
     model_view_set_class = ClassViewSet
     fixtures = ["school_1"]
 
-    def test_get_permissions__bulk(self):
-        """
-        No one is allowed to perform bulk actions.
-        """
+    # test: get permissions
 
+    def test_get_permissions__bulk(self):
+        """No one is allowed to perform bulk actions."""
         self.assert_get_permissions(
             permissions=[AllowNone()],
             action="bulk",
         )
 
     def test_get_permissions__create(self):
-        """
-        Only a school-teacher can create a class.
-        """
-
+        """Only school-teachers can create a class."""
         self.assert_get_permissions(
-            permissions=[IsTeacher(), InSchool()],
+            permissions=[IsTeacher(in_school=True)],
             action="create",
         )
 
     def test_get_permissions__update(self):
-        """
-        Only a school-teacher can update a class.
-        """
-
+        """Only admin-teachers or class-teachers can update a class."""
         self.assert_get_permissions(
-            permissions=[IsTeacher(), InSchool()],
+            permissions=[
+                OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))
+            ],
             action="update",
         )
 
     def test_get_permissions__destroy(self):
-        """
-        Only a school-teacher can destroy a class.
-        """
-
+        """Only admin-teachers or class-teachers can destroy a class."""
         self.assert_get_permissions(
-            permissions=[IsTeacher(), InSchool()],
+            permissions=[
+                OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))
+            ],
             action="destroy",
         )
 
     def test_get_permissions__list(self):
-        """
-        Only a school-teacher can list classes.
-        """
-
+        """Only admin-teachers and class-teachers can list classes."""
         self.assert_get_permissions(
-            permissions=[IsTeacher(), InSchool()],
+            permissions=[
+                OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))
+            ],
             action="list",
         )
 
     def test_get_permissions__retrieve(self):
         """
-        Any school-user can retrieve a class.
+        Only students, admin-teachers or class-teachers can retrieve a class.
         """
-
         self.assert_get_permissions(
-            permissions=[InSchool()],
+            permissions=[
+                OR(
+                    IsStudent(),
+                    OR(IsTeacher(is_admin=True), IsTeacher(in_class=True)),
+                )
+            ],
             action="retrieve",
         )
 
@@ -104,10 +101,9 @@ class TestClassViewSet(ModelViewSetTestCase[Class]):
         Teacher can create a class with another teacher as the class owner.
         """
 
-        user = self.client.login_school_teacher(
+        user = self.client.login_admin_school_teacher(
             email="admin.teacher@school1.com",
             password="password",
-            is_admin=True,
         )
 
         teacher = (

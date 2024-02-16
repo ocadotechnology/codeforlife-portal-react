@@ -5,9 +5,10 @@ Created on 23/01/2024 at 17:53:44(+00:00).
 
 import typing as t
 
+from codeforlife.permissions import OR
 from codeforlife.request import Request
 from codeforlife.user.models import User
-from codeforlife.user.permissions import InSchool, IsTeacher
+from codeforlife.user.permissions import IsTeacher
 from codeforlife.user.views import UserViewSet as _UserViewSet
 from django.contrib.auth.tokens import (
     PasswordResetTokenGenerator,
@@ -31,14 +32,26 @@ class UserViewSet(_UserViewSet):
 
     def get_permissions(self):
         if self.action == "bulk":
-            return [IsTeacher(), InSchool()]
+            return [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))]
         if self.action == "partial_update":
             if "teacher" in self.request.data:
-                return [IsTeacher(is_admin=True), InSchool()]
+                return [IsTeacher(is_admin=True)]
             if "student" in self.request.data:
-                return [IsTeacher(), InSchool()]
+                return [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))]
 
         return super().get_permissions()
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if self.action == "bulk" and self.request.method in ["PATCH", "DELETE"]:
+            queryset = queryset.filter(
+                new_student__isnull=False,
+                new_student__class_field__isnull=False,
+            )
+        return queryset
+
+    def perform_bulk_destroy(self, queryset):
+        queryset.update(first_name="", is_active=False)
 
     @action(
         detail=True,
@@ -89,7 +102,12 @@ class UserViewSet(_UserViewSet):
 
         return Response()
 
-    @action(detail=False, methods=["post"], permission_classes=[AllowAny])
+    @action(
+        detail=False,
+        methods=["post"],
+        url_path="request-password-reset",
+        permission_classes=[AllowAny],
+    )
     def request_password_reset(self, request: Request):
         """
         Generates a reset password URL to be emailed to the user if the

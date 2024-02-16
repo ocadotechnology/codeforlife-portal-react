@@ -5,9 +5,15 @@ Created on 20/01/2024 at 10:58:52(+00:00).
 
 import typing as t
 
+from codeforlife.permissions import OR
 from codeforlife.tests import ModelViewSetTestCase
-from codeforlife.user.models import Class, SchoolTeacherUser, User
-from codeforlife.user.permissions import InSchool, IsTeacher
+from codeforlife.user.models import (
+    AdminSchoolTeacherUser,
+    Class,
+    SchoolTeacherUser,
+    User,
+)
+from codeforlife.user.permissions import IsTeacher
 from django.contrib.auth.tokens import (
     PasswordResetTokenGenerator,
     default_token_generator,
@@ -30,11 +36,15 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
     school_teacher_email = "teacher@school1.com"
     indy_email = "indy@man.com"
 
-    def _login_school_teacher(self):
-        return self.client.login_school_teacher(
+    def setUp(self):
+        self.admin_school_teacher_user = AdminSchoolTeacherUser.objects.get(
+            email="admin.teacher@school1.com"
+        )
+
+    def _login_non_admin_school_teacher(self):
+        return self.client.login_non_admin_school_teacher(
             email=self.school_teacher_email,
             password="password",
-            is_admin=False,
         )
 
     def _get_pk_and_token_for_user(self, email: str):
@@ -43,17 +53,21 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
         return user.pk, token
 
+    # test: get permissions
+
     def test_get_permissions__bulk(self):
         """Only school-teachers can perform bulk actions."""
         self.assert_get_permissions(
-            permissions=[IsTeacher(), InSchool()],
+            permissions=[
+                OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))
+            ],
             action="bulk",
         )
 
     def test_get_permissions__partial_update__teacher(self):
         """Only admin-school-teachers can update a teacher."""
         self.assert_get_permissions(
-            permissions=[IsTeacher(is_admin=True), InSchool()],
+            permissions=[IsTeacher(is_admin=True)],
             action="partial_update",
             request=self.client.request_factory.patch(data={"teacher": {}}),
         )
@@ -61,14 +75,48 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
     def test_get_permissions__partial_update__student(self):
         """Only school-teachers can update a student."""
         self.assert_get_permissions(
-            permissions=[IsTeacher(), InSchool()],
+            permissions=[
+                OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))
+            ],
             action="partial_update",
             request=self.client.request_factory.patch(data={"student": {}}),
         )
 
+    # test: get queryset
+
+    def _test_get_queryset__bulk(self, request_method: str):
+        assert User.objects.filter(
+            new_teacher__school=self.admin_school_teacher_user.teacher.school
+        ).exists()
+
+        student_users = list(
+            User.objects.filter(
+                new_student__class_field__teacher__school=(
+                    self.admin_school_teacher_user.teacher.school
+                )
+            )
+        )
+        assert student_users
+
+        request = self.client.request_factory.generic(
+            request_method, user=self.admin_school_teacher_user
+        )
+
+        self.assert_get_queryset(student_users, action="bulk", request=request)
+
+    def test_get_queryset__bulk__patch(self):
+        """Bulk partial-update can only target student-users."""
+        self._test_get_queryset__bulk("patch")
+
+    def test_get_queryset__bulk__delete(self):
+        """Bulk destroy can only target student-users."""
+        self._test_get_queryset__bulk("delete")
+
+    # test: bulk actions
+
     def test_bulk_create__students(self):
         """Teacher can bulk create students."""
-        user = self._login_school_teacher()
+        user = self._login_non_admin_school_teacher()
 
         klass: t.Optional[Class] = user.teacher.class_teacher.first()
         assert klass is not None
@@ -88,6 +136,31 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         )
 
         response.json()  # TODO: make custom assertions and check for password
+
+    def test_bulk_destroy(self):
+        """School-teacher can bulk anonymize students."""
+        self.client.login_as(self.admin_school_teacher_user)
+
+        student_user_queryset = User.objects.filter(
+            new_student__class_field__teacher__school=(
+                self.admin_school_teacher_user.teacher.school
+            ),
+        )
+        student_user_ids = list(
+            student_user_queryset.values_list("id", flat=True)
+        )
+        assert student_user_ids
+
+        self.client.bulk_destroy(student_user_ids, make_assertions=False)
+
+        assert (
+            len(student_user_ids)
+            == student_user_queryset.filter(
+                first_name="", is_active=False
+            ).count()
+        )
+
+    # test: reset password actions
 
     def test_request_password_reset__invalid_email(self):
         """
@@ -202,12 +275,13 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         self.client.patch(viewname, data={"password": "N3wPassword"})
         self.client.login(email=self.indy_email, password="N3wPassword")
 
+    # test: generic actions
+
     def test_partial_update__teacher(self):
         """Admin-school-teacher can update another teacher's profile."""
-        admin_school_teacher_user = self.client.login_school_teacher(
+        admin_school_teacher_user = self.client.login_admin_school_teacher(
             email="admin.teacher@school1.com",
             password="password",
-            is_admin=True,
         )
 
         other_school_teacher_user = (

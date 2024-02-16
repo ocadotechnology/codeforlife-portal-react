@@ -6,7 +6,7 @@ Created on 09/02/2024 at 17:18:00(+00:00).
 from codeforlife.permissions import AllowNone
 from codeforlife.tests import ModelViewSetTestCase
 from codeforlife.user.models import User
-from codeforlife.user.permissions import InSchool, IsTeacher
+from codeforlife.user.permissions import IsTeacher
 from rest_framework import status
 
 from ...models import SchoolTeacherInvitation
@@ -24,10 +24,9 @@ class TestSchoolTeacherInvitationViewSet(
     non_school_teacher_email = "teacher@noschool.com"
 
     def _login_admin_school_teacher(self):
-        return self.client.login_school_teacher(
+        return self.client.login_admin_school_teacher(
             email=self.school_admin_teacher_email,
             password="password",
-            is_admin=True,
         )
 
     def setUp(self):
@@ -60,35 +59,35 @@ class TestSchoolTeacherInvitationViewSet(
     def test_get_permissions__create(self):
         """Only admin-teachers can create an invitation."""
         self.assert_get_permissions(
-            permissions=[IsTeacher(is_admin=True), InSchool()],
+            permissions=[IsTeacher(is_admin=True)],
             action="create",
         )
 
     def test_get_permissions__partial_update(self):
         """Only admin-teachers can update an invitation."""
         self.assert_get_permissions(
-            permissions=[IsTeacher(is_admin=True), InSchool()],
+            permissions=[IsTeacher(is_admin=True)],
             action="partial_update",
         )
 
     def test_get_permissions__retrieve(self):
         """Only admin-teachers can retrieve an invitation."""
         self.assert_get_permissions(
-            permissions=[IsTeacher(is_admin=True), InSchool()],
+            permissions=[IsTeacher(is_admin=True)],
             action="retrieve",
         )
 
     def test_get_permissions__list(self):
         """Only admin-teachers can list invitations."""
         self.assert_get_permissions(
-            permissions=[IsTeacher(is_admin=True), InSchool()],
+            permissions=[IsTeacher(is_admin=True)],
             action="list",
         )
 
     def test_get_permissions__destroy(self):
         """Only admin-teachers can destroy an invitation."""
         self.assert_get_permissions(
-            permissions=[IsTeacher(is_admin=True), InSchool()],
+            permissions=[IsTeacher(is_admin=True)],
             action="destroy",
         )
 
