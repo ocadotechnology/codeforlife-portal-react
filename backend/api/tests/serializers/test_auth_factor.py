@@ -32,7 +32,7 @@ class TestAuthFactorSerializer(ModelSerializerTestCase[AuthFactor]):
     # test: validate
 
     def test_validate_type__already_exists(self):
-        """Validate type is not doing this."""
+        """Cannot enable an already enabled auth factor."""
         auth_factor = self.multi_auth_factor_teacher_user.auth_factors.first()
         assert auth_factor
 
