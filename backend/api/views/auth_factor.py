@@ -4,7 +4,8 @@ Created on 23/01/2024 at 11:04:44(+00:00).
 """
 
 from codeforlife.permissions import AllowNone
-from codeforlife.user.models import AuthFactor, User
+from codeforlife.user.models import AuthFactor
+from codeforlife.user.permissions import IsTeacher
 from codeforlife.views import ModelViewSet
 
 from ..serializers import AuthFactorSerializer
@@ -16,11 +17,10 @@ class AuthFactorViewSet(ModelViewSet[AuthFactor]):
     serializer_class = AuthFactorSerializer
 
     def get_queryset(self):
-        user: User = self.request.user  # type: ignore[assignment]
-        return AuthFactor.objects.filter(user=user)
+        return AuthFactor.objects.filter(user=self.request_user)
 
     def get_permissions(self):
-        if self.action == "retrieve":
+        if self.action in ["retrieve", "bulk"]:
             return [AllowNone()]
 
-        return super().get_permissions()
+        return [IsTeacher()]

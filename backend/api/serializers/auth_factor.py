@@ -3,9 +3,10 @@
 Created on 23/01/2024 at 11:05:37(+00:00).
 """
 
-from codeforlife.request import Request
+import pyotp
 from codeforlife.serializers import ModelSerializer
 from codeforlife.user.models import AuthFactor
+from rest_framework import serializers
 
 
 # pylint: disable-next=missing-class-docstring
@@ -20,7 +21,36 @@ class AuthFactorSerializer(ModelSerializer[AuthFactor]):
             "id": {"read_only": True},
         }
 
+    # pylint: disable-next=missing-function-docstring
+    def validate_type(self, value: str):
+        if AuthFactor.objects.filter(
+            user=self.request_user, type=value
+        ).exists():
+            raise serializers.ValidationError(
+                "You already have this authentication factor enabled.",
+                code="already_exists",
+            )
+
+        return value
+
     def create(self, validated_data):
-        request: Request = self.context["request"]
-        validated_data["user"] = request.user
+        user = self.request_user
+        if not user.userprofile.otp_secret:
+            user.userprofile.otp_secret = pyotp.random_base32()
+            user.userprofile.save()
+
+        validated_data["user"] = user
         return super().create(validated_data)
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+
+        if (
+            self.view.action == "create"
+            and instance.type == AuthFactor.Type.OTP
+        ):
+            representation[
+                "totp_provisioning_uri"
+            ] = self.request_user.totp_provisioning_uri
+
+        return representation
