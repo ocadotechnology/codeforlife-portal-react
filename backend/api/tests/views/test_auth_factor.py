@@ -3,9 +3,10 @@
 Created on 23/01/2024 at 11:22:16(+00:00).
 """
 
+from codeforlife.permissions import AllowNone
 from codeforlife.tests import ModelViewSetTestCase
-from codeforlife.user.models import AuthFactor, User, UserProfile
-from rest_framework import status
+from codeforlife.user.models import AuthFactor, TeacherUser
+from codeforlife.user.permissions import IsTeacher
 
 from ...views import AuthFactorViewSet
 
@@ -14,79 +15,73 @@ from ...views import AuthFactorViewSet
 class TestAuthFactorViewSet(ModelViewSetTestCase[AuthFactor]):
     basename = "auth-factor"
     model_view_set_class = AuthFactorViewSet
+    fixtures = ["school_2", "non_school_teacher"]
 
     def setUp(self):
-        self.one_factor_credentials = {
-            "email": "one.factor@codeforlife.com",
-            "password": "password",
-        }
-        self.one_factor_user = User.objects.create_user(
-            first_name="One",
-            last_name="Factor",
-            username=self.one_factor_credentials["email"],
-            **self.one_factor_credentials,
+        self.multi_auth_factor_teacher_user = TeacherUser.objects.get(
+            email="teacher@school2.com"
         )
-        UserProfile.objects.create(user=self.one_factor_user)
+        assert self.multi_auth_factor_teacher_user.auth_factors.exists()
 
-        self.two_factor_credentials = {
-            "email": "two.factor@codeforlife.com",
-            "password": "password",
-        }
-        self.two_factor_user = User.objects.create_user(
-            first_name="Two",
-            last_name="Factor",
-            username=self.two_factor_credentials["email"],
-            **self.two_factor_credentials,
+        self.uni_auth_factor_teacher_user = TeacherUser.objects.get(
+            email="teacher@noschool.com"
         )
-        UserProfile.objects.create(user=self.two_factor_user)
-        self.two_auth_factor = AuthFactor.objects.create(
-            user=self.two_factor_user,
-            type=AuthFactor.Type.OTP,
+        assert not self.uni_auth_factor_teacher_user.auth_factors.exists()
+
+    # test: get queryset
+
+    def test_get_queryset(self):
+        """Can only access your own auth factors."""
+        self.assert_get_queryset(
+            list(self.multi_auth_factor_teacher_user.auth_factors.all()),
+            request=self.client.request_factory.get(
+                user=self.multi_auth_factor_teacher_user
+            ),
         )
 
-    def test_retrieve(self):
-        """
-        Retrieving a single auth factor is forbidden.
-        """
+    # test: get permissions
 
-        user = self.client.login(**self.two_factor_credentials)
-        assert user == self.two_factor_user
+    def test_get_permissions__bulk(self):
+        """Cannot perform any bulk action."""
+        self.assert_get_permissions([AllowNone()], action="bulk")
 
-        self.client.retrieve(self.two_auth_factor, status.HTTP_403_FORBIDDEN)
+    def test_get_permissions__retrieve(self):
+        """Cannot retrieve a single auth factor."""
+        self.assert_get_permissions([AllowNone()], action="retrieve")
+
+    def test_get_permissions__list(self):
+        """Only a teacher-user can list all auth factors."""
+        self.assert_get_permissions([IsTeacher()], action="list")
+
+    def test_get_permissions__create(self):
+        """Only a teacher-user can enable an auth factor."""
+        self.assert_get_permissions([IsTeacher()], action="create")
+
+    def test_get_permissions__destroy(self):
+        """Only a teacher-user can disable an auth factor."""
+        self.assert_get_permissions([IsTeacher()], action="destroy")
+
+    # test: generic actions
 
     def test_list(self):
-        """
-        Can list enabled auth-factors.
-        """
+        """Can list enabled auth-factors."""
+        self.client.login_as(self.multi_auth_factor_teacher_user)
 
-        user = self.client.login(**self.two_factor_credentials)
-        assert user == self.two_factor_user
-
-        # Need to have another two auth-factor user to ensure some data is
-        # filtered out.
-        AuthFactor.objects.create(
-            user=self.one_factor_user,
-            type=AuthFactor.Type.OTP,
+        self.client.list(
+            list(self.multi_auth_factor_teacher_user.auth_factors.all())
         )
 
-        self.client.list([self.two_auth_factor])
-
-    def test_create(self):
-        """
-        Can enable an auth-factor.
-        """
-
-        user = self.client.login(**self.one_factor_credentials)
-        assert user == self.one_factor_user
+    def test_create__otp(self):
+        """Can enable OTP."""
+        self.client.login_as(self.uni_auth_factor_teacher_user)
 
         self.client.create({"type": "otp"})
 
     def test_destroy(self):
-        """
-        Can disable an auth-factor.
-        """
+        """Can disable an auth-factor."""
+        self.client.login_as(self.multi_auth_factor_teacher_user)
 
-        user = self.client.login(**self.two_factor_credentials)
-        assert user == self.two_factor_user
+        auth_factor = self.multi_auth_factor_teacher_user.auth_factors.first()
+        assert auth_factor
 
-        self.client.destroy(self.two_auth_factor)
+        self.client.destroy(auth_factor)

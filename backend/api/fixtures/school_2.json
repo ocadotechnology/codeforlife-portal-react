@@ -24,7 +24,16 @@
     "pk": 25,
     "fields": {
       "user": 25,
-      "is_verified": true
+      "is_verified": true,
+      "otp_secret": "KI6FA34LPRQU265KQBFYS2MTDYHE2EIG"
+    }
+  },
+  {
+    "model": "user.authfactor",
+    "pk": 1,
+    "fields": {
+      "user": 25,
+      "type": "otp"
     }
   },
   {
@@ -61,7 +70,16 @@
     "pk": 26,
     "fields": {
       "user": 26,
-      "is_verified": true
+      "is_verified": true,
+      "otp_secret": "KI6FA34LPRQU265KQBFYS2MTDYHE2EIG"
+    }
+  },
+  {
+    "model": "user.authfactor",
+    "pk": 2,
+    "fields": {
+      "user": 26,
+      "type": "otp"
     }
   },
   {
