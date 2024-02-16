@@ -5,6 +5,7 @@ Created on 20/01/2024 at 10:58:52(+00:00).
 
 import typing as t
 
+from codeforlife.permissions import OR
 from codeforlife.tests import ModelViewSetTestCase
 from codeforlife.user.models import (
     AdminSchoolTeacherUser,
@@ -12,7 +13,7 @@ from codeforlife.user.models import (
     SchoolTeacherUser,
     User,
 )
-from codeforlife.user.permissions import InSchool, IsTeacher
+from codeforlife.user.permissions import IsTeacher
 from django.contrib.auth.tokens import (
     PasswordResetTokenGenerator,
     default_token_generator,
@@ -57,14 +58,16 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
     def test_get_permissions__bulk(self):
         """Only school-teachers can perform bulk actions."""
         self.assert_get_permissions(
-            permissions=[IsTeacher(), InSchool()],
+            permissions=[
+                OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))
+            ],
             action="bulk",
         )
 
     def test_get_permissions__partial_update__teacher(self):
         """Only admin-school-teachers can update a teacher."""
         self.assert_get_permissions(
-            permissions=[IsTeacher(is_admin=True), InSchool()],
+            permissions=[IsTeacher(is_admin=True)],
             action="partial_update",
             request=self.client.request_factory.patch(data={"teacher": {}}),
         )
@@ -72,7 +75,9 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
     def test_get_permissions__partial_update__student(self):
         """Only school-teachers can update a student."""
         self.assert_get_permissions(
-            permissions=[IsTeacher(), InSchool()],
+            permissions=[
+                OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))
+            ],
             action="partial_update",
             request=self.client.request_factory.patch(data={"student": {}}),
         )
@@ -270,7 +275,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         self.client.patch(viewname, data={"password": "N3wPassword"})
         self.client.login(email=self.indy_email, password="N3wPassword")
 
-    # test: reset generic actions
+    # test: generic actions
 
     def test_partial_update__teacher(self):
         """Admin-school-teacher can update another teacher's profile."""

@@ -5,10 +5,10 @@ Created on 05/02/2024 at 16:13:46(+00:00).
 
 from datetime import timedelta
 
-from codeforlife.permissions import AllowNone
+from codeforlife.permissions import OR, AllowNone
 from codeforlife.tests import ModelViewSetTestCase
 from codeforlife.user.models import Class, Teacher
-from codeforlife.user.permissions import InSchool, IsTeacher
+from codeforlife.user.permissions import IsStudent, IsTeacher
 from django.utils import timezone
 
 from ...views import ClassViewSet
@@ -36,27 +36,31 @@ class TestClassViewSet(ModelViewSetTestCase[Class]):
         """
 
         self.assert_get_permissions(
-            permissions=[IsTeacher(), InSchool()],
+            permissions=[IsTeacher(in_school=True)],
             action="create",
         )
 
     def test_get_permissions__update(self):
         """
-        Only a school-teacher can update a class.
+        Only an admin- or class-teacher can update a class.
         """
 
         self.assert_get_permissions(
-            permissions=[IsTeacher(), InSchool()],
+            permissions=[
+                OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))
+            ],
             action="update",
         )
 
     def test_get_permissions__destroy(self):
         """
-        Only a school-teacher can destroy a class.
+        Only an admin- or class-teacher can destroy a class.
         """
 
         self.assert_get_permissions(
-            permissions=[IsTeacher(), InSchool()],
+            permissions=[
+                OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))
+            ],
             action="destroy",
         )
 
@@ -66,7 +70,7 @@ class TestClassViewSet(ModelViewSetTestCase[Class]):
         """
 
         self.assert_get_permissions(
-            permissions=[IsTeacher(), InSchool()],
+            permissions=[IsTeacher(in_school=True)],
             action="list",
         )
 
@@ -76,7 +80,7 @@ class TestClassViewSet(ModelViewSetTestCase[Class]):
         """
 
         self.assert_get_permissions(
-            permissions=[InSchool()],
+            permissions=[OR(IsStudent(), IsTeacher(in_school=True))],
             action="retrieve",
         )
 

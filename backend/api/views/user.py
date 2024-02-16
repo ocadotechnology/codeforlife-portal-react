@@ -5,9 +5,10 @@ Created on 23/01/2024 at 17:53:44(+00:00).
 
 import typing as t
 
+from codeforlife.permissions import OR
 from codeforlife.request import Request
 from codeforlife.user.models import User
-from codeforlife.user.permissions import InSchool, IsTeacher
+from codeforlife.user.permissions import IsTeacher
 from codeforlife.user.views import UserViewSet as _UserViewSet
 from django.contrib.auth.tokens import (
     PasswordResetTokenGenerator,
@@ -31,12 +32,12 @@ class UserViewSet(_UserViewSet):
 
     def get_permissions(self):
         if self.action == "bulk":
-            return [IsTeacher(), InSchool()]
+            return [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))]
         if self.action == "partial_update":
             if "teacher" in self.request.data:
-                return [IsTeacher(is_admin=True), InSchool()]
+                return [IsTeacher(is_admin=True)]
             if "student" in self.request.data:
-                return [IsTeacher(), InSchool()]
+                return [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))]
 
         return super().get_permissions()
 
