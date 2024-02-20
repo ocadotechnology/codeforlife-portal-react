@@ -162,7 +162,8 @@ class UserViewSet(_UserViewSet):
                 "student": {"login_id": student_user.student.login_id},
             }
 
-            student_user.save()  # TODO: replace with bulk update
-            student_user.student.save()  # TODO: replace with bulk update
+            # TODO: replace with bulk update
+            student_user.save(update_fields=["password"])
+            student_user.student.save(update_fields=["login_id"])
 
         return Response(fields)

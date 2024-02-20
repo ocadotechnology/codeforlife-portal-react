@@ -331,6 +331,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
             student_user.refresh_from_db()
             assert student_user.check_password(password)
+            self.client.login_as(student_user, password)
             assert student_user.student.login_id == student_login_id
 
     # test: generic actions
