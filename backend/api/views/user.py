@@ -56,9 +56,6 @@ class UserViewSet(_UserViewSet):
     def perform_bulk_destroy(self, queryset):
         queryset.update(first_name="", is_active=False)
 
-    # def destroy(self, request: Request):
-    #     return super().des
-
     @action(
         detail=True,
         methods=["get", "patch"],
