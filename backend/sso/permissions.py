@@ -13,5 +13,5 @@ class UserHasSessionAuthFactors(BasePermission):
     def has_permission(self, request: Request, view: View):
         return (
             isinstance(request.user, User)
-            and request.user.session.session_auth_factors.exists()
+            and request.user.session.auth_factors.exists()
         )

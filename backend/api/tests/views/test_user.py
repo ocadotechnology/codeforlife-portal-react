@@ -7,10 +7,12 @@ import typing as t
 
 from codeforlife.permissions import OR
 from codeforlife.tests import ModelViewSetTestCase
+from codeforlife.types import JsonDict
 from codeforlife.user.models import (
     AdminSchoolTeacherUser,
     Class,
     SchoolTeacherUser,
+    StudentUser,
     User,
 )
 from codeforlife.user.permissions import IsTeacher
@@ -56,7 +58,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
     # test: get permissions
 
     def test_get_permissions__bulk(self):
-        """Only school-teachers can perform bulk actions."""
+        """Only admin-teachers or class-teachers can perform bulk actions."""
         self.assert_get_permissions(
             permissions=[
                 OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))
@@ -64,8 +66,19 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
             action="bulk",
         )
 
+    def test_get_permissions__students__reset_password(self):
+        """
+        Only admin-teachers or class-teachers can reset students' passwords.
+        """
+        self.assert_get_permissions(
+            permissions=[
+                OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))
+            ],
+            action="students__reset_password",
+        )
+
     def test_get_permissions__partial_update__teacher(self):
-        """Only admin-school-teachers can update a teacher."""
+        """Only admin-teachers can update a teacher."""
         self.assert_get_permissions(
             permissions=[IsTeacher(is_admin=True)],
             action="partial_update",
@@ -73,7 +86,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         )
 
     def test_get_permissions__partial_update__student(self):
-        """Only school-teachers can update a student."""
+        """Only admin-teachers or class-teachers can update a student."""
         self.assert_get_permissions(
             permissions=[
                 OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))
@@ -84,11 +97,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
     # test: get queryset
 
-    def _test_get_queryset__bulk(self, request_method: str):
-        assert User.objects.filter(
-            new_teacher__school=self.admin_school_teacher_user.teacher.school
-        ).exists()
-
+    def _test_get_queryset(self, action: str, request_method: str):
         student_users = list(
             User.objects.filter(
                 new_student__class_field__teacher__school=(
@@ -102,15 +111,21 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
             request_method, user=self.admin_school_teacher_user
         )
 
-        self.assert_get_queryset(student_users, action="bulk", request=request)
+        self.assert_get_queryset(student_users, action=action, request=request)
 
     def test_get_queryset__bulk__patch(self):
         """Bulk partial-update can only target student-users."""
-        self._test_get_queryset__bulk("patch")
+        self._test_get_queryset(action="bulk", request_method="patch")
 
     def test_get_queryset__bulk__delete(self):
         """Bulk destroy can only target student-users."""
-        self._test_get_queryset__bulk("delete")
+        self._test_get_queryset(action="bulk", request_method="delete")
+
+    def test_get_queryset__students__reset_password(self):
+        """Resetting student passwords can only target student-users."""
+        self._test_get_queryset(
+            action="students__reset_password", request_method="patch"
+        )
 
     # test: bulk actions
 
@@ -274,6 +289,50 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
         self.client.patch(viewname, data={"password": "N3wPassword"})
         self.client.login(email=self.indy_email, password="N3wPassword")
+
+    # test: students actions
+
+    def test_students__reset_password(self):
+        """Teacher can bulk reset students' password."""
+        self.client.login_as(self.admin_school_teacher_user)
+
+        student_users = list(
+            StudentUser.objects.filter(
+                new_student__class_field__teacher__school=(
+                    self.admin_school_teacher_user.teacher.school
+                )
+            )
+        )
+        assert student_users
+
+        response = self.client.patch(
+            self.reverse_action("students--reset-password"),
+            [student_user.id for student_user in student_users],
+            content_type="application/json",
+        )
+
+        fields: JsonDict = response.json()
+        for student_user in student_users:
+            student_user_fields = t.cast(JsonDict, fields[str(student_user.id)])
+
+            password = t.cast(str, student_user_fields["password"])
+            assert isinstance(password, str)
+            assert not student_user.check_password(password)
+
+            student_login_id = t.cast(
+                str,
+                t.cast(
+                    JsonDict,
+                    student_user_fields["student"],
+                )["login_id"],
+            )
+            assert isinstance(student_login_id, str)
+            assert student_user.student.login_id != student_login_id
+
+            student_user.refresh_from_db()
+            assert student_user.check_password(password)
+            self.client.login_as(student_user, password)
+            assert student_user.student.login_id == student_login_id
 
     # test: generic actions
 

@@ -94,7 +94,7 @@ class LoginView(_LoginView):
                 {
                     "user_id": user.id,
                     "auth_factors": list(
-                        user.session.session_auth_factors.values_list(
+                        user.session.auth_factors.values_list(
                             "auth_factor__type", flat=True
                         )
                     ),
@@ -125,10 +125,9 @@ class LoginOptionsView(APIView):
 
     def get(self, request: Request):
         user = t.cast(User, request.user)
-        session_auth_factors = user.session.session_auth_factors
 
         response_data = {"id": user.id}
-        if session_auth_factors.filter(
+        if user.session.auth_factors.filter(
             auth_factor__type=AuthFactor.Type.OTP
         ).exists():
             response_data[
