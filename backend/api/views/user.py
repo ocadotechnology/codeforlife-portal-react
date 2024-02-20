@@ -7,7 +7,7 @@ import typing as t
 
 from codeforlife.permissions import OR
 from codeforlife.request import Request
-from codeforlife.user.models import User
+from codeforlife.user.models import StudentUser, User
 from codeforlife.user.permissions import IsTeacher
 from codeforlife.user.views import UserViewSet as _UserViewSet
 from django.contrib.auth.tokens import (
@@ -31,7 +31,7 @@ class UserViewSet(_UserViewSet):
     serializer_class = UserSerializer
 
     def get_permissions(self):
-        if self.action == "bulk":
+        if self.action in ["bulk", "students__reset_password"]:
             return [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))]
         if self.action == "partial_update":
             if "teacher" in self.request.data:
@@ -43,7 +43,9 @@ class UserViewSet(_UserViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        if self.action == "bulk" and self.request.method in ["PATCH", "DELETE"]:
+        if (
+            self.action == "bulk" and self.request.method in ["PATCH", "DELETE"]
+        ) or self.action == "students__reset_password":
             queryset = queryset.filter(
                 new_student__isnull=False,
                 new_student__class_field__isnull=False,
@@ -142,3 +144,20 @@ class UserViewSet(_UserViewSet):
                 "token": token,
             }
         )
+
+    @action(detail=False, methods=["patch"], url_path="students/reset-password")
+    def students__reset_password(self, request: Request):
+        """Bulk reset students' password."""
+        queryset = self._get_bulk_queryset(request.data)
+
+        passwords: t.Dict[int, str] = {}
+        for pk in queryset.values_list("pk", flat=True):
+            student_user = StudentUser(pk=pk)
+            student_user.set_password()
+
+            # pylint: disable-next=protected-access
+            passwords[pk] = t.cast(str, student_user._password)
+
+            student_user.save()  # TODO: replace with bulk update
+
+        return Response(passwords)
