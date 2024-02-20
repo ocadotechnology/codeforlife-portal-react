@@ -18,7 +18,7 @@ class TestSchoolTeacherInvitationSerializer(
     ModelSerializerTestCase[SchoolTeacherInvitation]
 ):
     model_serializer_class = SchoolTeacherInvitationSerializer
-    fixtures = ["school_1"]
+    fixtures = ["school_1", "school_1_teacher_invitations"]
 
     def setUp(self):
         self.admin_school_teacher_user = AdminSchoolTeacherUser.objects.get(
