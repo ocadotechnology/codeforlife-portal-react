@@ -189,7 +189,7 @@ class UserSerializer(_UserSerializer):
         # Return student's auto-generated password.
         if (
             representation["student"] is not None
-            and self.request_user.teacher is not None
+            and self.request.auth_user.teacher is not None
         ):
             # pylint: disable-next=protected-access
             password = instance._password
