@@ -7,6 +7,7 @@ import typing as t
 
 from codeforlife.permissions import OR
 from codeforlife.request import Request
+from codeforlife.types import DataDict
 from codeforlife.user.models import StudentUser, User
 from codeforlife.user.permissions import IsTeacher
 from codeforlife.user.views import UserViewSet as _UserViewSet
@@ -150,14 +151,18 @@ class UserViewSet(_UserViewSet):
         """Bulk reset students' password."""
         queryset = self._get_bulk_queryset(request.data)
 
-        passwords: t.Dict[int, str] = {}
+        fields: t.Dict[int, DataDict] = {}
         for pk in queryset.values_list("pk", flat=True):
             student_user = StudentUser(pk=pk)
             student_user.set_password()
 
-            # pylint: disable-next=protected-access
-            passwords[pk] = t.cast(str, student_user._password)
+            fields[pk] = {
+                # pylint: disable-next=protected-access
+                "password": student_user._password,
+                "student": {"login_id": student_user.student.login_id},
+            }
 
             student_user.save()  # TODO: replace with bulk update
+            student_user.student.save()  # TODO: replace with bulk update
 
-        return Response(passwords)
+        return Response(fields)

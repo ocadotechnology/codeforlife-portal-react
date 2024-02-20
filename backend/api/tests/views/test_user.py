@@ -296,30 +296,42 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         """Teacher can bulk reset students' password."""
         self.client.login_as(self.admin_school_teacher_user)
 
-        student_user_ids = list(
+        student_users = list(
             StudentUser.objects.filter(
                 new_student__class_field__teacher__school=(
                     self.admin_school_teacher_user.teacher.school
                 )
-            ).values_list("id", flat=True)
+            )
         )
-        assert student_user_ids
+        assert student_users
 
         response = self.client.patch(
             self.reverse_action("students--reset-password"),
-            student_user_ids,
+            [student_user.id for student_user in student_users],
             content_type="application/json",
         )
 
-        passwords: JsonDict = response.json()
-        assert all(isinstance(password, str) for password in passwords.values())
+        fields: JsonDict = response.json()
+        for student_user in student_users:
+            student_user_fields = t.cast(JsonDict, fields[str(student_user.id)])
 
-        updated_student_user_ids = [
-            int(student_user_id) for student_user_id in passwords.keys()
-        ]
-        student_user_ids.sort()
-        updated_student_user_ids.sort()
-        self.assertListEqual(student_user_ids, updated_student_user_ids)
+            password = t.cast(str, student_user_fields["password"])
+            assert isinstance(password, str)
+            assert not student_user.check_password(password)
+
+            student_login_id = t.cast(
+                str,
+                t.cast(
+                    JsonDict,
+                    student_user_fields["student"],
+                )["login_id"],
+            )
+            assert isinstance(student_login_id, str)
+            assert student_user.student.login_id != student_login_id
+
+            student_user.refresh_from_db()
+            assert student_user.check_password(password)
+            assert student_user.student.login_id == student_login_id
 
     # test: generic actions
 
