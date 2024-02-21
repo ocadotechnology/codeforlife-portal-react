@@ -118,14 +118,71 @@ class UserSerializer(_UserSerializer):
         list_serializer_class = UserListSerializer
 
     def validate(self, attrs):
-        if self.instance is not None and self.view.action != "reset-password":
-            # TODO: make current password required when changing self-profile.
-            pass
+        if self.instance:  # Updating
+            if self.view.action != "reset_password":
+                # TODO: make current password required when changing
+                #  self-profile.
+                pass
 
-        if "new_teacher" in attrs and "last_name" not in attrs:
-            raise serializers.ValidationError(
-                "Last name is required.", code="last_name_required"
-            )
+            if self.instance.teacher:
+                if "last_name" in attrs and not attrs["last_name"]:
+                    raise serializers.ValidationError(
+                        "Last name is required.", code="last_name_required"
+                    )
+
+                if "requesting_to_join_class" in attrs:
+                    raise serializers.ValidationError(
+                        "Teacher can't request to join a class.",
+                        code="teacher_cannot_request_to_join_class",
+                    )
+
+            if self.instance.student:
+                user = self.request_student_user
+                if (
+                    self.view.action != "reset_password"
+                    and user.pk != self.instance.pk
+                ):
+                    raise serializers.ValidationError(
+                        "Cannot update another student.", code="is_not_self"
+                    )
+
+                if (
+                    self.instance.student.class_field is not None
+                    and "requesting_to_join_class" in attrs
+                ) or (
+                    self.instance.student.pending_class_request is not None
+                    and "new_student" in attrs
+                    and "class_field" in attrs["new_student"]
+                ):
+                    raise serializers.ValidationError(
+                        "Student can't be in a class and requesting to join a "
+                        "class at the same time.",
+                        code="class_and_join_class_mutually_exclusive",
+                    )
+
+        else:  # Creating
+            if "new_teacher" in attrs:
+                if "last_name" not in attrs or attrs["last_name"] is None:
+                    raise serializers.ValidationError(
+                        "Last name is required.", code="last_name_required"
+                    )
+
+                if "requesting_to_join_class" in attrs:
+                    raise serializers.ValidationError(
+                        "Teacher can't request to join a class.",
+                        code="teacher_cannot_request_to_join_class",
+                    )
+
+            if "new_student" in attrs:
+                if (
+                    "class_field" in attrs["new_student"]
+                    and "requesting_to_join_class" in attrs
+                ):
+                    raise serializers.ValidationError(
+                        "Student can't be in a class and requesting to join a "
+                        "class at the same time.",
+                        code="class_and_join_class_mutually_exclusive",
+                    )
 
         return attrs
 
@@ -242,5 +299,10 @@ class UserSerializer(_UserSerializer):
             password = instance._password
             if password is not None:
                 representation["password"] = password
+
+        if representation["student"] is not None:
+            representation[
+                "requesting_to_join_class"
+            ] = instance.student.pending_class_request
 
         return representation

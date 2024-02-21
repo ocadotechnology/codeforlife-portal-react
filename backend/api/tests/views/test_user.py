@@ -49,6 +49,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         self.admin_school2_teacher_user = AdminSchoolTeacherUser.objects.get(
             email="admin.teacher@school2.com"
         )
+        self.indy = IndependentUser.objects.get(email=self.indy_email)
         self.indy_with_join_request = IndependentUser.objects.get(
             email=self.indy_with_join_request_email
         )

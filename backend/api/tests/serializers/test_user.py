@@ -2,7 +2,6 @@
 © Ocado Group
 Created on 31/01/2024 at 16:07:32(+00:00).
 """
-
 from codeforlife.tests import ModelSerializerTestCase
 from codeforlife.user.models import Class, IndependentUser, Student, User
 
@@ -67,13 +66,42 @@ class TestUserSerializer(ModelSerializerTestCase[User]):
             many=True,
         )
 
+    def test_validate__teacher__first_name_required(self):
+        """Teacher must have a first name"""
+        self.assert_validate(
+            attrs={"new_teacher": {}}, error_code="last_name_required"
+        )
+
+    def test_validate__teacher__requesting_to_join_class_forbidden(self):
+        """Teacher cannot request to join a class"""
+        self.assert_validate(
+            attrs={
+                "last_name": "Name",
+                "new_teacher": {},
+                "requesting_to_join_class": "AAAAA",
+            },
+            error_code="teacher_cannot_request_to_join_class",
+        )
+
+    def test_validate__student__requesting_to_join_class_and_class_field_forbidden(
+        self,
+    ):
+        """Student cannot have both requesting_to_join_class and class_field"""
+        self.assert_validate(
+            attrs={
+                "new_student": {"class_field": "AAAAA"},
+                "requesting_to_join_class": "BBBBB",
+            },
+            error_code="class_and_join_class_mutually_exclusive",
+        )
+
     def test_validate_requesting_to_join_class__does_not_exist(self):
         """Join class request cannot be for a class that doesn't exist"""
         self.assert_validate_field(
             name="requesting_to_join_class",
             value="AAAAA",
             error_code="does_not_exist_or_accept_join_requests",
-    )
+        )
 
     def test_validate_requesting_to_join_class__does_not_accept_requests(self):
         """
