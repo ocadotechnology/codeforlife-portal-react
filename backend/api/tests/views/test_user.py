@@ -358,50 +358,6 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
             self.client.login_as(student_user, password)
             assert student_user.student.login_id == student_login_id
 
-    # test: students actions
-
-    def test_students__reset_password(self):
-        """Teacher can bulk reset students' password."""
-        self.client.login_as(self.admin_school_teacher_user)
-
-        student_users = list(
-            StudentUser.objects.filter(
-                new_student__class_field__teacher__school=(
-                    self.admin_school_teacher_user.teacher.school
-                )
-            )
-        )
-        assert student_users
-
-        response = self.client.patch(
-            self.reverse_action("students--reset-password"),
-            [student_user.id for student_user in student_users],
-            content_type="application/json",
-        )
-
-        fields: JsonDict = response.json()
-        for student_user in student_users:
-            student_user_fields = t.cast(JsonDict, fields[str(student_user.id)])
-
-            password = t.cast(str, student_user_fields["password"])
-            assert isinstance(password, str)
-            assert not student_user.check_password(password)
-
-            student_login_id = t.cast(
-                str,
-                t.cast(
-                    JsonDict,
-                    student_user_fields["student"],
-                )["login_id"],
-            )
-            assert isinstance(student_login_id, str)
-            assert student_user.student.login_id != student_login_id
-
-            student_user.refresh_from_db()
-            assert student_user.check_password(password)
-            self.client.login_as(student_user, password)
-            assert student_user.student.login_id == student_login_id
-
     # test: generic actions
 
     def test_partial_update__teacher(self):
