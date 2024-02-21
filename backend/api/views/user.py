@@ -7,7 +7,8 @@ import typing as t
 
 from codeforlife.permissions import OR
 from codeforlife.request import Request
-from codeforlife.user.models import Class, Student, User
+from codeforlife.types import DataDict
+from codeforlife.user.models import Class, Student, StudentUser, User
 from codeforlife.user.permissions import IsIndependent, IsTeacher
 from codeforlife.user.views import UserViewSet as _UserViewSet
 from django.contrib.auth.tokens import (
@@ -31,7 +32,7 @@ class UserViewSet(_UserViewSet):
     serializer_class = UserSerializer
 
     def get_permissions(self):
-        if self.action == "bulk":
+        if self.action in ["bulk", "students__reset_password"]:
             return [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))]
         if self.action == "partial_update":
             if "teacher" in self.request.data:
@@ -55,7 +56,9 @@ class UserViewSet(_UserViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        if self.action == "bulk" and self.request.method in ["PATCH", "DELETE"]:
+        if (
+            self.action == "bulk" and self.request.method in ["PATCH", "DELETE"]
+        ) or self.action == "students__reset_password":
             queryset = queryset.filter(
                 new_student__isnull=False,
                 new_student__class_field__isnull=False,
@@ -155,6 +158,28 @@ class UserViewSet(_UserViewSet):
             }
         )
 
+    @action(detail=False, methods=["patch"], url_path="students/reset-password")
+    def students__reset_password(self, request: Request):
+        """Bulk reset students' password."""
+        queryset = self._get_bulk_queryset(request.data)
+
+        fields: t.Dict[int, DataDict] = {}
+        for pk in queryset.values_list("pk", flat=True):
+            student_user = StudentUser(pk=pk)
+            student_user.set_password()
+
+            fields[pk] = {
+                # pylint: disable-next=protected-access
+                "password": student_user._password,
+                "student": {"login_id": student_user.student.login_id},
+            }
+
+            # TODO: replace with bulk update
+            student_user.save(update_fields=["password"])
+            student_user.student.save(update_fields=["login_id"])
+
+        return Response(fields)
+
     @action(
         detail=True, methods=["patch"], url_path="student/reject-join-request"
     )
@@ -184,11 +209,9 @@ class UserViewSet(_UserViewSet):
         # TODO: Redirect to next step which is renaming student
         return Response()
 
-    @action(
-        detail=True, methods=["patch"], url_path="student/add-to-class"
-    )
+    @action(detail=True, methods=["patch"], url_path="student/add-to-class")
     def student__add_to_class(
-            self, request: Request, pk: t.Optional[str] = None
+        self, request: Request, pk: t.Optional[str] = None
     ):
         """Add an independent user to a class"""
         return Response()

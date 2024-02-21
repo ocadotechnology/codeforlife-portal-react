@@ -19,7 +19,11 @@ class TestSchoolTeacherInvitationViewSet(
 ):
     basename = "school-teacher-invitation"
     model_view_set_class = SchoolTeacherInvitationViewSet
-    fixtures = ["non_school_teacher", "school_1"]
+    fixtures = [
+        "non_school_teacher",
+        "school_1",
+        "school_1_teacher_invitations",
+    ]
     school_admin_teacher_email = "admin.teacher@school1.com"
     non_school_teacher_email = "teacher@noschool.com"
 

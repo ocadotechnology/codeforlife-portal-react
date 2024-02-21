@@ -3,18 +3,22 @@
 Created on 18/01/2024 at 15:14:32(+00:00).
 """
 
-import string
 import typing as t
 from itertools import groupby
 
 from codeforlife.serializers import ModelListSerializer
-from codeforlife.user.models import Class, Student, Teacher, User, UserProfile
+from codeforlife.user.models import (
+    Class,
+    Student,
+    StudentUser,
+    Teacher,
+    User,
+    UserProfile,
+)
 from codeforlife.user.serializers import UserSerializer as _UserSerializer
-from django.contrib.auth.hashers import make_password
 from django.contrib.auth.password_validation import (
     validate_password as _validate_password,
 )
-from django.utils.crypto import get_random_string
 from rest_framework import serializers
 
 from .student import StudentSerializer
@@ -36,40 +40,15 @@ class UserListSerializer(ModelListSerializer[User]):
 
         # TODO: replace this logic with bulk creates for each object when we
         #   switch to PostgreSQL.
-        users: t.List[User] = []
-        for user_fields in validated_data:
-            password = get_random_string(
-                length=6,
-                allowed_chars=string.ascii_lowercase,
-            )
-
-            user = User.objects.create_user(
+        return [
+            StudentUser.objects.create_user(
                 first_name=user_fields["first_name"],
-                username=get_random_string(length=30),
-                password=make_password(password),
-            )
-            users.append(user)
-
-            # pylint: disable-next=protected-access
-            user._password = password
-
-            login_id = None
-            while (
-                login_id is None
-                or Student.objects.filter(login_id=login_id).exists()
-            ):
-                login_id = get_random_string(length=64)
-
-            Student.objects.create(
-                class_field=classes[
+                klass=classes[
                     user_fields["new_student"]["class_field"]["access_code"]
                 ],
-                user=UserProfile.objects.create(user=user),
-                new_user=user,
-                login_id=login_id,
             )
-
-        return users
+            for user_fields in validated_data
+        ]
 
     def validate(self, attrs):
         super().validate(attrs)
