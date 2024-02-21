@@ -90,6 +90,7 @@ class UserListSerializer(ModelListSerializer[User]):
 class UserSerializer(_UserSerializer):
     student = StudentSerializer(source="new_student", required=False)
     teacher = TeacherSerializer(source="new_teacher", required=False)
+    requesting_to_join_class = serializers.CharField(required=False)
     current_password = serializers.CharField(
         write_only=True,
         required=False,
@@ -175,6 +176,12 @@ class UserSerializer(_UserSerializer):
         return user
 
     def update(self, instance, validated_data):
+        if "requesting_to_join_class" in validated_data:
+            instance.student.pending_class_request = validated_data[
+                "requesting_to_join_class"
+            ]
+            instance.student.save()
+
         password = validated_data.get("password")
 
         if password is not None:
