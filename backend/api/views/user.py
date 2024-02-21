@@ -7,8 +7,8 @@ import typing as t
 
 from codeforlife.permissions import OR
 from codeforlife.request import Request
-from codeforlife.user.models import User
-from codeforlife.user.permissions import IsTeacher
+from codeforlife.user.models import Class, Student, User
+from codeforlife.user.permissions import IsIndependent, IsTeacher
 from codeforlife.user.views import UserViewSet as _UserViewSet
 from django.contrib.auth.tokens import (
     PasswordResetTokenGenerator,
@@ -36,8 +36,20 @@ class UserViewSet(_UserViewSet):
         if self.action == "partial_update":
             if "teacher" in self.request.data:
                 return [IsTeacher(is_admin=True)]
+            if (
+                "student" in self.request.data
+                and "pending_class_request" in self.request.data["student"]
+            ):
+                return [
+                    OR(
+                        OR(IsTeacher(is_admin=True), IsTeacher(in_class=True)),
+                        IsIndependent(),
+                    )
+                ]
             if "student" in self.request.data:
                 return [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))]
+        if self.action == "student__reject_join_request":
+            return [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))]
 
         return super().get_permissions()
 
@@ -142,3 +154,84 @@ class UserViewSet(_UserViewSet):
                 "token": token,
             }
         )
+
+    @action(
+        detail=True, methods=["patch"], url_path="student/reject-join-request"
+    )
+    def student__reject_join_request(
+        self, request: Request, pk: t.Optional[str] = None
+    ):
+        """Reject an independent user's request to join a class."""
+        indy = self._get_student_requesting_join_if_authorised(request, pk)
+
+        indy.pending_class_request = None
+        indy.save()
+
+        return Response()
+
+    @action(
+        detail=True, methods=["patch"], url_path="student/accept-join-request"
+    )
+    def student__accept_join_request(
+        self, request: Request, pk: t.Optional[str] = None
+    ):
+        """Accept an independent user's request to join a class."""
+        self._get_student_requesting_join_if_authorised(request, pk)
+
+        # indy.pending_class_request = None
+        # indy.save()
+
+        # TODO: Redirect to next step which is renaming student
+        return Response()
+
+    @action(
+        detail=True, methods=["patch"], url_path="student/add-to-class"
+    )
+    def student__add_to_class(
+            self, request: Request, pk: t.Optional[str] = None
+    ):
+        """Add an independent user to a class"""
+        return Response()
+
+    def _get_student_requesting_join_if_authorised(
+        self,
+        request: Request,
+        pk: str,
+    ) -> Student:
+        try:
+            indy = Student.objects.get(pk=int(pk))
+        except (ValueError, Student.DoesNotExist):
+            return Response(
+                {"non_field_errors": ["No student found for given ID."]},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        klass = Class.objects.get(
+            access_code=indy.pending_class_request.access_code
+        )
+
+        if klass.teacher.school != request.user.new_teacher.school:
+            return Response(
+                {
+                    "non_field_errors": [
+                        "This class join request is not in your school."
+                    ]
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if (
+            not request.user.new_teacher.is_admin
+            and klass.teacher != request.user.new_teacher
+        ):
+            return Response(
+                {
+                    "non_field_errors": [
+                        "This class join request is not for "
+                        "one for your classes."
+                    ]
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        return indy

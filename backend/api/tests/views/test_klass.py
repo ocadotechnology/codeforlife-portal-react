@@ -36,13 +36,13 @@ class TestClassViewSet(ModelViewSetTestCase[Class]):
             action="create",
         )
 
-    def test_get_permissions__update(self):
+    def test_get_permissions__partial_update(self):
         """Only admin-teachers or class-teachers can update a class."""
         self.assert_get_permissions(
             permissions=[
                 OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))
             ],
-            action="update",
+            action="partial_update",
         )
 
     def test_get_permissions__destroy(self):

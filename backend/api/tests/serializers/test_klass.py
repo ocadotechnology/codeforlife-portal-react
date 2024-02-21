@@ -21,10 +21,7 @@ class TestClassSerializer(ModelSerializerTestCase[Class]):
         self.class_1 = Class.objects.get(name="Class 1 @ School 1")
 
     def test_validate_teacher__does_not_exist(self):
-        """
-        Teacher must exist.
-        """
-
+        """Teacher must exist."""
         self.assert_validate_field(
             name="teacher",
             value=-1,
@@ -32,10 +29,7 @@ class TestClassSerializer(ModelSerializerTestCase[Class]):
         )
 
     def test_validate_teacher__not_in_school(self):
-        """
-        Teacher must be in school.
-        """
-
+        """Teacher must be in school."""
         teacher = Teacher.objects.exclude(
             school=self.school_teacher_user.teacher.school
         ).first()
@@ -53,10 +47,7 @@ class TestClassSerializer(ModelSerializerTestCase[Class]):
         )
 
     def test_validate_teacher__not_admin(self):
-        """
-        Teacher cannot assign another teacher if they're not an admin.
-        """
-
+        """Teacher cannot assign another teacher if they're not an admin."""
         assert not self.school_teacher_user.teacher.is_admin
 
         teacher = (
@@ -80,10 +71,7 @@ class TestClassSerializer(ModelSerializerTestCase[Class]):
         )
 
     def test_validate_name__name_not_unique(self):
-        """
-        Class names must be unique per school.
-        """
-
+        """Class names must be unique per school."""
         self.assert_validate_field(
             name="name",
             value=self.class_1.name,
@@ -96,10 +84,7 @@ class TestClassSerializer(ModelSerializerTestCase[Class]):
         )
 
     def test_create__teacher(self):
-        """
-        Can successfully create with setting the teacher field.
-        """
-
+        """Can successfully create with setting the teacher field."""
         self.assert_create(
             {
                 "name": "ExampleClass",
@@ -111,10 +96,7 @@ class TestClassSerializer(ModelSerializerTestCase[Class]):
         )
 
     def test_create__no_teacher(self):
-        """
-        Can successfully create without setting the teacher field.
-        """
-
+        """Can successfully create without setting the teacher field."""
         self.assert_create(
             {
                 "name": "ExampleClass",
