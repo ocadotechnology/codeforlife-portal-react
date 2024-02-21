@@ -15,6 +15,7 @@ from django.contrib.auth.tokens import (
     PasswordResetTokenGenerator,
     default_token_generator,
 )
+from django.utils.crypto import get_random_string
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
@@ -37,19 +38,16 @@ class UserViewSet(_UserViewSet):
         if self.action == "partial_update":
             if "teacher" in self.request.data:
                 return [IsTeacher(is_admin=True)]
-            if (
-                "student" in self.request.data
-                and "pending_class_request" in self.request.data["student"]
-            ):
+            if "student" in self.request.data:
+                return [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))]
+            if "requesting_to_join_class" in self.request.data:
                 return [
                     OR(
                         OR(IsTeacher(is_admin=True), IsTeacher(in_class=True)),
                         IsIndependent(),
                     )
                 ]
-            if "student" in self.request.data:
-                return [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))]
-        if self.action == "student__reject_join_request":
+        if self.action == "handle_join_class_request":
             return [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))]
 
         return super().get_permissions()
@@ -181,56 +179,22 @@ class UserViewSet(_UserViewSet):
         return Response(fields)
 
     @action(
-        detail=True, methods=["patch"], url_path="student/reject-join-request"
+        detail=True, methods=["patch"], url_path="handle-join-class-request"
     )
-    def student__reject_join_request(
+    def handle_join_class_request(
         self, request: Request, pk: t.Optional[str] = None
     ):
-        """Reject an independent user's request to join a class."""
-        indy = self._get_student_requesting_join_if_authorised(request, pk)
-
-        indy.pending_class_request = None
-        indy.save()
-
-        return Response()
-
-    @action(
-        detail=True, methods=["patch"], url_path="student/accept-join-request"
-    )
-    def student__accept_join_request(
-        self, request: Request, pk: t.Optional[str] = None
-    ):
-        """Accept an independent user's request to join a class."""
-        self._get_student_requesting_join_if_authorised(request, pk)
-
-        # indy.pending_class_request = None
-        # indy.save()
-
-        # TODO: Redirect to next step which is renaming student
-        return Response()
-
-    @action(detail=True, methods=["patch"], url_path="student/add-to-class")
-    def student__add_to_class(
-        self, request: Request, pk: t.Optional[str] = None
-    ):
-        """Add an independent user to a class"""
-        return Response()
-
-    def _get_student_requesting_join_if_authorised(
-        self,
-        request: Request,
-        pk: str,
-    ) -> Student:
+        """Handle an independent user's request to join a class."""
         try:
-            indy = Student.objects.get(pk=int(pk))
+            indy = User.objects.get(pk=int(pk))
         except (ValueError, Student.DoesNotExist):
             return Response(
-                {"non_field_errors": ["No student found for given ID."]},
+                {"non_field_errors": ["No user found for given ID."]},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
         klass = Class.objects.get(
-            access_code=indy.pending_class_request.access_code
+            access_code=indy.student.pending_class_request.access_code
         )
 
         if klass.teacher.school != request.user.new_teacher.school:
@@ -257,4 +221,75 @@ class UserViewSet(_UserViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        return indy
+        try:
+            if not isinstance(request.data["accept"], bool):
+                return Response(
+                    {
+                        "non_field_errors": [
+                            "Invalid type for accept - must be True or False."
+                        ]
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+        except KeyError:
+            return Response(
+                {"non_field_errors": ["Accept field is required."]},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        request_accepted = request.data["accept"]
+
+        if request_accepted:
+            try:
+                if not isinstance(request.data["first_name"], str):
+                    return Response(
+                        {"first_name": ["First name must be a string."]},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
+            except KeyError:
+                return Response(
+                    {"first_name": ["This field is required."]},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            name = request.data["first_name"]
+            if self._is_name_unique_in_class(name, klass):
+                indy.student.class_field = indy.student.pending_class_request
+                indy.student.pending_class_request = None
+
+                username = None
+
+                while (
+                    username is None
+                    or User.objects.filter(username=username).exists()
+                ):
+                    username = get_random_string(length=30)
+
+                indy.username = username
+                indy.first_name = name
+                indy.last_name = ""
+                indy.email = ""
+
+                indy.student.save()
+                indy.save()
+            else:
+                return Response(
+                    {
+                        "first_name": [
+                            "This name already exists in the class. "
+                            "Please choose a different name."
+                        ]
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+        else:
+            indy.student.pending_class_request = None
+            indy.student.save()
+
+        return Response()
+
+    def _is_name_unique_in_class(self, name: str, klass: Class) -> bool:
+        """Check if a user's name is unique in a class"""
+        return not Student.objects.filter(
+            class_field=klass, new_user__first_name__iexact=name
+        ).exists()

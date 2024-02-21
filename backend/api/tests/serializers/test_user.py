@@ -4,7 +4,7 @@ Created on 31/01/2024 at 16:07:32(+00:00).
 """
 
 from codeforlife.tests import ModelSerializerTestCase
-from codeforlife.user.models import Class, Student, User
+from codeforlife.user.models import Class, IndependentUser, Student, User
 
 from ...serializers import UserSerializer
 
@@ -12,7 +12,12 @@ from ...serializers import UserSerializer
 # pylint: disable-next=missing-class-docstring
 class TestUserSerializer(ModelSerializerTestCase[User]):
     model_serializer_class = UserSerializer
-    fixtures = ["school_1"]
+    fixtures = ["independent", "school_1"]
+
+    def setUp(self):
+        self.independent = IndependentUser.objects.get(email="indy@man.com")
+        self.class_1 = Class.objects.get(name="Class 1 @ School 1")
+        self.class_3 = Class.objects.get(name="Class 3 @ School 1")
 
     def test_validate__first_name_not_unique_per_class_in_data(self):
         """First name must be unique per class in data."""
@@ -60,4 +65,32 @@ class TestUserSerializer(ModelSerializerTestCase[User]):
             ],
             error_code="first_name_not_unique_per_class_in_db",
             many=True,
+        )
+
+    def test_validate_requesting_to_join_class__does_not_exist(self):
+        """Join class request cannot be for a class that doesn't exist"""
+        self.assert_validate_field(
+            name="requesting_to_join_class",
+            value="AAAAA",
+            error_code="does_not_exist_or_accept_join_requests",
+    )
+
+    def test_validate_requesting_to_join_class__does_not_accept_requests(self):
+        """
+        Join class request cannot be for a class that doesn't accept requests
+        """
+        self.assert_validate_field(
+            name="requesting_to_join_class",
+            value=self.class_1.access_code,
+            error_code="does_not_exist_or_accept_join_requests",
+        )
+
+    def test_validate_requesting_to_join_class__no_longer_accept_requests(self):
+        """
+        Join class request cannot be for a class that no longer accepts requests
+        """
+        self.assert_validate_field(
+            name="requesting_to_join_class",
+            value=self.class_3.access_code,
+            error_code="does_not_exist_or_accept_join_requests",
         )

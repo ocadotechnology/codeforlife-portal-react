@@ -6,8 +6,6 @@ Created on 30/01/2024 at 19:03:45(+00:00).
 from codeforlife.tests import ModelSerializerTestCase
 from codeforlife.user.models import (
     Class,
-    IndependentUser,
-    NonSchoolTeacherUser,
     SchoolTeacherUser,
     Student,
     TeacherUser,
@@ -19,17 +17,7 @@ from ...serializers import StudentSerializer, UserSerializer
 # pylint: disable-next=missing-class-docstring
 class TestStudentSerializer(ModelSerializerTestCase[Student]):
     model_serializer_class = StudentSerializer
-    fixtures = [
-        "independent",
-        "non_school_teacher",
-        "school_1",
-        "school_2",
-    ]
-
-    def setUp(self):
-        self.independent = IndependentUser.objects.get(email="indy@man.com")
-        self.class_1 = Class.objects.get(name="Class 1 @ School 1")
-        self.class_3 = Class.objects.get(name="Class 3 @ School 1")
+    fixtures = ["school_1"]
 
     def test_validate_klass__does_not_exist(self):
         """
@@ -90,34 +78,6 @@ class TestStudentSerializer(ModelSerializerTestCase[Student]):
             parent=UserSerializer(
                 context={"request": self.request_factory.post(user=user)}
             ),
-        )
-
-    def test_validate_pending_class_request__does_not_exist(self):
-        """Join class request cannot be for a class that doesn't exist"""
-        self.assert_validate_field(
-            name="pending_class_request",
-            value="AAAAA",
-            error_code="does_not_exist_or_accept_join_requests",
-        )
-
-    def test_validate_pending_class_request__does_not_accept_requests(self):
-        """
-        Join class request cannot be for a class that doesn't accept requests
-        """
-        self.assert_validate_field(
-            name="pending_class_request",
-            value=self.class_1.access_code,
-            error_code="does_not_exist_or_accept_join_requests",
-        )
-
-    def test_validate_pending_class_request__no_longer_accept_requests(self):
-        """
-        Join class request cannot be for a class that no longer accepts requests
-        """
-        self.assert_validate_field(
-            name="pending_class_request",
-            value=self.class_3.access_code,
-            error_code="does_not_exist_or_accept_join_requests",
         )
 
     def test_validate__not_student(self):

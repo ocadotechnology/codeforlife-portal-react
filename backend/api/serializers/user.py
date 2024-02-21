@@ -19,6 +19,7 @@ from codeforlife.user.serializers import UserSerializer as _UserSerializer
 from django.contrib.auth.password_validation import (
     validate_password as _validate_password,
 )
+from django.utils import timezone
 from rest_framework import serializers
 
 from .student import StudentSerializer
@@ -90,7 +91,9 @@ class UserListSerializer(ModelListSerializer[User]):
 class UserSerializer(_UserSerializer):
     student = StudentSerializer(source="new_student", required=False)
     teacher = TeacherSerializer(source="new_teacher", required=False)
-    requesting_to_join_class = serializers.CharField(required=False)
+    requesting_to_join_class = serializers.CharField(
+        required=False, allow_blank=True
+    )
     current_password = serializers.CharField(
         write_only=True,
         required=False,
@@ -102,6 +105,7 @@ class UserSerializer(_UserSerializer):
             "student",
             "teacher",
             "password",
+            "requesting_to_join_class",
             "current_password",
         ]
         extra_kwargs = {
@@ -147,6 +151,31 @@ class UserSerializer(_UserSerializer):
 
         return value
 
+    def validate_requesting_to_join_class(self, value: str):
+        # NOTE: Error message is purposefully ambiguous to prevent class
+        # enumeration.
+        error_message = "Class does not exist or does not accept join requests."
+        error_code = "does_not_exist_or_accept_join_requests"
+
+        if value != "":
+            try:
+                klass = Class.objects.get(access_code=value)
+            except Class.DoesNotExist as ex:
+                raise serializers.ValidationError(
+                    error_message, code=error_code
+                ) from ex
+
+            if klass.accept_requests_until is None:
+                raise serializers.ValidationError(
+                    error_message, code=error_code
+                )
+            if klass.accept_requests_until < timezone.now():
+                raise serializers.ValidationError(
+                    error_message, code=error_code
+                )
+
+        return value
+
     def create(self, validated_data):
         user = User.objects.create_user(
             username=validated_data["email"],
@@ -177,9 +206,20 @@ class UserSerializer(_UserSerializer):
 
     def update(self, instance, validated_data):
         if "requesting_to_join_class" in validated_data:
-            instance.student.pending_class_request = validated_data[
+            requesting_to_join_class = validated_data[
                 "requesting_to_join_class"
             ]
+            if requesting_to_join_class == "":
+                instance.student.pending_class_request = None
+            else:
+                instance.student.pending_class_request = Class.objects.get(
+                    access_code=requesting_to_join_class
+                )
+
+            # TODO: Send email to indy user confirming successful join request.
+            # TODO: Send email to teacher of selected class to notify them of
+            #  join request.
+
             instance.student.save()
 
         password = validated_data.get("password")

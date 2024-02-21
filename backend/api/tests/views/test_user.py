@@ -2,7 +2,6 @@
 © Ocado Group
 Created on 20/01/2024 at 10:58:52(+00:00).
 """
-
 import typing as t
 
 from codeforlife.permissions import OR
@@ -101,7 +100,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
             request=self.client.request_factory.patch(data={"student": {}}),
         )
 
-    def test_get_permissions__partial_update__student__pending_class_request(
+    def test_get_permissions__partial_update__requesting_to_join_class(
         self,
     ):
         """
@@ -117,22 +116,20 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
             ],
             action="partial_update",
             request=self.client.request_factory.patch(
-                data={"student": {"pending_class_request": ""}}
+                data={"requesting_to_join_class": ""}
             ),
         )
 
-    def test_get_permissions__student__reject_join_request(self):
+    def test_get_permissions__handle_join_class_request(self):
         """
-        Only school-teachers can reject an independent's class join request.
+        Only school-teachers can handle an independent's class join request.
         """
         self.assert_get_permissions(
             permissions=[
                 OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))
             ],
-            action="student__reject_join_request",
-            request=self.client.request_factory.patch(
-                data={"student": {"pending_class_request": None}}
-            ),
+            action="handle_join_class_request",
+            request=self.client.request_factory.patch(data={"accept": False}),
         )
 
     # test: get queryset
@@ -217,17 +214,20 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
     # test: class join request actions
 
-    def test_student__reject_join_request__invalid_school(self):
-        """Teacher cannot reject a join request outside their school"""
+    def test_handle_join_class_request__invalid_school(self):
+        """Teacher cannot handle a join request outside their school"""
         self.client.login_as(self.admin_school2_teacher_user)
 
         viewname = self.reverse_action(
-            "student--reject-join-request",
-            kwargs={"pk": self.indy_with_join_request.new_student.pk},
+            "handle-join-class-request",
+            kwargs={"pk": self.indy_with_join_request.pk},
         )
 
         response = self.client.patch(
-            viewname, status_code_assertion=status.HTTP_400_BAD_REQUEST
+            viewname,
+            data={"accept": False},
+            status_code_assertion=status.HTTP_400_BAD_REQUEST,
+            format="json",
         )
 
         assert response.data["non_field_errors"] == [
@@ -240,17 +240,20 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
             == self.class_2
         )
 
-    def test_student__reject_join_request__invalid_class(self):
+    def test_handle_join_class_request__invalid_class(self):
         """Non-admin teacher cannot reject a join request outside their class"""
         self.client.login_as(self.non_admin_school_teacher_user)
 
         viewname = self.reverse_action(
-            "student--reject-join-request",
-            kwargs={"pk": self.indy_with_join_request.new_student.pk},
+            "handle-join-class-request",
+            kwargs={"pk": self.indy_with_join_request.pk},
         )
 
         response = self.client.patch(
-            viewname, status_code_assertion=status.HTTP_400_BAD_REQUEST
+            viewname,
+            data={"accept": False},
+            status_code_assertion=status.HTTP_400_BAD_REQUEST,
+            format="json",
         )
 
         assert response.data["non_field_errors"] == [
@@ -263,21 +266,191 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
             == self.class_2
         )
 
-    def test_student__reject_join_request(self):
-        """Teacher can reject an independent's request to join a class."""
+    def test_handle_join_class_request__invalid_accept(self):
+        """Teacher cannot handle join class request with wrong accept type"""
         self.client.login_as(self.admin_school_teacher_user)
 
         viewname = self.reverse_action(
-            "student--reject-join-request",
-            kwargs={"pk": self.indy_with_join_request.new_student.pk},
+            "handle-join-class-request",
+            kwargs={"pk": self.indy_with_join_request.pk},
         )
 
-        self.client.patch(viewname, status_code_assertion=status.HTTP_200_OK)
+        response = self.client.patch(
+            viewname,
+            data={"accept": "lol"},
+            status_code_assertion=status.HTTP_400_BAD_REQUEST,
+            format="json",
+        )
+
+        assert response.data["non_field_errors"] == [
+            "Invalid type for accept - must be True or False."
+        ]
+
+        self.indy_with_join_request.refresh_from_db()
+        assert (
+            self.indy_with_join_request.new_student.pending_class_request
+            == self.class_2
+        )
+
+    def test_handle_join_class_request__missing_accept(self):
+        """Teacher cannot handle join class request with missing accept"""
+        self.client.login_as(self.admin_school_teacher_user)
+
+        viewname = self.reverse_action(
+            "handle-join-class-request",
+            kwargs={"pk": self.indy_with_join_request.pk},
+        )
+
+        response = self.client.patch(
+            viewname,
+            data={},
+            status_code_assertion=status.HTTP_400_BAD_REQUEST,
+            format="json",
+        )
+
+        assert response.data["non_field_errors"] == [
+            "Accept field is required."
+        ]
+
+        self.indy_with_join_request.refresh_from_db()
+        assert (
+            self.indy_with_join_request.new_student.pending_class_request
+            == self.class_2
+        )
+
+    def test_handle_join_class_request__reject(self):
+        """Teacher can successfully reject a join class request."""
+        self.client.login_as(self.admin_school_teacher_user)
+
+        viewname = self.reverse_action(
+            "handle-join-class-request",
+            kwargs={"pk": self.indy_with_join_request.pk},
+        )
+
+        self.client.patch(
+            viewname,
+            data={"accept": False},
+            status_code_assertion=status.HTTP_200_OK,
+            format="json",
+        )
 
         self.indy_with_join_request.refresh_from_db()
         assert (
             self.indy_with_join_request.new_student.pending_class_request
             is None
+        )
+
+    def test_handle_join_class_request__accept__invalid_first_name(self):
+        """Teacher cannot accept a join class request with invalid name"""
+        self.client.login_as(self.admin_school_teacher_user)
+
+        viewname = self.reverse_action(
+            "handle-join-class-request",
+            kwargs={"pk": self.indy_with_join_request.pk},
+        )
+
+        response = self.client.patch(
+            viewname,
+            data={"accept": True, "first_name": 1},
+            status_code_assertion=status.HTTP_400_BAD_REQUEST,
+            format="json",
+        )
+
+        assert response.data["first_name"] == ["First name must be a string."]
+
+        self.indy_with_join_request.refresh_from_db()
+        assert (
+            self.indy_with_join_request.new_student.pending_class_request
+            == self.class_2
+        )
+
+    def test_handle_join_class_request__accept__missing_first_name(self):
+        """Teacher cannot accept a join class request with missing name"""
+        self.client.login_as(self.admin_school_teacher_user)
+
+        viewname = self.reverse_action(
+            "handle-join-class-request",
+            kwargs={"pk": self.indy_with_join_request.pk},
+        )
+
+        response = self.client.patch(
+            viewname,
+            data={"accept": True},
+            status_code_assertion=status.HTTP_400_BAD_REQUEST,
+            format="json",
+        )
+
+        assert response.data["first_name"] == ["This field is required."]
+
+        self.indy_with_join_request.refresh_from_db()
+        assert (
+            self.indy_with_join_request.new_student.pending_class_request
+            == self.class_2
+        )
+
+    def test_handle_join_class_request__accept__duplicate_first_name(self):
+        """Teacher cannot accept a join class request with duplicate name"""
+        self.client.login_as(self.admin_school_teacher_user)
+
+        viewname = self.reverse_action(
+            "handle-join-class-request",
+            kwargs={"pk": self.indy_with_join_request.pk},
+        )
+
+        response = self.client.patch(
+            viewname,
+            data={
+                "accept": True,
+                "first_name": self.class_2.students.first().new_user.first_name,
+            },
+            status_code_assertion=status.HTTP_400_BAD_REQUEST,
+            format="json",
+        )
+
+        assert response.data["first_name"] == [
+            "This name already exists in the class. "
+            "Please choose a different name."
+        ]
+
+        self.indy_with_join_request.refresh_from_db()
+        assert (
+            self.indy_with_join_request.new_student.pending_class_request
+            == self.class_2
+        )
+
+    def test_handle_join_class_request__accept(self):
+        """Teacher can successfully accept a join class request."""
+        self.client.login_as(self.admin_school_teacher_user)
+
+        viewname = self.reverse_action(
+            "handle-join-class-request",
+            kwargs={"pk": self.indy_with_join_request.pk},
+        )
+
+        self.client.patch(
+            viewname,
+            data={
+                "accept": True,
+                "first_name": self.indy_with_join_request.first_name,
+            },
+            status_code_assertion=status.HTTP_200_OK,
+            format="json",
+        )
+
+        self.indy_with_join_request.refresh_from_db()
+
+        assert (
+            self.indy_with_join_request.new_student.class_field == self.class_2
+        )
+        assert (
+            self.indy_with_join_request.new_student.pending_class_request
+            is None
+        )
+        assert self.indy_with_join_request.last_name == ""
+        assert self.indy_with_join_request.email == ""
+        assert (
+            self.indy_with_join_request.username
+            != self.indy_with_join_request_email
         )
 
     # test: reset password actions
@@ -473,7 +646,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
         self.client.partial_update(
             indy_user,
-            {"student": {"pending_class_request": self.class_2.access_code}},
+            {"requesting_to_join_class": self.class_2.access_code},
         )
 
     def test_partial_update__indy__revoke_join_request(self):
@@ -484,12 +657,5 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
         self.client.partial_update(
             indy_user_with_join_request,
-            {"student": {"pending_class_request": ""}},
-        )
-
-        indy_user_with_join_request.refresh_from_db()
-        indy_user_with_join_request.new_student.refresh_from_db()
-        assert (
-            indy_user_with_join_request.new_student.pending_class_request
-            is None
+            {"requesting_to_join_class": ""},
         )
