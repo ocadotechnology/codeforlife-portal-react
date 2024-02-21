@@ -300,9 +300,4 @@ class UserSerializer(_UserSerializer):
             if password is not None:
                 representation["password"] = password
 
-        if representation["student"] is not None:
-            representation[
-                "requesting_to_join_class"
-            ] = instance.student.pending_class_request
-
         return representation
