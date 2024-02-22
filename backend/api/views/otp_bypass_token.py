@@ -3,11 +3,9 @@
 Created on 23/01/2024 at 17:54:08(+00:00).
 """
 
-import typing as t
-
 from codeforlife.permissions import AllowNone
 from codeforlife.request import Request
-from codeforlife.user.models import OtpBypassToken, User
+from codeforlife.user.models import OtpBypassToken
 from codeforlife.user.permissions import IsTeacher
 from codeforlife.views import ModelViewSet
 from rest_framework import status
@@ -20,8 +18,7 @@ class OtpBypassTokenViewSet(ModelViewSet[OtpBypassToken]):
     http_method_names = ["post"]
 
     def get_queryset(self):
-        user: User = self.request.user  # type: ignore[assignment]
-        return OtpBypassToken.objects.filter(user=user)
+        return OtpBypassToken.objects.filter(user=self.request.teacher_user)
 
     def get_permissions(self):
         if self.action == "create":
@@ -33,7 +30,7 @@ class OtpBypassTokenViewSet(ModelViewSet[OtpBypassToken]):
     def generate(self, request: Request):
         """Generates some OTP bypass tokens for a user."""
 
-        user = t.cast(User, request.user)
+        user = request.auth_user
 
         OtpBypassToken.objects.filter(user=user).delete()
 

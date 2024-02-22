@@ -11,8 +11,12 @@ from codeforlife.user.models import (
     AdminSchoolTeacherUser,
     Class,
     IndependentUser,
+    NonAdminSchoolTeacherUser,
+    NonSchoolTeacherUser,
     SchoolTeacherUser,
+    Student,
     StudentUser,
+    TypedUser,
     User,
 )
 from codeforlife.user.permissions import IsIndependent, IsTeacher
@@ -20,6 +24,7 @@ from django.contrib.auth.tokens import (
     PasswordResetTokenGenerator,
     default_token_generator,
 )
+from django.db.models.query import QuerySet
 from rest_framework import status
 
 from ...views import UserViewSet
@@ -28,20 +33,18 @@ from ...views import UserViewSet
 default_token_generator: PasswordResetTokenGenerator = default_token_generator
 
 
-# pylint: disable-next=missing-class-docstring
+# pylint: disable-next=missing-class-docstring,too-many-public-methods
 class TestUserViewSet(ModelViewSetTestCase[User]):
     basename = "user"
     model_view_set_class = UserViewSet
     fixtures = ["independent", "non_school_teacher", "school_1", "school_2"]
 
-    non_school_teacher_email = "teacher@noschool.com"
-    school_teacher_email = "teacher@school1.com"
-    indy_email = "indy@man.com"
-    indy_with_join_request_email = "indy@requester.com"
-
     def setUp(self):
-        self.non_admin_school_teacher_user = SchoolTeacherUser.objects.get(
-            email=self.school_teacher_email
+        self.non_school_teacher_user = NonSchoolTeacherUser.objects.get(
+            email="teacher@noschool.com"
+        )
+        self.non_admin_school_teacher_user = (
+            NonAdminSchoolTeacherUser.objects.get(email="teacher@school1.com")
         )
         self.admin_school_teacher_user = AdminSchoolTeacherUser.objects.get(
             email="admin.teacher@school1.com"
@@ -49,9 +52,9 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         self.admin_school2_teacher_user = AdminSchoolTeacherUser.objects.get(
             email="admin.teacher@school2.com"
         )
-        self.indy = IndependentUser.objects.get(email=self.indy_email)
+        self.indy = IndependentUser.objects.get(email="indy@man.com")
         self.indy_with_join_request = IndependentUser.objects.get(
-            email=self.indy_with_join_request_email
+            email="indy@requester.com"
         )
         self.class_2 = Class.objects.get(name="Class 2 @ School 1")
 
@@ -66,9 +69,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
     def test_get_permissions__bulk(self):
         """Only admin-teachers or class-teachers can perform bulk actions."""
         self.assert_get_permissions(
-            permissions=[
-                OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))
-            ],
+            [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))],
             action="bulk",
         )
 
@@ -77,16 +78,14 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         Only admin-teachers or class-teachers can reset students' passwords.
         """
         self.assert_get_permissions(
-            permissions=[
-                OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))
-            ],
+            [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))],
             action="students__reset_password",
         )
 
     def test_get_permissions__partial_update__teacher(self):
         """Only admin-teachers can update a teacher."""
         self.assert_get_permissions(
-            permissions=[IsTeacher(is_admin=True)],
+            [IsTeacher(is_admin=True)],
             action="partial_update",
             request=self.client.request_factory.patch(data={"teacher": {}}),
         )
@@ -94,9 +93,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
     def test_get_permissions__partial_update__student(self):
         """Only admin-teachers or class-teachers can update a student."""
         self.assert_get_permissions(
-            permissions=[
-                OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))
-            ],
+            [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))],
             action="partial_update",
             request=self.client.request_factory.patch(data={"student": {}}),
         )
@@ -106,7 +103,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
     ):
         """Only independents can update their class join request."""
         self.assert_get_permissions(
-            permissions=[IsIndependent()],
+            [IsIndependent()],
             action="partial_update",
             request=self.client.request_factory.patch(
                 data={"requesting_to_join_class": ""}
@@ -118,16 +115,23 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         Only school-teachers can handle an independent's class join request.
         """
         self.assert_get_permissions(
-            permissions=[
-                OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))
-            ],
+            [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))],
             action="handle_join_class_request",
             request=self.client.request_factory.patch(data={"accept": False}),
         )
 
+    def test_get_permissions__destroy(self):
+        """Only independents or teachers can destroy a user."""
+        self.assert_get_permissions(
+            [OR(IsTeacher(), IsIndependent())],
+            action="destroy",
+        )
+
     # test: get queryset
 
-    def _test_get_queryset(self, action: str, request_method: str):
+    def _test_get_queryset__student_users(
+        self, action: str, request_method: str
+    ):
         student_users = list(
             User.objects.filter(
                 new_student__class_field__teacher__school=(
@@ -145,28 +149,41 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
     def test_get_queryset__bulk__patch(self):
         """Bulk partial-update can only target student-users."""
-        self._test_get_queryset(action="bulk", request_method="patch")
+        self._test_get_queryset__student_users(
+            action="bulk", request_method="patch"
+        )
 
     def test_get_queryset__bulk__delete(self):
         """Bulk destroy can only target student-users."""
-        self._test_get_queryset(action="bulk", request_method="delete")
+        self._test_get_queryset__student_users(
+            action="bulk", request_method="delete"
+        )
 
     def test_get_queryset__students__reset_password(self):
         """Resetting student passwords can only target student-users."""
-        self._test_get_queryset(
+        self._test_get_queryset__student_users(
             action="students__reset_password", request_method="patch"
+        )
+
+    def test_get_queryset__destroy(self):
+        """Destroying a user can only target the user making the request."""
+        return self.assert_get_queryset(
+            [self.admin_school_teacher_user],
+            action="destroy",
+            request=self.client.request_factory.delete(
+                user=self.admin_school_teacher_user
+            ),
         )
 
     # test: bulk actions
 
     def test_bulk_create__students(self):
         """Teacher can bulk create students."""
-        user = self.client.login_non_admin_school_teacher(
-            email=self.school_teacher_email,
-            password="password",
-        )
+        self.client.login_as(self.non_admin_school_teacher_user)
 
-        klass: t.Optional[Class] = user.teacher.class_teacher.first()
+        klass: t.Optional[
+            Class
+        ] = self.non_admin_school_teacher_user.teacher.class_teacher.first()
         assert klass is not None
 
         response = self.client.bulk_create(
@@ -480,7 +497,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         viewname = self.reverse_action("request-password-reset")
 
         response = self.client.post(
-            viewname, data={"email": self.non_school_teacher_email}
+            viewname, data={"email": self.non_school_teacher_user.email}
         )
 
         assert response.data["reset_password_url"] is not None
@@ -490,7 +507,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
     def test_reset_password__invalid_pk(self):
         """Reset password raises 400 on GET with invalid pk"""
         _, token = self._get_pk_and_token_for_user(
-            self.non_school_teacher_email
+            self.non_school_teacher_user.email
         )
 
         viewname = self.reverse_action(
@@ -507,7 +524,9 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
     def test_reset_password__invalid_token(self):
         """Reset password raises 400 on GET with invalid token"""
-        pk, _ = self._get_pk_and_token_for_user(self.non_school_teacher_email)
+        pk, _ = self._get_pk_and_token_for_user(
+            self.non_school_teacher_user.email
+        )
 
         viewname = self.reverse_action(
             "reset-password", kwargs={"pk": pk, "token": "whatever"}
@@ -524,7 +543,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
     def test_reset_password__get(self):
         """Reset password GET succeeds."""
         pk, token = self._get_pk_and_token_for_user(
-            self.non_school_teacher_email
+            self.non_school_teacher_user.email
         )
 
         viewname = self.reverse_action(
@@ -536,7 +555,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
     def test_reset_password__patch__teacher(self):
         """Teacher can successfully update password."""
         pk, token = self._get_pk_and_token_for_user(
-            self.non_school_teacher_email
+            self.non_school_teacher_user.email
         )
 
         viewname = self.reverse_action(
@@ -544,13 +563,13 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         )
 
         self.client.patch(viewname, data={"password": "N3wPassword!"})
-        self.client.login(
-            email=self.non_school_teacher_email, password="N3wPassword!"
+        self.client.login_as(
+            self.non_school_teacher_user, password="N3wPassword!"
         )
 
     def test_reset_password__patch__indy(self):
         """Indy can successfully update password."""
-        pk, token = self._get_pk_and_token_for_user(self.indy_email)
+        pk, token = self._get_pk_and_token_for_user(self.indy_user.email)
 
         viewname = self.reverse_action(
             "reset-password",
@@ -558,7 +577,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         )
 
         self.client.patch(viewname, data={"password": "N3wPassword"})
-        self.client.login(email=self.indy_email, password="N3wPassword")
+        self.client.login_as(self.indy_user, password="N3wPassword")
 
     # test: students actions
 
@@ -652,3 +671,106 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
             indy_user_with_join_request,
             {"requesting_to_join_class": ""},
         )
+
+    def assert_user_is_anonymized(self, user: User):
+        """Assert user has been anonymized.
+
+        Args:
+            user: The user to assert.
+        """
+        assert user.first_name == ""
+        assert user.last_name == ""
+        assert user.email == ""
+        assert not user.is_active
+
+    def assert_classes_are_anonymized(
+        self,
+        school_teacher_user: SchoolTeacherUser,
+        class_names: t.Iterable[str],
+    ):
+        """Assert the classes and their students have been anonymized.
+
+        Args:
+            school_teacher_user: The user the classes belong to.
+            class_names: The original class names.
+        """
+        # TODO: remove when using new data strategy
+        queryset = QuerySet(
+            model=Class.objects.model,
+            using=Class.objects._db,
+            hints=Class.objects._hints,
+        ).filter(teacher=school_teacher_user.teacher)
+
+        for klass, name in zip(queryset, class_names):
+            assert klass.name != name
+            assert klass.access_code == ""
+            assert not klass.is_active
+
+            student: Student  # TODO: delete in new data schema
+            for student in klass.students.all():
+                self.assert_user_is_anonymized(student.new_user)
+
+    def _test_destroy(
+        self,
+        user: TypedUser,
+        status_code_assertion: int = status.HTTP_204_NO_CONTENT,
+    ):
+        self.client.login_as(user)
+        self.client.destroy(
+            user,
+            status_code_assertion=status_code_assertion,
+            make_assertions=False,
+        )
+
+    def test_destroy__class_teacher(self):
+        """Class-teacher-users can anonymize themself and their classes."""
+        user = self.non_admin_school_teacher_user
+        assert user.teacher.class_teacher.exists()
+        class_names = list(
+            user.teacher.class_teacher.values_list("name", flat=True)
+        )
+
+        self._test_destroy(user)
+        user.refresh_from_db()
+        self.assert_user_is_anonymized(user)
+        self.assert_classes_are_anonymized(user, class_names)
+
+    def test_destroy__school_teacher__last_teacher(self):
+        """
+        School-teacher-users can anonymize themself and their school if they are
+        the last teacher.
+        """
+        user = self.admin_school_teacher_user
+        assert user.teacher.class_teacher.exists()
+        class_names = list(
+            user.teacher.class_teacher.values_list("name", flat=True)
+        )
+        school_name = user.teacher.school.name
+
+        SchoolTeacherUser.objects.filter(
+            new_teacher__school=user.teacher.school
+        ).exclude(pk=user.pk).delete()
+
+        self._test_destroy(user)
+        user.refresh_from_db()
+        self.assert_user_is_anonymized(user)
+        self.assert_classes_are_anonymized(user, class_names)
+        assert user.teacher.school.name != school_name
+        assert not user.teacher.school.is_active
+
+    def test_destroy__school_teacher__last_admin_teacher(self):
+        """
+        School-teacher-users cannot anonymize themself if they are the last
+        admin teachers.
+        """
+        self._test_destroy(
+            self.admin_school_teacher_user,
+            status_code_assertion=status.HTTP_409_CONFLICT,
+        )
+
+    def test_destroy__independent(self):
+        """Independent-users can anonymize themself."""
+        user = self.indy_user
+        self._test_destroy(user)
+        user.refresh_from_db()
+        self.assert_user_is_anonymized(user)

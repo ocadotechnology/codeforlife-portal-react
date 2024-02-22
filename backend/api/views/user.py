@@ -8,7 +8,13 @@ import typing as t
 from codeforlife.permissions import OR
 from codeforlife.request import Request
 from codeforlife.types import DataDict
-from codeforlife.user.models import Class, Student, StudentUser, User
+from codeforlife.user.models import (
+    Class,
+    SchoolTeacher,
+    Student,
+    StudentUser,
+    User,
+)
 from codeforlife.user.permissions import IsIndependent, IsTeacher
 from codeforlife.user.views import UserViewSet as _UserViewSet
 from django.contrib.auth.tokens import (
@@ -33,6 +39,8 @@ class UserViewSet(_UserViewSet):
     serializer_class = UserSerializer
 
     def get_permissions(self):
+        if self.action == "destroy":
+            return [OR(IsTeacher(), IsIndependent())]
         if self.action in ["bulk", "students__reset_password"]:
             return [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))]
         if self.action == "partial_update":
@@ -49,7 +57,9 @@ class UserViewSet(_UserViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        if (
+        if self.action == "destroy":
+            queryset = queryset.filter(pk=self.request.auth_user.pk)
+        elif (
             self.action == "bulk" and self.request.method in ["PATCH", "DELETE"]
         ) or self.action == "students__reset_password":
             queryset = queryset.filter(
@@ -60,6 +70,43 @@ class UserViewSet(_UserViewSet):
 
     def perform_bulk_destroy(self, queryset):
         queryset.update(first_name="", is_active=False)
+
+    def destroy(self, request, *args, **kwargs):
+        user = self.get_object()
+
+        def anonymize_user(user: User):
+            user.first_name = ""
+            user.last_name = ""
+            user.email = ""
+            user.is_active = False
+            user.save()
+
+        if user.teacher:
+            if user.teacher.school:
+                other_school_teachers = SchoolTeacher.objects.filter(
+                    school=user.teacher.school
+                ).exclude(pk=user.teacher.pk)
+
+                if not other_school_teachers.exists():
+                    user.teacher.school.anonymise()
+                elif (
+                    user.teacher.is_admin
+                    and not other_school_teachers.filter(is_admin=True).exists()
+                ):
+                    return Response(status=status.HTTP_409_CONFLICT)
+
+            klass: Class  # TODO: delete in new data schema
+            for klass in user.teacher.class_teacher.all():
+                for student_user in StudentUser.objects.filter(
+                    new_student__class_field=klass
+                ):
+                    anonymize_user(student_user)
+
+                klass.anonymise()
+
+        anonymize_user(user)
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(
         detail=True,

@@ -24,7 +24,7 @@ class AuthFactorSerializer(ModelSerializer[AuthFactor]):
     # pylint: disable-next=missing-function-docstring
     def validate_type(self, value: str):
         if AuthFactor.objects.filter(
-            user=self.request.user, type=value
+            user=self.request.auth_user, type=value
         ).exists():
             raise serializers.ValidationError(
                 "You already have this authentication factor enabled.",
@@ -34,7 +34,7 @@ class AuthFactorSerializer(ModelSerializer[AuthFactor]):
         return value
 
     def create(self, validated_data):
-        user = self.request.user
+        user = self.request.auth_user
         if not user.userprofile.otp_secret:
             user.userprofile.otp_secret = pyotp.random_base32()
             user.userprofile.save()
@@ -51,6 +51,6 @@ class AuthFactorSerializer(ModelSerializer[AuthFactor]):
         ):
             representation[
                 "totp_provisioning_uri"
-            ] = self.request.user.totp_provisioning_uri
+            ] = self.request.auth_user.totp_provisioning_uri
 
         return representation
