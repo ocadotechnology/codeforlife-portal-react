@@ -137,14 +137,11 @@ class UserSerializer(_UserSerializer):
                     )
 
             if self.instance.student:
-                user = self.request_student_user
-                if (
-                    self.view.action != "reset_password"
-                    and user.pk != self.instance.pk
-                ):
-                    raise serializers.ValidationError(
-                        "Cannot update another student.", code="is_not_self"
-                    )
+                if self.view.action != "reset_password":
+                    if self.request.student_user.pk != self.instance.pk:
+                        raise serializers.ValidationError(
+                            "Cannot update another student.", code="is_not_self"
+                        )
 
                 if (
                     self.instance.student.class_field is not None
@@ -187,10 +184,7 @@ class UserSerializer(_UserSerializer):
         return attrs
 
     def validate_password(self, value: str):
-        """
-        Validate the new password depending on user type.
-        """
-
+        """Validate the new password depending on user type."""
         # If we're creating a new user, we do not yet have the user object.
         # Therefore, we need to create a dummy user and pass it to the password
         # validators so they know what type of user we have.
@@ -222,11 +216,10 @@ class UserSerializer(_UserSerializer):
                     error_message, code=error_code
                 ) from ex
 
-            if klass.accept_requests_until is None:
-                raise serializers.ValidationError(
-                    error_message, code=error_code
-                )
-            if klass.accept_requests_until < timezone.now():
+            if (
+                klass.accept_requests_until is None
+                or klass.accept_requests_until < timezone.now()
+            ):
                 raise serializers.ValidationError(
                     error_message, code=error_code
                 )
@@ -262,10 +255,12 @@ class UserSerializer(_UserSerializer):
         return user
 
     def update(self, instance, validated_data):
-        if "requesting_to_join_class" in validated_data:
-            requesting_to_join_class = validated_data[
-                "requesting_to_join_class"
-            ]
+        requesting_to_join_class = validated_data.get(
+            "requesting_to_join_class"
+        )
+        if requesting_to_join_class is not None:
+            # If value is empty, this means independent wants to revoke their
+            # join request
             if requesting_to_join_class == "":
                 instance.student.pending_class_request = None
             else:
@@ -293,7 +288,7 @@ class UserSerializer(_UserSerializer):
         # Return student's auto-generated password.
         if (
             representation["student"] is not None
-            and self.request_user.teacher is not None
+            and self.request.auth_user.teacher is not None
         ):
             # pylint: disable-next=protected-access
             password = instance._password

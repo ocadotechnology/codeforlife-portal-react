@@ -104,17 +104,9 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
     def test_get_permissions__partial_update__requesting_to_join_class(
         self,
     ):
-        """
-        Only school-teachers and independents can update an independent's class
-        join request.
-        """
+        """Only independents can update their class join request."""
         self.assert_get_permissions(
-            permissions=[
-                OR(
-                    OR(IsTeacher(is_admin=True), IsTeacher(in_class=True)),
-                    IsIndependent(),
-                )
-            ],
+            permissions=[IsIndependent()],
             action="partial_update",
             request=self.client.request_factory.patch(
                 data={"requesting_to_join_class": ""}

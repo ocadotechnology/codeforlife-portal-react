@@ -20,7 +20,7 @@ class StudentSerializer(_StudentSerializer):
     # pylint: disable-next=missing-function-docstring
     def validate_klass(self, value: str):
         # Only teachers can manage students.
-        teacher = self.request_school_teacher_user.teacher
+        teacher = self.request.school_teacher_user.teacher
 
         try:
             klass = Class.objects.get(access_code=value)

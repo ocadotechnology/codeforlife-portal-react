@@ -42,7 +42,7 @@ class ClassSerializer(_ClassSerializer):
                 code="does_not_exist",
             )
 
-        user = self.request_school_teacher_user
+        user = self.request.school_teacher_user
         if not queryset.filter(school=user.teacher.school_id).exists():
             raise serializers.ValidationError(
                 "This teacher is not in your school.",
@@ -60,7 +60,7 @@ class ClassSerializer(_ClassSerializer):
     # pylint: disable-next=missing-function-docstring
     def validate_name(self, value: str):
         if Class.objects.filter(
-            teacher__school=self.request_school_teacher_user.teacher.school,
+            teacher__school=self.request.school_teacher_user.teacher.school,
             name=value,
         ).exists():
             raise serializers.ValidationError(
@@ -90,7 +90,7 @@ class ClassSerializer(_ClassSerializer):
                 "teacher_id": (
                     validated_data["teacher"]["id"]
                     if "teacher" in validated_data
-                    else self.request_school_teacher_user.teacher.id
+                    else self.request.school_teacher_user.teacher.id
                 ),
                 "classmates_data_viewable": validated_data[
                     "classmates_data_viewable"
@@ -102,6 +102,11 @@ class ClassSerializer(_ClassSerializer):
         )
 
     def update(self, instance, validated_data):
+        # TODO: Decide how to handle this field. Currently, teachers select a
+        #  setting which equates to a number of "hours", then we calculate
+        #  how long the class can accept requests for based on that number of
+        #  hours. It's not the most elegant solution, so for now I've written
+        #  this assuming that the user will input a date-time value.
         accept_requests_until = validated_data.get("accept_requests_until")
 
         if accept_requests_until is not None:

@@ -41,12 +41,7 @@ class UserViewSet(_UserViewSet):
             if "student" in self.request.data:
                 return [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))]
             if "requesting_to_join_class" in self.request.data:
-                return [
-                    OR(
-                        OR(IsTeacher(is_admin=True), IsTeacher(in_class=True)),
-                        IsIndependent(),
-                    )
-                ]
+                return [IsIndependent()]
         if self.action == "handle_join_class_request":
             return [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))]
 
@@ -184,7 +179,16 @@ class UserViewSet(_UserViewSet):
     def handle_join_class_request(
         self, request: Request, pk: t.Optional[str] = None
     ):
-        """Handle an independent user's request to join a class."""
+        """
+        Handles an independent user's request to join a class. First tries to
+        retrieve the independent user, then the class they're requesting to
+        join. The teacher handling the request must either be an admin the
+        class' school, or the teacher of that specific school. The request
+        must then specify whether the teacher accepts or rejects the join
+        request by setting the boolean "accept". If "accept" is True,
+        then the request must contain the new student's first_name, ensuring
+        that it is unique in the class.
+        """
         try:
             indy = User.objects.get(pk=int(pk))
         except (ValueError, Student.DoesNotExist):
@@ -285,6 +289,9 @@ class UserViewSet(_UserViewSet):
         else:
             indy.student.pending_class_request = None
             indy.student.save()
+
+            # TODO: Send independent user an email notifying them that their
+            #  request has been rejected.
 
         return Response()
 

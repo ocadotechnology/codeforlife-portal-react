@@ -39,7 +39,7 @@ class SchoolTeacherInvitationSerializer(
         }
 
     def create(self, validated_data):
-        user = self.request_admin_school_teacher_user
+        user = self.request.admin_school_teacher_user
 
         token = get_random_string(length=32)
         validated_data["token"] = make_password(token)

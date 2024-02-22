@@ -17,7 +17,7 @@ class AuthFactorViewSet(ModelViewSet[AuthFactor]):
     serializer_class = AuthFactorSerializer
 
     def get_queryset(self):
-        return AuthFactor.objects.filter(user=self.request_user)
+        return AuthFactor.objects.filter(user=self.request.user)
 
     def get_permissions(self):
         if self.action in ["retrieve", "bulk"]:
