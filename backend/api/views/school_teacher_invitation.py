@@ -43,7 +43,7 @@ class SchoolTeacherInvitationViewSet(ModelViewSet[SchoolTeacherInvitation]):
             return queryset
 
         return queryset.filter(
-            school=self.request_admin_school_teacher_user.teacher.school
+            school=self.request.admin_school_teacher_user.teacher.school
         )
 
     @action(

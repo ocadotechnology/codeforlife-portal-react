@@ -22,7 +22,7 @@ class TeacherSerializer(_TeacherSerializer):
     def validate_is_admin(self, value: bool):
         instance = t.cast(t.Optional[User], self.parent.instance)
         if instance:
-            user = self.request_school_teacher_user
+            user = self.request.school_teacher_user
             if user.pk == instance.pk:
                 raise serializers.ValidationError(
                     "Cannot update own permissions.",

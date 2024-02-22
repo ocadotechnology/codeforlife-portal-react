@@ -42,7 +42,7 @@ class ClassSerializer(_ClassSerializer):
                 code="does_not_exist",
             )
 
-        user = self.request_school_teacher_user
+        user = self.request.school_teacher_user
         if not queryset.filter(school=user.teacher.school_id).exists():
             raise serializers.ValidationError(
                 "This teacher is not in your school.",
@@ -60,7 +60,7 @@ class ClassSerializer(_ClassSerializer):
     # pylint: disable-next=missing-function-docstring
     def validate_name(self, value: str):
         if Class.objects.filter(
-            teacher__school=self.request_school_teacher_user.teacher.school,
+            teacher__school=self.request.school_teacher_user.teacher.school,
             name=value,
         ).exists():
             raise serializers.ValidationError(
@@ -90,7 +90,7 @@ class ClassSerializer(_ClassSerializer):
                 "teacher_id": (
                     validated_data["teacher"]["id"]
                     if "teacher" in validated_data
-                    else self.request_school_teacher_user.teacher.id
+                    else self.request.school_teacher_user.teacher.id
                 ),
                 "classmates_data_viewable": validated_data[
                     "classmates_data_viewable"
