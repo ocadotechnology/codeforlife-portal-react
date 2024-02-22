@@ -52,7 +52,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         self.admin_school2_teacher_user = AdminSchoolTeacherUser.objects.get(
             email="admin.teacher@school2.com"
         )
-        self.indy = IndependentUser.objects.get(email="indy@man.com")
+        self.indy_user = IndependentUser.objects.get(email="indy@man.com")
         self.indy_with_join_request = IndependentUser.objects.get(
             email="indy@requester.com"
         )
@@ -432,6 +432,8 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         """Teacher can successfully accept a join class request."""
         self.client.login_as(self.admin_school_teacher_user)
 
+        indy_email = self.indy_with_join_request.email
+
         viewname = self.reverse_action(
             "handle-join-class-request",
             kwargs={"pk": self.indy_with_join_request.pk},
@@ -458,10 +460,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         )
         assert self.indy_with_join_request.last_name == ""
         assert self.indy_with_join_request.email == ""
-        assert (
-            self.indy_with_join_request.username
-            != self.indy_with_join_request_email
-        )
+        assert self.indy_with_join_request.username != indy_email
 
     # test: reset password actions
 
@@ -627,15 +626,14 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
     def test_partial_update__teacher(self):
         """Admin-school-teacher can update another teacher's profile."""
-        admin_school_teacher_user = self.client.login_admin_school_teacher(
-            email="admin.teacher@school1.com", password="password"
-        )
+        self.client.login_as(self.admin_school_teacher_user)
 
         other_school_teacher_user = (
             SchoolTeacherUser.objects.filter(
-                new_teacher__school=admin_school_teacher_user.teacher.school
+                new_teacher__school=self.admin_school_teacher_user.teacher
+                .school
             )
-            .exclude(pk=admin_school_teacher_user.pk)
+            .exclude(pk=self.admin_school_teacher_user.pk)
             .first()
         )
         assert other_school_teacher_user
@@ -652,23 +650,19 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
     def test_partial_update__indy__send_join_request(self):
         """Independent user can request to join a class."""
-        indy_user = self.client.login_indy(
-            email=self.indy_email, password="password"
-        )
+        self.client.login_as(self.indy_user)
 
         self.client.partial_update(
-            indy_user,
+            self.indy_user,
             {"requesting_to_join_class": self.class_2.access_code},
         )
 
     def test_partial_update__indy__revoke_join_request(self):
         """Independent user can revoke their request to join a class."""
-        indy_user_with_join_request = self.client.login_indy(
-            email=self.indy_with_join_request_email, password="password"
-        )
+        self.client.login_as(self.indy_with_join_request)
 
         self.client.partial_update(
-            indy_user_with_join_request,
+            self.indy_with_join_request,
             {"requesting_to_join_class": ""},
         )
 
