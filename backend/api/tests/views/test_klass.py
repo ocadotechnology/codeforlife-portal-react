@@ -2,7 +2,6 @@
 © Ocado Group
 Created on 05/02/2024 at 16:13:46(+00:00).
 """
-
 from datetime import timedelta
 
 from codeforlife.permissions import OR, AllowNone
@@ -78,10 +77,7 @@ class TestClassViewSet(ModelViewSetTestCase[Class]):
         )
 
     def test_create__self(self):
-        """
-        Teacher can create a class with themself as the class owner.
-        """
-
+        """Teacher can create a class with themselves as the class owner."""
         user = self.client.login_school_teacher(
             email="teacher@school1.com",
             password="password",
@@ -100,7 +96,6 @@ class TestClassViewSet(ModelViewSetTestCase[Class]):
         """
         Teacher can create a class with another teacher as the class owner.
         """
-
         user = self.client.login_admin_school_teacher(
             email="admin.teacher@school1.com",
             password="password",

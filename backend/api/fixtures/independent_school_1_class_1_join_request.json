@@ -1,0 +1,11 @@
+[
+  {
+    "model": "common.student",
+    "pk": 18,
+    "fields": {
+      "user": 28,
+      "new_user": 28,
+      "pending_class_request": 7
+    }
+  }
+]
