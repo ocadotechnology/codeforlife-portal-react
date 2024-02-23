@@ -5,13 +5,13 @@ Created on 29/01/2024 at 10:13:58(+00:00).
 
 import typing as t
 
-from codeforlife.user.models import User
+from codeforlife.user.models import Teacher, User
 from codeforlife.user.serializers import TeacherSerializer as _TeacherSerializer
 from rest_framework import serializers
 
 
 # pylint: disable-next=missing-class-docstring,too-many-ancestors
-class TeacherSerializer(_TeacherSerializer):
+class TeacherSerializer(_TeacherSerializer[Teacher]):
     class Meta(_TeacherSerializer.Meta):
         extra_kwargs = {
             **_TeacherSerializer.Meta.extra_kwargs,

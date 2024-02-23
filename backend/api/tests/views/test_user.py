@@ -28,6 +28,7 @@ from django.contrib.auth.tokens import (
 from django.db.models.query import QuerySet
 from rest_framework import status
 
+from ...serializers import ReleaseStudentUserSerializer
 from ...views import UserViewSet
 
 # NOTE: type hint to help Intellisense.
@@ -76,6 +77,15 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
             action="students__reset_password",
         )
 
+    def test_get_permissions__students__release(self):
+        """
+        Only admin-teachers or class-teachers can release students.
+        """
+        self.assert_get_permissions(
+            [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))],
+            action="students__release",
+        )
+
     def test_get_permissions__partial_update__teacher(self):
         """Only admin-teachers can update a teacher."""
         self.assert_get_permissions(
@@ -97,6 +107,14 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         self.assert_get_permissions(
             [OR(IsTeacher(), IsIndependent())],
             action="destroy",
+        )
+
+    # test: get serializer class
+
+    def test_get_serializer_class(self):
+        """The action for releasing students has a dedicated serializer."""
+        self.assert_get_serializer_class(
+            ReleaseStudentUserSerializer, action="students__release"
         )
 
     # test: get queryset
@@ -135,6 +153,12 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         """Resetting student passwords can only target student-users."""
         self._test_get_queryset__student_users(
             action="students__reset_password", request_method="patch"
+        )
+
+    def test_get_queryset__students__release(self):
+        """Releasing students can only target student-users."""
+        self._test_get_queryset__student_users(
+            action="students__release", request_method="patch"
         )
 
     def test_get_queryset__destroy(self):
@@ -357,6 +381,32 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
             assert student_user.check_password(password)
             self.client.login_as(student_user, password)
             assert student_user.student.login_id == student_login_id
+
+    def test_students__release(self):
+        """
+        Admin-teacher or class_teacher can convert their students to independent
+        learners.
+        """
+        user = self.admin_school_teacher_user
+        student_users = list(user.teacher.student_users)
+
+        self.client.login_as(user)
+        response = self.client.patch(
+            self.reverse_action("students--release"),
+            data={
+                student_user.id: {"email": f"{student_user.id}@email.com"}
+                for student_user in student_users
+            },
+        )
+
+        for student_user, json_model in zip(student_users, response.json()):
+            student_user.refresh_from_db()
+            self.assert_serialized_model_equals_json_model(
+                model=student_user,
+                json_model=json_model,
+                action="students__release",
+                request_method="patch",
+            )
 
     # test: generic actions
 

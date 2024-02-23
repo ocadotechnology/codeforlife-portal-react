@@ -4,12 +4,13 @@ Created on 31/01/2024 at 16:07:32(+00:00).
 """
 
 from codeforlife.tests import ModelSerializerTestCase
-from codeforlife.user.models import Class, Student, User
+from codeforlife.user.models import Class, Student, StudentUser, User
 
-from ...serializers import UserSerializer
+from ...serializers import ReleaseStudentUserSerializer, UserSerializer
+
+# pylint: disable=missing-class-docstring
 
 
-# pylint: disable-next=missing-class-docstring
 class TestUserSerializer(ModelSerializerTestCase[User]):
     model_serializer_class = UserSerializer
     fixtures = ["school_1"]
@@ -60,4 +61,31 @@ class TestUserSerializer(ModelSerializerTestCase[User]):
             ],
             error_code="first_name_not_unique_per_class_in_db",
             many=True,
+        )
+
+
+class TestReleaseStudentUserSerializer(ModelSerializerTestCase[StudentUser]):
+    model_serializer_class = ReleaseStudentUserSerializer
+    fixtures = ["school_1"]
+
+    def setUp(self):
+        student_user = StudentUser.objects.first()
+        assert student_user
+        self.student_user = student_user
+
+    def test_validate_email__already_exists(self):
+        """Cannot release a student with an email that already exists."""
+        user_fields = User.objects.values("email").first()
+        assert user_fields
+
+        self.assert_validate_field(
+            "email", user_fields["email"], error_code="already_exists"
+        )
+
+    def test_update(self):
+        """The student-user is converted in an independent-user."""
+        self.assert_update_many(
+            instance=[self.student_user],
+            validated_data=[{"email": f"{self.student_user.pk}@email.com"}],
+            new_data=[{"student": {"class_field": None}}],
         )
