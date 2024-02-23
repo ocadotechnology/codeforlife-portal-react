@@ -102,11 +102,6 @@ class ClassSerializer(_ClassSerializer):
         )
 
     def update(self, instance, validated_data):
-        # TODO: Decide how to handle this field. Currently, teachers select a
-        #  setting which equates to a number of "hours", then we calculate
-        #  how long the class can accept requests for based on that number of
-        #  hours. It's not the most elegant solution, so for now I've written
-        #  this assuming that the user will input a date-time value.
         accept_requests_until = validated_data.get("accept_requests_until")
 
         if accept_requests_until is not None:

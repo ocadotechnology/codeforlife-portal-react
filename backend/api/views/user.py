@@ -41,7 +41,7 @@ class UserViewSet(_UserViewSet):
     def get_permissions(self):
         if self.action == "destroy":
             return [OR(IsTeacher(), IsIndependent())]
-        if self.action in ["bulk", "students__reset_password"]:
+        if self.action in ["bulk", "students__reset_password", "handle_join_class_request"]:
             return [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))]
         if self.action == "partial_update":
             if "teacher" in self.request.data:
@@ -50,8 +50,6 @@ class UserViewSet(_UserViewSet):
                 return [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))]
             if "requesting_to_join_class" in self.request.data:
                 return [IsIndependent()]
-        if self.action == "handle_join_class_request":
-            return [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))]
 
         return super().get_permissions()
 
@@ -229,7 +227,7 @@ class UserViewSet(_UserViewSet):
         """
         Handles an independent user's request to join a class. First tries to
         retrieve the independent user, then the class they're requesting to
-        join. The teacher handling the request must either be an admin the
+        join. The teacher handling the request must either be an admin in the
         class' school, or the teacher of that specific school. The request
         must then specify whether the teacher accepts or rejects the join
         request by setting the boolean "accept". If "accept" is True,

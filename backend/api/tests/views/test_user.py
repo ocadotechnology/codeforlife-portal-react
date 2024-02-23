@@ -39,7 +39,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
     model_view_set_class = UserViewSet
     fixtures = [
         "independent",
-        "independent_school_1_class_1_join_request",
+        "independent_school_1_class_2_join_request",
         "non_school_teacher",
         "school_1",
         "school_2",
