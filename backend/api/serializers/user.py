@@ -217,3 +217,12 @@ class ReleaseStudentUserSerializer(_UserSerializer[StudentUser]):
     class Meta(_UserSerializer.Meta):
         extra_kwargs = {"email": {"read_only": False}}
         list_serializer_class = ReleaseStudentUserListSerializer
+
+    # pylint: disable-next=missing-function-docstring
+    def validate_email(self, value: str):
+        if User.objects.filter(email__iexact=value).exists():
+            raise serializers.ValidationError(
+                "Already exists.", code="already_exists"
+            )
+
+        return value
