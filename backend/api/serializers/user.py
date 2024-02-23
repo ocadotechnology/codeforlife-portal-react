@@ -106,7 +106,11 @@ class UserSerializer(_UserSerializer[User]):
         extra_kwargs = {
             **_UserSerializer.Meta.extra_kwargs,
             "first_name": {"read_only": False},
-            "last_name": {"read_only": False, "required": False},
+            "last_name": {
+                "read_only": False,
+                "required": False,
+                "min_length": 1,
+            },
             "email": {"read_only": False},
             "password": {"write_only": True, "required": False},
         }
@@ -215,7 +219,14 @@ class ReleaseStudentUserSerializer(_UserSerializer[StudentUser]):
     """Convert a student to an independent learner."""
 
     class Meta(_UserSerializer.Meta):
-        extra_kwargs = {"email": {"read_only": False}}
+        extra_kwargs = {
+            "first_name": {
+                "min_length": 1,
+                "read_only": False,
+                "required": False,
+            },
+            "email": {"read_only": False},
+        }
         list_serializer_class = ReleaseStudentUserListSerializer
 
     # pylint: disable-next=missing-function-docstring
