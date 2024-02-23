@@ -25,8 +25,9 @@ from rest_framework import serializers
 from .student import StudentSerializer
 from .teacher import TeacherSerializer
 
+# pylint: disable=missing-class-docstring,too-many-ancestors
 
-# pylint: disable-next=missing-class-docstring
+
 class UserListSerializer(ModelListSerializer[User]):
     def create(self, validated_data):
         classes = {
@@ -87,8 +88,7 @@ class UserListSerializer(ModelListSerializer[User]):
         return attrs
 
 
-# pylint: disable-next=missing-class-docstring,too-many-ancestors
-class UserSerializer(_UserSerializer):
+class UserSerializer(_UserSerializer[User]):
     student = StudentSerializer(source="new_student", required=False)
     teacher = TeacherSerializer(source="new_teacher", required=False)
     requesting_to_join_class = serializers.CharField(
@@ -111,7 +111,11 @@ class UserSerializer(_UserSerializer):
         extra_kwargs = {
             **_UserSerializer.Meta.extra_kwargs,
             "first_name": {"read_only": False},
-            "last_name": {"read_only": False, "required": False},
+            "last_name": {
+                "read_only": False,
+                "required": False,
+                "min_length": 1,
+            },
             "email": {"read_only": False},
             "password": {"write_only": True, "required": False},
         }
@@ -296,3 +300,39 @@ class UserSerializer(_UserSerializer):
                 representation["password"] = password
 
         return representation
+
+
+class ReleaseStudentUserListSerializer(ModelListSerializer[StudentUser]):
+    def update(self, instance, validated_data):
+        for student_user, data in zip(instance, validated_data):
+            student_user.student.class_field = None
+            student_user.student.save(update_fields=["class_field"])
+
+            student_user.email = data["email"]
+            student_user.save(update_fields=["email"])
+
+        return instance
+
+
+class ReleaseStudentUserSerializer(_UserSerializer[StudentUser]):
+    """Convert a student to an independent learner."""
+
+    class Meta(_UserSerializer.Meta):
+        extra_kwargs = {
+            "first_name": {
+                "min_length": 1,
+                "read_only": False,
+                "required": False,
+            },
+            "email": {"read_only": False},
+        }
+        list_serializer_class = ReleaseStudentUserListSerializer
+
+    # pylint: disable-next=missing-function-docstring
+    def validate_email(self, value: str):
+        if User.objects.filter(email__iexact=value).exists():
+            raise serializers.ValidationError(
+                "Already exists.", code="already_exists"
+            )
+
+        return value

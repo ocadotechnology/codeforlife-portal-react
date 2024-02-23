@@ -3,12 +3,13 @@
 Created on 31/01/2024 at 16:07:32(+00:00).
 """
 from codeforlife.tests import ModelSerializerTestCase
-from codeforlife.user.models import Class, IndependentUser, Student, User
+from codeforlife.user.models import Class, IndependentUser, Student, StudentUser, User
 
-from ...serializers import UserSerializer
+from ...serializers import ReleaseStudentUserSerializer, UserSerializer
+
+# pylint: disable=missing-class-docstring
 
 
-# pylint: disable-next=missing-class-docstring
 class TestUserSerializer(ModelSerializerTestCase[User]):
     model_serializer_class = UserSerializer
     fixtures = ["independent", "school_1"]
@@ -66,6 +67,33 @@ class TestUserSerializer(ModelSerializerTestCase[User]):
             many=True,
         )
 
+
+class TestReleaseStudentUserSerializer(ModelSerializerTestCase[StudentUser]):
+    model_serializer_class = ReleaseStudentUserSerializer
+    fixtures = ["school_1"]
+
+    def setUp(self):
+        student_user = StudentUser.objects.first()
+        assert student_user
+        self.student_user = student_user
+
+    def test_validate_email__already_exists(self):
+        """Cannot release a student with an email that already exists."""
+        user_fields = User.objects.values("email").first()
+        assert user_fields
+
+        self.assert_validate_field(
+            "email", user_fields["email"], error_code="already_exists"
+        )
+
+    def test_update(self):
+        """The student-user is converted in an independent-user."""
+        self.assert_update_many(
+            instance=[self.student_user],
+            validated_data=[{"email": f"{self.student_user.pk}@email.com"}],
+            new_data=[{"student": {"class_field": None}}],
+        )
+
     def test_validate__teacher__first_name_required(self):
         """Teacher must have a first name"""
         self.assert_validate(
@@ -84,7 +112,7 @@ class TestUserSerializer(ModelSerializerTestCase[User]):
         )
 
     def test_validate__student__requesting_to_join_class_and_class_field_forbidden(
-        self,
+            self,
     ):
         """Student cannot have both requesting_to_join_class and class_field"""
         self.assert_validate(
@@ -122,3 +150,4 @@ class TestUserSerializer(ModelSerializerTestCase[User]):
             value=self.class_3.access_code,
             error_code="does_not_exist_or_accept_join_requests",
         )
+

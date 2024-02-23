@@ -27,7 +27,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
-from ..serializers import UserSerializer
+from ..serializers import ReleaseStudentUserSerializer, UserSerializer
 
 # NOTE: type hint to help Intellisense.
 default_token_generator: PasswordResetTokenGenerator = default_token_generator
@@ -41,7 +41,12 @@ class UserViewSet(_UserViewSet):
     def get_permissions(self):
         if self.action == "destroy":
             return [OR(IsTeacher(), IsIndependent())]
-        if self.action in ["bulk", "students__reset_password", "handle_join_class_request"]:
+        if self.action in [
+            "bulk",
+            "handle_join_class_request",
+            "students__reset_password",
+            "students__release",
+        ]:
             return [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))]
         if self.action == "partial_update":
             if "teacher" in self.request.data:
@@ -53,13 +58,22 @@ class UserViewSet(_UserViewSet):
 
         return super().get_permissions()
 
-    def get_queryset(self):
-        queryset = super().get_queryset()
+    def get_serializer_class(self):
+        if self.action == "students__release":
+            return ReleaseStudentUserSerializer
+
+        return super().get_serializer_class()
+
+    def get_queryset(self, user_class=User):
+        queryset = super().get_queryset(user_class)
         if self.action == "destroy":
             queryset = queryset.filter(pk=self.request.auth_user.pk)
-        elif (
+        elif self.action in [
+            "students__reset_password",
+            "students__release",
+        ] or (
             self.action == "bulk" and self.request.method in ["PATCH", "DELETE"]
-        ) or self.action == "students__reset_password":
+        ):
             queryset = queryset.filter(
                 new_student__isnull=False,
                 new_student__class_field__isnull=False,
@@ -199,14 +213,13 @@ class UserViewSet(_UserViewSet):
     @action(detail=False, methods=["patch"], url_path="students/reset-password")
     def students__reset_password(self, request: Request):
         """Bulk reset students' password."""
-        queryset = self._get_bulk_queryset(request.data)
+        queryset = self.get_bulk_queryset(request.data, StudentUser)
 
         fields: t.Dict[int, DataDict] = {}
-        for pk in queryset.values_list("pk", flat=True):
-            student_user = StudentUser(pk=pk)
+        for student_user in queryset:
             student_user.set_password()
 
-            fields[pk] = {
+            fields[student_user.pk] = {
                 # pylint: disable-next=protected-access
                 "password": student_user._password,
                 "student": {"login_id": student_user.student.login_id},
@@ -217,6 +230,20 @@ class UserViewSet(_UserViewSet):
             student_user.student.save(update_fields=["login_id"])
 
         return Response(fields)
+
+    @action(detail=False, methods=["patch"], url_path="students/release")
+    def students__release(self, request: Request):
+        """Convert a list of students into independent learners."""
+        queryset = self.get_bulk_queryset(request.json_dict.keys(), StudentUser)
+        serializer = self.get_serializer(
+            queryset,
+            data=request.data,
+            many=True,
+            context=self.get_serializer_context(),
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
 
     @action(
         detail=True, methods=["patch"], url_path="handle-join-class-request"
