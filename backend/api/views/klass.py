@@ -21,7 +21,7 @@ class ClassViewSet(_ClassViewSet):
             return [AllowNone()]
         if self.action == "create":
             return [IsTeacher(in_school=True)]
-        if self.action in ["update", "destroy"]:
+        if self.action in ["partial_update", "destroy"]:
             return [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))]
 
         return super().get_permissions()
