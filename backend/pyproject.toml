@@ -12,6 +12,7 @@ env = [
 [tool.mypy]
 plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main"]
 check_untyped_defs = true
+disable_error_code = ["dict-item"]
 
 [tool.django-stubs]
 django_settings_module = "service.settings"

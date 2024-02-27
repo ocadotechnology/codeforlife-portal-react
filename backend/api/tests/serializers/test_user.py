@@ -6,7 +6,11 @@ Created on 31/01/2024 at 16:07:32(+00:00).
 from codeforlife.tests import ModelSerializerTestCase
 from codeforlife.user.models import Class, Student, StudentUser, User
 
-from ...serializers import ReleaseStudentUserSerializer, UserSerializer
+from ...serializers import (
+    ReleaseStudentUserSerializer,
+    TransferStudentUserSerializer,
+    UserSerializer,
+)
 
 # pylint: disable=missing-class-docstring
 
@@ -88,4 +92,34 @@ class TestReleaseStudentUserSerializer(ModelSerializerTestCase[StudentUser]):
             instance=[self.student_user],
             validated_data=[{"email": f"{self.student_user.pk}@email.com"}],
             new_data=[{"student": {"class_field": None}}],
+        )
+
+
+class TestTransferStudentUserSerializer(ModelSerializerTestCase[StudentUser]):
+    model_serializer_class = TransferStudentUserSerializer
+    fixtures = ["school_1"]
+
+    def setUp(self):
+        self.class_1 = Class.objects.get(name="Class 1 @ School 1")
+        self.class_2 = Class.objects.get(name="Class 2 @ School 1")
+
+        # TODO: make this a property of Class in new data schema.
+        self.class_1_student_users = StudentUser.objects.filter(
+            new_student__in=self.class_1.students.all()
+        )
+
+    def test_update(self):
+        """The student-user is transferred to another class."""
+        self.assert_update_many(
+            instance=list(self.class_1_student_users),
+            validated_data=[
+                {
+                    "new_student": {
+                        "class_field": {
+                            "access_code": self.class_2.access_code,
+                        }
+                    }
+                }
+                for _ in range(self.class_1.students.count())
+            ],
         )

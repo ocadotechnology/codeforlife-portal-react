@@ -20,7 +20,11 @@ from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
-from ..serializers import ReleaseStudentUserSerializer, UserSerializer
+from ..serializers import (
+    ReleaseStudentUserSerializer,
+    TransferStudentUserSerializer,
+    UserSerializer,
+)
 
 # NOTE: type hint to help Intellisense.
 default_token_generator: PasswordResetTokenGenerator = default_token_generator
@@ -28,21 +32,20 @@ default_token_generator: PasswordResetTokenGenerator = default_token_generator
 
 # pylint: disable-next=missing-class-docstring,too-many-ancestors
 class UserViewSet(_UserViewSet):
-    http_method_names = ["get", "post", "patch", "delete"]
+    http_method_names = ["get", "post", "patch", "delete", "put"]
     serializer_class = UserSerializer
 
     def get_permissions(self):
         if self.action == "destroy":
             return [OR(IsTeacher(), IsIndependent())]
-        if self.action in [
-            "bulk",
-            "students__reset_password",
-            "students__release",
-        ]:
+        # If the action is targeting student-users.
+        if self.action.startswith("students__") or self.action == "bulk":
             return [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))]
         if self.action == "partial_update":
+            # If updating a teacher-user.
             if "teacher" in self.request.data:
                 return [IsTeacher(is_admin=True)]
+            # If updating a student-user.
             if "student" in self.request.data:
                 return [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))]
 
@@ -51,23 +54,20 @@ class UserViewSet(_UserViewSet):
     def get_serializer_class(self):
         if self.action == "students__release":
             return ReleaseStudentUserSerializer
+        if self.action == "students__transfer":
+            return TransferStudentUserSerializer
 
         return super().get_serializer_class()
 
     def get_queryset(self, user_class=User):
+        # If the action is targeting student-users.
+        if self.action.startswith("students__") or self.action == "bulk":
+            user_class = StudentUser
+
         queryset = super().get_queryset(user_class)
         if self.action == "destroy":
             queryset = queryset.filter(pk=self.request.auth_user.pk)
-        elif self.action in [
-            "students__reset_password",
-            "students__release",
-        ] or (
-            self.action == "bulk" and self.request.method in ["PATCH", "DELETE"]
-        ):
-            queryset = queryset.filter(
-                new_student__isnull=False,
-                new_student__class_field__isnull=False,
-            )
+
         return queryset
 
     def perform_bulk_destroy(self, queryset):
@@ -221,16 +221,10 @@ class UserViewSet(_UserViewSet):
 
         return Response(fields)
 
-    @action(detail=False, methods=["patch"], url_path="students/release")
-    def students__release(self, request: Request):
-        """Convert a list of students into independent learners."""
-        queryset = self.get_bulk_queryset(request.json_dict.keys(), StudentUser)
-        serializer = self.get_serializer(
-            queryset,
-            data=request.data,
-            many=True,
-            context=self.get_serializer_context(),
-        )
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data)
+    students__release = _UserViewSet.bulk_update_action(
+        name="students__release", url_path="students/release"
+    )
+
+    students__transfer = _UserViewSet.bulk_update_action(
+        name="students__transfer", url_path="students/transfer"
+    )

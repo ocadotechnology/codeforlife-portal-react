@@ -237,3 +237,23 @@ class ReleaseStudentUserSerializer(_UserSerializer[StudentUser]):
             )
 
         return value
+
+
+class TransferStudentUserListSerializer(ModelListSerializer[StudentUser]):
+    def update(self, instance, validated_data):
+        for student_user, data in zip(instance, validated_data):
+            student_user.student.class_field = Class.objects.get(
+                access_code=data["new_student"]["class_field"]["access_code"]
+            )
+            student_user.student.save(update_fields=["class_field"])
+
+        return instance
+
+
+class TransferStudentUserSerializer(_UserSerializer[StudentUser]):
+    """Transfer a student to another class."""
+
+    student = StudentSerializer(source="new_student")
+
+    class Meta(_UserSerializer.Meta):
+        list_serializer_class = TransferStudentUserListSerializer

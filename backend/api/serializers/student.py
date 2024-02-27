@@ -42,13 +42,3 @@ class StudentSerializer(_StudentSerializer):
             )
 
         return value
-
-    def validate(self, attrs):
-        instance = t.cast(t.Optional[User], self.parent.instance)
-        if instance and not instance.student:
-            raise serializers.ValidationError(
-                "Target user is not a student.",
-                code="not_student",
-            )
-
-        return attrs

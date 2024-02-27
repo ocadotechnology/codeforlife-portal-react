@@ -9,4 +9,8 @@ from .school import SchoolSerializer
 from .school_teacher_invitation import SchoolTeacherInvitationSerializer
 from .student import StudentSerializer
 from .teacher import TeacherSerializer
-from .user import ReleaseStudentUserSerializer, UserSerializer
+from .user import (
+    ReleaseStudentUserSerializer,
+    TransferStudentUserSerializer,
+    UserSerializer,
+)

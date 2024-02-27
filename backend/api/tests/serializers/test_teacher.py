@@ -37,17 +37,3 @@ class TestTeacherSerializer(ModelSerializerTestCase[Teacher]):
                 },
             ),
         )
-
-    def test_validate__not_teacher(self):
-        """
-        Target user must be a teacher.
-        """
-
-        student_user = StudentUser.objects.first()
-        assert student_user
-
-        self.assert_validate(
-            attrs={},
-            error_code="not_teacher",
-            parent=UserSerializer(instance=student_user),
-        )

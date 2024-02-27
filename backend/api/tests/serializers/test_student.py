@@ -87,17 +87,3 @@ class TestStudentSerializer(ModelSerializerTestCase[Student]):
                 context={"request": self.request_factory.post(user=user)}
             ),
         )
-
-    def test_validate__not_student(self):
-        """
-        Target user must be a student.
-        """
-
-        teacher_user = TeacherUser.objects.first()
-        assert teacher_user
-
-        self.assert_validate(
-            attrs={},
-            error_code="not_student",
-            parent=UserSerializer(instance=teacher_user),
-        )

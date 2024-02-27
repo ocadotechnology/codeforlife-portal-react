@@ -28,7 +28,10 @@ from django.contrib.auth.tokens import (
 from django.db.models.query import QuerySet
 from rest_framework import status
 
-from ...serializers import ReleaseStudentUserSerializer
+from ...serializers import (
+    ReleaseStudentUserSerializer,
+    TransferStudentUserSerializer,
+)
 from ...views import UserViewSet
 
 # NOTE: type hint to help Intellisense.
@@ -52,6 +55,8 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
             NonAdminSchoolTeacherUser.objects.get(email="teacher@school1.com")
         )
         self.indy_user = IndependentUser.objects.get(email="indy@man.com")
+        self.class_1 = Class.objects.get(name="Class 1 @ School 1")
+        self.class_2 = Class.objects.get(name="Class 2 @ School 1")
 
     def _get_pk_and_token_for_user(self, email: str):
         user = User.objects.get(email__iexact=email)
@@ -78,12 +83,17 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         )
 
     def test_get_permissions__students__release(self):
-        """
-        Only admin-teachers or class-teachers can release students.
-        """
+        """Only admin-teachers or class-teachers can release students."""
         self.assert_get_permissions(
             [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))],
             action="students__release",
+        )
+
+    def test_get_permissions__students__transfer(self):
+        """Only admin-teachers or class-teachers can transfer students."""
+        self.assert_get_permissions(
+            [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))],
+            action="students__transfer",
         )
 
     def test_get_permissions__partial_update__teacher(self):
@@ -111,10 +121,16 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
     # test: get serializer class
 
-    def test_get_serializer_class(self):
+    def test_get_serializer_class__students__release(self):
         """The action for releasing students has a dedicated serializer."""
         self.assert_get_serializer_class(
             ReleaseStudentUserSerializer, action="students__release"
+        )
+
+    def test_get_serializer_class__students__transfer(self):
+        """The action for transferring students has a dedicated serializer."""
+        self.assert_get_serializer_class(
+            TransferStudentUserSerializer, action="students__transfer"
         )
 
     # test: get queryset
@@ -123,7 +139,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         self, action: str, request_method: str
     ):
         student_users = list(
-            User.objects.filter(
+            StudentUser.objects.filter(
                 new_student__class_field__teacher__school=(
                     self.admin_school_teacher_user.teacher.school
                 )
@@ -137,16 +153,10 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
         self.assert_get_queryset(student_users, action=action, request=request)
 
-    def test_get_queryset__bulk__patch(self):
-        """Bulk partial-update can only target student-users."""
+    def test_get_queryset__bulk(self):
+        """Bulk actions can only target student-users."""
         self._test_get_queryset__student_users(
             action="bulk", request_method="patch"
-        )
-
-    def test_get_queryset__bulk__delete(self):
-        """Bulk destroy can only target student-users."""
-        self._test_get_queryset__student_users(
-            action="bulk", request_method="delete"
         )
 
     def test_get_queryset__students__reset_password(self):
@@ -158,12 +168,18 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
     def test_get_queryset__students__release(self):
         """Releasing students can only target student-users."""
         self._test_get_queryset__student_users(
-            action="students__release", request_method="patch"
+            action="students__release", request_method="put"
+        )
+
+    def test_get_queryset__students__transfer(self):
+        """Transferring students can only target student-users."""
+        self._test_get_queryset__student_users(
+            action="students__transfer", request_method="put"
         )
 
     def test_get_queryset__destroy(self):
         """Destroying a user can only target the user making the request."""
-        return self.assert_get_queryset(
+        self.assert_get_queryset(
             [self.admin_school_teacher_user],
             action="destroy",
             request=self.client.request_factory.delete(
@@ -384,29 +400,41 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
     def test_students__release(self):
         """
-        Admin-teacher or class_teacher can convert their students to independent
+        Admin-teacher or class-teacher can convert their students to independent
         learners.
         """
         user = self.admin_school_teacher_user
-        student_users = list(user.teacher.student_users)
+        student_users = user.teacher.student_users
 
         self.client.login_as(user)
-        response = self.client.patch(
-            self.reverse_action("students--release"),
-            data={
-                student_user.id: {"email": f"{student_user.id}@email.com"}
+        self.client.bulk_update(
+            models=student_users,
+            data=[
+                {"email": f"{student_user.id}@email.com"}
                 for student_user in student_users
-            },
+            ],
+            action="students--release",
         )
 
-        for student_user, json_model in zip(student_users, response.json()):
-            student_user.refresh_from_db()
-            self.assert_serialized_model_equals_json_model(
-                model=student_user,
-                json_model=json_model,
-                action="students__release",
-                request_method="patch",
-            )
+    def test_students__transfer(self):
+        """
+        Admin-teacher or class-teacher can successfully transfer students to
+        another class.
+        """
+        user = self.admin_school_teacher_user
+        student_users = StudentUser.objects.filter(
+            new_student__class_field=self.class_1
+        )
+
+        self.client.login_as(user)
+        self.client.bulk_update(
+            models=student_users,
+            data=[
+                {"student": {"klass": self.class_2.access_code}}
+                for _ in range(len(student_users))
+            ],
+            action="students--transfer",
+        )
 
     # test: generic actions
 
