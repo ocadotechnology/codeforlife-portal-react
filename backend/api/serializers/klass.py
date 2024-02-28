@@ -100,12 +100,3 @@ class ClassSerializer(_ClassSerializer):
                 ),
             }
         )
-
-    def update(self, instance, validated_data):
-        accept_requests_until = validated_data.get("accept_requests_until")
-
-        if accept_requests_until is not None:
-            instance.accept_requests_until = accept_requests_until
-
-        instance.save()
-        return instance

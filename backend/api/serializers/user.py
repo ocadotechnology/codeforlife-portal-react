@@ -9,6 +9,7 @@ from itertools import groupby
 from codeforlife.serializers import ModelListSerializer
 from codeforlife.user.models import (
     Class,
+    IndependentUser,
     Student,
     StudentUser,
     Teacher,
@@ -336,3 +337,65 @@ class ReleaseStudentUserSerializer(_UserSerializer[StudentUser]):
             )
 
         return value
+
+
+class HandleIndependentUserJoinClassRequestSerializer(
+    _UserSerializer[IndependentUser]
+):
+    accept = serializers.BooleanField(write_only=True)
+
+    class Meta(_UserSerializer.Meta):
+        fields = [
+            *_UserSerializer.Meta.fields,
+            "accept",
+        ]
+
+        extra_kwargs = {
+            "first_name": {
+                "min_length": 1,
+                "read_only": False,
+                "required": False,
+            },
+        }
+
+    def validate_first_name(self, value: str):
+        if Student.objects.filter(
+            class_field=self.instance.student.pending_class_request,
+            new_user__first_name__iexact=value,  # TODO: Check case sensitivity
+        ).exists():
+            raise serializers.ValidationError(
+                "This name already exists in the class. "
+                "Please choose a different name.",
+                code="first_name_in_class",
+            )
+
+        return value
+
+    def update(self, instance, validated_data):
+        if validated_data["accept"]:
+            instance.student.class_field = (
+                instance.student.pending_class_request
+            )
+            instance.student.pending_class_request = None
+
+            instance.username = StudentUser.get_random_username()
+            instance.first_name = validated_data.get(
+                "first_name", instance.first_name
+            )
+            instance.last_name = ""
+            instance.email = ""
+
+            instance.student.save(
+                update_fields=["class_field", "pending_class_request"]
+            )
+            instance.save(
+                update_fields=["username", "first_name", "last_name", "email"]
+            )
+        else:
+            instance.student.pending_class_request = None
+            instance.student.save(update_fields=["pending_class_request"])
+
+            # TODO: Send independent user an email notifying them that their
+            #  request has been rejected.
+
+        return instance

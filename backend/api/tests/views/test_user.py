@@ -38,13 +38,7 @@ default_token_generator: PasswordResetTokenGenerator = default_token_generator
 class TestUserViewSet(ModelViewSetTestCase[User]):
     basename = "user"
     model_view_set_class = UserViewSet
-    fixtures = [
-        "independent",
-        "independent_school_1_class_2_join_request",
-        "non_school_teacher",
-        "school_1",
-        "school_2",
-    ]
+    fixtures = ["independent", "non_school_teacher", "school_1", "school_2"]
 
     def setUp(self):
         self.non_school_teacher_user = NonSchoolTeacherUser.objects.get(
@@ -59,8 +53,13 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         self.admin_school2_teacher_user = AdminSchoolTeacherUser.objects.get(
             email="admin.teacher@school2.com"
         )
-        self.indy_user = IndependentUser.objects.get(email="indy@man.com")
-        self.class_2 = Class.objects.get(name="Class 2 @ School 1")
+        self.indy_user = IndependentUser.objects.get(
+            email="indy.requester@email.com"
+        )
+        self.no_join_request_indy_user = IndependentUser.objects.get(
+            email="indy@email.com"
+        )
+        self.class_1 = Class.objects.get(name="Class 1 @ School 1")
 
     def _get_pk_and_token_for_user(self, email: str):
         user = User.objects.get(email__iexact=email)
@@ -129,7 +128,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         """
         self.assert_get_permissions(
             [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))],
-            action="handle_join_class_request",
+            action="independents__handle_join_class_request",
             request=self.client.request_factory.patch(data={"accept": False}),
         )
 
@@ -168,6 +167,33 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
         self.assert_get_queryset(student_users, action=action, request=request)
 
+    def _test_get_queryset__independents__handle_join_class_request(
+        self, is_admin: bool
+    ):
+        request = self.client.request_factory.generic(
+            "patch",
+            user=self.admin_school_teacher_user
+            if is_admin
+            else self.non_admin_school_teacher_user,
+        )
+
+        indy_users = list(
+            IndependentUser.objects.filter(
+                new_student__pending_class_request__in=Class.objects.filter(
+                    teacher__school=request.school_teacher_user.teacher.school
+                )
+                if request.school_teacher_user.teacher.is_admin
+                else request.school_teacher_user.teacher.class_teacher.all()
+            )
+        )
+        assert indy_users
+
+        self.assert_get_queryset(
+            indy_users,
+            action="independents__handle_join_class_request",
+            request=request,
+        )
+
     def test_get_queryset__bulk__patch(self):
         """Bulk partial-update can only target student-users."""
         self._test_get_queryset__student_users(
@@ -190,6 +216,22 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         """Releasing students can only target student-users."""
         self._test_get_queryset__student_users(
             action="students__release", request_method="patch"
+        )
+
+    def test_get_queryset__independents__handle_join_class_request__admin(self):
+        """Handling a join class request can only target the independent
+        students who made a request to any class in the teacher's school."""
+        self._test_get_queryset__independents__handle_join_class_request(
+            is_admin=True
+        )
+
+    def test_get_queryset__independents__handle_join_class_request__non_admin(
+        self,
+    ):
+        """Handling a join class request can only target the independent
+        students who made a request to one of the teacher's classes."""
+        self._test_get_queryset__independents__handle_join_class_request(
+            is_admin=False
         )
 
     def test_get_queryset__destroy(self):
@@ -251,205 +293,46 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
     # test: class join request actions
 
-    def test_handle_join_class_request__invalid_school(self):
-        """Teacher cannot handle a join request outside their school"""
-        self.client.login_as(self.admin_school2_teacher_user)
-
-        viewname = self.reverse_action(
-            "handle-join-class-request", kwargs={"pk": self.indy_user.pk}
-        )
-
-        response = self.client.patch(
-            viewname,
-            data={"accept": False},
-            status_code_assertion=status.HTTP_400_BAD_REQUEST,
-            format="json",
-        )
-
-        assert response.data["non_field_errors"] == [
-            "This class join request is not in your school."
-        ]
-
-        self.indy_user.refresh_from_db()
-        assert self.indy_user.new_student.pending_class_request == self.class_2
-
-    def test_handle_join_class_request__invalid_class(self):
-        """Non-admin teacher cannot reject a join request outside their class"""
-        self.client.login_as(self.non_admin_school_teacher_user)
-
-        viewname = self.reverse_action(
-            "handle-join-class-request", kwargs={"pk": self.indy_user.pk}
-        )
-
-        response = self.client.patch(
-            viewname,
-            data={"accept": False},
-            status_code_assertion=status.HTTP_400_BAD_REQUEST,
-            format="json",
-        )
-
-        assert response.data["non_field_errors"] == [
-            "This class join request is not for one for your classes."
-        ]
-
-        self.indy_user.refresh_from_db()
-        assert self.indy_user.new_student.pending_class_request == self.class_2
-
-    def test_handle_join_class_request__invalid_accept(self):
-        """Teacher cannot handle join class request with wrong accept type"""
+    def test_independents__handle_join_class_request__accept(self):
+        """Teacher can successfully accept a class join request."""
         self.client.login_as(self.admin_school_teacher_user)
 
         viewname = self.reverse_action(
-            "handle-join-class-request", kwargs={"pk": self.indy_user.pk}
-        )
-
-        response = self.client.patch(
-            viewname,
-            data={"accept": "lol"},
-            status_code_assertion=status.HTTP_400_BAD_REQUEST,
-            format="json",
-        )
-
-        assert response.data["non_field_errors"] == [
-            "Invalid type for accept - must be True or False."
-        ]
-
-        self.indy_user.refresh_from_db()
-        assert self.indy_user.new_student.pending_class_request == self.class_2
-
-    def test_handle_join_class_request__missing_accept(self):
-        """Teacher cannot handle join class request with missing accept"""
-        self.client.login_as(self.admin_school_teacher_user)
-
-        viewname = self.reverse_action(
-            "handle-join-class-request", kwargs={"pk": self.indy_user.pk}
-        )
-
-        response = self.client.patch(
-            viewname,
-            data={},
-            status_code_assertion=status.HTTP_400_BAD_REQUEST,
-            format="json",
-        )
-
-        assert response.data["non_field_errors"] == [
-            "Accept field is required."
-        ]
-
-        self.indy_user.refresh_from_db()
-        assert self.indy_user.new_student.pending_class_request == self.class_2
-
-    def test_handle_join_class_request__reject(self):
-        """Teacher can successfully reject a join class request."""
-        self.client.login_as(self.admin_school_teacher_user)
-
-        viewname = self.reverse_action(
-            "handle-join-class-request", kwargs={"pk": self.indy_user.pk}
-        )
-
-        self.client.patch(
-            viewname,
-            data={"accept": False},
-            status_code_assertion=status.HTTP_200_OK,
-            format="json",
-        )
-
-        self.indy_user.refresh_from_db()
-        assert self.indy_user.new_student.pending_class_request is None
-
-    def test_handle_join_class_request__accept__invalid_first_name(self):
-        """Teacher cannot accept a join class request with invalid name"""
-        self.client.login_as(self.admin_school_teacher_user)
-
-        viewname = self.reverse_action(
-            "handle-join-class-request", kwargs={"pk": self.indy_user.pk}
-        )
-
-        response = self.client.patch(
-            viewname,
-            data={"accept": True, "first_name": 1},
-            status_code_assertion=status.HTTP_400_BAD_REQUEST,
-            format="json",
-        )
-
-        assert response.data["first_name"] == ["First name must be a string."]
-
-        self.indy_user.refresh_from_db()
-        assert self.indy_user.new_student.pending_class_request == self.class_2
-
-    def test_handle_join_class_request__accept__missing_first_name(self):
-        """Teacher cannot accept a join class request with missing name"""
-        self.client.login_as(self.admin_school_teacher_user)
-
-        viewname = self.reverse_action(
-            "handle-join-class-request", kwargs={"pk": self.indy_user.pk}
-        )
-
-        response = self.client.patch(
-            viewname,
-            data={"accept": True},
-            status_code_assertion=status.HTTP_400_BAD_REQUEST,
-            format="json",
-        )
-
-        assert response.data["first_name"] == ["This field is required."]
-
-        self.indy_user.refresh_from_db()
-        assert self.indy_user.new_student.pending_class_request == self.class_2
-
-    def test_handle_join_class_request__accept__duplicate_first_name(self):
-        """Teacher cannot accept a join class request with duplicate name"""
-        self.client.login_as(self.admin_school_teacher_user)
-
-        viewname = self.reverse_action(
-            "handle-join-class-request", kwargs={"pk": self.indy_user.pk}
-        )
-
-        response = self.client.patch(
-            viewname,
-            data={
-                "accept": True,
-                "first_name": self.class_2.students.first().new_user.first_name,
+            "independents--handle-join-class-request",
+            kwargs={
+                "pk": self.indy_user.pk,
             },
-            status_code_assertion=status.HTTP_400_BAD_REQUEST,
-            format="json",
         )
 
-        assert response.data["first_name"] == [
-            "This name already exists in the class. "
-            "Please choose a different name."
-        ]
+        self.client.patch(viewname, data={"accept": True})
 
-        self.indy_user.refresh_from_db()
-        assert self.indy_user.new_student.pending_class_request == self.class_2
-
-    def test_handle_join_class_request__accept(self):
-        """Teacher can successfully accept a join class request."""
-        self.client.login_as(self.admin_school_teacher_user)
-
-        indy_email = self.indy_user.email
-
-        viewname = self.reverse_action(
-            "handle-join-class-request", kwargs={"pk": self.indy_user.pk}
-        )
-
-        self.client.patch(
-            viewname,
-            data={
-                "accept": True,
-                "first_name": self.indy_user.first_name,
-            },
-            status_code_assertion=status.HTTP_200_OK,
-            format="json",
-        )
+        username = self.indy_user.username
 
         self.indy_user.refresh_from_db()
 
-        assert self.indy_user.new_student.class_field == self.class_2
         assert self.indy_user.new_student.pending_class_request is None
+        assert self.indy_user.new_student.class_field == self.class_1
         assert self.indy_user.last_name == ""
         assert self.indy_user.email == ""
-        assert self.indy_user.username != indy_email
+        assert self.indy_user.username != username
+
+    def test_independents__handle_join_class_request__reject(self):
+        """Teacher can successfully reject a class join request."""
+        self.client.login_as(self.admin_school_teacher_user)
+
+        viewname = self.reverse_action(
+            "independents--handle-join-class-request",
+            kwargs={
+                "pk": self.indy_user.pk,
+            },
+        )
+
+        self.client.patch(viewname, data={"accept": False})
+
+        self.indy_user.refresh_from_db()
+
+        assert self.indy_user.new_student.pending_class_request is None
+        assert self.indy_user.new_student.class_field is None
 
     # test: reset password actions
 
@@ -663,11 +546,11 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
     def test_partial_update__indy__send_join_request(self):
         """Independent user can request to join a class."""
-        self.client.login_as(self.indy_user)
+        self.client.login_as(self.no_join_request_indy_user)
 
         self.client.partial_update(
-            self.indy_user,
-            {"requesting_to_join_class": self.class_2.access_code},
+            self.no_join_request_indy_user,
+            {"requesting_to_join_class": self.class_1.access_code},
         )
 
     def test_partial_update__indy__revoke_join_request(self):

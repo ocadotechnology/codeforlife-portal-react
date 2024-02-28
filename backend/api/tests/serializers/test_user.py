@@ -3,9 +3,19 @@
 Created on 31/01/2024 at 16:07:32(+00:00).
 """
 from codeforlife.tests import ModelSerializerTestCase
-from codeforlife.user.models import Class, IndependentUser, Student, StudentUser, User
+from codeforlife.user.models import (
+    Class,
+    IndependentUser,
+    Student,
+    StudentUser,
+    User,
+)
 
-from ...serializers import ReleaseStudentUserSerializer, UserSerializer
+from ...serializers import (
+    HandleIndependentUserJoinClassRequestSerializer,
+    ReleaseStudentUserSerializer,
+    UserSerializer,
+)
 
 # pylint: disable=missing-class-docstring
 
@@ -15,8 +25,10 @@ class TestUserSerializer(ModelSerializerTestCase[User]):
     fixtures = ["independent", "school_1"]
 
     def setUp(self):
-        self.independent = IndependentUser.objects.get(email="indy@man.com")
-        self.class_1 = Class.objects.get(name="Class 1 @ School 1")
+        self.independent = IndependentUser.objects.get(
+            email="indy.requester@email.com"
+        )
+        self.class_2 = Class.objects.get(name="Class 2 @ School 1")
         self.class_3 = Class.objects.get(name="Class 3 @ School 1")
 
     def test_validate__first_name_not_unique_per_class_in_data(self):
@@ -67,6 +79,63 @@ class TestUserSerializer(ModelSerializerTestCase[User]):
             many=True,
         )
 
+    def test_validate__teacher__first_name_required(self):
+        """Teacher must have a first name"""
+        self.assert_validate(
+            attrs={"new_teacher": {}}, error_code="last_name_required"
+        )
+
+    def test_validate__teacher__requesting_to_join_class_forbidden(self):
+        """Teacher cannot request to join a class"""
+        self.assert_validate(
+            attrs={
+                "last_name": "Name",
+                "new_teacher": {},
+                "requesting_to_join_class": "AAAAA",
+            },
+            error_code="teacher_cannot_request_to_join_class",
+        )
+
+    def test_validate__student__requesting_to_join_class_and_class_field_forbidden(
+        self,
+    ):
+        """Student cannot have both requesting_to_join_class and class_field"""
+        self.assert_validate(
+            attrs={
+                "new_student": {"class_field": "AAAAA"},
+                "requesting_to_join_class": "BBBBB",
+            },
+            error_code="class_and_join_class_mutually_exclusive",
+        )
+
+    def test_validate_requesting_to_join_class__does_not_exist(self):
+        """Join class request cannot be for a class that doesn't exist"""
+        self.assert_validate_field(
+            name="requesting_to_join_class",
+            value="AAAAA",
+            error_code="does_not_exist_or_accept_join_requests",
+        )
+
+    def test_validate_requesting_to_join_class__does_not_accept_requests(self):
+        """
+        Join class request cannot be for a class that doesn't accept requests
+        """
+        self.assert_validate_field(
+            name="requesting_to_join_class",
+            value=self.class_2.access_code,
+            error_code="does_not_exist_or_accept_join_requests",
+        )
+
+    def test_validate_requesting_to_join_class__no_longer_accept_requests(self):
+        """
+        Join class request cannot be for a class that no longer accepts requests
+        """
+        self.assert_validate_field(
+            name="requesting_to_join_class",
+            value=self.class_3.access_code,
+            error_code="does_not_exist_or_accept_join_requests",
+        )
+
 
 class TestReleaseStudentUserSerializer(ModelSerializerTestCase[StudentUser]):
     model_serializer_class = ReleaseStudentUserSerializer
@@ -94,60 +163,49 @@ class TestReleaseStudentUserSerializer(ModelSerializerTestCase[StudentUser]):
             new_data=[{"student": {"class_field": None}}],
         )
 
-    def test_validate__teacher__first_name_required(self):
-        """Teacher must have a first name"""
-        self.assert_validate(
-            attrs={"new_teacher": {}}, error_code="last_name_required"
+
+class TestHandleIndependentUserJoinClassRequestSerializer(
+    ModelSerializerTestCase[IndependentUser]
+):
+    model_serializer_class = HandleIndependentUserJoinClassRequestSerializer
+    fixtures = ["independent", "school_1", "school_2"]
+
+    def setUp(self):
+        indy_user = IndependentUser.objects.get(
+            email="indy.requester@email.com"
+        )
+        assert indy_user
+        self.indy_user = indy_user
+        self.class_1 = Class.objects.get(name="Class 1 @ School 1")
+
+    def test_validate_first_name(self):
+        """Cannot accept a new student into a class with a duplicate name."""
+        user_fields = (
+            StudentUser.objects.filter(new_student__class_field=self.class_1)
+            .values("first_name")
+            .first()
+        )
+        assert user_fields
+
+        self.assert_validate_field(
+            "first_name",
+            user_fields["first_name"],
+            error_code="first_name_in_class",
+            instance=self.indy_user,
         )
 
-    def test_validate__teacher__requesting_to_join_class_forbidden(self):
-        """Teacher cannot request to join a class"""
-        self.assert_validate(
-            attrs={
-                "last_name": "Name",
-                "new_teacher": {},
-                "requesting_to_join_class": "AAAAA",
+    def test_update(self):
+        """The indy-user becomes a student-user."""
+        self.assert_update(
+            self.indy_user,
+            {"accept": True},
+            new_data={
+                "last_name": "",
+                "email": "",
+                "student": {
+                    "pending_class_request": None,
+                    "class_field": self.class_1.pk,
+                },
             },
-            error_code="teacher_cannot_request_to_join_class",
+            non_model_fields=["accept"],
         )
-
-    def test_validate__student__requesting_to_join_class_and_class_field_forbidden(
-            self,
-    ):
-        """Student cannot have both requesting_to_join_class and class_field"""
-        self.assert_validate(
-            attrs={
-                "new_student": {"class_field": "AAAAA"},
-                "requesting_to_join_class": "BBBBB",
-            },
-            error_code="class_and_join_class_mutually_exclusive",
-        )
-
-    def test_validate_requesting_to_join_class__does_not_exist(self):
-        """Join class request cannot be for a class that doesn't exist"""
-        self.assert_validate_field(
-            name="requesting_to_join_class",
-            value="AAAAA",
-            error_code="does_not_exist_or_accept_join_requests",
-        )
-
-    def test_validate_requesting_to_join_class__does_not_accept_requests(self):
-        """
-        Join class request cannot be for a class that doesn't accept requests
-        """
-        self.assert_validate_field(
-            name="requesting_to_join_class",
-            value=self.class_1.access_code,
-            error_code="does_not_exist_or_accept_join_requests",
-        )
-
-    def test_validate_requesting_to_join_class__no_longer_accept_requests(self):
-        """
-        Join class request cannot be for a class that no longer accepts requests
-        """
-        self.assert_validate_field(
-            name="requesting_to_join_class",
-            value=self.class_3.access_code,
-            error_code="does_not_exist_or_accept_join_requests",
-        )
-

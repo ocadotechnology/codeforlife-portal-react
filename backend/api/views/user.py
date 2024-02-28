@@ -10,8 +10,8 @@ from codeforlife.request import Request
 from codeforlife.types import DataDict
 from codeforlife.user.models import (
     Class,
+    IndependentUser,
     SchoolTeacher,
-    Student,
     StudentUser,
     User,
 )
@@ -21,13 +21,16 @@ from django.contrib.auth.tokens import (
     PasswordResetTokenGenerator,
     default_token_generator,
 )
-from django.utils.crypto import get_random_string
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
-from ..serializers import ReleaseStudentUserSerializer, UserSerializer
+from ..serializers import (
+    HandleIndependentUserJoinClassRequestSerializer,
+    ReleaseStudentUserSerializer,
+    UserSerializer,
+)
 
 # NOTE: type hint to help Intellisense.
 default_token_generator: PasswordResetTokenGenerator = default_token_generator
@@ -43,7 +46,7 @@ class UserViewSet(_UserViewSet):
             return [OR(IsTeacher(), IsIndependent())]
         if self.action in [
             "bulk",
-            "handle_join_class_request",
+            "independents__handle_join_class_request",
             "students__reset_password",
             "students__release",
         ]:
@@ -61,10 +64,21 @@ class UserViewSet(_UserViewSet):
     def get_serializer_class(self):
         if self.action == "students__release":
             return ReleaseStudentUserSerializer
+        if self.action == "independents__handle_join_class_request":
+            return HandleIndependentUserJoinClassRequestSerializer
 
         return super().get_serializer_class()
 
     def get_queryset(self, user_class=User):
+        if self.action == "independents__handle_join_class_request":
+            return IndependentUser.objects.filter(
+                new_student__pending_class_request__in=Class.objects.filter(
+                    teacher__school=self.request.school_teacher_user.teacher.school
+                )
+                if self.request.school_teacher_user.teacher.is_admin
+                else self.request.school_teacher_user.teacher.class_teacher.all()
+            )
+
         queryset = super().get_queryset(user_class)
         if self.action == "destroy":
             queryset = queryset.filter(pk=self.request.auth_user.pk)
@@ -126,12 +140,7 @@ class UserViewSet(_UserViewSet):
         url_path="reset-password/(?P<token>.+)",
         permission_classes=[AllowAny],
     )
-    def reset_password(
-        self,
-        request: Request,
-        pk: t.Optional[str] = None,
-        token: t.Optional[str] = None,
-    ):
+    def reset_password(self, request: Request, pk: str, token: str):
         """
         Handles password reset for a user. On GET, checks validity of user PK
         and token. On PATCH, rechecks these params and performs new password
@@ -246,10 +255,12 @@ class UserViewSet(_UserViewSet):
         return Response(serializer.data)
 
     @action(
-        detail=True, methods=["patch"], url_path="handle-join-class-request"
+        detail=True,
+        methods=["patch"],
+        url_path="independents/handle-join-class-request",
     )
-    def handle_join_class_request(
-        self, request: Request, pk: t.Optional[str] = None
+    def independents__handle_join_class_request(
+        self, request: Request, pk: str
     ):
         """
         Handles an independent user's request to join a class. First tries to
@@ -261,114 +272,13 @@ class UserViewSet(_UserViewSet):
         then the request must contain the new student's first_name, ensuring
         that it is unique in the class.
         """
-        try:
-            indy = User.objects.get(pk=int(pk))
-        except (ValueError, Student.DoesNotExist):
-            return Response(
-                {"non_field_errors": ["No user found for given ID."]},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        klass = Class.objects.get(
-            access_code=indy.student.pending_class_request.access_code
+        serializer = self.get_serializer(
+            self.get_object(),
+            data=request.data,
+            context=self.get_serializer_context(),
         )
 
-        if klass.teacher.school != request.user.new_teacher.school:
-            return Response(
-                {
-                    "non_field_errors": [
-                        "This class join request is not in your school."
-                    ]
-                },
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
 
-        if (
-            not request.user.new_teacher.is_admin
-            and klass.teacher != request.user.new_teacher
-        ):
-            return Response(
-                {
-                    "non_field_errors": [
-                        "This class join request is not for "
-                        "one for your classes."
-                    ]
-                },
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        try:
-            if not isinstance(request.data["accept"], bool):
-                return Response(
-                    {
-                        "non_field_errors": [
-                            "Invalid type for accept - must be True or False."
-                        ]
-                    },
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-        except KeyError:
-            return Response(
-                {"non_field_errors": ["Accept field is required."]},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        request_accepted = request.data["accept"]
-
-        if request_accepted:
-            try:
-                if not isinstance(request.data["first_name"], str):
-                    return Response(
-                        {"first_name": ["First name must be a string."]},
-                        status=status.HTTP_400_BAD_REQUEST,
-                    )
-            except KeyError:
-                return Response(
-                    {"first_name": ["This field is required."]},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-
-            name = request.data["first_name"]
-            if self._is_name_unique_in_class(name, klass):
-                indy.student.class_field = indy.student.pending_class_request
-                indy.student.pending_class_request = None
-
-                username = None
-
-                while (
-                    username is None
-                    or User.objects.filter(username=username).exists()
-                ):
-                    username = get_random_string(length=30)
-
-                indy.username = username
-                indy.first_name = name
-                indy.last_name = ""
-                indy.email = ""
-
-                indy.student.save()
-                indy.save()
-            else:
-                return Response(
-                    {
-                        "first_name": [
-                            "This name already exists in the class. "
-                            "Please choose a different name."
-                        ]
-                    },
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-        else:
-            indy.student.pending_class_request = None
-            indy.student.save()
-
-            # TODO: Send independent user an email notifying them that their
-            #  request has been rejected.
-
-        return Response()
-
-    def _is_name_unique_in_class(self, name: str, klass: Class) -> bool:
-        """Check if a user's name is unique in a class"""
-        return not Student.objects.filter(
-            class_field=klass, new_user__first_name__iexact=name
-        ).exists()
+        return Response(serializer.data)

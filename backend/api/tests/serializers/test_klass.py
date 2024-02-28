@@ -19,6 +19,7 @@ class TestClassSerializer(ModelSerializerTestCase[Class]):
             email="teacher@school1.com"
         )
         self.class_1 = Class.objects.get(name="Class 1 @ School 1")
+        self.class_2 = Class.objects.get(name="Class 2 @ School 1")
 
     def test_validate_teacher__does_not_exist(self):
         """Teacher must exist."""
@@ -81,6 +82,13 @@ class TestClassSerializer(ModelSerializerTestCase[Class]):
                     user=self.school_teacher_user
                 )
             },
+        )
+
+    def test_update__set_accept_requests_until(self):
+        """Can successfully set the class' accept requests until field."""
+        self.assert_update(
+            self.class_2,
+            {"accept_requests_until": "9999-02-09 20:26:08.298402+00:00"},
         )
 
     def test_create__teacher(self):
