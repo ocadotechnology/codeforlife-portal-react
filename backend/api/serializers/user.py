@@ -361,7 +361,7 @@ class HandleIndependentUserJoinClassRequestSerializer(
     def validate_first_name(self, value: str):
         if Student.objects.filter(
             class_field=self.instance.student.pending_class_request,
-            new_user__first_name__iexact=value,  # TODO: Check case sensitivity
+            new_user__first_name__iexact=value,
         ).exists():
             raise serializers.ValidationError(
                 "This name already exists in the class. "
