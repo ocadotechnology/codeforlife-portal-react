@@ -1,0 +1,12 @@
+{
+  "folders": [
+    {
+      "path": ".",
+      "name": "portal-react"
+    },
+    {
+      "path": "../codeforlife-package-python",
+      "name": "package-python"
+    }
+  ]
+}
