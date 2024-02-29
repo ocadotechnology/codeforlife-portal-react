@@ -244,6 +244,15 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
             ),
         )
 
+    def test_get_queryset__partial_update__student(self):
+        """Updating a student can only target the user making the request if
+        the user is a student."""
+        return self.assert_get_queryset(
+            [self.indy_user],
+            action="partial__update",
+            request=self.client.request_factory.patch(user=self.indy_user),
+        )
+
     # test: bulk actions
 
     def test_bulk_create__students(self):

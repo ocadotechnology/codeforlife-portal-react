@@ -153,12 +153,6 @@ class UserSerializer(_UserSerializer[User]):
                     raise teacher_cannot_request_join_class_error
 
             if self.instance.student:
-                if self.view.action != "reset_password":
-                    if self.request.student_user.pk != self.instance.pk:
-                        raise serializers.ValidationError(
-                            "Cannot update another student.", code="is_not_self"
-                        )
-
                 if (
                     self.instance.student.class_field is not None
                     and "requesting_to_join_class" in attrs

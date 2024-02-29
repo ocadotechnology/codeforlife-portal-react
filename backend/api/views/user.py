@@ -80,7 +80,9 @@ class UserViewSet(_UserViewSet):
             )
 
         queryset = super().get_queryset(user_class)
-        if self.action == "destroy":
+        if self.action == "destroy" or (
+            self.action == "partial_update" and self.request.auth_user.student
+        ):
             queryset = queryset.filter(pk=self.request.auth_user.pk)
         elif self.action in [
             "students__reset_password",
