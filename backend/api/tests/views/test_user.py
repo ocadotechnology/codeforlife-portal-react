@@ -558,7 +558,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         self.client.login_as(self.indy_user)
 
         self.client.partial_update(
-            self.indy_user, {"requesting_to_join_class": ""}
+            self.indy_user, {"requesting_to_join_class": None}
         )
 
     def assert_user_is_anonymized(self, user: User):

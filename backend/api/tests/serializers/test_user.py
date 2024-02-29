@@ -190,7 +190,7 @@ class TestHandleIndependentUserJoinClassRequestSerializer(
         self.assert_validate_field(
             "first_name",
             user_fields["first_name"],
-            error_code="first_name_in_class",
+            error_code="already_in_class",
             instance=self.indy_user,
         )
 

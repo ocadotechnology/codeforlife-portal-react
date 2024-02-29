@@ -262,16 +262,7 @@ class UserViewSet(_UserViewSet):
     def independents__handle_join_class_request(
         self, request: Request, pk: str
     ):
-        """
-        Handles an independent user's request to join a class. First tries to
-        retrieve the independent user, then the class they're requesting to
-        join. The teacher handling the request must either be an admin in the
-        class' school, or the teacher of that specific school. The request
-        must then specify whether the teacher accepts or rejects the join
-        request by setting the boolean "accept". If "accept" is True,
-        then the request must contain the new student's first_name, ensuring
-        that it is unique in the class.
-        """
+        """Handle an independent user's request to join a class."""
         serializer = self.get_serializer(
             self.get_object(),
             data=request.data,

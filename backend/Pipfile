@@ -7,7 +7,7 @@ name = "pypi"
 # Before adding a new package, check it's not listed under [packages] at
 #   https://github.com/ocadotechnology/codeforlife-package-python/blob/{ref}/Pipfile
 # Replace "{ref}" in the above URL with the ref set below.
-codeforlife = {ref = "fixtures_fix", git = "https://github.com/ocadotechnology/codeforlife-package-python.git"}
+codeforlife = {ref = "0.14.4", git = "https://github.com/ocadotechnology/codeforlife-package-python.git"}
 # TODO: check if we need the below packages
 whitenoise = "==6.5.0"
 django-pipeline = "==2.0.8"
@@ -34,7 +34,7 @@ google-cloud-container = "==2.3.0"
 # Before adding a new package, check it's not listed under [dev-packages] at
 #   https://github.com/ocadotechnology/codeforlife-package-python/blob/{ref}/Pipfile
 # Replace "{ref}" in the above URL with the ref set below.
-codeforlife = {ref = "fixtures_fix", git = "https://github.com/ocadotechnology/codeforlife-package-python.git", extras = ["dev"]}
+codeforlife = {ref = "0.14.4", git = "https://github.com/ocadotechnology/codeforlife-package-python.git", extras = ["dev"]}
 # TODO: check if we need the below packages
 django-selenium-clean = "==0.3.3"
 django-test-migrations = "==1.2.0"
