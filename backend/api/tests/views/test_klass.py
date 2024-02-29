@@ -2,22 +2,28 @@
 © Ocado Group
 Created on 05/02/2024 at 16:13:46(+00:00).
 """
+import typing as t
 from datetime import timedelta
 
 from codeforlife.permissions import OR, AllowNone
 from codeforlife.tests import ModelViewSetTestCase
-from codeforlife.user.models import Class, Teacher
+from codeforlife.user.models import AdminSchoolTeacherUser, Class, Teacher
 from codeforlife.user.permissions import IsStudent, IsTeacher
 from django.utils import timezone
 
 from ...views import ClassViewSet
 
 
-# pylint: disable-next=missing-class-docstring
+# pylint: disable-next=missing-class-docstring,too-many-ancestors
 class TestClassViewSet(ModelViewSetTestCase[Class]):
     basename = "class"
     model_view_set_class = ClassViewSet
     fixtures = ["school_1"]
+
+    def setUp(self):
+        self.admin_school_teacher_user = AdminSchoolTeacherUser.objects.get(
+            email="admin.teacher@school1.com"
+        )
 
     # test: get permissions
 
@@ -76,12 +82,13 @@ class TestClassViewSet(ModelViewSetTestCase[Class]):
             action="retrieve",
         )
 
+    # test: default actions
+
     def test_create__self(self):
         """Teacher can create a class with themselves as the class owner."""
-        user = self.client.login_school_teacher(
-            email="teacher@school1.com",
-            password="password",
-        )
+        user = self.admin_school_teacher_user
+
+        self.client.login_as(user)
 
         self.client.create(
             {
@@ -94,12 +101,11 @@ class TestClassViewSet(ModelViewSetTestCase[Class]):
 
     def test_create__other(self):
         """
-        Teacher can create a class with another teacher as the class owner.
+        Admin-teacher can create a class with another teacher as the class owner.
         """
-        user = self.client.login_admin_school_teacher(
-            email="admin.teacher@school1.com",
-            password="password",
-        )
+        user = self.admin_school_teacher_user
+
+        self.client.login_as(user)
 
         teacher = (
             Teacher.objects.filter(school=user.teacher.school)
@@ -117,3 +123,22 @@ class TestClassViewSet(ModelViewSetTestCase[Class]):
                 "teacher": teacher.id,
             },
         )
+
+    def test_partial_update__teacher(self):
+        """Teacher can transfer a class to another teacher."""
+        user = self.admin_school_teacher_user
+
+        self.client.login_as(user)
+
+        klass = t.cast(t.Optional[Class], user.teacher.class_teacher.first())
+        assert klass
+
+        teacher = t.cast(
+            Teacher,
+            user.teacher.school.teacher_school.exclude(
+                pk=user.teacher.pk
+            ).first(),
+        )
+        assert teacher
+
+        self.client.partial_update(model=klass, data={"teacher": teacher.pk})

@@ -13,11 +13,6 @@ from rest_framework import serializers
 
 # pylint: disable-next=missing-class-docstring,too-many-ancestors
 class ClassSerializer(_ClassSerializer):
-    teacher = serializers.IntegerField(
-        source="teacher.id",
-        required=False,
-    )
-
     read_classmates_data = serializers.BooleanField(
         source="classmates_data_viewable",
     )
@@ -31,26 +26,20 @@ class ClassSerializer(_ClassSerializer):
         extra_kwargs = {
             **_ClassSerializer.Meta.extra_kwargs,
             "name": {"read_only": False},
+            "teacher": {"required": False},
         }
 
     # pylint: disable-next=missing-function-docstring
-    def validate_teacher(self, value: int):
-        queryset = Teacher.objects.filter(id=value)
-        if not queryset.exists():
-            raise serializers.ValidationError(
-                "This teacher does not exist.",
-                code="does_not_exist",
-            )
-
+    def validate_teacher(self, value: Teacher):
         user = self.request.school_teacher_user
-        if not queryset.filter(school=user.teacher.school_id).exists():
+        if value.school_id != user.teacher.school_id:
             raise serializers.ValidationError(
                 "This teacher is not in your school.",
                 code="not_in_school",
             )
-        if value != user.teacher.id and not user.teacher.is_admin:
+        if value != user.teacher and not user.teacher.is_admin:
             raise serializers.ValidationError(
-                "Cannot assign another teacher if you're not admin.",
+                "Cannot assign another teacher if you're not an admin.",
                 code="not_admin",
             )
 
@@ -87,10 +76,10 @@ class ClassSerializer(_ClassSerializer):
             {
                 "access_code": access_code,
                 "name": validated_data["name"],
-                "teacher_id": (
-                    validated_data["teacher"]["id"]
+                "teacher": (
+                    validated_data["teacher"]
                     if "teacher" in validated_data
-                    else self.request.school_teacher_user.teacher.id
+                    else self.request.school_teacher_user.teacher
                 ),
                 "classmates_data_viewable": validated_data[
                     "classmates_data_viewable"
