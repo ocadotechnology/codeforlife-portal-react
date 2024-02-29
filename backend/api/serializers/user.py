@@ -2,7 +2,6 @@
 © Ocado Group
 Created on 18/01/2024 at 15:14:32(+00:00).
 """
-
 import typing as t
 from itertools import groupby
 
@@ -25,7 +24,6 @@ from rest_framework import serializers
 
 from .student import StudentSerializer
 from .teacher import TeacherSerializer
-
 
 # pylint: disable=missing-class-docstring,too-many-ancestors
 
