@@ -31,8 +31,8 @@
       ],
       "django": true,
       "env": {
-        "SERVICE_NAME": "portal",
-        "SERVICE_IS_ROOT": "1"
+        "SERVICE_IS_ROOT": "1",
+        "SERVICE_NAME": "portal"
       },
       "justMyCode": false,
       "name": "Django Server",
