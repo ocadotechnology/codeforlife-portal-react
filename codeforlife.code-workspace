@@ -8,5 +8,11 @@
       "name": "package-python",
       "path": "../codeforlife-package-python"
     }
-  ]
+  ],
+  "settings": {
+    "autoDocstring.customTemplatePath": ".vscode/extensions/autoDocstring/docstring.mustache",
+    "workbench.colorCustomizations": {
+      "editorRuler.foreground": "#008000"
+    }
+  }
 }
