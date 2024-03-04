@@ -30,6 +30,10 @@
         "localhost:8000"
       ],
       "django": true,
+      "env": {
+        "SERVICE_NAME": "portal",
+        "SERVICE_IS_ROOT": "1"
+      },
       "justMyCode": false,
       "name": "Django Server",
       "preLaunchTask": "migrate-db",
