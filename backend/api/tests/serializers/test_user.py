@@ -4,6 +4,7 @@ Created on 31/01/2024 at 16:07:32(+00:00).
 """
 from codeforlife.tests import ModelSerializerTestCase
 from codeforlife.user.models import (
+    AdminSchoolTeacherUser,
     Class,
     IndependentUser,
     Student,
@@ -27,6 +28,9 @@ class TestUserSerializer(ModelSerializerTestCase[User]):
     def setUp(self):
         self.independent = IndependentUser.objects.get(
             email="indy.requester@email.com"
+        )
+        self.admin_school_teacher_user = AdminSchoolTeacherUser.objects.get(
+            email="admin.teacher@school1.com",
         )
         self.class_2 = Class.objects.get(name="Class 2 @ School 1")
         self.class_3 = Class.objects.get(name="Class 3 @ School 1")
@@ -79,21 +83,40 @@ class TestUserSerializer(ModelSerializerTestCase[User]):
             many=True,
         )
 
-    def test_validate__teacher__first_name_required(self):
-        """Teacher must have a first name"""
+    def test_validate__create__teacher__last_name_required(self):
+        """Teacher's last name is required during creation."""
         self.assert_validate(
-            attrs={"new_teacher": {}}, error_code="last_name_required"
+            attrs={"new_teacher": {}}, error_code="last_name__required"
         )
 
-    def test_validate__teacher__requesting_to_join_class_forbidden(self):
-        """Teacher cannot request to join a class"""
+    def test_validate__create__teacher__requesting_to_join_class(self):
+        """Teacher cannot request to join a class on creation."""
         self.assert_validate(
             attrs={
                 "last_name": "Name",
                 "new_teacher": {},
                 "requesting_to_join_class": "AAAAA",
             },
-            error_code="teacher_cannot_request_to_join_class",
+            error_code="requesting_to_join_class__teacher",
+        )
+
+    def test_validate__update__teacher__requesting_to_join_class(self):
+        """Teacher cannot request to join a class on update."""
+        self.assert_validate(
+            attrs={
+                "last_name": "Name",
+                "new_teacher": {},
+                "requesting_to_join_class": "AAAAA",
+            },
+            error_code="requesting_to_join_class__teacher",
+            parent=UserSerializer(
+                instance=self.admin_school_teacher_user,
+                context={
+                    "request": self.request_factory.patch(
+                        user=self.admin_school_teacher_user
+                    ),
+                },
+            ),
         )
 
     def test_validate__student__requesting_to_join_class_and_class_field_forbidden(
@@ -109,31 +132,33 @@ class TestUserSerializer(ModelSerializerTestCase[User]):
         )
 
     def test_validate_requesting_to_join_class__does_not_exist(self):
-        """Join class request cannot be for a class that doesn't exist"""
+        """Student cannot request to join a class which doesn't exist."""
         self.assert_validate_field(
             name="requesting_to_join_class",
             value="AAAAA",
-            error_code="does_not_exist_or_accept_join_requests",
+            error_code="does_not_exist",
         )
 
     def test_validate_requesting_to_join_class__does_not_accept_requests(self):
         """
-        Join class request cannot be for a class that doesn't accept requests
+        Student cannot request to join a class which doesn't accept requests.
         """
         self.assert_validate_field(
             name="requesting_to_join_class",
             value=self.class_2.access_code,
-            error_code="does_not_exist_or_accept_join_requests",
+            error_code="does_not_accept_requests",
         )
 
-    def test_validate_requesting_to_join_class__no_longer_accept_requests(self):
+    def test_validate_requesting_to_join_class__no_longer_accepts_requests(
+        self,
+    ):
         """
-        Join class request cannot be for a class that no longer accepts requests
+        Student cannot request to join a class which no longer accepts requests.
         """
         self.assert_validate_field(
             name="requesting_to_join_class",
             value=self.class_3.access_code,
-            error_code="does_not_exist_or_accept_join_requests",
+            error_code="no_longer_accepts_requests",
         )
 
 

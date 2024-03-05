@@ -122,13 +122,9 @@ class UserSerializer(_UserSerializer[User]):
         list_serializer_class = UserListSerializer
 
     def validate(self, attrs):
-        last_name_required_error = serializers.ValidationError(
-            "Last name is required.", code="last_name_required"
-        )
-
-        teacher_cannot_request_join_class_error = serializers.ValidationError(
+        requesting_to_join_class__teacher_error = serializers.ValidationError(
             "Teacher can't request to join a class.",
-            code="teacher_cannot_request_to_join_class",
+            code="requesting_to_join_class__teacher",
         )
 
         student_cannot_request_join_class_error = serializers.ValidationError(
@@ -144,13 +140,10 @@ class UserSerializer(_UserSerializer[User]):
                 pass
 
             if self.instance.teacher:
-                if "last_name" in attrs and not attrs["last_name"]:
-                    raise last_name_required_error
-
                 if "requesting_to_join_class" in attrs:
-                    raise teacher_cannot_request_join_class_error
+                    raise requesting_to_join_class__teacher_error
 
-            if self.instance.student:
+            elif self.instance.student:
                 if (
                     self.instance.student.class_field is not None
                     and "requesting_to_join_class" in attrs
@@ -170,10 +163,12 @@ class UserSerializer(_UserSerializer[User]):
                 )
             if "new_teacher" in attrs:
                 if not attrs.get("last_name"):
-                    raise last_name_required_error
+                    raise serializers.ValidationError(
+                        "Last name is required.", code="last_name__required"
+                    )
 
                 if "requesting_to_join_class" in attrs:
-                    raise teacher_cannot_request_join_class_error
+                    raise requesting_to_join_class__teacher_error
 
             elif "new_student" in attrs:
                 if (
@@ -207,22 +202,23 @@ class UserSerializer(_UserSerializer[User]):
         # NOTE: Error message is purposefully ambiguous to prevent class
         # enumeration.
         error_message = "Class does not exist or does not accept join requests."
-        error_code = "does_not_exist_or_accept_join_requests"
 
         if value is not None:
             try:
                 klass = Class.objects.get(access_code=value)
             except Class.DoesNotExist as ex:
                 raise serializers.ValidationError(
-                    error_message, code=error_code
+                    error_message, code="does_not_exist"
                 ) from ex
 
-            if (
-                klass.accept_requests_until is None
-                or klass.accept_requests_until < timezone.now()
-            ):
+            if klass.accept_requests_until is None:
                 raise serializers.ValidationError(
-                    error_message, code=error_code
+                    error_message, code="does_not_accept_requests"
+                )
+
+            if klass.accept_requests_until < timezone.now():
+                raise serializers.ValidationError(
+                    error_message, code="no_longer_accepts_requests"
                 )
 
         return value
@@ -316,6 +312,7 @@ class ReleaseStudentUserSerializer(_UserSerializer[StudentUser]):
 
     class Meta(_UserSerializer.Meta):
         extra_kwargs = {
+            **_UserSerializer.Meta.extra_kwargs,
             "first_name": {
                 "min_length": 1,
                 "read_only": False,
