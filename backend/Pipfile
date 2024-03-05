@@ -3,11 +3,28 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 name = "pypi"
 
+## ℹ️ HOW-TO: Make the python-package editable.
+#
+# 1. Comment out the git-codeforlife package under [packages].
+# 2. Comment out the git-codeforlife package under [dev-packages].
+# 3. Uncomment the editable-codeforlife package under [dev-packages].
+# 4. Run `pipenv install --dev` in your terminal.
+#
+# ⚠️ Make sure you revert these changes before pushing your changes or the
+# pipeline will fail to install the python-package.
+#
+## ℹ️ HOW-TO: Install a new version of the python-package.
+#
+# 1. Uncomment the git-codeforlife package under [packages].
+# 2. Uncomment the git-codeforlife package under [dev-packages].
+# 3. Comment out the editable-codeforlife package under [dev-packages].
+# 4. Set the ref key of the git-codeforlife packages under [packages] and
+#     [dev-packages] to have the same version number.
+# 5. Run `pipenv install --dev` in your terminal.
+
 [packages]
-# Before adding a new package, check it's not listed under [packages] at
-#   https://github.com/ocadotechnology/codeforlife-package-python/blob/{ref}/Pipfile
-# Replace "{ref}" in the above URL with the ref set below.
 codeforlife = {ref = "v0.14.5", git = "https://github.com/ocadotechnology/codeforlife-package-python.git"}
+# 🚫 Don't add [packages] below that are inhertited from the CFL package.
 # TODO: check if we need the below packages
 whitenoise = "==6.5.0"
 django-pipeline = "==2.0.8"
@@ -31,10 +48,9 @@ google-cloud-container = "==2.3.0"
 # "django-anymail[amazon_ses]" = "==7.0.*"
 
 [dev-packages]
-# Before adding a new package, check it's not listed under [dev-packages] at
-#   https://github.com/ocadotechnology/codeforlife-package-python/blob/{ref}/Pipfile
-# Replace "{ref}" in the above URL with the ref set below.
 codeforlife = {ref = "v0.14.5", git = "https://github.com/ocadotechnology/codeforlife-package-python.git", extras = ["dev"]}
+# codeforlife = {file = "../../codeforlife-package-python", editable = true, extras = ["dev"]}
+# 🚫 Don't add [dev-packages] below that are inhertited from the CFL package.
 # TODO: check if we need the below packages
 django-selenium-clean = "==0.3.3"
 django-test-migrations = "==1.2.0"
