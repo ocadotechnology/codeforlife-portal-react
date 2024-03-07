@@ -19,7 +19,6 @@ from ...serializers import (
 )
 from ...views import UserViewSet
 
-
 # pylint: disable=missing-class-docstring
 
 

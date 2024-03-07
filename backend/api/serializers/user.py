@@ -25,7 +25,6 @@ from rest_framework import serializers
 from .student import StudentSerializer
 from .teacher import TeacherSerializer
 
-
 # pylint: disable=missing-class-docstring,too-many-ancestors
 
 
