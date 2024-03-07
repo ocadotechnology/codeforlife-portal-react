@@ -1,38 +1,37 @@
 {
-	"version": "2.0.0",
-	"tasks": [
-		{
-			"isBackground": true,
-			"type": "npm",
-			"script": "start",
-			"options": {
-				"env": {
-					"BROWSER": "none",
-					"REACT_APP_SERVICE_NAME": "portal"
-				}
-			},
-			"path": "frontend",
-			"problemMatcher": [],
-			"label": "start-react-dev-server"
-		},
-		{
-			"label": "install-dev-deps",
-			"type": "shell",
-			"options": {
-				"cwd": "${workspaceFolder}/backend"
-			},
-			"command": "pipenv install --dev"
-		},
-		{
-			"label": "migrate-db",
-			"type": "shell",
-			"options": {
-				"cwd": "${workspaceFolder}/backend"
-			},
-			"dependsOn": [
-				"install-dev-deps"
-			],
-			"command": "pipenv run python ./manage.py migrate"
-		}
-	]
+  "tasks": [
+    {
+      "isBackground": true,
+      "label": "start-react-dev-server",
+      "options": {
+        "env": {
+          "BROWSER": "none"
+        }
+      },
+      "path": "frontend",
+      "problemMatcher": [],
+      "script": "start",
+      "type": "npm"
+    },
+    {
+      "command": "pipenv install --dev",
+      "label": "pipenv-install-dev",
+      "options": {
+        "cwd": "${workspaceFolder}/backend"
+      },
+      "type": "shell"
+    },
+    {
+      "command": "pipenv run python ./manage.py migrate",
+      "dependsOn": [
+        "pipenv-install-dev"
+      ],
+      "label": "migrate-db",
+      "options": {
+        "cwd": "${workspaceFolder}/backend"
+      },
+      "type": "shell"
+    }
+  ],
+  "version": "2.0.0"
 }
