@@ -54,7 +54,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         self.non_admin_school_teacher_user = (
             NonAdminSchoolTeacherUser.objects.get(email="teacher@school1.com")
         )
-        self.indy_user = IndependentUser.objects.get(email="indy@man.com")
+        self.indy_user = IndependentUser.objects.get(email="indy@email.com")
         self.class_1 = Class.objects.get(name="Class 1 @ School 1")
         self.class_2 = Class.objects.get(name="Class 2 @ School 1")
 
