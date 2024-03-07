@@ -71,13 +71,7 @@ class UserViewSet(_UserViewSet):
 
     def get_queryset(self, user_class=User):
         if self.action == "independents__handle_join_class_request":
-            return IndependentUser.objects.filter(
-                new_student__pending_class_request__in=Class.objects.filter(
-                    teacher__school=self.request.school_teacher_user.teacher.school
-                )
-                if self.request.school_teacher_user.teacher.is_admin
-                else self.request.school_teacher_user.teacher.class_teacher.all()
-            )
+            return self.request.school_teacher_user.teacher.indy_users
 
         queryset = super().get_queryset(user_class)
         if self.action == "destroy" or (

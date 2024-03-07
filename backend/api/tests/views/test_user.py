@@ -122,7 +122,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
             ),
         )
 
-    def test_get_permissions__handle_join_class_request(self):
+    def test_get_permissions__independents__handle_join_class_request(self):
         """
         Only school-teachers can handle an independent's class join request.
         """
@@ -168,24 +168,11 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         self.assert_get_queryset(student_users, action=action, request=request)
 
     def _test_get_queryset__independents__handle_join_class_request(
-        self, is_admin: bool
+        self, user: SchoolTeacherUser
     ):
-        request = self.client.request_factory.generic(
-            "patch",
-            user=self.admin_school_teacher_user
-            if is_admin
-            else self.non_admin_school_teacher_user,
-        )
+        request = self.client.request_factory.patch(user=user)
 
-        indy_users = list(
-            IndependentUser.objects.filter(
-                new_student__pending_class_request__in=Class.objects.filter(
-                    teacher__school=request.school_teacher_user.teacher.school
-                )
-                if request.school_teacher_user.teacher.is_admin
-                else request.school_teacher_user.teacher.class_teacher.all()
-            )
-        )
+        indy_users = list(user.teacher.indy_users)
         assert indy_users
 
         self.assert_get_queryset(
@@ -222,7 +209,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         """Handling a join class request can only target the independent
         students who made a request to any class in the teacher's school."""
         self._test_get_queryset__independents__handle_join_class_request(
-            is_admin=True
+            user=self.admin_school_teacher_user
         )
 
     def test_get_queryset__independents__handle_join_class_request__non_admin(
@@ -231,7 +218,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         """Handling a join class request can only target the independent
         students who made a request to one of the teacher's classes."""
         self._test_get_queryset__independents__handle_join_class_request(
-            is_admin=False
+            user=self.non_admin_school_teacher_user
         )
 
     def test_get_queryset__destroy(self):
@@ -249,7 +236,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         the user is a student."""
         return self.assert_get_queryset(
             [self.indy_user],
-            action="partial__update",
+            action="partial_update",
             request=self.client.request_factory.patch(user=self.indy_user),
         )
 
@@ -313,6 +300,8 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
             },
         )
 
+        pending_class_request = self.indy_user.student.pending_class_request
+
         self.client.patch(viewname, data={"accept": True})
 
         username = self.indy_user.username
@@ -320,7 +309,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         self.indy_user.refresh_from_db()
 
         assert self.indy_user.new_student.pending_class_request is None
-        assert self.indy_user.new_student.class_field == self.class_1
+        assert self.indy_user.new_student.class_field == pending_class_request
         assert self.indy_user.last_name == ""
         assert self.indy_user.email == ""
         assert self.indy_user.username != username
