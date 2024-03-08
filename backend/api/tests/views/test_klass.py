@@ -2,7 +2,6 @@
 © Ocado Group
 Created on 05/02/2024 at 16:13:46(+00:00).
 """
-
 import typing as t
 from datetime import timedelta
 
@@ -86,7 +85,7 @@ class TestClassViewSet(ModelViewSetTestCase[Class]):
     # test: default actions
 
     def test_create__self(self):
-        """Teacher can create a class with themself as the class owner."""
+        """Teacher can create a class with themselves as the class owner."""
         user = self.admin_school_teacher_user
 
         self.client.login_as(user)

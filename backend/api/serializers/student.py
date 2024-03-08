@@ -26,8 +26,7 @@ class StudentSerializer(_StudentSerializer):
             klass = Class.objects.get(access_code=value)
         except Class.DoesNotExist as ex:
             raise serializers.ValidationError(
-                "Class does not exist.",
-                code="does_not_exist",
+                "Class does not exist.", code="does_not_exist"
             ) from ex
 
         if klass.teacher.school_id != teacher.school_id:
@@ -47,8 +46,7 @@ class StudentSerializer(_StudentSerializer):
         instance = t.cast(t.Optional[User], self.parent.instance)
         if instance and not instance.student:
             raise serializers.ValidationError(
-                "Target user is not a student.",
-                code="not_student",
+                "Target user is not a student.", code="not_student"
             )
 
         return attrs
