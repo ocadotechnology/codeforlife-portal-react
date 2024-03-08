@@ -12,6 +12,7 @@ from codeforlife.user.models import (
     AdminSchoolTeacherUser,
     Class,
     NonAdminSchoolTeacherUser,
+    SchoolTeacherUser,
     Student,
 )
 from codeforlife.user.permissions import IsTeacher
@@ -141,8 +142,74 @@ class TestStudentViewSet(ModelViewSetTestCase[Student]):
 
     # test: get queryset
 
-    def get_queryset(self):
-        return self.request.school_teacher_user.teacher.students
+    def _test_get_queryset(
+        self, user: SchoolTeacherUser, action: str, request_method: str
+    ):
+        self.assert_get_queryset(
+            user.teacher.students.order_by("pk"),
+            action=action,
+            request=self.client.request_factory.generic(
+                request_method, user=user
+            ),
+        )
+
+    def test_get_queryset__release__admin(self):
+        """An admin-school-teacher can release all students in their school."""
+        self._test_get_queryset(
+            self.admin_school_teacher_user,
+            action="release",
+            request_method="put",
+        )
+
+    def test_get_queryset__release__non_admin(self):
+        """
+        A non-admin-school-teacher can release all students in their class.
+        """
+        self._test_get_queryset(
+            self.non_admin_school_teacher_user,
+            action="release",
+            request_method="put",
+        )
+
+    def test_get_queryset__transfer__admin(self):
+        """An admin-school-teacher can transfer all students in their school."""
+        self._test_get_queryset(
+            self.admin_school_teacher_user,
+            action="transfer",
+            request_method="put",
+        )
+
+    def test_get_queryset__transfer__non_admin(self):
+        """
+        A non-admin-school-teacher can transfer all students in their class.
+        """
+        self._test_get_queryset(
+            self.non_admin_school_teacher_user,
+            action="transfer",
+            request_method="put",
+        )
+
+    def test_get_queryset__reset_password__admin(self):
+        """
+        An admin-school-teacher can reset all students' password in their
+        school.
+        """
+        self._test_get_queryset(
+            self.admin_school_teacher_user,
+            action="reset_password",
+            request_method="put",
+        )
+
+    def test_get_queryset__reset_password__non_admin(self):
+        """
+        A non-admin-school-teacher can reset all students' password in their
+        class.
+        """
+        self._test_get_queryset(
+            self.non_admin_school_teacher_user,
+            action="reset_password",
+            request_method="put",
+        )
 
     # test: get serializer class
 
