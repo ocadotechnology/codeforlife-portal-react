@@ -1,0 +1,46 @@
+"""
+© Ocado Group
+Created on 08/03/2024 at 09:23:26(+00:00).
+"""
+
+from codeforlife.permissions import OR, AllowNone
+from codeforlife.user.models import Student
+from codeforlife.user.permissions import IsTeacher
+from codeforlife.views import ModelViewSet
+
+from ..serializers import (
+    CreateStudentSerializer,
+    ReleaseStudentSerializer,
+    ResetStudentPasswordSerializer,
+    TransferStudentSerializer,
+)
+
+
+# pylint: disable-next=missing-class-docstring,too-many-ancestors
+class StudentViewSet(ModelViewSet[Student]):
+    http_method_names = ["post", "put"]
+
+    def get_permissions(self):
+        if self.action == "create":
+            return [AllowNone()]
+
+        return [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))]
+
+    def get_queryset(self):
+        return self.request.school_teacher_user.teacher.students
+
+    def get_serializer_class(self):
+        if self.action == "release":
+            return ReleaseStudentSerializer
+        if self.action == "reset_password":
+            return ResetStudentPasswordSerializer
+        if self.action == "transfer":
+            return TransferStudentSerializer
+
+        return CreateStudentSerializer  # action == "bulk"
+
+    release = ModelViewSet.bulk_update_action(name="release")
+    transfer = ModelViewSet.bulk_update_action(name="transfer")
+    reset_password = ModelViewSet.bulk_update_action(
+        name="reset_password", url_path="reset-password"
+    )

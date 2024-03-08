@@ -8,4 +8,5 @@ from .klass import ClassViewSet
 from .otp_bypass_token import OtpBypassTokenViewSet
 from .school import SchoolViewSet
 from .school_teacher_invitation import SchoolTeacherInvitationViewSet
+from .student import StudentViewSet
 from .user import UserViewSet
