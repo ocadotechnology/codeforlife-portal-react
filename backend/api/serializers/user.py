@@ -4,90 +4,75 @@ Created on 18/01/2024 at 15:14:32(+00:00).
 """
 
 import typing as t
-from itertools import groupby
 
-from codeforlife.serializers import ModelListSerializer
 from codeforlife.user.models import (
-    Class,
+    AnyUser,
     Student,
     StudentUser,
     Teacher,
     User,
     UserProfile,
 )
+from codeforlife.user.serializers import (
+    BaseUserSerializer as _BaseUserSerializer,
+)
+from codeforlife.user.serializers import StudentSerializer
 from codeforlife.user.serializers import UserSerializer as _UserSerializer
 from django.contrib.auth.password_validation import (
     validate_password as _validate_password,
 )
 from rest_framework import serializers
 
-from .student import StudentSerializer
 from .teacher import TeacherSerializer
 
-# pylint: disable=missing-class-docstring,too-many-ancestors
+# pylint: disable=missing-class-docstring
+# pylint: disable=too-many-ancestors
+# pylint: disable=missing-function-docstring
 
 
-class UserListSerializer(ModelListSerializer[User]):
-    def create(self, validated_data):
-        classes = {
-            klass.access_code: klass
-            for klass in Class.objects.filter(
-                access_code__in={
-                    user_fields["new_student"]["class_field"]["access_code"]
-                    for user_fields in validated_data
-                }
+class BaseUserSerializer(_BaseUserSerializer[AnyUser], t.Generic[AnyUser]):
+    # TODO: make email unique in new models and remove this validation.
+    def validate_email(self, value: str):
+        if User.objects.filter(email__iexact=value).exists():
+            raise serializers.ValidationError(
+                "Already exists.", code="already_exists"
             )
-        }
 
-        # TODO: replace this logic with bulk creates for each object when we
-        #   switch to PostgreSQL.
-        return [
-            StudentUser.objects.create_user(
-                first_name=user_fields["first_name"],
-                klass=classes[
-                    user_fields["new_student"]["class_field"]["access_code"]
-                ],
-            )
-            for user_fields in validated_data
-        ]
+        return value
 
-    def validate(self, attrs):
-        super().validate(attrs)
+    def validate_password(self, value: str):
+        """
+        Validate the new password depending on user type.
+        """
 
-        def get_access_code(user_fields: t.Dict[str, t.Any]):
-            return user_fields["new_student"]["class_field"]["access_code"]
+        # If we're creating a new user, we do not yet have the user object.
+        # Therefore, we need to create a dummy user and pass it to the password
+        # validators so they know what type of user we have.
+        instance = self.instance
+        if not instance:
+            instance = User()
 
-        def get_first_name(user_fields: t.Dict[str, t.Any]):
-            return user_fields["first_name"]
+            user_type: str = self.context["user_type"]
+            if user_type == "teacher":
+                Teacher(new_user=instance)
+            elif user_type == "student":
+                Student(new_user=instance)
 
-        attrs.sort(key=get_access_code)
-        for access_code, group in groupby(attrs, key=get_access_code):
-            # Validate first name is not specified more than once in data.
-            data = list(group)
-            data.sort(key=get_first_name)
-            for first_name, group in groupby(data, key=get_first_name):
-                if len(list(group)) > 1:
-                    raise serializers.ValidationError(
-                        f'First name "{first_name}" is specified more than once'
-                        f" in data for class {access_code}.",
-                        code="first_name_not_unique_per_class_in_data",
-                    )
+        _validate_password(value, instance)
 
-            # Validate first names are not already taken in class.
-            if User.objects.filter(
-                first_name__in=list(map(get_first_name, data)),
-                new_student__class_field__access_code=access_code,
-            ).exists():
-                raise serializers.ValidationError(
-                    "One or more first names is already taken in class"
-                    f" {access_code}.",
-                    code="first_name_not_unique_per_class_in_db",
-                )
+        return value
 
-        return attrs
+    def update(self, instance, validated_data):
+        password = validated_data.get("password")
+
+        if password is not None:
+            instance.set_password(password)
+
+        instance.save()
+        return instance
 
 
-class UserSerializer(_UserSerializer[User]):
+class UserSerializer(BaseUserSerializer[User], _UserSerializer):
     student = StudentSerializer(source="new_student", required=False)
     teacher = TeacherSerializer(source="new_teacher", required=False)
     current_password = serializers.CharField(
@@ -114,7 +99,6 @@ class UserSerializer(_UserSerializer[User]):
             "email": {"read_only": False},
             "password": {"write_only": True, "required": False},
         }
-        list_serializer_class = UserListSerializer
 
     def validate(self, attrs):
         if self.instance is not None and self.view.action != "reset-password":
@@ -127,28 +111,6 @@ class UserSerializer(_UserSerializer[User]):
             )
 
         return attrs
-
-    def validate_password(self, value: str):
-        """
-        Validate the new password depending on user type.
-        """
-
-        # If we're creating a new user, we do not yet have the user object.
-        # Therefore, we need to create a dummy user and pass it to the password
-        # validators so they know what type of user we have.
-        instance = self.instance
-        if not instance:
-            instance = User()
-
-            user_type: str = self.context["user_type"]
-            if user_type == "teacher":
-                Teacher(new_user=instance)
-            elif user_type == "student":
-                Student(new_user=instance)
-
-        _validate_password(value, instance)
-
-        return value
 
     def create(self, validated_data):
         user = User.objects.create_user(
@@ -177,83 +139,3 @@ class UserSerializer(_UserSerializer[User]):
         # TODO: Handle signing new user up to newsletter if checkbox ticked
 
         return user
-
-    def update(self, instance, validated_data):
-        password = validated_data.get("password")
-
-        if password is not None:
-            instance.set_password(password)
-
-        instance.save()
-        return instance
-
-    def to_representation(self, instance: User):
-        representation = super().to_representation(instance)
-
-        # Return student's auto-generated password.
-        if (
-            representation["student"] is not None
-            and self.request.auth_user.teacher is not None
-        ):
-            # pylint: disable-next=protected-access
-            password = instance._password
-            if password is not None:
-                representation["password"] = password
-
-        return representation
-
-
-class ReleaseStudentUserListSerializer(ModelListSerializer[StudentUser]):
-    def update(self, instance, validated_data):
-        for student_user, data in zip(instance, validated_data):
-            student_user.student.class_field = None
-            student_user.student.save(update_fields=["class_field"])
-
-            student_user.email = data["email"]
-            student_user.save(update_fields=["email"])
-
-        return instance
-
-
-class ReleaseStudentUserSerializer(_UserSerializer[StudentUser]):
-    """Convert a student to an independent learner."""
-
-    class Meta(_UserSerializer.Meta):
-        extra_kwargs = {
-            "first_name": {
-                "min_length": 1,
-                "read_only": False,
-                "required": False,
-            },
-            "email": {"read_only": False},
-        }
-        list_serializer_class = ReleaseStudentUserListSerializer
-
-    # pylint: disable-next=missing-function-docstring
-    def validate_email(self, value: str):
-        if User.objects.filter(email__iexact=value).exists():
-            raise serializers.ValidationError(
-                "Already exists.", code="already_exists"
-            )
-
-        return value
-
-
-class TransferStudentUserListSerializer(ModelListSerializer[StudentUser]):
-    def update(self, instance, validated_data):
-        for student_user, data in zip(instance, validated_data):
-            student_user.student.class_field = Class.objects.get(
-                access_code=data["new_student"]["class_field"]["access_code"]
-            )
-            student_user.student.save(update_fields=["class_field"])
-
-        return instance
-
-
-class TransferStudentUserSerializer(_UserSerializer[StudentUser]):
-    """Transfer a student to another class."""
-
-    student = StudentSerializer(source="new_student")
-
-    class Meta(_UserSerializer.Meta):
-        list_serializer_class = TransferStudentUserListSerializer

@@ -8,80 +8,64 @@ from itertools import groupby
 
 from codeforlife.serializers import ModelListSerializer
 from codeforlife.types import DataDict
-from codeforlife.user.models import Class, Student, StudentUser, User
-from codeforlife.user.serializers import BaseUserSerializer
-from codeforlife.user.serializers import StudentSerializer as _StudentSerializer
+from codeforlife.user.models import Class, Student, StudentUser
+from codeforlife.user.serializers import StudentSerializer
 from rest_framework import serializers
+
+from .user import BaseUserSerializer
 
 # pylint: disable=missing-class-docstring
 # pylint: disable=too-many-ancestors
 # pylint: disable=missing-function-docstring
 
 
-class BaseStudentPasswordSerializer(_StudentSerializer):
-    """
-    To be inherited by serializers that need to return the student's
-    auto-generated password.
-    """
-
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-
-        # Return student's auto-generated password.
-        # pylint: disable-next=protected-access
-        password = instance.new_user._password
-        if password is not None:
-            representation["user"]["password"] = password
-            representation["login_id"] = instance.login_id
-
-        return representation
+# ------------------------------------------------------------------------------
+# Base serializers
+# ------------------------------------------------------------------------------
 
 
-class CreateStudentListSerializer(ModelListSerializer[Student]):
-    def create(self, validated_data):
-        classes = {
-            klass.access_code: klass
-            for klass in Class.objects.filter(
-                access_code__in={
-                    student_fields["class_field"]["access_code"]
-                    for student_fields in validated_data
-                }
+class BaseStudentListSerializer(ModelListSerializer[Student]):
+    """To be inherited by all student list serializers."""
+
+    def _validate_first_names_are_unique_in_class(
+        self, access_code: str, first_names: t.List[str], code: str
+    ):
+        if (
+            first_names
+            and StudentUser.objects.filter(
+                first_name__in=first_names,
+                new_student__class_field__access_code=access_code,
+            ).exists()
+        ):
+            raise serializers.ValidationError(
+                "One or more first names is already taken in class"
+                f" {access_code}.",
+                code,
             )
-        }
-
-        # TODO: replace this logic with bulk creates for each object when we
-        #   switch to PostgreSQL.
-        return [
-            StudentUser.objects.create_user(
-                first_name=student_fields["new_user"]["first_name"],
-                klass=classes[student_fields["class_field"]["access_code"]],
-            ).student
-            for student_fields in validated_data
-        ]
 
     def validate(self, attrs):
         super().validate(attrs)
 
         def get_class_id(student_fields: DataDict):
             class_field: DataDict = student_fields.get("class_field", {})
-            return t.cast(t.Optional[str], class_field.get("access_code"))
+            return t.cast(str, class_field.get("access_code", ""))
 
         def get_first_name(student_fields: DataDict):
             new_user: DataDict = student_fields.get("new_user", {})
-            return t.cast(t.Optional[str], new_user.get("first_name"))
+            return t.cast(str, new_user.get("first_name", ""))
 
         # Copy list to preserve its original order.
         attrs_copy = attrs.copy()
         attrs_copy.sort(key=get_class_id)
         for access_code, group in groupby(attrs_copy, key=get_class_id):
-            if access_code is None:
+            if not access_code:
                 continue
 
             # Validate first name is not specified more than once in data.
             data = list(group)
             data.sort(key=get_first_name)
             for first_name, group in groupby(data, key=get_first_name):
-                if first_name is not None and len(list(group)) > 1:
+                if first_name and len(list(group)) > 1:
                     raise serializers.ValidationError(
                         f'First name "{first_name}" is specified more than once'
                         f" in data for class {access_code}.",
@@ -89,43 +73,33 @@ class CreateStudentListSerializer(ModelListSerializer[Student]):
                     )
 
             # Validate first names are not already taken in class.
-            first_names = [
-                first_name
-                for first_name in map(get_first_name, data)
-                if first_name is not None
-            ]
+            self._validate_first_names_are_unique_in_class(
+                access_code,
+                first_names=[
+                    first_name
+                    for first_name in map(get_first_name, data)
+                    if first_name
+                ],
+                code="first_name__data__exists_in_class",
+            )
 
-            if (
-                first_names
-                and StudentUser.objects.filter(
-                    first_name__in=first_names,
-                    new_student__class_field__access_code=access_code,
-                ).exists()
-            ):
-                raise serializers.ValidationError(
-                    "One or more first names is already taken in class"
-                    f" {access_code}.",
-                    code="first_name__data__not_unique_per_class_in_db",
+            # Get students' first name from the db if it wasn't provided in the
+            # request-data and validate they're unique in their new class.
+            if self.instance:
+                self._validate_first_names_are_unique_in_class(
+                    access_code,
+                    first_names=[
+                        student.new_user.first_name
+                        for student_fields, student in zip(attrs, self.instance)
+                        if not get_first_name(student_fields)
+                    ],
+                    code="first_name__db__exists_in_class",
                 )
 
         return attrs
 
 
-class CreateStudentSerializer(BaseStudentPasswordSerializer):
-    class UserSerializer(BaseUserSerializer[StudentUser]):
-        class Meta(BaseUserSerializer.Meta):
-            extra_kwargs = {
-                **BaseUserSerializer.Meta.extra_kwargs,
-                "first_name": {"min_length": 1},
-            }
-
-    user = UserSerializer(source="new_user")
-    klass = serializers.CharField(source="class_field.access_code")
-
-    class Meta(BaseStudentPasswordSerializer.Meta):
-        fields = [*BaseStudentPasswordSerializer.Meta.fields, "user"]
-        list_serializer_class = CreateStudentListSerializer
-
+class BaseStudentSerializer(StudentSerializer):
     def validate_klass(self, value: str):
         # Only teachers can manage students.
         teacher = self.request.school_teacher_user.teacher
@@ -152,46 +126,111 @@ class CreateStudentSerializer(BaseStudentPasswordSerializer):
         return value
 
 
-class ReleaseStudentListSerializer(ModelListSerializer[Student]):
+class BaseStudentPasswordSerializer(BaseStudentSerializer):
+    """
+    To be inherited by serializers that need to return the student's
+    auto-generated password.
+    """
+
+    user = BaseUserSerializer[StudentUser](source="new_user")
+
+    class Meta(BaseStudentSerializer.Meta):
+        fields = [*BaseStudentSerializer.Meta.fields, "user"]
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+
+        # Return student's auto-generated password.
+        # pylint: disable-next=protected-access
+        password = instance.new_user._password
+        if password is not None:
+            representation["user"]["password"] = password
+            representation["login_id"] = instance.login_id
+
+        return representation
+
+
+# ------------------------------------------------------------------------------
+# Action serializers
+# ------------------------------------------------------------------------------
+
+
+class CreateStudentListSerializer(BaseStudentListSerializer):
+    def create(self, validated_data):
+        classes = {
+            klass.access_code: klass
+            for klass in Class.objects.filter(
+                access_code__in={
+                    student_fields["class_field"]["access_code"]
+                    for student_fields in validated_data
+                }
+            )
+        }
+
+        # TODO: replace this logic with bulk creates for each object when we
+        #   switch to PostgreSQL.
+        return [
+            StudentUser.objects.create_user(
+                first_name=student_fields["new_user"]["first_name"],
+                klass=classes[student_fields["class_field"]["access_code"]],
+            ).student
+            for student_fields in validated_data
+        ]
+
+
+class CreateStudentSerializer(BaseStudentPasswordSerializer):
+    """Create a student user."""
+
+    class UserSerializer(BaseUserSerializer):
+        class Meta(BaseUserSerializer.Meta):
+            extra_kwargs = {
+                **BaseUserSerializer.Meta.extra_kwargs,
+                "first_name": {"read_only": False},
+            }
+
+    user = UserSerializer(source="new_user")
+    klass = serializers.CharField(source="class_field.access_code")
+
+    class Meta(BaseStudentPasswordSerializer.Meta):
+        list_serializer_class = CreateStudentListSerializer
+
+
+class ReleaseStudentListSerializer(BaseStudentListSerializer):
     def update(self, instance, validated_data):
         for student, data in zip(instance, validated_data):
             student.class_field = None
             student.save(update_fields=["class_field"])
 
-            student.new_user.email = data["new_user"]["email"]
-            student.new_user.save(update_fields=["email"])
+            user_fields = t.cast(DataDict, data["new_user"])
+            student.new_user.email = user_fields["email"]
+            update_fields = ["email"]
+            if "first_name" in user_fields:
+                student.new_user.first_name = user_fields["first_name"]
+                update_fields.append("first_name")
+            student.new_user.save(update_fields=update_fields)
 
         return instance
 
 
-class ReleaseStudentSerializer(_StudentSerializer):
+class ReleaseStudentSerializer(BaseStudentSerializer):
     """Convert a student to an independent learner."""
 
-    class UserSerializer(BaseUserSerializer[StudentUser]):
+    class UserSerializer(BaseUserSerializer):
         class Meta(BaseUserSerializer.Meta):
             extra_kwargs = {
                 **BaseUserSerializer.Meta.extra_kwargs,
-                "first_name": {"min_length": 1, "required": False},
+                "first_name": {"required": False},
                 "email": {"read_only": False},
             }
 
-        # TODO: make email unique in new models and remove this validation.
-        def validate_email(self, value: str):
-            if User.objects.filter(email__iexact=value).exists():
-                raise serializers.ValidationError(
-                    "Already exists.", code="already_exists"
-                )
-
-            return value
-
     user = UserSerializer(source="new_user")
 
-    class Meta(_StudentSerializer.Meta):
-        fields = [*_StudentSerializer.Meta.fields, "user"]
+    class Meta(BaseStudentSerializer.Meta):
+        fields = [*BaseStudentSerializer.Meta.fields, "user"]
         list_serializer_class = ReleaseStudentListSerializer
 
 
-class TransferStudentListSerializer(CreateStudentListSerializer):
+class TransferStudentListSerializer(BaseStudentListSerializer):
     def update(self, instance, validated_data):
         for student, data in zip(instance, validated_data):
             student.class_field = Class.objects.get(
@@ -236,23 +275,25 @@ class TransferStudentListSerializer(CreateStudentListSerializer):
         return attrs
 
 
-class TransferStudentSerializer(CreateStudentSerializer):
+class TransferStudentSerializer(BaseStudentSerializer):
     """Transfer a student to another class."""
 
-    class UserSerializer(CreateStudentSerializer.UserSerializer):
-        class Meta(CreateStudentSerializer.UserSerializer.Meta):
+    class UserSerializer(BaseUserSerializer):
+        class Meta(BaseUserSerializer.Meta):
             extra_kwargs = {
-                **CreateStudentSerializer.UserSerializer.Meta.extra_kwargs,
-                "first_name": {"min_length": 1, "required": False},
+                **BaseUserSerializer.Meta.extra_kwargs,
+                "first_name": {"required": False},
             }
 
     user = UserSerializer(source="new_user", required=False)
+    klass = serializers.CharField(source="class_field.access_code")
 
-    class Meta(CreateStudentSerializer.Meta):
+    class Meta(BaseStudentSerializer.Meta):
+        fields = [*BaseStudentSerializer.Meta.fields, "user"]
         list_serializer_class = TransferStudentListSerializer
 
 
-class ResetStudentListPasswordSerializer(ModelListSerializer[Student]):
+class ResetStudentListPasswordSerializer(BaseStudentListSerializer):
     def update(self, instance, validated_data):
         for student, data in zip(instance, validated_data):
             # TODO: use proxy in new model and replace with student.user
@@ -260,8 +301,9 @@ class ResetStudentListPasswordSerializer(ModelListSerializer[Student]):
                 pk=student.new_user.pk,
                 new_student=student,  # type: ignore[misc]
             )
-            student_user.set_password()
 
+            user_fields = t.cast(DataDict, data.get("new_user", {}))
+            student_user.set_password(user_fields.get("password"))
             student.save(update_fields=["login_id"])
 
             # Save deletes the raw password.
@@ -276,7 +318,7 @@ class ResetStudentListPasswordSerializer(ModelListSerializer[Student]):
 
 
 class ResetStudentPasswordSerializer(BaseStudentPasswordSerializer):
-    class UserSerializer(BaseUserSerializer[StudentUser]):
+    class UserSerializer(BaseUserSerializer):
         class Meta(BaseUserSerializer.Meta):
             fields = [*BaseUserSerializer.Meta.fields, "password"]
             extra_kwargs = {
@@ -287,5 +329,4 @@ class ResetStudentPasswordSerializer(BaseStudentPasswordSerializer):
     user = UserSerializer(source="new_user", required=False)
 
     class Meta(BaseStudentPasswordSerializer.Meta):
-        fields = [*BaseStudentPasswordSerializer.Meta.fields, "user"]
         list_serializer_class = ResetStudentListPasswordSerializer

@@ -28,10 +28,6 @@ from django.contrib.auth.tokens import (
 from django.db.models.query import QuerySet
 from rest_framework import status
 
-from ...serializers import (
-    ReleaseStudentUserSerializer,
-    TransferStudentUserSerializer,
-)
 from ...views import UserViewSet
 
 # NOTE: type hint to help Intellisense.
@@ -119,20 +115,6 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
             action="destroy",
         )
 
-    # test: get serializer class
-
-    def test_get_serializer_class__students__release(self):
-        """The action for releasing students has a dedicated serializer."""
-        self.assert_get_serializer_class(
-            ReleaseStudentUserSerializer, action="students__release"
-        )
-
-    def test_get_serializer_class__students__transfer(self):
-        """The action for transferring students has a dedicated serializer."""
-        self.assert_get_serializer_class(
-            TransferStudentUserSerializer, action="students__transfer"
-        )
-
     # test: get queryset
 
     def _test_get_queryset__student_users(
@@ -188,31 +170,6 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         )
 
     # test: bulk actions
-
-    def test_bulk_create__students(self):
-        """Teacher can bulk create students."""
-        self.client.login_as(self.non_admin_school_teacher_user)
-
-        klass: t.Optional[
-            Class
-        ] = self.non_admin_school_teacher_user.teacher.class_teacher.first()
-        assert klass is not None
-
-        response = self.client.bulk_create(
-            [
-                {
-                    "first_name": "Peter",
-                    "student": {"klass": klass.access_code},
-                },
-                {
-                    "first_name": "Mary",
-                    "student": {"klass": klass.access_code},
-                },
-            ],
-            make_assertions=False,
-        )
-
-        response.json()  # TODO: make custom assertions and check for password
 
     def test_bulk_destroy(self):
         """School-teacher can bulk anonymize students."""
@@ -353,88 +310,6 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
         self.client.patch(viewname, data={"password": "N3wPassword"})
         self.client.login_as(self.indy_user, password="N3wPassword")
-
-    # test: students actions
-
-    def test_students__reset_password(self):
-        """Teacher can bulk reset students' password."""
-        self.client.login_as(self.admin_school_teacher_user)
-
-        student_users = list(
-            StudentUser.objects.filter(
-                new_student__class_field__teacher__school=(
-                    self.admin_school_teacher_user.teacher.school
-                )
-            )
-        )
-        assert student_users
-
-        response = self.client.patch(
-            self.reverse_action("students--reset-password"),
-            [student_user.id for student_user in student_users],
-            content_type="application/json",
-        )
-
-        fields: JsonDict = response.json()
-        for student_user in student_users:
-            student_user_fields = t.cast(JsonDict, fields[str(student_user.id)])
-
-            password = t.cast(str, student_user_fields["password"])
-            assert isinstance(password, str)
-            assert not student_user.check_password(password)
-
-            student_login_id = t.cast(
-                str,
-                t.cast(
-                    JsonDict,
-                    student_user_fields["student"],
-                )["login_id"],
-            )
-            assert isinstance(student_login_id, str)
-            assert student_user.student.login_id != student_login_id
-
-            student_user.refresh_from_db()
-            assert student_user.check_password(password)
-            self.client.login_as(student_user, password)
-            assert student_user.student.login_id == student_login_id
-
-    def test_students__release(self):
-        """
-        Admin-teacher or class-teacher can convert their students to independent
-        learners.
-        """
-        user = self.admin_school_teacher_user
-        student_users = user.teacher.student_users
-
-        self.client.login_as(user)
-        self.client.bulk_update(
-            models=student_users,
-            data=[
-                {"email": f"{student_user.id}@email.com"}
-                for student_user in student_users
-            ],
-            action="students--release",
-        )
-
-    def test_students__transfer(self):
-        """
-        Admin-teacher or class-teacher can successfully transfer students to
-        another class.
-        """
-        user = self.admin_school_teacher_user
-        student_users = StudentUser.objects.filter(
-            new_student__class_field=self.class_1
-        )
-
-        self.client.login_as(user)
-        self.client.bulk_update(
-            models=student_users,
-            data=[
-                {"student": {"klass": self.class_2.access_code}}
-                for _ in range(len(student_users))
-            ],
-            action="students--transfer",
-        )
 
     # test: generic actions
 
