@@ -237,34 +237,28 @@ class TestReleaseStudentSerializer(ModelSerializerTestCase[Student]):
         )
 
 
-# class TestTransferStudentSerializer(ModelSerializerTestCase[Student]):
-#     model_serializer_class = TransferStudentSerializer
-#     fixtures = ["school_1"]
+class TestTransferStudentSerializer(ModelSerializerTestCase[Student]):
+    model_serializer_class = TransferStudentSerializer
+    fixtures = ["school_1"]
 
-#     def setUp(self):
-#         self.class_1 = Class.objects.get(name="Class 1 @ School 1")
-#         self.class_2 = Class.objects.get(name="Class 2 @ School 1")
+    def setUp(self):
+        self.class_1 = Class.objects.get(name="Class 1 @ School 1")
+        self.class_2 = Class.objects.get(name="Class 2 @ School 1")
 
-#         # TODO: make this a property of Class in new data schema.
-#         self.class_1_student_users = StudentUser.objects.filter(
-#             new_student__in=self.class_1.students.all()
-#         )
+    def test_update(self):
+        """The student-user is transferred to another class."""
+        students = self.class_1.students.all()
 
-#     def test_update(self):
-#         """The student-user is transferred to another class."""
-#         self.assert_update_many(
-#             instance=list(self.class_1_student_users),
-#             validated_data=[
-#                 {
-#                     "new_student": {
-#                         "class_field": {
-#                             "access_code": self.class_2.access_code,
-#                         }
-#                     }
-#                 }
-#                 for _ in range(self.class_1.students.count())
-#             ],
-#         )
+        self.assert_update_many(
+            instance=list(students),
+            validated_data=[
+                {
+                    "new_user": {"first_name": f"TransferStudent{student.pk}"},
+                    "class_field": {"access_code": self.class_2.access_code},
+                }
+                for student in students
+            ],
+        )
 
 
 class TestResetStudentPasswordSerializer(ModelSerializerTestCase[Student]):
@@ -277,7 +271,7 @@ class TestResetStudentPasswordSerializer(ModelSerializerTestCase[Student]):
         self.student = student
 
     def test_update_many(self):
-        """The student's password is reset."""
+        """The students' password is reset."""
         password = "password"
         # pylint: disable-next=line-too-long
         password_hash = "pbkdf2_sha256$720000$Jp50WPBA6WZImUIpj3UcVm$OJWB8+UoW5lLaUkHLYo0cKgMkyRI6qnqVOWxYEsi9T0="

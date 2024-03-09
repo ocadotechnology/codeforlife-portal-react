@@ -238,41 +238,12 @@ class TransferStudentListSerializer(BaseStudentListSerializer):
             )
             student.save(update_fields=["class_field"])
 
+            user_fields = t.cast(DataDict, data.get("new_user", {}))
+            if "first_name" in user_fields:
+                student.new_user.first_name = user_fields["first_name"]
+                student.new_user.save(update_fields=["first_name"])
+
         return instance
-
-    def validate(self, attrs: t.List[DataDict]):
-        super().validate(attrs)
-
-        first_names_and_class_ids = [
-            (
-                student.new_user.first_name,
-                t.cast(str, data["class_field"]["access_code"]),
-            )
-            for student, data in zip(self.non_none_instance, attrs)
-            if "first_name" not in data.get("user", {})
-        ]
-
-        def get_class_id(first_name_and_class_id: t.Tuple[str, str]):
-            return first_name_and_class_id[1]
-
-        first_names_and_class_ids.sort(key=get_class_id)
-        for access_code, group in groupby(
-            first_names_and_class_ids, key=get_class_id
-        ):
-            if StudentUser.objects.filter(
-                first_name__in=[
-                    first_name_and_class_id[0]
-                    for first_name_and_class_id in group
-                ],
-                new_student__class_field__access_code=access_code,
-            ).exists():
-                raise serializers.ValidationError(
-                    "One or more first names is already taken in class"
-                    f" {access_code}.",
-                    code="first_name__model__not_unique_per_class_in_db",
-                )
-
-        return attrs
 
 
 class TransferStudentSerializer(BaseStudentSerializer):
