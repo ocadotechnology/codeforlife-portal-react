@@ -314,3 +314,20 @@ class TestStudentViewSet(ModelViewSetTestCase[Student]):
         )
 
         self.assert_passwords(response)
+
+    def test_bulk_destroy(self):
+        """School-teacher can bulk anonymize students."""
+        user = self.admin_school_teacher_user
+        students = user.teacher.students
+        student_ids = list(students.values_list("id", flat=True))
+        assert student_ids
+
+        self.client.login_as(user)
+        self.client.bulk_destroy(student_ids, make_assertions=False)
+
+        assert (
+            len(student_ids)
+            == students.filter(
+                new_user__first_name="", new_user__is_active=False
+            ).count()
+        )

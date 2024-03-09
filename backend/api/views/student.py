@@ -18,7 +18,7 @@ from ..serializers import (
 
 # pylint: disable-next=missing-class-docstring,too-many-ancestors
 class StudentViewSet(ModelViewSet[Student]):
-    http_method_names = ["post", "put"]
+    http_method_names = ["post", "put", "delete"]
 
     def get_permissions(self):
         if self.action == "create":
@@ -44,3 +44,9 @@ class StudentViewSet(ModelViewSet[Student]):
     reset_password = ModelViewSet.bulk_update_action(
         name="reset_password", url_path="reset-password"
     )
+
+    def perform_bulk_destroy(self, queryset):
+        for student in queryset:
+            student.new_user.first_name = ""
+            student.new_user.is_active = False
+            student.new_user.save(update_fields=["first_name", "is_active"])

@@ -5,7 +5,7 @@ Created on 20/01/2024 at 10:58:52(+00:00).
 
 import typing as t
 
-from codeforlife.permissions import OR
+from codeforlife.permissions import OR, AllowNone
 from codeforlife.tests import ModelViewSetTestCase
 from codeforlife.types import JsonDict
 from codeforlife.user.models import (
@@ -63,34 +63,8 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
     # test: get permissions
 
     def test_get_permissions__bulk(self):
-        """Only admin-teachers or class-teachers can perform bulk actions."""
-        self.assert_get_permissions(
-            [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))],
-            action="bulk",
-        )
-
-    def test_get_permissions__students__reset_password(self):
-        """
-        Only admin-teachers or class-teachers can reset students' passwords.
-        """
-        self.assert_get_permissions(
-            [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))],
-            action="students__reset_password",
-        )
-
-    def test_get_permissions__students__release(self):
-        """Only admin-teachers or class-teachers can release students."""
-        self.assert_get_permissions(
-            [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))],
-            action="students__release",
-        )
-
-    def test_get_permissions__students__transfer(self):
-        """Only admin-teachers or class-teachers can transfer students."""
-        self.assert_get_permissions(
-            [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))],
-            action="students__transfer",
-        )
+        """No one can perform bulk actions."""
+        self.assert_get_permissions([AllowNone()], action="bulk")
 
     def test_get_permissions__partial_update__teacher(self):
         """Only admin-teachers can update a teacher."""
@@ -117,48 +91,6 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
     # test: get queryset
 
-    def _test_get_queryset__student_users(
-        self, action: str, request_method: str
-    ):
-        student_users = list(
-            StudentUser.objects.filter(
-                new_student__class_field__teacher__school=(
-                    self.admin_school_teacher_user.teacher.school
-                )
-            )
-        )
-        assert student_users
-
-        request = self.client.request_factory.generic(
-            request_method, user=self.admin_school_teacher_user
-        )
-
-        self.assert_get_queryset(student_users, action=action, request=request)
-
-    def test_get_queryset__bulk(self):
-        """Bulk actions can only target student-users."""
-        self._test_get_queryset__student_users(
-            action="bulk", request_method="patch"
-        )
-
-    def test_get_queryset__students__reset_password(self):
-        """Resetting student passwords can only target student-users."""
-        self._test_get_queryset__student_users(
-            action="students__reset_password", request_method="patch"
-        )
-
-    def test_get_queryset__students__release(self):
-        """Releasing students can only target student-users."""
-        self._test_get_queryset__student_users(
-            action="students__release", request_method="put"
-        )
-
-    def test_get_queryset__students__transfer(self):
-        """Transferring students can only target student-users."""
-        self._test_get_queryset__student_users(
-            action="students__transfer", request_method="put"
-        )
-
     def test_get_queryset__destroy(self):
         """Destroying a user can only target the user making the request."""
         self.assert_get_queryset(
@@ -167,31 +99,6 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
             request=self.client.request_factory.delete(
                 user=self.admin_school_teacher_user
             ),
-        )
-
-    # test: bulk actions
-
-    def test_bulk_destroy(self):
-        """School-teacher can bulk anonymize students."""
-        self.client.login_as(self.admin_school_teacher_user)
-
-        student_user_queryset = User.objects.filter(
-            new_student__class_field__teacher__school=(
-                self.admin_school_teacher_user.teacher.school
-            ),
-        )
-        student_user_ids = list(
-            student_user_queryset.values_list("id", flat=True)
-        )
-        assert student_user_ids
-
-        self.client.bulk_destroy(student_user_ids, make_assertions=False)
-
-        assert (
-            len(student_user_ids)
-            == student_user_queryset.filter(
-                first_name="", is_active=False
-            ).count()
         )
 
     # test: reset password actions

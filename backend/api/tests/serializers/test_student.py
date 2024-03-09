@@ -12,11 +12,8 @@ from codeforlife.tests import (
 from codeforlife.user.models import (
     Class,
     NonAdminSchoolTeacherUser,
-    NonSchoolTeacherUser,
     Student,
     StudentUser,
-    TeacherUser,
-    User,
 )
 
 from ...serializers.student import (

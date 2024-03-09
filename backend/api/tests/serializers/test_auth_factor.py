@@ -9,7 +9,7 @@ import pyotp
 from codeforlife.tests import ModelSerializerTestCase
 from codeforlife.user.models import AuthFactor, TeacherUser
 
-from ...serializers import AuthFactorSerializer
+from ...serializers.auth_factor import AuthFactorSerializer
 from ...views import AuthFactorViewSet
 
 
