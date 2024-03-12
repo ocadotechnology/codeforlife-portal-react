@@ -58,54 +58,6 @@ class TestUserSerializer(ModelSerializerTestCase[User]):
         self.class_2 = Class.objects.get(name="Class 2 @ School 1")
         self.class_3 = Class.objects.get(name="Class 3 @ School 1")
 
-    def test_validate__first_name_not_unique_per_class_in_data(self):
-        """First name must be unique per class in data."""
-        self.assert_validate(
-            attrs=[
-                {
-                    "first_name": "Peter",
-                    "new_student": {
-                        "class_field": {
-                            "access_code": "ZZ111",
-                        },
-                    },
-                },
-                {
-                    "first_name": "Peter",
-                    "new_student": {
-                        "class_field": {
-                            "access_code": "ZZ111",
-                        },
-                    },
-                },
-            ],
-            error_code="first_name_not_unique_per_class_in_data",
-            many=True,
-        )
-
-    def test_validate__first_name_not_unique_per_class_in_db(self):
-        """First name must be unique per class in database."""
-        klass = Class.objects.get(name="Class 1 @ School 1")
-        assert klass is not None
-
-        student = Student.objects.filter(class_field=klass).first()
-        assert student is not None
-
-        self.assert_validate(
-            attrs=[
-                {
-                    "first_name": student.new_user.first_name,
-                    "new_student": {
-                        "class_field": {
-                            "access_code": klass.access_code,
-                        },
-                    },
-                },
-            ],
-            error_code="first_name_not_unique_per_class_in_db",
-            many=True,
-        )
-
     def test_validate__create__teacher_and_student(self):
         """Cannot create a user with both teacher and student attributes."""
         self.assert_validate(

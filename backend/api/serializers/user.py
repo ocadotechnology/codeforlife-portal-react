@@ -65,31 +65,6 @@ class BaseUserSerializer(_BaseUserSerializer[AnyUser], t.Generic[AnyUser]):
 
         return value
 
-    def validate_requesting_to_join_class(self, value: str):
-        # NOTE: Error message is purposefully ambiguous to prevent class
-        # enumeration.
-        error_message = "Class does not exist or does not accept join requests."
-
-        if value is not None:
-            try:
-                klass = Class.objects.get(access_code=value)
-            except Class.DoesNotExist as ex:
-                raise serializers.ValidationError(
-                    error_message, code="does_not_exist"
-                ) from ex
-
-            if klass.accept_requests_until is None:
-                raise serializers.ValidationError(
-                    error_message, code="does_not_accept_requests"
-                )
-
-            if klass.accept_requests_until < timezone.now():
-                raise serializers.ValidationError(
-                    error_message, code="no_longer_accepts_requests"
-                )
-
-        return value
-
     def update(self, instance, validated_data):
         password = validated_data.pop("password", None)
         if password is not None:
@@ -129,6 +104,31 @@ class UserSerializer(BaseUserSerializer[User], _UserSerializer):
             "email": {"read_only": False},
             "password": {"write_only": True, "required": False},
         }
+
+    def validate_requesting_to_join_class(self, value: str):
+        # NOTE: Error message is purposefully ambiguous to prevent class
+        # enumeration.
+        error_message = "Class does not exist or does not accept join requests."
+
+        if value is not None:
+            try:
+                klass = Class.objects.get(access_code=value)
+            except Class.DoesNotExist as ex:
+                raise serializers.ValidationError(
+                    error_message, code="does_not_exist"
+                ) from ex
+
+            if klass.accept_requests_until is None:
+                raise serializers.ValidationError(
+                    error_message, code="does_not_accept_requests"
+                )
+
+            if klass.accept_requests_until < timezone.now():
+                raise serializers.ValidationError(
+                    error_message, code="no_longer_accepts_requests"
+                )
+
+        return value
 
     def validate(self, attrs):
         if self.instance:  # Updating
