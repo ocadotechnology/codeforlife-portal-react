@@ -77,7 +77,9 @@ class UserSerializer(BaseUserSerializer[User], _UserSerializer):
     student = StudentSerializer(source="new_student", required=False)
     teacher = TeacherSerializer(source="new_teacher", required=False)
     requesting_to_join_class = serializers.CharField(
-        required=False, allow_null=True
+        source="new_student.pending_class_request",
+        required=False,
+        allow_null=True,
     )
     current_password = serializers.CharField(
         write_only=True,
@@ -138,7 +140,10 @@ class UserSerializer(BaseUserSerializer[User], _UserSerializer):
                 pass
 
             if self.instance.teacher:
-                if "requesting_to_join_class" in attrs:
+                if (
+                    "new_student" in attrs
+                    and "pending_class_request" in attrs["new_student"]
+                ):
                     raise serializers.ValidationError(
                         "Teacher can't request to join a class.",
                         code="requesting_to_join_class__teacher__update",
@@ -147,7 +152,8 @@ class UserSerializer(BaseUserSerializer[User], _UserSerializer):
             elif self.instance.student:
                 if (
                     self.instance.student.class_field is not None
-                    and "requesting_to_join_class" in attrs
+                    and "new_student" in attrs
+                    and "pending_class_request" in attrs["new_student"]
                 ):
                     raise serializers.ValidationError(
                         "Student cannot request to join a class.",
@@ -179,16 +185,11 @@ class UserSerializer(BaseUserSerializer[User], _UserSerializer):
                         "Last name is required.", code="last_name__required"
                     )
 
-                if "requesting_to_join_class" in attrs:
-                    raise serializers.ValidationError(
-                        "Teacher can't request to join a class.",
-                        code="requesting_to_join_class__teacher__create",
-                    )
-
             elif "new_student" in attrs:
                 if (
                     "class_field" in attrs["new_student"]
-                    and "requesting_to_join_class" in attrs
+                    and "new_student" in attrs
+                    and "pending_class_request" in attrs["new_student"]
                 ):
                     raise serializers.ValidationError(
                         "Cannot create a student in class who is also "
@@ -227,24 +228,28 @@ class UserSerializer(BaseUserSerializer[User], _UserSerializer):
         return user
 
     def update(self, instance, validated_data):
-        if "requesting_to_join_class" in validated_data:
-            requesting_to_join_class = validated_data[
-                "requesting_to_join_class"
-            ]
+        if "new_student" in validated_data:
+            student = validated_data.pop("new_student")
+            if "pending_class_request" in student:
+                pending_class_request = student["pending_class_request"]
 
-            if requesting_to_join_class is None:
-                instance.student.pending_class_request = None
-                instance.student.save(update_fields=["pending_class_request"])
-            else:
-                instance.student.pending_class_request = Class.objects.get(
-                    access_code=requesting_to_join_class
-                )
-                instance.student.save(update_fields=["pending_class_request"])
+                if pending_class_request is None:
+                    instance.student.pending_class_request = None
+                    instance.student.save(
+                        update_fields=["pending_class_request"]
+                    )
+                else:
+                    instance.student.pending_class_request = Class.objects.get(
+                        access_code=pending_class_request
+                    )
+                    instance.student.save(
+                        update_fields=["pending_class_request"]
+                    )
 
-                # TODO: Send email to indy user confirming successful join
-                #  request.
-                # TODO: Send email to teacher of selected class to notify
-                #  them of join request.
+                    # TODO: Send email to indy user confirming successful join
+                    #  request.
+                    # TODO: Send email to teacher of selected class to notify
+                    #  them of join request.
 
         return super().update(instance, validated_data)
 

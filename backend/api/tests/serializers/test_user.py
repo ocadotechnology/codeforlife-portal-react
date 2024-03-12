@@ -71,24 +71,13 @@ class TestUserSerializer(ModelSerializerTestCase[User]):
             attrs={"new_teacher": {}}, error_code="last_name__required"
         )
 
-    def test_validate__requesting_to_join_class__teacher__create(self):
-        """Teacher cannot request to join a class on creation."""
-        self.assert_validate(
-            attrs={
-                "last_name": "Name",
-                "new_teacher": {},
-                "requesting_to_join_class": "AAAAA",
-            },
-            error_code="requesting_to_join_class__teacher__create",
-        )
-
     def test_validate__requesting_to_join_class__teacher__update(self):
         """Teacher cannot request to join a class on update."""
         self.assert_validate(
             attrs={
                 "last_name": "Name",
                 "new_teacher": {},
-                "requesting_to_join_class": "AAAAA",
+                "new_student": {"pending_class_request": "AAAAA"},
             },
             error_code="requesting_to_join_class__teacher__update",
             instance=self.admin_school_teacher_user,
@@ -109,8 +98,10 @@ class TestUserSerializer(ModelSerializerTestCase[User]):
         """
         self.assert_validate(
             attrs={
-                "new_student": {"class_field": "AAAAA"},
-                "requesting_to_join_class": "BBBBB",
+                "new_student": {
+                    "class_field": "AAAAA",
+                    "pending_class_request": "BBBBB",
+                }
             },
             error_code="requesting_to_join_class__student__create__in_class",
         )
@@ -121,7 +112,7 @@ class TestUserSerializer(ModelSerializerTestCase[User]):
         """Student cannot be updated to request to join a class."""
         self.assert_validate(
             attrs={
-                "requesting_to_join_class": "BBBBB",
+                "new_student": {"pending_class_request": "BBBBB"},
             },
             error_code="requesting_to_join_class__student__update__in_class",
             instance=self.student_user,
