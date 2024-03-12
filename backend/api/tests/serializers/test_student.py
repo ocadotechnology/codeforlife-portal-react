@@ -230,7 +230,7 @@ class TestReleaseStudentSerializer(ModelSerializerTestCase[Student]):
                     }
                 }
             ],
-            new_data=[{"class_field": None}],
+            new_data=[{"class_field_id": None}],
         )
 
 
