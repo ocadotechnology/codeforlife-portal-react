@@ -23,7 +23,7 @@ class SchoolViewSet(_SchoolViewSet):
         if self.action == "create":
             return [IsTeacher(in_school=False)]
         # Only admin-teachers in a school can update a school.
-        if self.action == "update":
+        if self.action == "partial_update":
             return [IsTeacher(is_admin=True)]
 
         return super().get_permissions()

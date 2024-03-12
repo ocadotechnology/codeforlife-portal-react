@@ -3,7 +3,6 @@
 Created on 23/01/2024 at 17:53:44(+00:00).
 """
 
-import typing as t
 
 from codeforlife.permissions import OR, AllowNone
 from codeforlife.request import Request
@@ -19,7 +18,10 @@ from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
-from ..serializers import UserSerializer
+from ..serializers import (
+    HandleIndependentUserJoinClassRequestSerializer,
+    UserSerializer,
+)
 
 # NOTE: type hint to help Intellisense.
 default_token_generator: PasswordResetTokenGenerator = default_token_generator
@@ -28,13 +30,15 @@ default_token_generator: PasswordResetTokenGenerator = default_token_generator
 # pylint: disable-next=missing-class-docstring,too-many-ancestors
 class UserViewSet(_UserViewSet):
     http_method_names = ["get", "post", "patch", "delete", "put"]
-    serializer_class = UserSerializer
 
+    # pylint: disable-next=too-many-return-statements
     def get_permissions(self):
         if self.action == "bulk":
             return [AllowNone()]
         if self.action == "destroy":
             return [OR(IsTeacher(), IsIndependent())]
+        if self.action == "independents__handle_join_class_request":
+            return [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))]
         if self.action == "partial_update":
             # If updating a teacher-user.
             if "teacher" in self.request.data:
@@ -42,12 +46,25 @@ class UserViewSet(_UserViewSet):
             # If updating a student-user.
             if "student" in self.request.data:
                 return [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))]
+            if "requesting_to_join_class" in self.request.data:
+                return [IsIndependent()]
 
         return super().get_permissions()
 
+    def get_serializer_class(self):
+        if self.action == "independents__handle_join_class_request":
+            return HandleIndependentUserJoinClassRequestSerializer
+
+        return UserSerializer
+
     def get_queryset(self, user_class=User):
+        if self.action == "independents__handle_join_class_request":
+            return self.request.school_teacher_user.teacher.indy_users
+
         queryset = super().get_queryset(user_class)
-        if self.action == "destroy":
+        if self.action == "destroy" or (
+            self.action == "partial_update" and self.request.auth_user.student
+        ):
             queryset = queryset.filter(pk=self.request.auth_user.pk)
 
         return queryset
@@ -95,12 +112,7 @@ class UserViewSet(_UserViewSet):
         url_path="reset-password/(?P<token>.+)",
         permission_classes=[AllowAny],
     )
-    def reset_password(
-        self,
-        request: Request,
-        pk: t.Optional[str] = None,
-        token: t.Optional[str] = None,
-    ):
+    def reset_password(self, request: Request, pk: str, token: str):
         """
         Handles password reset for a user. On GET, checks validity of user PK
         and token. On PATCH, rechecks these params and performs new password
@@ -178,3 +190,23 @@ class UserViewSet(_UserViewSet):
                 "token": token,
             }
         )
+
+    @action(
+        detail=True,
+        methods=["patch"],
+        url_path="independents/handle-join-class-request",
+    )
+    def independents__handle_join_class_request(
+        self, request: Request, pk: str
+    ):
+        """Handle an independent user's request to join a class."""
+        serializer = self.get_serializer(
+            self.get_object(),
+            data=request.data,
+            context=self.get_serializer_context(),
+        )
+
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data)

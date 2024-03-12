@@ -41,12 +41,12 @@ class TestSchoolViewSet(ModelViewSetTestCase[School]):
             action="create",
         )
 
-    def test_get_permissions__update(self):
+    def test_get_permissions__partial_update(self):
         """Only admin-teachers in a school can update a school."""
 
         self.assert_get_permissions(
             permissions=[IsTeacher(is_admin=True)],
-            action="update",
+            action="partial_update",
         )
 
     def test_get_permissions__retrieve(self):

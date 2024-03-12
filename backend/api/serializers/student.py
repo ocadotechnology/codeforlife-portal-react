@@ -108,8 +108,7 @@ class BaseStudentSerializer(StudentSerializer):
             klass = Class.objects.get(access_code=value)
         except Class.DoesNotExist as ex:
             raise serializers.ValidationError(
-                "Class does not exist.",
-                code="does_not_exist",
+                "Class does not exist.", code="does_not_exist"
             ) from ex
 
         if klass.teacher.school_id != teacher.school_id:

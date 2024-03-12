@@ -14,4 +14,7 @@ from .student import (
     TransferStudentSerializer,
 )
 from .teacher import TeacherSerializer
-from .user import UserSerializer
+from .user import (
+    HandleIndependentUserJoinClassRequestSerializer,
+    UserSerializer,
+)

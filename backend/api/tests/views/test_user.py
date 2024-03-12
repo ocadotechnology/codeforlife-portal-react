@@ -2,7 +2,6 @@
 © Ocado Group
 Created on 20/01/2024 at 10:58:52(+00:00).
 """
-
 import typing as t
 
 from codeforlife.permissions import OR, AllowNone
@@ -38,19 +37,28 @@ default_token_generator: PasswordResetTokenGenerator = default_token_generator
 class TestUserViewSet(ModelViewSetTestCase[User]):
     basename = "user"
     model_view_set_class = UserViewSet
-    fixtures = ["independent", "non_school_teacher", "school_1"]
+    fixtures = ["independent", "non_school_teacher", "school_1", "school_2"]
 
     def setUp(self):
         self.non_school_teacher_user = NonSchoolTeacherUser.objects.get(
             email="teacher@noschool.com"
         )
-        self.admin_school_teacher_user = AdminSchoolTeacherUser.objects.get(
+
+        self.admin_school1_teacher_user = AdminSchoolTeacherUser.objects.get(
             email="admin.teacher@school1.com"
         )
-        self.non_admin_school_teacher_user = (
+        self.non_admin_school1_teacher_user = (
             NonAdminSchoolTeacherUser.objects.get(email="teacher@school1.com")
         )
+        self.admin_school2_teacher_user = AdminSchoolTeacherUser.objects.get(
+            email="admin.teacher@school2.com"
+        )
+
         self.indy_user = IndependentUser.objects.get(email="indy@email.com")
+        self.indy_user_requesting_to_join_class = IndependentUser.objects.get(
+            email="indy.requester@email.com"
+        )
+
         self.class_1 = Class.objects.get(name="Class 1 @ School 1")
         self.class_2 = Class.objects.get(name="Class 2 @ School 1")
 
@@ -82,6 +90,28 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
             request=self.client.request_factory.patch(data={"student": {}}),
         )
 
+    def test_get_permissions__partial_update__requesting_to_join_class(
+        self,
+    ):
+        """Only independents can update their class join request."""
+        self.assert_get_permissions(
+            [IsIndependent()],
+            action="partial_update",
+            request=self.client.request_factory.patch(
+                data={"requesting_to_join_class": ""}
+            ),
+        )
+
+    def test_get_permissions__independents__handle_join_class_request(self):
+        """
+        Only school-teachers can handle an independent's class join request.
+        """
+        self.assert_get_permissions(
+            [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))],
+            action="independents__handle_join_class_request",
+            request=self.client.request_factory.patch(data={"accept": False}),
+        )
+
     def test_get_permissions__destroy(self):
         """Only independents or teachers can destroy a user."""
         self.assert_get_permissions(
@@ -91,15 +121,99 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
     # test: get queryset
 
+    def _test_get_queryset__independents__handle_join_class_request(
+        self, user: SchoolTeacherUser
+    ):
+        request = self.client.request_factory.patch(user=user)
+
+        indy_users = list(user.teacher.indy_users)
+        assert indy_users
+
+        self.assert_get_queryset(
+            indy_users,
+            action="independents__handle_join_class_request",
+            request=request,
+        )
+
+    def test_get_queryset__independents__handle_join_class_request__admin(self):
+        """Handling a join class request can only target the independent
+        students who made a request to any class in the teacher's school."""
+        self._test_get_queryset__independents__handle_join_class_request(
+            user=self.admin_school1_teacher_user
+        )
+
+    def test_get_queryset__independents__handle_join_class_request__non_admin(
+        self,
+    ):
+        """Handling a join class request can only target the independent
+        students who made a request to one of the teacher's classes."""
+        self._test_get_queryset__independents__handle_join_class_request(
+            user=self.non_school_teacher_user
+        )
+
     def test_get_queryset__destroy(self):
         """Destroying a user can only target the user making the request."""
         self.assert_get_queryset(
-            [self.admin_school_teacher_user],
+            [self.admin_school1_teacher_user],
             action="destroy",
             request=self.client.request_factory.delete(
-                user=self.admin_school_teacher_user
+                user=self.admin_school1_teacher_user
             ),
         )
+
+    def test_get_queryset__partial_update__student(self):
+        """Updating a student can only target the user making the request if
+        the user is a student."""
+        return self.assert_get_queryset(
+            [self.indy_user],
+            action="partial_update",
+            request=self.client.request_factory.patch(user=self.indy_user),
+        )
+
+    # test: class join request actions
+
+    def test_independents__handle_join_class_request__accept(self):
+        """Teacher can successfully accept a class join request."""
+        self.client.login_as(self.admin_school1_teacher_user)
+
+        viewname = self.reverse_action(
+            "independents--handle-join-class-request",
+            kwargs={
+                "pk": self.indy_user.pk,
+            },
+        )
+
+        pending_class_request = self.indy_user.student.pending_class_request
+
+        self.client.patch(viewname, data={"accept": True})
+
+        username = self.indy_user.username
+
+        self.indy_user.refresh_from_db()
+
+        assert self.indy_user.new_student.pending_class_request is None
+        assert self.indy_user.new_student.class_field == pending_class_request
+        assert self.indy_user.last_name == ""
+        assert self.indy_user.email == ""
+        assert self.indy_user.username != username
+
+    def test_independents__handle_join_class_request__reject(self):
+        """Teacher can successfully reject a class join request."""
+        self.client.login_as(self.admin_school1_teacher_user)
+
+        viewname = self.reverse_action(
+            "independents--handle-join-class-request",
+            kwargs={
+                "pk": self.indy_user.pk,
+            },
+        )
+
+        self.client.patch(viewname, data={"accept": False})
+
+        self.indy_user.refresh_from_db()
+
+        assert self.indy_user.new_student.pending_class_request is None
+        assert self.indy_user.new_student.class_field is None
 
     # test: reset password actions
 
@@ -202,8 +316,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
         self.client.patch(viewname, data={"password": "N3wPassword!"})
         self.client.login_as(
-            self.non_school_teacher_user,
-            password="N3wPassword!",
+            self.non_school_teacher_user, password="N3wPassword!"
         )
 
     def test_reset_password__patch__indy(self):
@@ -211,8 +324,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         pk, token = self._get_pk_and_token_for_user(self.indy_user.email)
 
         viewname = self.reverse_action(
-            "reset-password",
-            kwargs={"pk": pk, "token": token},
+            "reset-password", kwargs={"pk": pk, "token": token}
         )
 
         self.client.patch(viewname, data={"password": "N3wPassword"})
@@ -222,16 +334,13 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
     def test_partial_update__teacher(self):
         """Admin-school-teacher can update another teacher's profile."""
-        admin_school_teacher_user = self.client.login_admin_school_teacher(
-            email="admin.teacher@school1.com",
-            password="password",
-        )
+        self.client.login_as(self.admin_school1_teacher_user)
 
         other_school_teacher_user = (
             SchoolTeacherUser.objects.filter(
-                new_teacher__school=admin_school_teacher_user.teacher.school
+                new_teacher__school=self.admin_school1_teacher_user.teacher.school
             )
-            .exclude(pk=admin_school_teacher_user.pk)
+            .exclude(pk=self.admin_school1_teacher_user.pk)
             .first()
         )
         assert other_school_teacher_user
@@ -241,9 +350,26 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
             {
                 "last_name": other_school_teacher_user.first_name,
                 "teacher": {
-                    "is_admin": not other_school_teacher_user.teacher.is_admin,
+                    "is_admin": not other_school_teacher_user.teacher.is_admin
                 },
             },
+        )
+
+    def test_partial_update__indy__send_join_request(self):
+        """Independent user can request to join a class."""
+        self.client.login_as(self.indy_user)
+
+        self.client.partial_update(
+            self.indy_user,
+            {"requesting_to_join_class": self.class_1.access_code},
+        )
+
+    def test_partial_update__indy__revoke_join_request(self):
+        """Independent user can revoke their request to join a class."""
+        self.client.login_as(self.indy_user)
+
+        self.client.partial_update(
+            self.indy_user, {"requesting_to_join_class": None}
         )
 
     def assert_user_is_anonymized(self, user: User):
@@ -297,8 +423,8 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         )
 
     def test_destroy__class_teacher(self):
-        """Class-teacher-users can anonymize themself and their classes."""
-        user = self.non_admin_school_teacher_user
+        """Class-teacher-users can anonymize themselves and their classes."""
+        user = self.non_admin_school1_teacher_user
         assert user.teacher.class_teacher.exists()
         class_names = list(
             user.teacher.class_teacher.values_list("name", flat=True)
@@ -311,10 +437,10 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
     def test_destroy__school_teacher__last_teacher(self):
         """
-        School-teacher-users can anonymize themself and their school if they are
-        the last teacher.
+        School-teacher-users can anonymize themselves and their school if they
+        are the last teacher.
         """
-        user = self.admin_school_teacher_user
+        user = self.admin_school1_teacher_user
         assert user.teacher.class_teacher.exists()
         class_names = list(
             user.teacher.class_teacher.values_list("name", flat=True)
@@ -334,16 +460,16 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
     def test_destroy__school_teacher__last_admin_teacher(self):
         """
-        School-teacher-users cannot anonymize themself if they are the last
+        School-teacher-users cannot anonymize themselves if they are the last
         admin teachers.
         """
         self._test_destroy(
-            self.admin_school_teacher_user,
+            self.admin_school1_teacher_user,
             status_code_assertion=status.HTTP_409_CONFLICT,
         )
 
     def test_destroy__independent(self):
-        """Independent-users can anonymize themself."""
+        """Independent-users can anonymize themselves."""
         user = self.indy_user
         self._test_destroy(user)
         user.refresh_from_db()
