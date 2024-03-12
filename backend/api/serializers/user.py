@@ -87,14 +87,7 @@ class UserSerializer(BaseUserSerializer[User], _UserSerializer):
     )
 
     class Meta(_UserSerializer.Meta):
-        fields = [
-            *_UserSerializer.Meta.fields,
-            "student",
-            "teacher",
-            "password",
-            "requesting_to_join_class",
-            "current_password",
-        ]
+        fields = [*_UserSerializer.Meta.fields, "password", "current_password"]
         extra_kwargs = {
             **_UserSerializer.Meta.extra_kwargs,
             "first_name": {"read_only": False},
