@@ -10,6 +10,7 @@ from codeforlife.tests import ModelViewSetTestCase
 from codeforlife.user.models import AdminSchoolTeacherUser, Class, Teacher
 from codeforlife.user.permissions import IsStudent, IsTeacher
 from django.utils import timezone
+from rest_framework import status
 
 from ...views import ClassViewSet
 
@@ -24,6 +25,7 @@ class TestClassViewSet(ModelViewSetTestCase[Class]):
         self.admin_school_teacher_user = AdminSchoolTeacherUser.objects.get(
             email="admin.teacher@school1.com"
         )
+        self.empty_class = Class.objects.get(name="Class 3 @ School 1")
 
     # test: get permissions
 
@@ -142,3 +144,24 @@ class TestClassViewSet(ModelViewSetTestCase[Class]):
         assert teacher
 
         self.client.partial_update(model=klass, data={"teacher": teacher.pk})
+
+    def test_destroy__non_empty_class(self):
+        """Teacher cannot delete a class that still has students."""
+        user = self.admin_school_teacher_user
+
+        self.client.login_as(user)
+
+        klass = user.teacher.class_teacher.first()
+        assert klass
+
+        self.client.destroy(
+            model=klass, status_code_assertion=status.HTTP_409_CONFLICT
+        )
+
+    def test_destroy(self):
+        """Teacher can delete a class that has no students."""
+        user = self.admin_school_teacher_user
+
+        self.client.login_as(user)
+
+        self.client.destroy(model=self.empty_class)

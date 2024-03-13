@@ -2,10 +2,13 @@
 © Ocado Group
 Created on 23/01/2024 at 17:53:37(+00:00).
 """
-
-from codeforlife.permissions import OR, AllowNone
+from codeforlife.permissions import AllowNone
+from codeforlife.permissions import OR
+from codeforlife.user.models import Student
 from codeforlife.user.permissions import IsTeacher
 from codeforlife.user.views import ClassViewSet as _ClassViewSet
+from rest_framework import status
+from rest_framework.response import Response
 
 from ..serializers import ClassSerializer
 
@@ -25,3 +28,15 @@ class ClassViewSet(_ClassViewSet):
             return [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))]
 
         return super().get_permissions()
+
+    def destroy(self, request, *args, **kwargs):
+        klass = self.get_object()
+
+        if Student.objects.filter(
+            class_field=klass, new_user__is_active=True
+        ).exists():
+            return Response(status=status.HTTP_409_CONFLICT)
+
+        klass.anonymise()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
