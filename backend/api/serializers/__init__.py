@@ -7,10 +7,14 @@ from .auth_factor import AuthFactorSerializer
 from .klass import ClassSerializer
 from .school import SchoolSerializer
 from .school_teacher_invitation import SchoolTeacherInvitationSerializer
-from .student import StudentSerializer
+from .student import (
+    CreateStudentSerializer,
+    ReleaseStudentSerializer,
+    ResetStudentPasswordSerializer,
+    TransferStudentSerializer,
+)
 from .teacher import TeacherSerializer
 from .user import (
     HandleIndependentUserJoinClassRequestSerializer,
-    ReleaseStudentUserSerializer,
     UserSerializer,
 )

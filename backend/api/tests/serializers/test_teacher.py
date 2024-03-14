@@ -4,9 +4,10 @@ Created on 08/02/2024 at 13:01:42(+00:00).
 """
 
 from codeforlife.tests import ModelSerializerTestCase
-from codeforlife.user.models import AdminSchoolTeacherUser, StudentUser, Teacher
+from codeforlife.user.models import AdminSchoolTeacherUser, Teacher
 
-from ...serializers import TeacherSerializer, UserSerializer
+from ...serializers import UserSerializer
+from ...serializers.teacher import TeacherSerializer
 
 
 # pylint: disable-next=missing-class-docstring
@@ -36,18 +37,4 @@ class TestTeacherSerializer(ModelSerializerTestCase[Teacher]):
                     ),
                 },
             ),
-        )
-
-    def test_validate__not_teacher(self):
-        """
-        Target user must be a teacher.
-        """
-
-        student_user = StudentUser.objects.first()
-        assert student_user
-
-        self.assert_validate(
-            attrs={},
-            error_code="not_teacher",
-            parent=UserSerializer(instance=student_user),
         )

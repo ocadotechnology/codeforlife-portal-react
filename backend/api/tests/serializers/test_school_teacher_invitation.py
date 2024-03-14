@@ -10,7 +10,9 @@ from codeforlife.user.models import AdminSchoolTeacherUser
 from django.utils import timezone
 
 from ...models import SchoolTeacherInvitation
-from ...serializers import SchoolTeacherInvitationSerializer
+from ...serializers.school_teacher_invitation import (
+    SchoolTeacherInvitationSerializer,
+)
 
 
 # pylint: disable-next=missing-class-docstring
@@ -43,8 +45,8 @@ class TestSchoolTeacherInvitationSerializer(
                 },
                 new_data={
                     "token": "token",
-                    "school": self.admin_school_teacher_user.teacher.school.id,
-                    "from_teacher": self.admin_school_teacher_user.teacher.id,
+                    "school": self.admin_school_teacher_user.teacher.school,
+                    "from_teacher": self.admin_school_teacher_user.teacher,
                     "expiry": now + datetime.timedelta(days=30),
                 },
                 context={
