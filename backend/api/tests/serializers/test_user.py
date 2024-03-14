@@ -21,7 +21,7 @@ from ...views import UserViewSet
 
 class TestBaseUserSerializer(ModelSerializerTestCase[User]):
     model_serializer_class = BaseUserSerializer[User]
-    fixtures = ["school_1"]
+    # fixtures = ["school_1"]
 
     def test_validate_email__already_exists(self):
         """Cannot assign a user an email that already exists."""
@@ -58,6 +58,22 @@ class TestUserSerializer(ModelSerializerTestCase[User]):
         self.class_2 = Class.objects.get(name="Class 2 @ School 1")
         self.class_3 = Class.objects.get(name="Class 3 @ School 1")
 
+    def test_validate__student__is_teacher(self):
+        """Teacher cannot update student fields."""
+        self.assert_validate(
+            attrs={"new_student": {}},
+            error_code="student__is_teacher",
+            instance=self.admin_school_teacher_user,
+        )
+
+    def test_validate__teacher__is_student(self):
+        """Student cannot update teacher fields."""
+        self.assert_validate(
+            attrs={"new_teacher": {}},
+            error_code="teacher__is_student",
+            instance=self.student_user,
+        )
+
     def test_validate__create__teacher_and_student(self):
         """Cannot create a user with both teacher and student attributes."""
         self.assert_validate(
@@ -71,25 +87,7 @@ class TestUserSerializer(ModelSerializerTestCase[User]):
             attrs={"new_teacher": {}}, error_code="last_name__required"
         )
 
-    def test_validate__requesting_to_join_class__teacher__update(self):
-        """Teacher cannot request to join a class on update."""
-        self.assert_validate(
-            attrs={
-                "last_name": "Name",
-                "new_teacher": {},
-                "new_student": {"pending_class_request": "AAAAA"},
-            },
-            error_code="requesting_to_join_class__teacher__update",
-            instance=self.admin_school_teacher_user,
-            context={
-                "view": UserViewSet(action="partial_update"),
-                "request": self.request_factory.patch(
-                    user=self.admin_school_teacher_user
-                ),
-            },
-        )
-
-    def test_validate__requesting_to_join_class__student__create__in_class(
+    def test_validate__requesting_to_join_class__create__in_class(
         self,
     ):
         """
@@ -103,10 +101,10 @@ class TestUserSerializer(ModelSerializerTestCase[User]):
                     "pending_class_request": "BBBBB",
                 }
             },
-            error_code="requesting_to_join_class__student__create__in_class",
+            error_code="requesting_to_join_class__create__in_class",
         )
 
-    def test_validate__requesting_to_join_class__student__update__in_class(
+    def test_validate__requesting_to_join_class__update__in_class(
         self,
     ):
         """Student cannot be updated to request to join a class."""
@@ -114,7 +112,7 @@ class TestUserSerializer(ModelSerializerTestCase[User]):
             attrs={
                 "new_student": {"pending_class_request": "BBBBB"},
             },
-            error_code="requesting_to_join_class__student__update__in_class",
+            error_code="requesting_to_join_class__update__in_class",
             instance=self.student_user,
             context={
                 "view": UserViewSet(action="partial_update"),
@@ -124,7 +122,7 @@ class TestUserSerializer(ModelSerializerTestCase[User]):
             },
         )
 
-    def test_validate__class_field__indy__update__requesting_to_join_class(
+    def test_validate__class_field__update__requesting_to_join_class(
         self,
     ):
         """
@@ -135,7 +133,7 @@ class TestUserSerializer(ModelSerializerTestCase[User]):
             attrs={
                 "new_student": {"class_field": "AAAAA"},
             },
-            error_code="class_field__indy__update__requesting_to_join_class",
+            error_code="class_field__update__requesting_to_join_class",
             instance=self.independent,
             context={
                 "view": UserViewSet(action="partial_update"),

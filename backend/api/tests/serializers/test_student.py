@@ -37,7 +37,76 @@ from ...serializers.student import (
 class TestBaseStudentListSerializer(ModelListSerializerTestCase[Student]):
     model_serializer_class = BaseStudentSerializer
     model_list_serializer_class = BaseStudentListSerializer
-    fixtures = ["school_1"]
+    # fixtures = ["school_1"]
+
+    def setUp(self):
+        student_user = StudentUser.objects.first()
+        assert student_user
+        self.student_user = student_user
+
+    def test_validate__first_name__data__not_unique_per_class(self):
+        """Cannot provide a first name more than once per class in data."""
+        self.assert_validate(
+            attrs=[
+                {
+                    "class_field": {"access_code": "AAAAA"},
+                    "new_user": {"first_name": "Stefan"},
+                },
+                {
+                    "class_field": {"access_code": "AAAAA"},
+                    "new_user": {"first_name": "stefan"},
+                },
+            ],
+            error_code="first_name__data__not_unique_per_class",
+        )
+
+    def test_validate__first_name__data__exists_in_class(self):
+        """
+        Cannot provide a first name in data for class if it already exists in
+        that class.
+        """
+        self.assert_validate(
+            attrs=[
+                {
+                    "class_field": {
+                        "access_code": (
+                            self.student_user.student.class_field.access_code
+                        )
+                    },
+                    "new_user": {"first_name": self.student_user.first_name},
+                }
+            ],
+            error_code="first_name__data__exists_in_class",
+        )
+
+    def test_validate__first_name__db__exists_in_class(self):
+        """
+        Cannot transfer a student to another class if their first name already
+        exists in that class.
+        """
+        self.assert_validate(
+            attrs=[
+                {
+                    "class_field": {
+                        "access_code": (
+                            self.student_user.student.class_field.access_code
+                        )
+                    }
+                }
+            ],
+            error_code="first_name__db__exists_in_class",
+            instance=[self.student_user.student],
+        )
+
+
+class TestBaseStudentSerializer(ModelSerializerTestCase[Student]):
+    model_serializer_class = BaseStudentSerializer
+    fixtures = ["school_1", "school_2"]
+
+    def setUp(self):
+        self.non_admin_school_teacher_user = (
+            NonAdminSchoolTeacherUser.objects.get(email="teacher@school1.com")
+        )
 
     def setUp(self):
         student_user = StudentUser.objects.first()
@@ -160,7 +229,7 @@ class TestBaseStudentSerializer(ModelSerializerTestCase[Student]):
 
 class TestBaseStudentPasswordSerializer(ModelSerializerTestCase[Student]):
     model_serializer_class = BaseStudentPasswordSerializer
-    fixtures = ["school_1"]
+    # fixtures = ["school_1"]
 
     def setUp(self):
         student = Student.objects.first()
@@ -186,7 +255,7 @@ class TestBaseStudentPasswordSerializer(ModelSerializerTestCase[Student]):
 
 class TestCreateStudentSerializer(ModelSerializerTestCase[Student]):
     model_serializer_class = CreateStudentSerializer
-    fixtures = ["school_1"]
+    # fixtures = ["school_1"]
 
     def setUp(self):
         klass = Class.objects.first()
@@ -211,7 +280,7 @@ class TestCreateStudentSerializer(ModelSerializerTestCase[Student]):
 
 class TestReleaseStudentSerializer(ModelSerializerTestCase[Student]):
     model_serializer_class = ReleaseStudentSerializer
-    fixtures = ["school_1"]
+    # fixtures = ["school_1"]
 
     def setUp(self):
         student = Student.objects.first()
@@ -225,12 +294,17 @@ class TestReleaseStudentSerializer(ModelSerializerTestCase[Student]):
             validated_data=[
                 {
                     "new_user": {
-                        "email": f"{self.student.pk}@school1.com",
+                        "email": f"{self.student.pk}@gmail.com",
                         "first_name": "Indiana",
                     }
                 }
             ],
-            new_data=[{"class_field_id": None}],
+            new_data=[
+                {
+                    "class_field_id": None,
+                    "new_user": {"username": f"{self.student.pk}@gmail.com"},
+                }
+            ],
         )
 
 
@@ -260,7 +334,7 @@ class TestTransferStudentSerializer(ModelSerializerTestCase[Student]):
 
 class TestResetStudentPasswordSerializer(ModelSerializerTestCase[Student]):
     model_serializer_class = ResetStudentPasswordSerializer
-    fixtures = ["school_1"]
+    # fixtures = ["school_1"]
 
     def setUp(self):
         student = Student.objects.first()
@@ -272,15 +346,26 @@ class TestResetStudentPasswordSerializer(ModelSerializerTestCase[Student]):
         password = "password"
         # pylint: disable-next=line-too-long
         password_hash = "pbkdf2_sha256$720000$Jp50WPBA6WZImUIpj3UcVm$OJWB8+UoW5lLaUkHLYo0cKgMkyRI6qnqVOWxYEsi9T0="
+        # pylint: disable-next=protected-access
+        login_id = StudentUser._get_random_login_id()
 
         with patch(
             "django.contrib.auth.base_user.make_password",
             return_value=password_hash,
         ) as make_password:
-            self.assert_update_many(
-                instance=[self.student],
-                validated_data=[{"new_user": {"password": password}}],
-                new_data=[{"new_user": {"password": password_hash}}],
-            )
+            with patch.object(
+                StudentUser, "_get_random_login_id", return_value=login_id
+            ) as get_random_login_id:
+                self.assert_update_many(
+                    instance=[self.student],
+                    validated_data=[{"new_user": {"password": password}}],
+                    new_data=[
+                        {
+                            "new_user": {"password": password_hash},
+                            "login_id": login_id,
+                        }
+                    ],
+                )
 
+                get_random_login_id.assert_called_once()
             make_password.assert_called_once_with(password)

@@ -127,22 +127,20 @@ class UserSerializer(BaseUserSerializer[User], _UserSerializer):
 
     def validate(self, attrs):
         if self.instance:  # Updating
-            if self.view.action != "reset_password":
-                # TODO: make current password required when changing
-                #  self-profile.
-                pass
-
             if self.instance.teacher:
-                if (
-                    "new_student" in attrs
-                    and "pending_class_request" in attrs["new_student"]
-                ):
+                if "new_student" in attrs:
                     raise serializers.ValidationError(
-                        "Teacher can't request to join a class.",
-                        code="requesting_to_join_class__teacher__update",
+                        "Cannot set student fields for a teacher.",
+                        code="student__is_teacher",
                     )
 
             elif self.instance.student:
+                if "new_teacher" in attrs:
+                    raise serializers.ValidationError(
+                        "Cannot set teacher fields for a student.",
+                        code="teacher__is_student",
+                    )
+
                 if (
                     self.instance.student.class_field is not None
                     and "new_student" in attrs
@@ -150,7 +148,7 @@ class UserSerializer(BaseUserSerializer[User], _UserSerializer):
                 ):
                     raise serializers.ValidationError(
                         "Student cannot request to join a class.",
-                        code="requesting_to_join_class__student__update__in_class",
+                        code="requesting_to_join_class__update__in_class",
                     )
 
                 if (
@@ -161,7 +159,7 @@ class UserSerializer(BaseUserSerializer[User], _UserSerializer):
                     raise serializers.ValidationError(
                         "Independent user cannot be added to class as they "
                         "are already requesting to join a class.",
-                        code="class_field__indy__update__requesting_to_join_class",
+                        code="class_field__update__requesting_to_join_class",
                     )
 
         else:  # Creating
@@ -181,13 +179,12 @@ class UserSerializer(BaseUserSerializer[User], _UserSerializer):
             elif "new_student" in attrs:
                 if (
                     "class_field" in attrs["new_student"]
-                    and "new_student" in attrs
                     and "pending_class_request" in attrs["new_student"]
                 ):
                     raise serializers.ValidationError(
                         "Cannot create a student in class who is also "
                         "requesting to join a class.",
-                        code="requesting_to_join_class__student__create__in_class",
+                        code="requesting_to_join_class__create__in_class",
                     )
 
         return attrs

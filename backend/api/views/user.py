@@ -106,6 +106,7 @@ class UserViewSet(_UserViewSet):
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    # TODO: convert to update action (HTTP PUT).
     @action(
         detail=True,
         methods=["get", "patch"],
@@ -150,6 +151,7 @@ class UserViewSet(_UserViewSet):
 
         return Response()
 
+    # TODO: convert to update action (HTTP PUT).
     @action(
         detail=False,
         methods=["post"],
@@ -191,6 +193,7 @@ class UserViewSet(_UserViewSet):
             }
         )
 
+    # TODO: convert to update action (HTTP PUT).
     @action(
         detail=True,
         methods=["patch"],
