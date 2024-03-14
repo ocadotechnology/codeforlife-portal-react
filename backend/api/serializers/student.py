@@ -10,6 +10,7 @@ from codeforlife.serializers import ModelListSerializer
 from codeforlife.types import DataDict
 from codeforlife.user.models import Class, Student, StudentUser
 from codeforlife.user.serializers import StudentSerializer
+from django.db.models.functions import Lower
 from rest_framework import serializers
 
 from .user import BaseUserSerializer
@@ -28,14 +29,18 @@ class BaseStudentListSerializer(ModelListSerializer[Student]):
     """To be inherited by all student list serializers."""
 
     def _validate_first_names_are_unique_in_class(
-        self, access_code: str, first_names: t.List[str], code: str
+        self, access_code: str, lower_first_names: t.List[str], code: str
     ):
         if (
-            first_names
-            and StudentUser.objects.filter(
-                first_name__in=first_names,
+            lower_first_names
+            and StudentUser.objects.annotate(
+                lower_first_name=Lower("first_name")
+            )
+            .filter(
+                lower_first_name__in=lower_first_names,
                 new_student__class_field__access_code=access_code,
-            ).exists()
+            )
+            .exists()
         ):
             raise serializers.ValidationError(
                 "One or more first names is already taken in class"
@@ -50,9 +55,9 @@ class BaseStudentListSerializer(ModelListSerializer[Student]):
             class_field: DataDict = student_fields.get("class_field", {})
             return t.cast(str, class_field.get("access_code", ""))
 
-        def get_first_name(student_fields: DataDict):
+        def get_lower_first_name(student_fields: DataDict):
             new_user: DataDict = student_fields.get("new_user", {})
-            return t.cast(str, new_user.get("first_name", ""))
+            return t.cast(str, new_user.get("first_name", "")).lower()
 
         # Copy list to preserve its original order.
         attrs_copy = attrs.copy()
@@ -63,8 +68,8 @@ class BaseStudentListSerializer(ModelListSerializer[Student]):
 
             # Validate first name is not specified more than once in data.
             data = list(group)
-            data.sort(key=get_first_name)
-            for first_name, group in groupby(data, key=get_first_name):
+            data.sort(key=get_lower_first_name)
+            for first_name, group in groupby(data, key=get_lower_first_name):
                 if first_name and len(list(group)) > 1:
                     raise serializers.ValidationError(
                         f'First name "{first_name}" is specified more than once'
@@ -75,9 +80,9 @@ class BaseStudentListSerializer(ModelListSerializer[Student]):
             # Validate first names are not already taken in class.
             self._validate_first_names_are_unique_in_class(
                 access_code,
-                first_names=[
+                lower_first_names=[
                     first_name
-                    for first_name in map(get_first_name, data)
+                    for first_name in map(get_lower_first_name, data)
                     if first_name
                 ],
                 code="first_name__data__exists_in_class",
@@ -88,10 +93,10 @@ class BaseStudentListSerializer(ModelListSerializer[Student]):
             if self.instance:
                 self._validate_first_names_are_unique_in_class(
                     access_code,
-                    first_names=[
-                        student.new_user.first_name
+                    lower_first_names=[
+                        student.new_user.first_name.lower()
                         for student_fields, student in zip(attrs, self.instance)
-                        if not get_first_name(student_fields)
+                        if not get_lower_first_name(student_fields)
                     ],
                     code="first_name__db__exists_in_class",
                 )
@@ -202,7 +207,7 @@ class ReleaseStudentListSerializer(BaseStudentListSerializer):
 
             user_fields = t.cast(DataDict, data["new_user"])
             student.new_user.email = user_fields["email"]
-            update_fields = ["email"]
+            update_fields = ["email", "username"]
             if "first_name" in user_fields:
                 student.new_user.first_name = user_fields["first_name"]
                 update_fields.append("first_name")
@@ -231,10 +236,15 @@ class ReleaseStudentSerializer(BaseStudentSerializer):
 
 class TransferStudentListSerializer(BaseStudentListSerializer):
     def update(self, instance, validated_data):
-        for student, data in zip(instance, validated_data):
-            student.class_field = Class.objects.get(
+        classes = {
+            data["class_field"]["access_code"]: Class.objects.get(
                 access_code=data["class_field"]["access_code"]
             )
+            for data in validated_data
+        }
+
+        for student, data in zip(instance, validated_data):
+            student.class_field = classes[data["class_field"]["access_code"]]
             student.save(update_fields=["class_field"])
 
             user_fields = t.cast(DataDict, data.get("new_user", {}))

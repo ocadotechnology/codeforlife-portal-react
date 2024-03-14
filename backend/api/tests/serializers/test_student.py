@@ -37,7 +37,7 @@ from ...serializers.student import (
 class TestBaseStudentListSerializer(ModelListSerializerTestCase[Student]):
     model_serializer_class = BaseStudentSerializer
     model_list_serializer_class = BaseStudentListSerializer
-    fixtures = ["school_1"]
+    # fixtures = ["school_1"]
 
     def setUp(self):
         student_user = StudentUser.objects.first()
@@ -51,8 +51,11 @@ class TestBaseStudentListSerializer(ModelListSerializerTestCase[Student]):
                 {
                     "class_field": {"access_code": "AAAAA"},
                     "new_user": {"first_name": "Stefan"},
-                }
-                for _ in range(2)
+                },
+                {
+                    "class_field": {"access_code": "AAAAA"},
+                    "new_user": {"first_name": "stefan"},
+                },
             ],
             error_code="first_name__data__not_unique_per_class",
         )
@@ -78,8 +81,8 @@ class TestBaseStudentListSerializer(ModelListSerializerTestCase[Student]):
 
     def test_validate__first_name__db__exists_in_class(self):
         """
-        Cannot provide transfer a student to another class if their first name
-        already exists in that class.
+        Cannot transfer a student to another class if their first name already
+        exists in that class.
         """
         self.assert_validate(
             attrs=[
@@ -105,7 +108,6 @@ class TestBaseStudentSerializer(ModelSerializerTestCase[Student]):
             NonAdminSchoolTeacherUser.objects.get(email="teacher@school1.com")
         )
 
-    def test_validate_klass__does_not_exist(self):
         """
         Requesting teacher cannot assign a student to a class that doesn't
         exist.
@@ -160,7 +162,7 @@ class TestBaseStudentSerializer(ModelSerializerTestCase[Student]):
 
 class TestBaseStudentPasswordSerializer(ModelSerializerTestCase[Student]):
     model_serializer_class = BaseStudentPasswordSerializer
-    fixtures = ["school_1"]
+    # fixtures = ["school_1"]
 
     def setUp(self):
         student = Student.objects.first()
@@ -186,7 +188,7 @@ class TestBaseStudentPasswordSerializer(ModelSerializerTestCase[Student]):
 
 class TestCreateStudentSerializer(ModelSerializerTestCase[Student]):
     model_serializer_class = CreateStudentSerializer
-    fixtures = ["school_1"]
+    # fixtures = ["school_1"]
 
     def setUp(self):
         klass = Class.objects.first()
@@ -211,7 +213,7 @@ class TestCreateStudentSerializer(ModelSerializerTestCase[Student]):
 
 class TestReleaseStudentSerializer(ModelSerializerTestCase[Student]):
     model_serializer_class = ReleaseStudentSerializer
-    fixtures = ["school_1"]
+    # fixtures = ["school_1"]
 
     def setUp(self):
         student = Student.objects.first()
@@ -225,12 +227,17 @@ class TestReleaseStudentSerializer(ModelSerializerTestCase[Student]):
             validated_data=[
                 {
                     "new_user": {
-                        "email": f"{self.student.pk}@school1.com",
+                        "email": f"{self.student.pk}@gmail.com",
                         "first_name": "Indiana",
                     }
                 }
             ],
-            new_data=[{"class_field_id": None}],
+            new_data=[
+                {
+                    "class_field_id": None,
+                    "new_user": {"username": f"{self.student.pk}@gmail.com"},
+                }
+            ],
         )
 
 
@@ -260,7 +267,7 @@ class TestTransferStudentSerializer(ModelSerializerTestCase[Student]):
 
 class TestResetStudentPasswordSerializer(ModelSerializerTestCase[Student]):
     model_serializer_class = ResetStudentPasswordSerializer
-    fixtures = ["school_1"]
+    # fixtures = ["school_1"]
 
     def setUp(self):
         student = Student.objects.first()

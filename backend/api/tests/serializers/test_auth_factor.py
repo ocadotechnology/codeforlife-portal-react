@@ -51,24 +51,19 @@ class TestAuthFactorSerializer(ModelSerializerTestCase[AuthFactor]):
 
     def test_create(self):
         """Enabling OTP will ensure the user's OTP-secret is set."""
-        assert not self.uni_auth_factor_teacher_user.otp_secret
+        user = self.uni_auth_factor_teacher_user
+        assert user.otp_secret
 
-        otp_secret = pyotp.random_base32()
-        with patch.object(pyotp, "random_base32", return_value=otp_secret):
-            self.assert_create(
-                validated_data={"type": AuthFactor.Type.OTP},
-                context={
-                    "request": self.request_factory.post(
-                        user=self.uni_auth_factor_teacher_user
-                    )
+        self.assert_create(
+            validated_data={"type": AuthFactor.Type.OTP},
+            context={"request": self.request_factory.post(user=user)},
+            new_data={
+                "user": {
+                    "id": user.id,
+                    "userprofile": {"otp_secret": user.otp_secret},
                 },
-                new_data={
-                    "user": {
-                        "id": self.uni_auth_factor_teacher_user.id,
-                        "userprofile": {"otp_secret": otp_secret},
-                    },
-                },
-            )
+            },
+        )
 
     # test: to representation
 
