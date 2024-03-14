@@ -108,6 +108,7 @@ class TestBaseStudentSerializer(ModelSerializerTestCase[Student]):
             NonAdminSchoolTeacherUser.objects.get(email="teacher@school1.com")
         )
 
+    def test_validate_klass__does_not_exist(self):
         """
         Requesting teacher cannot assign a student to a class that doesn't
         exist.
@@ -279,15 +280,26 @@ class TestResetStudentPasswordSerializer(ModelSerializerTestCase[Student]):
         password = "password"
         # pylint: disable-next=line-too-long
         password_hash = "pbkdf2_sha256$720000$Jp50WPBA6WZImUIpj3UcVm$OJWB8+UoW5lLaUkHLYo0cKgMkyRI6qnqVOWxYEsi9T0="
+        # pylint: disable-next=protected-access
+        login_id = StudentUser._get_random_login_id()
 
         with patch(
             "django.contrib.auth.base_user.make_password",
             return_value=password_hash,
         ) as make_password:
-            self.assert_update_many(
-                instance=[self.student],
-                validated_data=[{"new_user": {"password": password}}],
-                new_data=[{"new_user": {"password": password_hash}}],
-            )
+            with patch.object(
+                StudentUser, "_get_random_login_id", return_value=login_id
+            ) as get_random_login_id:
+                self.assert_update_many(
+                    instance=[self.student],
+                    validated_data=[{"new_user": {"password": password}}],
+                    new_data=[
+                        {
+                            "new_user": {"password": password_hash},
+                            "login_id": login_id,
+                        }
+                    ],
+                )
 
+                get_random_login_id.assert_called_once()
             make_password.assert_called_once_with(password)
