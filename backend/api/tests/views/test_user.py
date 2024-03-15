@@ -99,13 +99,13 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
             ),
         )
 
-    def test_get_permissions__independents__handle_join_class_request(self):
+    def test_get_permissions__handle_join_class_request(self):
         """
         Only school-teachers can handle an independent's class join request.
         """
         self.assert_get_permissions(
             [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))],
-            action="independents__handle_join_class_request",
+            action="handle_join_class_request",
             request=self.client.request_factory.patch(data={"accept": False}),
         )
 
@@ -132,7 +132,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
     # test: get queryset
 
-    def _test_get_queryset__independents__handle_join_class_request(
+    def _test_get_queryset__handle_join_class_request(
         self, user: SchoolTeacherUser
     ):
         request = self.client.request_factory.patch(user=user)
@@ -142,23 +142,23 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
         self.assert_get_queryset(
             indy_users,
-            action="independents__handle_join_class_request",
+            action="handle_join_class_request",
             request=request,
         )
 
-    def test_get_queryset__independents__handle_join_class_request__admin(self):
+    def test_get_queryset__handle_join_class_request__admin(self):
         """Handling a join class request can only target the independent
         students who made a request to any class in the teacher's school."""
-        self._test_get_queryset__independents__handle_join_class_request(
+        self._test_get_queryset__handle_join_class_request(
             user=self.admin_school_1_teacher_user
         )
 
-    def test_get_queryset__independents__handle_join_class_request__non_admin(
+    def test_get_queryset__handle_join_class_request__non_admin(
         self,
     ):
         """Handling a join class request can only target the independent
         students who made a request to one of the teacher's classes."""
-        self._test_get_queryset__independents__handle_join_class_request(
+        self._test_get_queryset__handle_join_class_request(
             user=self.non_admin_school_1_teacher_user
         )
 
@@ -208,7 +208,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
             action="reset_password",
         )
 
-    def test_get_serializer_class__independents__handle_join_class_request(
+    def test_get_serializer_class__handle_join_class_request(
         self,
     ):
         """
@@ -216,7 +216,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         """
         self.assert_get_serializer_class(
             serializer_class=HandleIndependentUserJoinClassRequestSerializer,
-            action="independents__handle_join_class_request",
+            action="handle_join_class_request",
         )
 
     def test_get_serializer_class__partial_update(self):
@@ -249,44 +249,38 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
     # test: class join request actions
 
-    def test_independents__handle_join_class_request__accept(self):
+    def test_handle_join_class_request__accept(self):
         """Teacher can successfully accept a class join request."""
-        indy_user = self.indy_user_requesting_to_join_class
+        user = self.indy_user_requesting_to_join_class
 
         self.client.login_as(self.admin_school_1_teacher_user)
-        self.client.patch(
-            path=self.reverse_action(
-                "independents--handle-join-class-request",
-                kwargs={"pk": indy_user.pk},
-            ),
+        self.client.put(
+            path=self.reverse_action("handle-join-class-request", user),
             data={"accept": True},
         )
 
-        pending_class_request = indy_user.student.pending_class_request
-        username = indy_user.username
-        indy_user.refresh_from_db()
-        assert indy_user.student.pending_class_request is None
-        assert indy_user.student.class_field == pending_class_request
-        assert indy_user.last_name == ""
-        assert indy_user.email == ""
-        assert indy_user.username != username
+        pending_class_request = user.student.pending_class_request
+        username = user.username
+        user.refresh_from_db()
+        assert user.student.pending_class_request is None
+        assert user.student.class_field == pending_class_request
+        assert user.last_name == ""
+        assert user.email == ""
+        assert user.username != username
 
-    def test_independents__handle_join_class_request__reject(self):
+    def test_handle_join_class_request__reject(self):
         """Teacher can successfully reject a class join request."""
-        indy_user = self.indy_user_requesting_to_join_class
+        user = self.indy_user_requesting_to_join_class
 
         self.client.login_as(self.admin_school_1_teacher_user)
-        self.client.patch(
-            path=self.reverse_action(
-                "independents--handle-join-class-request",
-                kwargs={"pk": indy_user.pk},
-            ),
+        self.client.put(
+            path=self.reverse_action("handle-join-class-request", user),
             data={"accept": False},
         )
 
-        indy_user.refresh_from_db()
-        assert indy_user.student.pending_class_request is None
-        assert indy_user.student.class_field is None
+        user.refresh_from_db()
+        assert user.student.pending_class_request is None
+        assert user.student.class_field is None
 
     # test: reset password actions
 

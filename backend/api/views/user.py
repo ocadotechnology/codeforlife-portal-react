@@ -33,7 +33,7 @@ class UserViewSet(_UserViewSet):
             return [AllowAny()]
         if self.action == "destroy":
             return [OR(IsTeacher(), IsIndependent())]
-        if self.action == "independents__handle_join_class_request":
+        if self.action == "handle_join_class_request":
             return [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))]
         if self.action == "partial_update":
             # If updating a teacher-user.
@@ -52,7 +52,7 @@ class UserViewSet(_UserViewSet):
             return RequestUserPasswordResetSerializer
         if self.action == "reset_password":
             return ResetUserPasswordSerializer
-        if self.action == "independents__handle_join_class_request":
+        if self.action == "handle_join_class_request":
             return HandleIndependentUserJoinClassRequestSerializer
 
         return UserSerializer
@@ -60,7 +60,7 @@ class UserViewSet(_UserViewSet):
     def get_queryset(self, user_class=User):
         if self.action == "reset_password":
             return User.objects.filter(pk=self.kwargs["pk"])
-        if self.action == "independents__handle_join_class_request":
+        if self.action == "handle_join_class_request":
             return self.request.school_teacher_user.teacher.indy_users
 
         queryset = super().get_queryset(user_class)
@@ -135,24 +135,6 @@ class UserViewSet(_UserViewSet):
     reset_password = _UserViewSet.update_action(
         name="reset_password", url_path="reset-password"
     )
-
-    # TODO: convert to update action (HTTP PUT).
-    @action(
-        detail=True,
-        methods=["patch"],
-        url_path="independents/handle-join-class-request",
+    handle_join_class_request = _UserViewSet.update_action(
+        name="handle_join_class_request", url_path="handle-join-class-request"
     )
-    def independents__handle_join_class_request(
-        self, request: Request, pk: str
-    ):
-        """Handle an independent user's request to join a class."""
-        serializer = self.get_serializer(
-            self.get_object(),
-            data=request.data,
-            context=self.get_serializer_context(),
-        )
-
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-
-        return Response(serializer.data)
