@@ -10,6 +10,7 @@ from codeforlife.tests import ModelViewSetTestCase
 from codeforlife.user.models import AdminSchoolTeacherUser, Class, Teacher
 from codeforlife.user.permissions import IsStudent, IsTeacher
 from django.utils import timezone
+from rest_framework import status
 
 from ...views import ClassViewSet
 
@@ -24,6 +25,7 @@ class TestClassViewSet(ModelViewSetTestCase[Class]):
         self.admin_school_teacher_user = AdminSchoolTeacherUser.objects.get(
             email="admin.teacher@school1.com"
         )
+        self.empty_class = Class.objects.get(name="Class 3 @ School 1")
 
     # test: get permissions
 
@@ -89,7 +91,6 @@ class TestClassViewSet(ModelViewSetTestCase[Class]):
         user = self.admin_school_teacher_user
 
         self.client.login_as(user)
-
         self.client.create(
             {
                 "name": "ExampleClass",
@@ -104,9 +105,6 @@ class TestClassViewSet(ModelViewSetTestCase[Class]):
         Admin-teacher can create a class with another teacher as the class owner.
         """
         user = self.admin_school_teacher_user
-
-        self.client.login_as(user)
-
         teacher = (
             Teacher.objects.filter(school=user.teacher.school)
             .exclude(pk=user.teacher.pk)
@@ -114,6 +112,7 @@ class TestClassViewSet(ModelViewSetTestCase[Class]):
         )
         assert teacher
 
+        self.client.login_as(user)
         self.client.create(
             {
                 "name": "ExampleClass",
@@ -127,9 +126,6 @@ class TestClassViewSet(ModelViewSetTestCase[Class]):
     def test_partial_update__teacher(self):
         """Teacher can transfer a class to another teacher."""
         user = self.admin_school_teacher_user
-
-        self.client.login_as(user)
-
         klass = t.cast(t.Optional[Class], user.teacher.class_teacher.first())
         assert klass
 
@@ -141,4 +137,21 @@ class TestClassViewSet(ModelViewSetTestCase[Class]):
         )
         assert teacher
 
+        self.client.login_as(user)
         self.client.partial_update(model=klass, data={"teacher": teacher.pk})
+
+    def test_destroy__has_students(self):
+        """Teacher cannot delete a class that still has students."""
+        user = self.admin_school_teacher_user
+        klass = user.teacher.class_teacher.first()
+        assert klass
+
+        self.client.login_as(user)
+        self.client.destroy(
+            model=klass, status_code_assertion=status.HTTP_409_CONFLICT
+        )
+
+    def test_destroy(self):
+        """Teacher can delete a class that has no students."""
+        self.client.login_as(self.admin_school_teacher_user)
+        self.client.destroy(model=self.empty_class)
