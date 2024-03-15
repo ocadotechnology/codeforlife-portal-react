@@ -38,7 +38,9 @@ def user__pre_save__email(
     sender, instance: User, update_fields: UpdateFields, *args, **kwargs
 ):
     """Before a user's email field is updated."""
-    if instance.email and previous_values_are_unequal(instance, {"email"}):
+    if (update_fields and "email" in update_fields) or (
+        instance.email and previous_values_are_unequal(instance, {"email"})
+    ):
         assert_update_fields_includes(update_fields, {"email", "username"})
         instance.username = instance.email
 

@@ -3,28 +3,22 @@
 Created on 23/01/2024 at 17:53:44(+00:00).
 """
 
-
-from codeforlife.permissions import OR, AllowNone
+from codeforlife.permissions import OR, AllowAny, AllowNone
 from codeforlife.request import Request
+from codeforlife.response import Response
 from codeforlife.user.models import Class, SchoolTeacher, StudentUser, User
 from codeforlife.user.permissions import IsIndependent, IsTeacher
 from codeforlife.user.views import UserViewSet as _UserViewSet
-from django.contrib.auth.tokens import (
-    PasswordResetTokenGenerator,
-    default_token_generator,
-)
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny
-from rest_framework.response import Response
+from rest_framework.serializers import ValidationError
 
 from ..serializers import (
     HandleIndependentUserJoinClassRequestSerializer,
+    RequestUserPasswordResetSerializer,
+    ResetUserPasswordSerializer,
     UserSerializer,
 )
-
-# NOTE: type hint to help Intellisense.
-default_token_generator: PasswordResetTokenGenerator = default_token_generator
 
 
 # pylint: disable-next=missing-class-docstring,too-many-ancestors
@@ -35,6 +29,8 @@ class UserViewSet(_UserViewSet):
     def get_permissions(self):
         if self.action == "bulk":
             return [AllowNone()]
+        if self.action in ["request_password_reset", "reset_password"]:
+            return [AllowAny()]
         if self.action == "destroy":
             return [OR(IsTeacher(), IsIndependent())]
         if self.action == "independents__handle_join_class_request":
@@ -52,12 +48,18 @@ class UserViewSet(_UserViewSet):
         return super().get_permissions()
 
     def get_serializer_class(self):
+        if self.action == "request_password_reset":
+            return RequestUserPasswordResetSerializer
+        if self.action == "reset_password":
+            return ResetUserPasswordSerializer
         if self.action == "independents__handle_join_class_request":
             return HandleIndependentUserJoinClassRequestSerializer
 
         return UserSerializer
 
     def get_queryset(self, user_class=User):
+        if self.action == "reset_password":
+            return User.objects.filter(pk=self.kwargs["pk"])
         if self.action == "independents__handle_join_class_request":
             return self.request.school_teacher_user.teacher.indy_users
 
@@ -106,92 +108,33 @@ class UserViewSet(_UserViewSet):
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    # TODO: convert to update action (HTTP PUT).
-    @action(
-        detail=True,
-        methods=["get", "patch"],
-        url_path="reset-password/(?P<token>.+)",
-        permission_classes=[AllowAny],
-    )
-    def reset_password(self, request: Request, pk: str, token: str):
-        """
-        Handles password reset for a user. On GET, checks validity of user PK
-        and token. On PATCH, rechecks these params and performs new password
-        validation and update.
-        :param token: Django-generated user token for password reset, expires
-        after 1 hour.
-        """
-
-        user_not_found_response = Response(
-            {"non_field_errors": ["No user found for given ID."]},
-            status=status.HTTP_400_BAD_REQUEST,
-        )
-
-        if pk is None:
-            return user_not_found_response
-
-        try:
-            user = User.objects.get(pk=int(pk))
-        except (ValueError, User.DoesNotExist):
-            return user_not_found_response
-
-        if not default_token_generator.check_token(user, token):
-            return Response(
-                {"non_field_errors": ["Token doesn't match given user."]},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        if request.method == "PATCH":
-            serializer = self.get_serializer(user, data=request.data)
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-
-            # TODO: Check if need to handle resetting ratelimit & unblocking
-            #  of user
-
-        return Response()
-
-    # TODO: convert to update action (HTTP PUT).
-    @action(
-        detail=False,
-        methods=["post"],
-        url_path="request-password-reset",
-        permission_classes=[AllowAny],
-    )
+    @action(detail=False, methods=["post"], url_path="request-password-reset")
     def request_password_reset(self, request: Request):
         """
         Generates a reset password URL to be emailed to the user if the
         given email address exists.
         """
-        email = request.data.get("email")
-
-        if email is None:
-            return Response(
-                {"email": ["Field is required."]},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        serializer = self.get_serializer(data=request.data)
 
         try:
-            user = User.objects.get(email__iexact=email)
-        except User.DoesNotExist:
-            # NOTE: Always return a 200 here - a noticeable change in
-            # behaviour would allow email enumeration.
-            return Response()
+            serializer.is_valid(raise_exception=True)
+        except ValidationError as error:
+            codes = error.get_codes()
+            assert isinstance(codes, dict)
+            email_codes = codes.get("email", [])
+            assert isinstance(email_codes, list)
+            if any(code == "does_not_exist" for code in email_codes):
+                # NOTE: Always return a 200 here - a noticeable change in
+                # behaviour would allow email enumeration.
+                return Response()
 
-        token = default_token_generator.make_token(user)
+            raise error
 
-        reset_password_url = self.reverse_action(
-            "reset-password", kwargs={"pk": user.pk, "token": token}
-        )
+        return Response()
 
-        # TODO: Send email to user with URL to reset password.
-        return Response(
-            {
-                "reset_password_url": reset_password_url,
-                "pk": user.pk,
-                "token": token,
-            }
-        )
+    reset_password = _UserViewSet.update_action(
+        name="reset_password", url_path="reset-password"
+    )
 
     # TODO: convert to update action (HTTP PUT).
     @action(

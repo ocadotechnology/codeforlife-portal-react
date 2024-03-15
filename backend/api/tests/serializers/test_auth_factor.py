@@ -37,8 +37,8 @@ class TestAuthFactorSerializer(ModelSerializerTestCase[AuthFactor]):
         assert auth_factor
 
         self.assert_validate_field(
-            "type",
-            auth_factor.type,
+            name="type",
+            value=auth_factor.type,
             error_code="already_exists",
             context={
                 "request": self.request_factory.post(

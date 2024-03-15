@@ -16,5 +16,7 @@ from .student import (
 from .teacher import TeacherSerializer
 from .user import (
     HandleIndependentUserJoinClassRequestSerializer,
+    RequestUserPasswordResetSerializer,
+    ResetUserPasswordSerializer,
     UserSerializer,
 )

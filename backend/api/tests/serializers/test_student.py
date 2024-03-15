@@ -15,6 +15,7 @@ from codeforlife.user.models import (
     Student,
     StudentUser,
 )
+from django.contrib.auth.hashers import make_password
 
 from ...serializers.student import (
     BaseStudentListSerializer,
@@ -83,72 +84,6 @@ class TestBaseStudentListSerializer(ModelListSerializerTestCase[Student]):
         """
         Cannot transfer a student to another class if their first name already
         exists in that class.
-        """
-        self.assert_validate(
-            attrs=[
-                {
-                    "class_field": {
-                        "access_code": (
-                            self.student_user.student.class_field.access_code
-                        )
-                    }
-                }
-            ],
-            error_code="first_name__db__exists_in_class",
-            instance=[self.student_user.student],
-        )
-
-
-class TestBaseStudentSerializer(ModelSerializerTestCase[Student]):
-    model_serializer_class = BaseStudentSerializer
-    fixtures = ["school_1", "school_2"]
-
-    def setUp(self):
-        self.non_admin_school_teacher_user = (
-            NonAdminSchoolTeacherUser.objects.get(email="teacher@school1.com")
-        )
-
-    def setUp(self):
-        student_user = StudentUser.objects.first()
-        assert student_user
-        self.student_user = student_user
-
-    def test_validate__first_name__data__not_unique_per_class(self):
-        """Cannot provide a first name more than once per class in data."""
-        self.assert_validate(
-            attrs=[
-                {
-                    "class_field": {"access_code": "AAAAA"},
-                    "new_user": {"first_name": "Stefan"},
-                }
-                for _ in range(2)
-            ],
-            error_code="first_name__data__not_unique_per_class",
-        )
-
-    def test_validate__first_name__data__exists_in_class(self):
-        """
-        Cannot provide a first name in data for class if it already exists in
-        that class.
-        """
-        self.assert_validate(
-            attrs=[
-                {
-                    "class_field": {
-                        "access_code": (
-                            self.student_user.student.class_field.access_code
-                        )
-                    },
-                    "new_user": {"first_name": self.student_user.first_name},
-                }
-            ],
-            error_code="first_name__data__exists_in_class",
-        )
-
-    def test_validate__first_name__db__exists_in_class(self):
-        """
-        Cannot provide transfer a student to another class if their first name
-        already exists in that class.
         """
         self.assert_validate(
             attrs=[
@@ -344,28 +279,30 @@ class TestResetStudentPasswordSerializer(ModelSerializerTestCase[Student]):
     def test_update_many(self):
         """The students' password is reset."""
         password = "password"
-        # pylint: disable-next=line-too-long
-        password_hash = "pbkdf2_sha256$720000$Jp50WPBA6WZImUIpj3UcVm$OJWB8+UoW5lLaUkHLYo0cKgMkyRI6qnqVOWxYEsi9T0="
-        # pylint: disable-next=protected-access
-        login_id = StudentUser._get_random_login_id()
+        assert not self.student.new_user.check_password(password)
 
         with patch(
             "django.contrib.auth.base_user.make_password",
-            return_value=password_hash,
-        ) as make_password:
+            return_value=make_password(password),
+        ) as user_make_password:
             with patch.object(
-                StudentUser, "_get_random_login_id", return_value=login_id
+                StudentUser,
+                "_get_random_login_id",
+                # pylint: disable-next=protected-access
+                return_value=StudentUser._get_random_login_id(),
             ) as get_random_login_id:
                 self.assert_update_many(
                     instance=[self.student],
                     validated_data=[{"new_user": {"password": password}}],
                     new_data=[
                         {
-                            "new_user": {"password": password_hash},
-                            "login_id": login_id,
+                            "new_user": {
+                                "password": user_make_password.return_value
+                            },
+                            "login_id": get_random_login_id.return_value,
                         }
                     ],
                 )
 
                 get_random_login_id.assert_called_once()
-            make_password.assert_called_once_with(password)
+            user_make_password.assert_called_once_with(password)
