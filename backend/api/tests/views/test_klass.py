@@ -91,7 +91,6 @@ class TestClassViewSet(ModelViewSetTestCase[Class]):
         user = self.admin_school_teacher_user
 
         self.client.login_as(user)
-
         self.client.create(
             {
                 "name": "ExampleClass",
@@ -106,9 +105,6 @@ class TestClassViewSet(ModelViewSetTestCase[Class]):
         Admin-teacher can create a class with another teacher as the class owner.
         """
         user = self.admin_school_teacher_user
-
-        self.client.login_as(user)
-
         teacher = (
             Teacher.objects.filter(school=user.teacher.school)
             .exclude(pk=user.teacher.pk)
@@ -116,6 +112,7 @@ class TestClassViewSet(ModelViewSetTestCase[Class]):
         )
         assert teacher
 
+        self.client.login_as(user)
         self.client.create(
             {
                 "name": "ExampleClass",
@@ -129,9 +126,6 @@ class TestClassViewSet(ModelViewSetTestCase[Class]):
     def test_partial_update__teacher(self):
         """Teacher can transfer a class to another teacher."""
         user = self.admin_school_teacher_user
-
-        self.client.login_as(user)
-
         klass = t.cast(t.Optional[Class], user.teacher.class_teacher.first())
         assert klass
 
@@ -143,25 +137,21 @@ class TestClassViewSet(ModelViewSetTestCase[Class]):
         )
         assert teacher
 
+        self.client.login_as(user)
         self.client.partial_update(model=klass, data={"teacher": teacher.pk})
 
-    def test_destroy__non_empty_class(self):
+    def test_destroy__has_students(self):
         """Teacher cannot delete a class that still has students."""
         user = self.admin_school_teacher_user
-
-        self.client.login_as(user)
-
         klass = user.teacher.class_teacher.first()
         assert klass
 
+        self.client.login_as(user)
         self.client.destroy(
             model=klass, status_code_assertion=status.HTTP_409_CONFLICT
         )
 
     def test_destroy(self):
         """Teacher can delete a class that has no students."""
-        user = self.admin_school_teacher_user
-
-        self.client.login_as(user)
-
+        self.client.login_as(self.admin_school_teacher_user)
         self.client.destroy(model=self.empty_class)
