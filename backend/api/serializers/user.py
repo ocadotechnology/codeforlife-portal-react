@@ -3,10 +3,9 @@
 Created on 18/01/2024 at 15:14:32(+00:00).
 """
 import typing as t
-from itertools import groupby
 
-from codeforlife.serializers import ModelListSerializer
 from codeforlife.user.models import (
+    AnyUser,
     Class,
     IndependentUser,
     Student,
@@ -15,84 +14,72 @@ from codeforlife.user.models import (
     User,
     UserProfile,
 )
+from codeforlife.user.serializers import (
+    BaseUserSerializer as _BaseUserSerializer,
+)
+from codeforlife.user.serializers import StudentSerializer
 from codeforlife.user.serializers import UserSerializer as _UserSerializer
 from django.contrib.auth.password_validation import (
     validate_password as _validate_password,
 )
+from django.core.exceptions import ValidationError as CoreValidationError
 from django.utils import timezone
 from rest_framework import serializers
 
-from .student import StudentSerializer
 from .teacher import TeacherSerializer
 
-# pylint: disable=missing-class-docstring,too-many-ancestors
+# pylint: disable=missing-class-docstring
+# pylint: disable=too-many-ancestors
+# pylint: disable=missing-function-docstring
 
 
-class UserListSerializer(ModelListSerializer[User]):
-    def create(self, validated_data):
-        classes = {
-            klass.access_code: klass
-            for klass in Class.objects.filter(
-                access_code__in={
-                    user_fields["new_student"]["class_field"]["access_code"]
-                    for user_fields in validated_data
-                }
+class BaseUserSerializer(_BaseUserSerializer[AnyUser], t.Generic[AnyUser]):
+    # TODO: make email unique in new models and remove this validation.
+    def validate_email(self, value: str):
+        if User.objects.filter(email__iexact=value).exists():
+            raise serializers.ValidationError(
+                "Already exists.", code="already_exists"
             )
-        }
 
-        # TODO: replace this logic with bulk creates for each object when we
-        #   switch to PostgreSQL.
-        return [
-            StudentUser.objects.create_user(
-                first_name=user_fields["first_name"],
-                klass=classes[
-                    user_fields["new_student"]["class_field"]["access_code"]
-                ],
-            )
-            for user_fields in validated_data
-        ]
+        return value
 
-    def validate(self, attrs):
-        super().validate(attrs)
+    def validate_password(self, value: str):
+        """Validate the new password depending on user type."""
+        # If we're creating a new user, we do not yet have the user object.
+        # Therefore, we need to create a dummy user and pass it to the password
+        # validators so they know what type of user we have.
+        user: t.Optional[User] = self.instance
+        if not user:
+            user = User()
 
-        def get_access_code(user_fields: t.Dict[str, t.Any]):
-            return user_fields["new_student"]["class_field"]["access_code"]
+            user_type: str = self.context["user_type"]
+            if user_type == "teacher":
+                Teacher(new_user=user)
+            elif user_type == "student":
+                Student(new_user=user)
 
-        def get_first_name(user_fields: t.Dict[str, t.Any]):
-            return user_fields["first_name"]
+        try:
+            _validate_password(value, user)
+        except CoreValidationError as ex:
+            raise serializers.ValidationError(ex.messages, ex.code) from ex
 
-        attrs.sort(key=get_access_code)
-        for access_code, group in groupby(attrs, key=get_access_code):
-            # Validate first name is not specified more than once in data.
-            data = list(group)
-            data.sort(key=get_first_name)
-            for first_name, group in groupby(data, key=get_first_name):
-                if len(list(group)) > 1:
-                    raise serializers.ValidationError(
-                        f'First name "{first_name}" is specified more than once'
-                        f" in data for class {access_code}.",
-                        code="first_name_not_unique_per_class_in_data",
-                    )
+        return value
 
-            # Validate first names are not already taken in class.
-            if User.objects.filter(
-                first_name__in=list(map(get_first_name, data)),
-                new_student__class_field__access_code=access_code,
-            ).exists():
-                raise serializers.ValidationError(
-                    "One or more first names is already taken in class"
-                    f" {access_code}.",
-                    code="first_name_not_unique_per_class_in_db",
-                )
+    def update(self, instance, validated_data):
+        password = validated_data.pop("password", None)
+        if password is not None:
+            instance.set_password(password)
 
-        return attrs
+        return super().update(instance, validated_data)
 
 
-class UserSerializer(_UserSerializer[User]):
+class UserSerializer(BaseUserSerializer[User], _UserSerializer):
     student = StudentSerializer(source="new_student", required=False)
     teacher = TeacherSerializer(source="new_teacher", required=False)
     requesting_to_join_class = serializers.CharField(
-        required=False, allow_null=True
+        source="new_student.pending_class_request",
+        required=False,
+        allow_null=True,
     )
     current_password = serializers.CharField(
         write_only=True,
@@ -100,14 +87,7 @@ class UserSerializer(_UserSerializer[User]):
     )
 
     class Meta(_UserSerializer.Meta):
-        fields = [
-            *_UserSerializer.Meta.fields,
-            "student",
-            "teacher",
-            "password",
-            "requesting_to_join_class",
-            "current_password",
-        ]
+        fields = [*_UserSerializer.Meta.fields, "password", "current_password"]
         extra_kwargs = {
             **_UserSerializer.Meta.extra_kwargs,
             "first_name": {"read_only": False},
@@ -119,94 +99,6 @@ class UserSerializer(_UserSerializer[User]):
             "email": {"read_only": False},
             "password": {"write_only": True, "required": False},
         }
-        list_serializer_class = UserListSerializer
-
-    def validate(self, attrs):
-        if self.instance:  # Updating
-            if self.view.action != "reset_password":
-                # TODO: make current password required when changing
-                #  self-profile.
-                pass
-
-            if self.instance.teacher:
-                if "requesting_to_join_class" in attrs:
-                    raise serializers.ValidationError(
-                        "Teacher can't request to join a class.",
-                        code="requesting_to_join_class__teacher__update",
-                    )
-
-            elif self.instance.student:
-                if (
-                    self.instance.student.class_field is not None
-                    and "requesting_to_join_class" in attrs
-                ):
-                    raise serializers.ValidationError(
-                        "Student cannot request to join a class.",
-                        code="requesting_to_join_class__student__update__in_class",
-                    )
-
-                if (
-                    self.instance.student.pending_class_request is not None
-                    and "new_student" in attrs
-                    and "class_field" in attrs["new_student"]
-                ):
-                    raise serializers.ValidationError(
-                        "Independent user cannot be added to class as they "
-                        "are already requesting to join a class.",
-                        code="class_field__indy__update__requesting_to_join_class",
-                    )
-
-        else:  # Creating
-            if "new_teacher" in attrs and "new_student" in attrs:
-                raise serializers.ValidationError(
-                    "Cannot create a user with both teacher and student "
-                    "attributes.",
-                    code="teacher_and_student",
-                )
-
-            if "new_teacher" in attrs:
-                if not attrs.get("last_name"):
-                    raise serializers.ValidationError(
-                        "Last name is required.", code="last_name__required"
-                    )
-
-                if "requesting_to_join_class" in attrs:
-                    raise serializers.ValidationError(
-                        "Teacher can't request to join a class.",
-                        code="requesting_to_join_class__teacher__create",
-                    )
-
-            elif "new_student" in attrs:
-                if (
-                    "class_field" in attrs["new_student"]
-                    and "requesting_to_join_class" in attrs
-                ):
-                    raise serializers.ValidationError(
-                        "Cannot create a student in class who is also "
-                        "requesting to join a class.",
-                        code="requesting_to_join_class__student__create__in_class",
-                    )
-
-        return attrs
-
-    def validate_password(self, value: str):
-        """Validate the new password depending on user type."""
-        # If we're creating a new user, we do not yet have the user object.
-        # Therefore, we need to create a dummy user and pass it to the password
-        # validators so they know what type of user we have.
-        instance = self.instance
-        if not instance:
-            instance = User()
-
-            user_type: str = self.context["user_type"]
-            if user_type == "teacher":
-                Teacher(new_user=instance)
-            elif user_type == "student":
-                Student(new_user=instance)
-
-        _validate_password(value, instance)
-
-        return value
 
     def validate_requesting_to_join_class(self, value: str):
         # NOTE: Error message is purposefully ambiguous to prevent class
@@ -232,6 +124,70 @@ class UserSerializer(_UserSerializer[User]):
                 )
 
         return value
+
+    def validate(self, attrs):
+        if self.instance:  # Updating
+            if self.instance.teacher:
+                if "new_student" in attrs:
+                    raise serializers.ValidationError(
+                        "Cannot set student fields for a teacher.",
+                        code="student__is_teacher",
+                    )
+
+            elif self.instance.student:
+                if "new_teacher" in attrs:
+                    raise serializers.ValidationError(
+                        "Cannot set teacher fields for a student.",
+                        code="teacher__is_student",
+                    )
+
+                if (
+                    self.instance.student.class_field is not None
+                    and "new_student" in attrs
+                    and "pending_class_request" in attrs["new_student"]
+                ):
+                    raise serializers.ValidationError(
+                        "Student cannot request to join a class.",
+                        code="requesting_to_join_class__update__in_class",
+                    )
+
+                if (
+                    self.instance.student.pending_class_request is not None
+                    and "new_student" in attrs
+                    and "class_field" in attrs["new_student"]
+                ):
+                    raise serializers.ValidationError(
+                        "Independent user cannot be added to class as they "
+                        "are already requesting to join a class.",
+                        code="class_field__update__requesting_to_join_class",
+                    )
+
+        else:  # Creating
+            if "new_teacher" in attrs and "new_student" in attrs:
+                raise serializers.ValidationError(
+                    "Cannot create a user with both teacher and student "
+                    "attributes.",
+                    code="teacher_and_student",
+                )
+
+            if "new_teacher" in attrs:
+                if not attrs.get("last_name"):
+                    raise serializers.ValidationError(
+                        "Last name is required.", code="last_name__required"
+                    )
+
+            elif "new_student" in attrs:
+                if (
+                    "class_field" in attrs["new_student"]
+                    and "pending_class_request" in attrs["new_student"]
+                ):
+                    raise serializers.ValidationError(
+                        "Cannot create a student in class who is also "
+                        "requesting to join a class.",
+                        code="requesting_to_join_class__create__in_class",
+                    )
+
+        return attrs
 
     def create(self, validated_data):
         user = User.objects.create_user(
@@ -262,88 +218,34 @@ class UserSerializer(_UserSerializer[User]):
         return user
 
     def update(self, instance, validated_data):
-        if "requesting_to_join_class" in validated_data:
-            requesting_to_join_class = validated_data[
-                "requesting_to_join_class"
-            ]
+        if "new_student" in validated_data:
+            student = validated_data.pop("new_student")
+            if "pending_class_request" in student:
+                pending_class_request = student["pending_class_request"]
 
-            if requesting_to_join_class is None:
-                instance.student.pending_class_request = None
-                instance.student.save(update_fields=["pending_class_request"])
-            else:
-                instance.student.pending_class_request = Class.objects.get(
-                    access_code=requesting_to_join_class
-                )
-                instance.student.save(update_fields=["pending_class_request"])
+                if pending_class_request is None:
+                    instance.student.pending_class_request = None
+                    instance.student.save(
+                        update_fields=["pending_class_request"]
+                    )
+                else:
+                    instance.student.pending_class_request = Class.objects.get(
+                        access_code=pending_class_request
+                    )
+                    instance.student.save(
+                        update_fields=["pending_class_request"]
+                    )
 
-                # TODO: Send email to indy user confirming successful join
-                #  request.
-                # TODO: Send email to teacher of selected class to notify
-                #  them of join request.
+                    # TODO: Send email to indy user confirming successful join
+                    #  request.
+                    # TODO: Send email to teacher of selected class to notify
+                    #  them of join request.
 
-        password = validated_data.get("password")
-
-        if password is not None:
-            instance.set_password(password)
-
-        instance.save()
-        return instance
-
-    def to_representation(self, instance: User):
-        representation = super().to_representation(instance)
-
-        # Return student's auto-generated password.
-        if (
-            representation["student"] is not None
-            and self.request.auth_user.teacher is not None
-        ):
-            # pylint: disable-next=protected-access
-            password = instance._password
-            if password is not None:
-                representation["password"] = password
-
-        return representation
-
-
-class ReleaseStudentUserListSerializer(ModelListSerializer[StudentUser]):
-    def update(self, instance, validated_data):
-        for student_user, data in zip(instance, validated_data):
-            student_user.student.class_field = None
-            student_user.student.save(update_fields=["class_field"])
-
-            student_user.email = data["email"]
-            student_user.save(update_fields=["email"])
-
-        return instance
-
-
-class ReleaseStudentUserSerializer(_UserSerializer[StudentUser]):
-    """Convert a student to an independent learner."""
-
-    class Meta(_UserSerializer.Meta):
-        extra_kwargs = {
-            **_UserSerializer.Meta.extra_kwargs,
-            "first_name": {
-                "min_length": 1,
-                "read_only": False,
-                "required": False,
-            },
-            "email": {"read_only": False},
-        }
-        list_serializer_class = ReleaseStudentUserListSerializer
-
-    # pylint: disable-next=missing-function-docstring
-    def validate_email(self, value: str):
-        if User.objects.filter(email__iexact=value).exists():
-            raise serializers.ValidationError(
-                "Already exists.", code="already_exists"
-            )
-
-        return value
+        return super().update(instance, validated_data)
 
 
 class HandleIndependentUserJoinClassRequestSerializer(
-    _UserSerializer[IndependentUser]
+    BaseUserSerializer[IndependentUser]
 ):
     """
     Handles an independent user's request to join a class. If "accept" is
@@ -354,20 +256,18 @@ class HandleIndependentUserJoinClassRequestSerializer(
 
     accept = serializers.BooleanField(write_only=True)
 
-    class Meta(_UserSerializer.Meta):
-        fields = [*_UserSerializer.Meta.fields, "accept"]
+    class Meta(BaseUserSerializer.Meta):
+        fields = [*BaseUserSerializer.Meta.fields, "accept"]
         extra_kwargs = {
-            **_UserSerializer.Meta.extra_kwargs,
-            "first_name": {
-                "min_length": 1,
-                "read_only": False,
-                "required": False,
-            },
+            **BaseUserSerializer.Meta.extra_kwargs,
+            "first_name": {"min_length": 1, "required": False},
         }
 
     def validate_first_name(self, value: str):
         if StudentUser.objects.filter(
-            new_student__class_field=self.instance.student.pending_class_request,
+            new_student__class_field=(
+                self.non_none_instance.student.pending_class_request
+            ),
             first_name__iexact=value,
         ).exists():
             raise serializers.ValidationError(

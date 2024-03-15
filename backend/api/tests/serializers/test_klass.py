@@ -6,7 +6,7 @@ Created on 05/02/2024 at 15:31:59(+00:00).
 from codeforlife.tests import ModelSerializerTestCase
 from codeforlife.user.models import Class, NonAdminSchoolTeacherUser, Teacher
 
-from ...serializers import ClassSerializer
+from ...serializers.klass import ClassSerializer
 
 
 # pylint: disable-next=missing-class-docstring
@@ -89,7 +89,7 @@ class TestClassSerializer(ModelSerializerTestCase[Class]):
                 "classmates_data_viewable": False,
             },
             new_data={
-                "teacher": self.non_admin_school_1_teacher_user.teacher.id,
+                "teacher": self.non_admin_school_1_teacher_user.teacher,
             },
             context={
                 "request": self.request_factory.post(

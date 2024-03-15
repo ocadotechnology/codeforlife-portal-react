@@ -11,6 +11,7 @@ from .views import (
     OtpBypassTokenViewSet,
     SchoolTeacherInvitationViewSet,
     SchoolViewSet,
+    StudentViewSet,
     UserViewSet,
 )
 
@@ -39,6 +40,11 @@ router.register(
     "schools",
     SchoolViewSet,
     basename="school",
+)
+router.register(
+    "users/students",
+    StudentViewSet,
+    basename="student",
 )
 router.register(
     "users",
