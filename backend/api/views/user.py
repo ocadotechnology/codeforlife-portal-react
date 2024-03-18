@@ -9,8 +9,8 @@ from codeforlife.response import Response
 from codeforlife.user.models import Class, SchoolTeacher, StudentUser, User
 from codeforlife.user.permissions import IsIndependent, IsTeacher
 from codeforlife.user.views import UserViewSet as _UserViewSet
+from codeforlife.views import action
 from rest_framework import status
-from rest_framework.decorators import action
 from rest_framework.serializers import ValidationError
 
 from ..serializers import (
@@ -108,7 +108,7 @@ class UserViewSet(_UserViewSet):
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=False, methods=["post"], url_path="request-password-reset")
+    @action(detail=False, methods=["post"])
     def request_password_reset(self, request: Request):
         """
         Generates a reset password URL to be emailed to the user if the
@@ -132,9 +132,7 @@ class UserViewSet(_UserViewSet):
 
         return Response()
 
-    reset_password = _UserViewSet.update_action(
-        name="reset_password", url_path="reset-password"
-    )
+    reset_password = _UserViewSet.update_action("reset_password")
     handle_join_class_request = _UserViewSet.update_action(
-        name="handle_join_class_request", url_path="handle-join-class-request"
+        "handle_join_class_request"
     )
