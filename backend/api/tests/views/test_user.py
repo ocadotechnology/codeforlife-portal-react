@@ -4,9 +4,8 @@ Created on 20/01/2024 at 10:58:52(+00:00).
 """
 import typing as t
 
-from codeforlife.permissions import OR, AllowNone
+from codeforlife.permissions import OR, AllowAny, AllowNone
 from codeforlife.tests import ModelViewSetTestCase
-from codeforlife.types import JsonDict
 from codeforlife.user.models import (
     AdminSchoolTeacherUser,
     Class,
@@ -15,7 +14,6 @@ from codeforlife.user.models import (
     NonSchoolTeacherUser,
     SchoolTeacherUser,
     Student,
-    StudentUser,
     TypedUser,
     User,
 )
@@ -27,13 +25,19 @@ from django.contrib.auth.tokens import (
 from django.db.models.query import QuerySet
 from rest_framework import status
 
+from ...serializers import (
+    HandleIndependentUserJoinClassRequestSerializer,
+    RequestUserPasswordResetSerializer,
+    ResetUserPasswordSerializer,
+    UserSerializer,
+)
 from ...views import UserViewSet
 
 # NOTE: type hint to help Intellisense.
 default_token_generator: PasswordResetTokenGenerator = default_token_generator
 
 
-# pylint: disable-next=missing-class-docstring,too-many-public-methods
+# pylint: disable-next=missing-class-docstring,too-many-public-methods,too-many-ancestors
 class TestUserViewSet(ModelViewSetTestCase[User]):
     basename = "user"
     model_view_set_class = UserViewSet
@@ -60,12 +64,6 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         )
 
         self.class_1_at_school_1 = Class.objects.get(name="Class 1 @ School 1")
-
-    def _get_pk_and_token_for_user(self, email: str):
-        user = User.objects.get(email__iexact=email)
-        token = default_token_generator.make_token(user)
-
-        return user.pk, token
 
     # test: get permissions
 
@@ -101,13 +99,13 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
             ),
         )
 
-    def test_get_permissions__independents__handle_join_class_request(self):
+    def test_get_permissions__handle_join_class_request(self):
         """
         Only school-teachers can handle an independent's class join request.
         """
         self.assert_get_permissions(
             [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))],
-            action="independents__handle_join_class_request",
+            action="handle_join_class_request",
             request=self.client.request_factory.patch(data={"accept": False}),
         )
 
@@ -118,9 +116,23 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
             action="destroy",
         )
 
+    def test_get_permissions__request_password_reset(self):
+        """Anyone can request to reset their password."""
+        self.assert_get_permissions(
+            permissions=[AllowAny()],
+            action="request_password_reset",
+        )
+
+    def test_get_permissions__reset_password(self):
+        """Anyone can reset their password."""
+        self.assert_get_permissions(
+            permissions=[AllowAny()],
+            action="reset_password",
+        )
+
     # test: get queryset
 
-    def _test_get_queryset__independents__handle_join_class_request(
+    def _test_get_queryset__handle_join_class_request(
         self, user: SchoolTeacherUser
     ):
         request = self.client.request_factory.patch(user=user)
@@ -130,23 +142,23 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
         self.assert_get_queryset(
             indy_users,
-            action="independents__handle_join_class_request",
+            action="handle_join_class_request",
             request=request,
         )
 
-    def test_get_queryset__independents__handle_join_class_request__admin(self):
+    def test_get_queryset__handle_join_class_request__admin(self):
         """Handling a join class request can only target the independent
         students who made a request to any class in the teacher's school."""
-        self._test_get_queryset__independents__handle_join_class_request(
+        self._test_get_queryset__handle_join_class_request(
             user=self.admin_school_1_teacher_user
         )
 
-    def test_get_queryset__independents__handle_join_class_request__non_admin(
+    def test_get_queryset__handle_join_class_request__non_admin(
         self,
     ):
         """Handling a join class request can only target the independent
         students who made a request to one of the teacher's classes."""
-        self._test_get_queryset__independents__handle_join_class_request(
+        self._test_get_queryset__handle_join_class_request(
             user=self.non_admin_school_1_teacher_user
         )
 
@@ -169,163 +181,168 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
             request=self.client.request_factory.patch(user=self.indy_user),
         )
 
+    def test_get_queryset__reset_password(self):
+        """
+        Resetting a password can only target the user whose password is being
+        reset.
+        """
+        self.assert_get_queryset(
+            values=[self.indy_user],
+            kwargs={"pk": self.indy_user.pk},
+            action="reset_password",
+        )
+
+    # test: get serializer class
+
+    def test_get_serializer_class__request_password_reset(self):
+        """Requesting a password reset has a dedicated serializer."""
+        self.assert_get_serializer_class(
+            serializer_class=RequestUserPasswordResetSerializer,
+            action="request_password_reset",
+        )
+
+    def test_get_serializer_class__reset_password(self):
+        """Resetting a password has a dedicated serializer."""
+        self.assert_get_serializer_class(
+            serializer_class=ResetUserPasswordSerializer,
+            action="reset_password",
+        )
+
+    def test_get_serializer_class__handle_join_class_request(
+        self,
+    ):
+        """
+        Handling independents' join-class request has a dedicated serializer.
+        """
+        self.assert_get_serializer_class(
+            serializer_class=HandleIndependentUserJoinClassRequestSerializer,
+            action="handle_join_class_request",
+        )
+
+    def test_get_serializer_class__partial_update(self):
+        """Partially updating a user uses the general serializer."""
+        self.assert_get_serializer_class(
+            serializer_class=UserSerializer,
+            action="partial_update",
+        )
+
+    def test_get_serializer_class__destroy(self):
+        """Destroying a user uses the general serializer."""
+        self.assert_get_serializer_class(
+            serializer_class=UserSerializer,
+            action="destroy",
+        )
+
+    def test_get_serializer_class__retrieve(self):
+        """Retrieving a user uses the general serializer."""
+        self.assert_get_serializer_class(
+            serializer_class=UserSerializer,
+            action="retrieve",
+        )
+
+    def test_get_serializer_class__list(self):
+        """Listing users uses the general serializer."""
+        self.assert_get_serializer_class(
+            serializer_class=UserSerializer,
+            action="list",
+        )
+
     # test: class join request actions
 
-    def test_independents__handle_join_class_request__accept(self):
+    def test_handle_join_class_request__accept(self):
         """Teacher can successfully accept a class join request."""
-        indy_user = self.indy_user_requesting_to_join_class
+        user = self.indy_user_requesting_to_join_class
 
         self.client.login_as(self.admin_school_1_teacher_user)
-        self.client.patch(
-            path=self.reverse_action(
-                "independents--handle-join-class-request",
-                kwargs={"pk": indy_user.pk},
-            ),
+        self.client.put(
+            path=self.reverse_action("handle-join-class-request", user),
             data={"accept": True},
         )
 
-        pending_class_request = indy_user.student.pending_class_request
-        username = indy_user.username
-        indy_user.refresh_from_db()
-        assert indy_user.student.pending_class_request is None
-        assert indy_user.student.class_field == pending_class_request
-        assert indy_user.last_name == ""
-        assert indy_user.email == ""
-        assert indy_user.username != username
+        pending_class_request = user.student.pending_class_request
+        username = user.username
+        user.refresh_from_db()
+        assert user.student.pending_class_request is None
+        assert user.student.class_field == pending_class_request
+        assert user.last_name == ""
+        assert user.email == ""
+        assert user.username != username
 
-    def test_independents__handle_join_class_request__reject(self):
+    def test_handle_join_class_request__reject(self):
         """Teacher can successfully reject a class join request."""
-        indy_user = self.indy_user_requesting_to_join_class
+        user = self.indy_user_requesting_to_join_class
 
         self.client.login_as(self.admin_school_1_teacher_user)
-        self.client.patch(
-            path=self.reverse_action(
-                "independents--handle-join-class-request",
-                kwargs={"pk": indy_user.pk},
-            ),
+        self.client.put(
+            path=self.reverse_action("handle-join-class-request", user),
             data={"accept": False},
         )
 
-        indy_user.refresh_from_db()
-        assert indy_user.student.pending_class_request is None
-        assert indy_user.student.class_field is None
+        user.refresh_from_db()
+        assert user.student.pending_class_request is None
+        assert user.student.class_field is None
 
     # test: reset password actions
 
-    def test_request_password_reset__invalid_email(self):
-        """
-        Request password reset doesn't generate reset password URL if email
-        is invalid but still returns a 200.
-        """
-        viewname = self.reverse_action("request-password-reset")
+    def test_request_password_reset(self):
+        """Can successfully request a password reset email."""
+        path = self.reverse_action("request-password-reset")
 
         response = self.client.post(
-            viewname,
-            data={"email": "nonexistent@email.com"},
-            status_code_assertion=status.HTTP_200_OK,
+            path, data={"email": self.non_school_teacher_user.email}
         )
 
-        assert response.data is None
+        email = "nonexistent@email.com"
+        assert not User.objects.filter(email__iexact=email).exists()
 
-    def test_request_password_reset__empty_email(self):
-        """Email field is required."""
-        viewname = self.reverse_action("request-password-reset")
-
-        response = self.client.post(
-            viewname, status_code_assertion=status.HTTP_400_BAD_REQUEST
+        # Need to assert non-existent email returns the same status code.
+        self.client.post(
+            path,
+            data={"email": email},
+            status_code_assertion=response.status_code,
         )
 
-        assert response.data["email"] == ["Field is required."]
+    def _test_reset_password(
+        self, user: TypedUser, password: t.Optional[str] = None
+    ):
+        data = {"token": default_token_generator.make_token(user)}
+        if password is not None:
+            data["password"] = password
 
-    def test_request_password_reset__valid_email(self):
-        """
-        Request password reset generates reset password URL for valid email.
-        """
-        viewname = self.reverse_action("request-password-reset")
+        self.client.update(user, data, action="reset-password")
 
-        response = self.client.post(
-            viewname, data={"email": self.non_school_teacher_user.email}
-        )
+    def test_reset_password__token(self):
+        """Can check the user's reset-password token."""
+        self._test_reset_password(self.indy_user)
 
-        assert response.data["reset_password_url"] is not None
-        assert response.data["pk"] is not None
-        assert response.data["token"] is not None
+    def test_reset_password__token_and_password(self):
+        """Can reset the user's password."""
+        user = self.indy_user
+        password = "N3wPassword!"
 
-    def test_reset_password__invalid_pk(self):
-        """Reset password raises 400 on GET with invalid pk"""
-        _, token = self._get_pk_and_token_for_user(
-            self.non_school_teacher_user.email
-        )
-
-        viewname = self.reverse_action(
-            "reset-password", kwargs={"pk": "whatever", "token": token}
-        )
-
-        response = self.client.get(
-            viewname, status_code_assertion=status.HTTP_400_BAD_REQUEST
-        )
-
-        assert response.data["non_field_errors"] == [
-            "No user found for given ID."
-        ]
-
-    def test_reset_password__invalid_token(self):
-        """Reset password raises 400 on GET with invalid token"""
-        pk, _ = self._get_pk_and_token_for_user(
-            self.non_school_teacher_user.email
-        )
-
-        viewname = self.reverse_action(
-            "reset-password", kwargs={"pk": pk, "token": "whatever"}
-        )
-
-        response = self.client.get(
-            viewname, status_code_assertion=status.HTTP_400_BAD_REQUEST
-        )
-
-        assert response.data["non_field_errors"] == [
-            "Token doesn't match given user."
-        ]
-
-    def test_reset_password__get(self):
-        """Reset password GET succeeds."""
-        pk, token = self._get_pk_and_token_for_user(
-            self.non_school_teacher_user.email
-        )
-
-        viewname = self.reverse_action(
-            "reset-password", kwargs={"pk": pk, "token": token}
-        )
-
-        self.client.get(viewname)
-
-    def test_reset_password__patch__teacher(self):
-        """Teacher can successfully update password."""
-        pk, token = self._get_pk_and_token_for_user(
-            self.non_school_teacher_user.email
-        )
-
-        viewname = self.reverse_action(
-            "reset-password", kwargs={"pk": pk, "token": token}
-        )
-
-        self.client.patch(viewname, data={"password": "N3wPassword!"})
-        self.client.login_as(
-            self.non_school_teacher_user, password="N3wPassword!"
-        )
-
-    def test_reset_password__patch__indy(self):
-        """Indy can successfully update password."""
-        pk, token = self._get_pk_and_token_for_user(self.indy_user.email)
-
-        viewname = self.reverse_action(
-            "reset-password", kwargs={"pk": pk, "token": token}
-        )
-
-        self.client.patch(viewname, data={"password": "N3wPassword"})
-        self.client.login_as(self.indy_user, password="N3wPassword")
+        self._test_reset_password(user, password)
+        self.client.login_as(user, password)
 
     # test: generic actions
+
+    def test_partial_update(self):
+        """Can successfully update a user."""
+        user = self.admin_school_1_teacher_user
+        password = "N3wPassword!"
+        assert not user.check_password(password)
+        email = "new@email.com"
+        assert user.email.lower() != email.lower()
+
+        self.client.login_as(user)
+        self.client.partial_update(
+            user,
+            data={
+                "email": email,
+                "password": password,
+                "current_password": "password",
+            },
+        )
+        self.client.login_as(user, password)
 
     # TODO: move this logic and test to TeacherViewSet
     def test_partial_update__teacher(self):

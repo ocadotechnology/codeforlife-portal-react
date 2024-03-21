@@ -39,11 +39,9 @@ class StudentViewSet(ModelViewSet[Student]):
 
         return CreateStudentSerializer  # action == "bulk"
 
-    release = ModelViewSet.bulk_update_action(name="release")
-    transfer = ModelViewSet.bulk_update_action(name="transfer")
-    reset_password = ModelViewSet.bulk_update_action(
-        name="reset_password", url_path="reset-password"
-    )
+    release = ModelViewSet.bulk_update_action("release")
+    transfer = ModelViewSet.bulk_update_action("transfer")
+    reset_password = ModelViewSet.bulk_update_action("reset_password")
 
     def perform_bulk_destroy(self, queryset):
         for student in queryset:

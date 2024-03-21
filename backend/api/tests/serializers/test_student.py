@@ -15,6 +15,7 @@ from codeforlife.user.models import (
     Student,
     StudentUser,
 )
+from django.contrib.auth.hashers import make_password
 
 from ...serializers.student import (
     BaseStudentListSerializer,
@@ -278,28 +279,30 @@ class TestResetStudentPasswordSerializer(ModelSerializerTestCase[Student]):
     def test_update_many(self):
         """The students' password is reset."""
         password = "password"
-        # pylint: disable-next=line-too-long
-        password_hash = "pbkdf2_sha256$720000$Jp50WPBA6WZImUIpj3UcVm$OJWB8+UoW5lLaUkHLYo0cKgMkyRI6qnqVOWxYEsi9T0="
-        # pylint: disable-next=protected-access
-        login_id = StudentUser._get_random_login_id()
+        assert not self.student.new_user.check_password(password)
 
         with patch(
             "django.contrib.auth.base_user.make_password",
-            return_value=password_hash,
-        ) as make_password:
+            return_value=make_password(password),
+        ) as user_make_password:
             with patch.object(
-                StudentUser, "_get_random_login_id", return_value=login_id
+                StudentUser,
+                "_get_random_login_id",
+                # pylint: disable-next=protected-access
+                return_value=StudentUser._get_random_login_id(),
             ) as get_random_login_id:
                 self.assert_update_many(
                     instance=[self.student],
                     validated_data=[{"new_user": {"password": password}}],
                     new_data=[
                         {
-                            "new_user": {"password": password_hash},
-                            "login_id": login_id,
+                            "new_user": {
+                                "password": user_make_password.return_value
+                            },
+                            "login_id": get_random_login_id.return_value,
                         }
                     ],
                 )
 
                 get_random_login_id.assert_called_once()
-            make_password.assert_called_once_with(password)
+            user_make_password.assert_called_once_with(password)

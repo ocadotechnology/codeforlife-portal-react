@@ -7,9 +7,8 @@ from codeforlife.permissions import AllowNone
 from codeforlife.request import Request
 from codeforlife.user.models import OtpBypassToken
 from codeforlife.user.permissions import IsTeacher
-from codeforlife.views import ModelViewSet
+from codeforlife.views import ModelViewSet, action
 from rest_framework import status
-from rest_framework.decorators import action
 from rest_framework.response import Response
 
 

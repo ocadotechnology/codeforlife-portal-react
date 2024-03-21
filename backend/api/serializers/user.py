@@ -4,6 +4,7 @@ Created on 18/01/2024 at 15:14:32(+00:00).
 """
 import typing as t
 
+from codeforlife.types import DataDict
 from codeforlife.user.models import (
     AnyUser,
     Class,
@@ -19,14 +20,25 @@ from codeforlife.user.serializers import (
 )
 from codeforlife.user.serializers import StudentSerializer
 from codeforlife.user.serializers import UserSerializer as _UserSerializer
+from django.conf import settings
 from django.contrib.auth.password_validation import (
     validate_password as _validate_password,
+)
+from django.contrib.auth.tokens import (
+    PasswordResetTokenGenerator,
+    default_token_generator,
 )
 from django.core.exceptions import ValidationError as CoreValidationError
 from django.utils import timezone
 from rest_framework import serializers
 
 from .teacher import TeacherSerializer
+
+# NOTE: type hint to help Intellisense.
+password_reset_token_generator: PasswordResetTokenGenerator = (
+    default_token_generator
+)
+
 
 # pylint: disable=missing-class-docstring
 # pylint: disable=too-many-ancestors
@@ -125,8 +137,32 @@ class UserSerializer(BaseUserSerializer[User], _UserSerializer):
 
         return value
 
+    def validate_current_password(self, value: str):
+        if not self.instance:
+            raise serializers.ValidationError(
+                "Can only check the password of an existing user.",
+                code="user_does_not_exist",
+            )
+        if not self.instance.check_password(value):
+            raise serializers.ValidationError(
+                "Does not match the current password.",
+                code="does_not_match",
+            )
+
+        return value
+
     def validate(self, attrs):
         if self.instance:  # Updating
+            if (
+                any(field in attrs for field in self.instance.credential_fields)
+                and "current_password" not in attrs
+            ):
+                raise serializers.ValidationError(
+                    "Current password is required when updating fields: "
+                    f"{', '.join(self.instance.credential_fields)}.",
+                    code="current_password__required",
+                )
+
             if self.instance.teacher:
                 if "new_student" in attrs:
                     raise serializers.ValidationError(
@@ -309,5 +345,70 @@ class HandleIndependentUserJoinClassRequestSerializer(
 
             # TODO: Send independent user an email notifying them that their
             #  request has been rejected.
+
+        return instance
+
+
+class RequestUserPasswordResetSerializer(_UserSerializer):
+    class Meta(_UserSerializer.Meta):
+        extra_kwargs = {
+            **_UserSerializer.Meta.extra_kwargs,
+            "email": {"read_only": False},
+        }
+
+    def validate_email(self, value: str):
+        try:
+            return User.objects.get(email__iexact=value)
+        except User.DoesNotExist as ex:
+            raise serializers.ValidationError(code="does_not_exist") from ex
+
+    def create(self, validated_data: DataDict):
+        user: User = validated_data["email"]
+
+        # Generate reset-password url for the frontend.
+        reset_password_url = "/".join(
+            [
+                settings.SERVICE_BASE_URL,
+                "reset-password",
+                "teacher" if user.teacher else "independent",  # user type
+                str(user.pk),
+                password_reset_token_generator.make_token(user),
+            ]
+        )
+
+        # TODO: Send email to user with URL to reset password.
+
+        return user
+
+
+class ResetUserPasswordSerializer(BaseUserSerializer[User], _UserSerializer):
+    token = serializers.CharField(write_only=True)
+
+    class Meta(_UserSerializer.Meta):
+        fields = [*_UserSerializer.Meta.fields, "password", "token"]
+        extra_kwargs = {
+            **_UserSerializer.Meta.extra_kwargs,
+            "password": {"write_only": True, "required": False},
+        }
+
+    def validate_token(self, value: str):
+        if not self.instance:
+            raise serializers.ValidationError(
+                "Can only reset the password of an existing user.",
+                code="user_does_not_exist",
+            )
+        if not password_reset_token_generator.check_token(self.instance, value):
+            raise serializers.ValidationError(
+                "Does not match the given user.",
+                code="does_not_match",
+            )
+
+        return value
+
+    def update(self, instance: User, validated_data: DataDict):
+        password = validated_data.pop("password", None)
+        if password is not None:
+            instance.set_password(password)
+            instance.save(update_fields=["password"])
 
         return instance
