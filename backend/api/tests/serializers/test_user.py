@@ -298,7 +298,7 @@ class TestResetUserPasswordSerializer(ModelSerializerTestCase[User]):
         )
 
     def test_validate_token__does_not_match(self):
-        """Cannot validate the token of a user that does not exist."""
+        """The token must match the user's tokens."""
         self.assert_validate_field(
             name="token",
             error_code="does_not_match",

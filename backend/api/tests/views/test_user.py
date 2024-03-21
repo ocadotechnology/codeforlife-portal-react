@@ -183,7 +183,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
     def test_get_queryset__reset_password(self):
         """
-        Resetting a password can only target the user's whose password is being
+        Resetting a password can only target the user whose password is being
         reset.
         """
         self.assert_get_queryset(
