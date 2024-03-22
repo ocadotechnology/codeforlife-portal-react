@@ -13,7 +13,6 @@ from codeforlife.user.models import (
     NonAdminSchoolTeacherUser,
     NonSchoolTeacherUser,
     SchoolTeacherUser,
-    Student,
     TypedUser,
     User,
 )
@@ -22,8 +21,6 @@ from django.contrib.auth.tokens import (
     PasswordResetTokenGenerator,
     default_token_generator,
 )
-from django.db.models.query import QuerySet
-from rest_framework import status
 
 from ...serializers import (
     HandleIndependentUserJoinClassRequestSerializer,
@@ -69,22 +66,9 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
 
     def test_get_permissions__bulk(self):
         """No one can perform bulk actions."""
-        self.assert_get_permissions([AllowNone()], action="bulk")
-
-    def test_get_permissions__partial_update__teacher(self):
-        """Only admin-teachers can update a teacher."""
         self.assert_get_permissions(
-            [IsTeacher(is_admin=True)],
-            action="partial_update",
-            request=self.client.request_factory.patch(data={"teacher": {}}),
-        )
-
-    def test_get_permissions__partial_update__student(self):
-        """Only admin-teachers or class-teachers can update a student."""
-        self.assert_get_permissions(
-            [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))],
-            action="partial_update",
-            request=self.client.request_factory.patch(data={"student": {}}),
+            permissions=[AllowNone()],
+            action="bulk",
         )
 
     def test_get_permissions__partial_update__requesting_to_join_class(
@@ -92,7 +76,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
     ):
         """Only independents can update their class join request."""
         self.assert_get_permissions(
-            [IsIndependent()],
+            permissions=[IsIndependent()],
             action="partial_update",
             request=self.client.request_factory.patch(
                 data={"requesting_to_join_class": ""}
@@ -104,15 +88,17 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         Only school-teachers can handle an independent's class join request.
         """
         self.assert_get_permissions(
-            [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))],
+            permissions=[
+                OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))
+            ],
             action="handle_join_class_request",
             request=self.client.request_factory.patch(data={"accept": False}),
         )
 
     def test_get_permissions__destroy(self):
-        """Only independents or teachers can destroy a user."""
+        """Only independents can destroy."""
         self.assert_get_permissions(
-            [OR(IsTeacher(), IsIndependent())],
+            permissions=[IsIndependent()],
             action="destroy",
         )
 
@@ -309,7 +295,7 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
         if password is not None:
             data["password"] = password
 
-        self.client.update(user, data, action="reset-password")
+        self.client.update(user, data=data, action="reset_password")
 
     def test_reset_password__token(self):
         """Can check the user's reset-password token."""
@@ -385,105 +371,15 @@ class TestUserViewSet(ModelViewSetTestCase[User]):
             self.indy_user, {"requesting_to_join_class": None}
         )
 
-    def assert_user_is_anonymized(self, user: User):
-        """Assert user has been anonymized.
+    def test_destroy(self):
+        """Independent-users can anonymize themselves."""
+        user = self.indy_user
 
-        Args:
-            user: The user to assert.
-        """
+        self.client.login_as(user)
+        self.client.destroy(user, make_assertions=False)
+
+        user.refresh_from_db()
         assert user.first_name == ""
         assert user.last_name == ""
         assert user.email == ""
         assert not user.is_active
-
-    def assert_classes_are_anonymized(
-        self,
-        school_teacher_user: SchoolTeacherUser,
-        class_names: t.Iterable[str],
-    ):
-        """Assert the classes and their students have been anonymized.
-
-        Args:
-            school_teacher_user: The user the classes belong to.
-            class_names: The original class names.
-        """
-        # TODO: remove when using new data strategy
-        queryset = QuerySet(
-            model=Class.objects.model,
-            using=Class.objects._db,
-            hints=Class.objects._hints,
-        ).filter(teacher=school_teacher_user.teacher)
-
-        for klass, name in zip(queryset, class_names):
-            assert klass.name != name
-            assert klass.access_code == ""
-            assert not klass.is_active
-
-            student: Student  # TODO: delete in new data schema
-            for student in klass.students.all():
-                self.assert_user_is_anonymized(student.new_user)
-
-    def _test_destroy(
-        self,
-        user: TypedUser,
-        status_code_assertion: int = status.HTTP_204_NO_CONTENT,
-    ):
-        self.client.login_as(user)
-        self.client.destroy(
-            user,
-            status_code_assertion=status_code_assertion,
-            make_assertions=False,
-        )
-
-    def test_destroy__class_teacher(self):
-        """Class-teacher-users can anonymize themselves and their classes."""
-        user = self.non_admin_school_1_teacher_user
-        assert user.teacher.class_teacher.exists()
-        class_names = list(
-            user.teacher.class_teacher.values_list("name", flat=True)
-        )
-
-        self._test_destroy(user)
-        user.refresh_from_db()
-        self.assert_user_is_anonymized(user)
-        self.assert_classes_are_anonymized(user, class_names)
-
-    def test_destroy__school_teacher__last_teacher(self):
-        """
-        School-teacher-users can anonymize themselves and their school if they
-        are the last teacher.
-        """
-        user = self.admin_school_1_teacher_user
-        assert user.teacher.class_teacher.exists()
-        class_names = list(
-            user.teacher.class_teacher.values_list("name", flat=True)
-        )
-        school_name = user.teacher.school.name
-
-        SchoolTeacherUser.objects.filter(
-            new_teacher__school=user.teacher.school
-        ).exclude(pk=user.pk).delete()
-
-        self._test_destroy(user)
-        user.refresh_from_db()
-        self.assert_user_is_anonymized(user)
-        self.assert_classes_are_anonymized(user, class_names)
-        assert user.teacher.school.name != school_name
-        assert not user.teacher.school.is_active
-
-    def test_destroy__school_teacher__last_admin_teacher(self):
-        """
-        School-teacher-users cannot anonymize themselves if they are the last
-        admin teachers.
-        """
-        self._test_destroy(
-            self.admin_school_1_teacher_user,
-            status_code_assertion=status.HTTP_409_CONFLICT,
-        )
-
-    def test_destroy__independent(self):
-        """Independent-users can anonymize themselves."""
-        user = self.indy_user
-        self._test_destroy(user)
-        user.refresh_from_db()
-        self.assert_user_is_anonymized(user)

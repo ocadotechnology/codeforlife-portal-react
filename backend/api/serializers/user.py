@@ -18,7 +18,6 @@ from codeforlife.user.models import (
 from codeforlife.user.serializers import (
     BaseUserSerializer as _BaseUserSerializer,
 )
-from codeforlife.user.serializers import StudentSerializer
 from codeforlife.user.serializers import UserSerializer as _UserSerializer
 from django.conf import settings
 from django.contrib.auth.password_validation import (
@@ -32,8 +31,6 @@ from django.core.exceptions import ValidationError as CoreValidationError
 from django.utils import timezone
 from rest_framework import serializers
 
-from .teacher import TeacherSerializer
-
 # NOTE: type hint to help Intellisense.
 password_reset_token_generator: PasswordResetTokenGenerator = (
     default_token_generator
@@ -43,6 +40,11 @@ password_reset_token_generator: PasswordResetTokenGenerator = (
 # pylint: disable=missing-class-docstring
 # pylint: disable=too-many-ancestors
 # pylint: disable=missing-function-docstring
+
+
+# ------------------------------------------------------------------------------
+# Base serializers
+# ------------------------------------------------------------------------------
 
 
 class BaseUserSerializer(_BaseUserSerializer[AnyUser], t.Generic[AnyUser]):
@@ -85,9 +87,12 @@ class BaseUserSerializer(_BaseUserSerializer[AnyUser], t.Generic[AnyUser]):
         return super().update(instance, validated_data)
 
 
+# ------------------------------------------------------------------------------
+# Action serializers
+# ------------------------------------------------------------------------------
+
+
 class UserSerializer(BaseUserSerializer[User], _UserSerializer):
-    student = StudentSerializer(source="new_student", required=False)
-    teacher = TeacherSerializer(source="new_teacher", required=False)
     requesting_to_join_class = serializers.CharField(
         source="new_student.pending_class_request",
         required=False,
@@ -152,130 +157,38 @@ class UserSerializer(BaseUserSerializer[User], _UserSerializer):
         return value
 
     def validate(self, attrs):
-        if self.instance:  # Updating
-            if (
-                any(field in attrs for field in self.instance.credential_fields)
-                and "current_password" not in attrs
-            ):
-                raise serializers.ValidationError(
-                    "Current password is required when updating fields: "
-                    f"{', '.join(self.instance.credential_fields)}.",
-                    code="current_password__required",
-                )
-
-            if self.instance.teacher:
-                if "new_student" in attrs:
-                    raise serializers.ValidationError(
-                        "Cannot set student fields for a teacher.",
-                        code="student__is_teacher",
-                    )
-
-            elif self.instance.student:
-                if "new_teacher" in attrs:
-                    raise serializers.ValidationError(
-                        "Cannot set teacher fields for a student.",
-                        code="teacher__is_student",
-                    )
-
-                if (
-                    self.instance.student.class_field is not None
-                    and "new_student" in attrs
-                    and "pending_class_request" in attrs["new_student"]
-                ):
-                    raise serializers.ValidationError(
-                        "Student cannot request to join a class.",
-                        code="requesting_to_join_class__update__in_class",
-                    )
-
-                if (
-                    self.instance.student.pending_class_request is not None
-                    and "new_student" in attrs
-                    and "class_field" in attrs["new_student"]
-                ):
-                    raise serializers.ValidationError(
-                        "Independent user cannot be added to class as they "
-                        "are already requesting to join a class.",
-                        code="class_field__update__requesting_to_join_class",
-                    )
-
-        else:  # Creating
-            if "new_teacher" in attrs and "new_student" in attrs:
-                raise serializers.ValidationError(
-                    "Cannot create a user with both teacher and student "
-                    "attributes.",
-                    code="teacher_and_student",
-                )
-
-            if "new_teacher" in attrs:
-                if not attrs.get("last_name"):
-                    raise serializers.ValidationError(
-                        "Last name is required.", code="last_name__required"
-                    )
-
-            elif "new_student" in attrs:
-                if (
-                    "class_field" in attrs["new_student"]
-                    and "pending_class_request" in attrs["new_student"]
-                ):
-                    raise serializers.ValidationError(
-                        "Cannot create a student in class who is also "
-                        "requesting to join a class.",
-                        code="requesting_to_join_class__create__in_class",
-                    )
+        if (
+            self.instance
+            and any(field in attrs for field in self.instance.credential_fields)
+            and "current_password" not in attrs
+        ):
+            raise serializers.ValidationError(
+                "Current password is required when updating fields: "
+                f"{', '.join(self.instance.credential_fields)}.",
+                code="current_password__required",
+            )
 
         return attrs
 
-    def create(self, validated_data):
-        user = User.objects.create_user(
-            username=validated_data["email"],
-            email=validated_data["email"],
-            password=validated_data["password"],
-            first_name=validated_data["first_name"],
-            last_name=validated_data.get("last_name"),
-        )
-
-        user_profile = UserProfile.objects.create(
-            user=user,
-            is_verified=self.context.get("is_verified", False),
-        )
-
-        if "new_teacher" in validated_data:
-            Teacher.objects.create(
-                user=user_profile,
-                new_user=user,
-                is_admin=validated_data["new_teacher"]["is_admin"],
-                school=self.context.get("school"),
-            )
-        elif "new_student" in validated_data:
-            pass  # TODO
-
-        # TODO: Handle signing new user up to newsletter if checkbox ticked
-
-        return user
-
-    def update(self, instance, validated_data):
+    def update(self, instance: User, validated_data: DataDict):
         if "new_student" in validated_data:
-            student = validated_data.pop("new_student")
-            if "pending_class_request" in student:
-                pending_class_request = student["pending_class_request"]
+            new_student = t.cast(DataDict, validated_data.pop("new_student"))
+            if "pending_class_request" in new_student:
+                pending_class_request: t.Optional[str] = new_student[
+                    "pending_class_request"
+                ]
+                student = t.cast(IndependentUser, instance).student
+                student.pending_class_request = (
+                    None
+                    if pending_class_request is None
+                    else Class.objects.get(access_code=pending_class_request)
+                )
+                student.save(update_fields=["pending_class_request"])
 
-                if pending_class_request is None:
-                    instance.student.pending_class_request = None
-                    instance.student.save(
-                        update_fields=["pending_class_request"]
-                    )
-                else:
-                    instance.student.pending_class_request = Class.objects.get(
-                        access_code=pending_class_request
-                    )
-                    instance.student.save(
-                        update_fields=["pending_class_request"]
-                    )
-
-                    # TODO: Send email to indy user confirming successful join
-                    #  request.
-                    # TODO: Send email to teacher of selected class to notify
-                    #  them of join request.
+                # TODO: Send email in signal to indy user confirming successful
+                #  join request in signal.
+                # TODO: Send email in signal to teacher of selected class to
+                #  notify them of join request.
 
         return super().update(instance, validated_data)
 

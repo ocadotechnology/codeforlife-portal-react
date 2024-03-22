@@ -198,6 +198,7 @@ class TestSchoolTeacherInvitationViewSet(
 
         self.client.get(viewname)
 
+    # TODO: fix school teacher invitation view set.
     def test_accept__post(self):
         """Invited teacher can set password and their account is created"""
         password = "InvitedPassword1!"

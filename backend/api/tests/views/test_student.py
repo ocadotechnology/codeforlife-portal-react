@@ -27,6 +27,7 @@ from ...views import StudentViewSet
 
 # pylint: disable=missing-class-docstring
 # pylint: disable=too-many-ancestors
+# pylint: disable=too-many-public-methods
 
 
 class TestStudentViewSet(ModelViewSetTestCase[Student]):
@@ -284,7 +285,7 @@ class TestStudentViewSet(ModelViewSetTestCase[Student]):
         response = self.client.bulk_update(
             models=students,
             data=[{} for _ in range(len(students))],
-            action="reset-password",
+            action="reset_password",
             make_assertions=False,
         )
 

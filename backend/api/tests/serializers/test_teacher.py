@@ -3,38 +3,114 @@
 Created on 08/02/2024 at 13:01:42(+00:00).
 """
 
+from unittest.mock import Mock, patch
+
 from codeforlife.tests import ModelSerializerTestCase
-from codeforlife.user.models import AdminSchoolTeacherUser, Teacher
+from codeforlife.user.models import (
+    AdminSchoolTeacher,
+    SchoolTeacher,
+    Teacher,
+    TeacherUser,
+)
+from django.contrib.auth.hashers import make_password
 
-from ...serializers import UserSerializer
-from ...serializers.teacher import TeacherSerializer
+from ...serializers.teacher import (
+    CreateTeacherSerializer,
+    RemoveTeacherFromSchoolSerializer,
+    SetSchoolTeacherAdminAccessSerializer,
+)
+
+# pylint: disable=missing-class-docstring
 
 
-# pylint: disable-next=missing-class-docstring
-class TestTeacherSerializer(ModelSerializerTestCase[Teacher]):
-    model_serializer_class = TeacherSerializer
-    fixtures = ["school_1", "school_2"]
+class TestCreateTeacherSerializer(ModelSerializerTestCase[Teacher]):
+    model_serializer_class = CreateTeacherSerializer
+
+    @patch.object(TeacherUser, "add_contact_to_dot_digital")
+    def test_create(self, add_contact_to_dot_digital: Mock):
+        """Can successfully create a teacher."""
+        password = "N3wPassword!"
+
+        with patch(
+            "django.contrib.auth.models.make_password",
+            return_value=make_password(password),
+        ) as user_make_password:
+            self.assert_create(
+                validated_data={
+                    "new_user": {
+                        "first_name": "Luke",
+                        "last_name": "Skywalker",
+                        "password": password,
+                        "email": "luke.skywalker@jedi.academy",
+                        "add_to_newsletter": True,
+                    }
+                },
+                new_data={
+                    "new_user": {"password": user_make_password.return_value}
+                },
+                non_model_fields={"new_user": ["add_to_newsletter"]},
+            )
+
+            user_make_password.assert_called_once_with(password)
+        add_contact_to_dot_digital.assert_called_once()
+
+
+class TestRemoveTeacherFromSchoolSerializer(
+    ModelSerializerTestCase[SchoolTeacher]
+):
+    model_serializer_class = RemoveTeacherFromSchoolSerializer
+    fixtures = ["school_1"]
 
     def setUp(self):
-        self.admin_school_teacher_user = AdminSchoolTeacherUser.objects.get(
-            email="admin.teacher@school1.com",
+        self.admin_school_teacher = AdminSchoolTeacher.objects.get(
+            new_user__email="admin.teacher@school1.com"
         )
 
-    def test_validate_is_admin__is_self(self):
-        """
-        Teacher cannot update own permissions.
-        """
+    def test_validate__last_admin(self):
+        """The last admin in a school cannot leave the school."""
+        teacher = self.admin_school_teacher
+        assert (
+            not AdminSchoolTeacher.objects.exclude(pk=teacher.pk)
+            .filter(school=teacher.school)
+            .exists()
+        )
+        self.assert_validate(
+            attrs={},
+            error_code="last_admin",
+            instance=teacher,
+        )
 
+    def test_update(self):
+        """A teacher can be successfully removed from a school."""
+        self.assert_update(
+            instance=self.admin_school_teacher,
+            validated_data={},
+            new_data={"school": None},
+        )
+
+
+class TestSetSchoolTeacherAdminAccessSerializer(
+    ModelSerializerTestCase[SchoolTeacher]
+):
+    model_serializer_class = SetSchoolTeacherAdminAccessSerializer
+    fixtures = ["school_1"]
+
+    def setUp(self):
+        self.admin_school_teacher = AdminSchoolTeacher.objects.get(
+            new_user__email="admin.teacher@school1.com"
+        )
+
+    def test_validate_is_admin__last(self):
+        """There must be at least one admin in a school."""
+        teacher = self.admin_school_teacher
+        assert (
+            not AdminSchoolTeacher.objects.exclude(pk=teacher.pk)
+            .filter(school=teacher.school)
+            .exists()
+        )
         self.assert_validate_field(
             name="is_admin",
-            value=True,
-            error_code="is_self",
-            parent=UserSerializer(
-                instance=self.admin_school_teacher_user,
-                context={
-                    "request": self.request_factory.patch(
-                        user=self.admin_school_teacher_user
-                    ),
-                },
-            ),
+            value=False,
+            error_code="last",
+            instance=teacher,
         )
