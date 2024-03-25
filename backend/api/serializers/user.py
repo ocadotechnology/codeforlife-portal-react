@@ -186,7 +186,7 @@ class UserSerializer(BaseUserSerializer[User], _UserSerializer):
                 student.save(update_fields=["pending_class_request"])
 
                 # TODO: Send email in signal to indy user confirming successful
-                #  join request in signal.
+                #  join request.
                 # TODO: Send email in signal to teacher of selected class to
                 #  notify them of join request.
 

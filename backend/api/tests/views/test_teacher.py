@@ -37,14 +37,17 @@ from ...views import TeacherViewSet
 class TestTeacherViewSet(ModelViewSetTestCase[Teacher]):
     basename = "teacher"
     model_view_set_class = TeacherViewSet
-    fixtures = ["school_1"]
+    fixtures = ["school_1", "school_3"]
 
     def setUp(self):
         self.admin_school_teacher_user = AdminSchoolTeacherUser.objects.get(
             email="admin.teacher@school1.com"
         )
-        self.non_admin_school_teacher_user = (
+        self.non_admin_school_1_teacher_user = (
             NonAdminSchoolTeacherUser.objects.get(email="teacher@school1.com")
+        )
+        self.non_admin_school_3_teacher_user = (
+            NonAdminSchoolTeacherUser.objects.get(email="teacher@school3.com")
         )
 
     # assertion helpers
@@ -136,40 +139,28 @@ class TestTeacherViewSet(ModelViewSetTestCase[Teacher]):
         self.assert_get_queryset(
             values=user.teacher.school_teachers,
             action="remove_from_school",
-            request=self.client.request_factory.delete(user=user),
+            request=self.client.request_factory.put(user=user),
         )
 
     def test_get_queryset__remove_from_school__non_admin(self):
         """Non-admin-teachers can only remove themselves from their school."""
-        user = self.non_admin_school_teacher_user
+        user = self.non_admin_school_1_teacher_user
         self.assert_get_queryset(
             values=[user.teacher],
             action="remove_from_school",
-            request=self.client.request_factory.delete(user=user),
+            request=self.client.request_factory.put(user=user),
         )
 
-    def test_get_queryset__set_admin_access__admin(self):
+    def test_get_queryset__set_admin_access(self):
         """
-        Admin-teachers can set the admin access of all other teachers in their a
+        Admin-teachers can set the admin access of all other teachers in their
         school.
         """
         user = self.admin_school_teacher_user
         self.assert_get_queryset(
             values=user.teacher.school_teachers,
             action="set_admin_access",
-            request=self.client.request_factory.delete(user=user),
-        )
-
-    def test_get_queryset__set_admin_access__non_admin(self):
-        """
-        Non-admin-teachers can set the admin access of all other teachers in
-        their a school.
-        """
-        user = self.non_admin_school_teacher_user
-        self.assert_get_queryset(
-            values=[user.teacher],
-            action="set_admin_access",
-            request=self.client.request_factory.delete(user=user),
+            request=self.client.request_factory.put(user=user),
         )
 
     # test: get serializer context
@@ -232,7 +223,7 @@ class TestTeacherViewSet(ModelViewSetTestCase[Teacher]):
 
     def test_remove_from_school(self):
         """Can remove a teacher from a school."""
-        user = self.non_admin_school_teacher_user
+        user = self.non_admin_school_3_teacher_user
 
         self.client.login_as(user)
         self.client.update(user.teacher, action="remove_from_school")
@@ -242,7 +233,7 @@ class TestTeacherViewSet(ModelViewSetTestCase[Teacher]):
     def test_set_admin_access(self):
         """Can set the admin access of a teacher in the same school."""
         admin_school_teacher = self.admin_school_teacher_user.teacher
-        non_admin_school_teacher = self.non_admin_school_teacher_user.teacher
+        non_admin_school_teacher = self.non_admin_school_1_teacher_user.teacher
         assert admin_school_teacher.school == non_admin_school_teacher.school
 
         self.client.login_as(admin_school_teacher.new_user)
@@ -268,7 +259,7 @@ class TestTeacherViewSet(ModelViewSetTestCase[Teacher]):
 
     def test_destroy(self):
         """Class-teachers can anonymize themselves and their classes."""
-        user = self.non_admin_school_teacher_user
+        user = self.non_admin_school_1_teacher_user
         assert user.teacher.class_teacher.exists()
         class_names = list(
             user.teacher.class_teacher.values_list("name", flat=True)

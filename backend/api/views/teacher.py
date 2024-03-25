@@ -41,12 +41,14 @@ class TeacherViewSet(ModelViewSet[Teacher]):
 
     def get_queryset(self):
         teacher = self.request.teacher_user.teacher
-        if (
-            self.action in ["remove_from_school", "set_admin_access"]
-            and teacher.school
-            and teacher.is_admin
-        ):
+        if self.action == "set_admin_access":
             return teacher_as_type(teacher, AdminSchoolTeacher).school_teachers
+        if self.action == "remove_from_school":
+            return (
+                teacher_as_type(teacher, AdminSchoolTeacher).school_teachers
+                if teacher.is_admin
+                else SchoolTeacher.objects.filter(pk=teacher.pk)
+            )
 
         return Teacher.objects.filter(pk=teacher.pk)
 

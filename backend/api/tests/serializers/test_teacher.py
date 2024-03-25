@@ -59,21 +59,36 @@ class TestRemoveTeacherFromSchoolSerializer(
     ModelSerializerTestCase[SchoolTeacher]
 ):
     model_serializer_class = RemoveTeacherFromSchoolSerializer
-    fixtures = ["school_1"]
+    fixtures = ["school_1", "school_3"]
 
     def setUp(self):
-        self.admin_school_teacher = AdminSchoolTeacher.objects.get(
+        self.admin_school_1_teacher = AdminSchoolTeacher.objects.get(
             new_user__email="admin.teacher@school1.com"
+        )
+        self.admin_school_3_teacher = AdminSchoolTeacher.objects.get(
+            new_user__email="admin.teacher@school3.com"
+        )
+
+    def test_validate__has_classes(self):
+        """A teacher with classes cannot leave the school."""
+        teacher = self.admin_school_1_teacher
+        assert teacher.classes.exists()
+
+        self.assert_validate(
+            attrs={},
+            error_code="has_classes",
+            instance=teacher,
         )
 
     def test_validate__last_admin(self):
         """The last admin in a school cannot leave the school."""
-        teacher = self.admin_school_teacher
+        teacher = self.admin_school_3_teacher
         assert (
             not AdminSchoolTeacher.objects.exclude(pk=teacher.pk)
             .filter(school=teacher.school)
             .exists()
         )
+
         self.assert_validate(
             attrs={},
             error_code="last_admin",
@@ -83,7 +98,7 @@ class TestRemoveTeacherFromSchoolSerializer(
     def test_update(self):
         """A teacher can be successfully removed from a school."""
         self.assert_update(
-            instance=self.admin_school_teacher,
+            instance=self.admin_school_1_teacher,
             validated_data={},
             new_data={"school": None},
         )

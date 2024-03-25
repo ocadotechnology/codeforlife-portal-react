@@ -61,6 +61,12 @@ class CreateTeacherSerializer(TeacherSerializer[Teacher]):
 
 class RemoveTeacherFromSchoolSerializer(TeacherSerializer[SchoolTeacher]):
     def validate(self, attrs):
+        if self.non_none_instance.classes.exists():
+            raise serializers.ValidationError(
+                "Cannot leave school when you have classes assigned to you.",
+                code="has_classes",
+            )
+
         if (
             self.non_none_instance.is_admin
             and teacher_as_type(
