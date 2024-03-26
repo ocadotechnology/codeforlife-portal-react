@@ -50,7 +50,7 @@ class TeacherViewSet(ModelViewSet[Teacher]):
                 else SchoolTeacher.objects.filter(pk=teacher.pk)
             )
 
-        return Teacher.objects.filter(pk=teacher.pk)
+        return Teacher.objects.filter(pk=teacher.pk)  # action == "destroy"
 
     def get_serializer_context(self):
         context = super().get_serializer_context()

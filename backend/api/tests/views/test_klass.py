@@ -29,11 +29,30 @@ class TestClassViewSet(ModelViewSetTestCase[Class]):
 
     # test: get permissions
 
-    def test_get_permissions__bulk(self):
-        """No one is allowed to perform bulk actions."""
+    def test_get_permissions__bulk__create(self):
+        """No one is allowed to bulk create."""
         self.assert_get_permissions(
             permissions=[AllowNone()],
             action="bulk",
+            request=self.client.request_factory.post(),
+        )
+
+    def test_get_permissions__bulk__partial_update(self):
+        """Only admin-teachers or class-teachers can bulk partial-update."""
+        self.assert_get_permissions(
+            permissions=[
+                OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))
+            ],
+            action="bulk",
+            request=self.client.request_factory.patch(),
+        )
+
+    def test_get_permissions__bulk__destroy(self):
+        """No one is allowed to bulk destroy."""
+        self.assert_get_permissions(
+            permissions=[AllowNone()],
+            action="bulk",
+            request=self.client.request_factory.delete(),
         )
 
     def test_get_permissions__create(self):
