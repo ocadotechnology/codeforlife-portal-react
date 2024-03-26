@@ -3,14 +3,13 @@
 Created on 09/02/2024 at 16:14:00(+00:00).
 """
 
-from codeforlife.permissions import AllowNone
+from codeforlife.permissions import AllowAny, AllowNone
 from codeforlife.request import Request
 from codeforlife.user.models import User
 from codeforlife.user.permissions import IsTeacher
 from codeforlife.views import ModelViewSet, action
 from django.contrib.auth.hashers import check_password
 from rest_framework import status
-from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from ..models import SchoolTeacherInvitation
@@ -23,6 +22,8 @@ class SchoolTeacherInvitationViewSet(ModelViewSet[SchoolTeacherInvitation]):
     serializer_class = SchoolTeacherInvitationSerializer
 
     def get_permissions(self):
+        if self.action == "accept":
+            return [AllowAny()]
         if self.action in [
             "retrieve",
             "list",
@@ -45,11 +46,9 @@ class SchoolTeacherInvitationViewSet(ModelViewSet[SchoolTeacherInvitation]):
             school=self.request.admin_school_teacher_user.teacher.school
         )
 
+    # TODO: use serializer and custom update (HTTP PUT) action
     @action(
-        detail=True,
-        methods=["get", "post"],
-        url_path="accept/(?P<token>.+)",
-        permission_classes=[AllowAny],
+        detail=True, methods=["get", "post"], url_path="accept/(?P<token>.+)"
     )
     def accept(self, request: Request, pk: str, token: str):
         """

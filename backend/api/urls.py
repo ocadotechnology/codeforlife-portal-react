@@ -12,6 +12,7 @@ from .views import (
     SchoolTeacherInvitationViewSet,
     SchoolViewSet,
     StudentViewSet,
+    TeacherViewSet,
     UserViewSet,
 )
 
@@ -45,6 +46,11 @@ router.register(
     "users/students",
     StudentViewSet,
     basename="student",
+)
+router.register(
+    "users/teachers",
+    TeacherViewSet,
+    basename="teacher",
 )
 router.register(
     "users",

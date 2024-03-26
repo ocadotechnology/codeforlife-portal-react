@@ -253,6 +253,7 @@ class TestTransferStudentSerializer(ModelSerializerTestCase[Student]):
 
     def test_update(self):
         """The student-user is transferred to another class."""
+        assert self.class_1 != self.class_2
         students = self.class_1.students.all()
 
         self.assert_update_many(

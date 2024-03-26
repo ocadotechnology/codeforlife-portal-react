@@ -19,7 +19,11 @@ class ClassViewSet(_ClassViewSet):
     def get_permissions(self):
         # Bulk actions not allowed for classes.
         if self.action == "bulk":
-            return [AllowNone()]
+            return (
+                [OR(IsTeacher(is_admin=True), IsTeacher(in_class=True))]
+                if self.request.method == "PATCH"
+                else [AllowNone()]
+            )
         if self.action == "create":
             return [IsTeacher(in_school=True)]
         if self.action in ["partial_update", "destroy"]:

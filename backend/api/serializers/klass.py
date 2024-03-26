@@ -5,13 +5,27 @@ Created on 24/01/2024 at 12:14:21(+00:00).
 
 import string
 
+from codeforlife.serializers import ModelListSerializer
 from codeforlife.user.models import Class, Teacher
 from codeforlife.user.serializers import ClassSerializer as _ClassSerializer
 from django.utils.crypto import get_random_string
 from rest_framework import serializers
 
+# pylint: disable=missing-function-docstring
+# pylint: disable=missing-class-docstring
+# pylint: disable=too-many-ancestors
 
-# pylint: disable-next=missing-class-docstring,too-many-ancestors
+
+class ClassListSerializer(ModelListSerializer[Class]):
+    def update(self, instance, validated_data):
+        for klass, data in zip(instance, validated_data):
+            klass.name = data.get("name", klass.name)
+            klass.teacher = data.get("teacher", klass.teacher)
+            klass.save()
+
+        return instance
+
+
 class ClassSerializer(_ClassSerializer):
     read_classmates_data = serializers.BooleanField(
         source="classmates_data_viewable",
@@ -28,8 +42,8 @@ class ClassSerializer(_ClassSerializer):
             "name": {"read_only": False},
             "teacher": {"required": False},
         }
+        list_serializer_class = ClassListSerializer
 
-    # pylint: disable-next=missing-function-docstring
     def validate_teacher(self, value: Teacher):
         user = self.request.school_teacher_user
         if value.school_id != user.teacher.school_id:
@@ -37,16 +51,10 @@ class ClassSerializer(_ClassSerializer):
                 "This teacher is not in your school.",
                 code="not_in_school",
             )
-        if value != user.teacher and not user.teacher.is_admin:
-            raise serializers.ValidationError(
-                "Cannot assign another teacher if you're not an admin.",
-                code="not_admin",
-            )
 
         return value
 
     # TODO: set unique_together=("name", "school") for in new Class model.
-    # pylint: disable-next=missing-function-docstring
     def validate_name(self, value: str):
         if Class.objects.filter(
             teacher__school=self.request.school_teacher_user.teacher.school,

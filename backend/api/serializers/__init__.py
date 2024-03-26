@@ -13,7 +13,11 @@ from .student import (
     ResetStudentPasswordSerializer,
     TransferStudentSerializer,
 )
-from .teacher import TeacherSerializer
+from .teacher import (
+    CreateTeacherSerializer,
+    RemoveTeacherFromSchoolSerializer,
+    SetSchoolTeacherAdminAccessSerializer,
+)
 from .user import (
     HandleIndependentUserJoinClassRequestSerializer,
     RequestUserPasswordResetSerializer,

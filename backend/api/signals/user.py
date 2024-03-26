@@ -14,7 +14,7 @@ from codeforlife.models.signals.pre_save import (
     adding,
     previous_values_are_unequal,
 )
-from codeforlife.user.models import User, UserProfile
+from codeforlife.user.models import StudentUser, User, UserProfile
 from codeforlife.user.signals import user_receiver
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
@@ -42,7 +42,12 @@ def user__pre_save__email(
         instance.email and previous_values_are_unequal(instance, {"email"})
     ):
         assert_update_fields_includes(update_fields, {"email", "username"})
-        instance.username = instance.email
+        # TODO: remove this logic in new data schema. needed for anonymization.
+        instance.username = (
+            StudentUser.get_random_username()
+            if instance.email == ""
+            else instance.email
+        )
 
 
 @receiver(post_save, sender=User)
