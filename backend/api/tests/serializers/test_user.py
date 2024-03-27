@@ -2,8 +2,7 @@
 © Ocado Group
 Created on 31/01/2024 at 16:07:32(+00:00).
 """
-
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from codeforlife.tests import ModelSerializerTestCase
 from codeforlife.user.models import (
@@ -137,13 +136,29 @@ class TestUserSerializer(ModelSerializerTestCase[User]):
             error_code="no_longer_accepts_requests",
         )
 
-    def test_validate(self):
-        """Current password is required when editing a user's data."""
-        raise NotImplementedError()  # TODO
-
-    def test_create(self):
+    @patch.object(IndependentUser, "add_contact_to_dot_digital")
+    def test_create(self, add_contact_to_dot_digital: Mock):
         """Can successfully create an independent user."""
-        raise NotImplementedError()  # TODO
+        password = "N3wPassword!"
+
+        with patch(
+            "django.contrib.auth.models.make_password",
+            return_value=make_password(password),
+        ) as user_make_password:
+            self.assert_create(
+                validated_data={
+                    "first_name": "Anakin",
+                    "last_name": "Skywalker",
+                    "password": password,
+                    "email": "anakin.skywalker@jedi.academy",
+                    "add_to_newsletter": True,
+                },
+                new_data={"password": user_make_password.return_value},
+                non_model_fields={"add_to_newsletter"},
+            )
+
+            user_make_password.assert_called_once_with(password)
+        add_contact_to_dot_digital.assert_called_once()
 
 
 class TestRequestUserPasswordResetSerializer(ModelSerializerTestCase[User]):
