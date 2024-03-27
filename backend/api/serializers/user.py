@@ -13,7 +13,6 @@ from codeforlife.user.models import (
     StudentUser,
     Teacher,
     User,
-    UserProfile,
 )
 from codeforlife.user.serializers import (
     BaseUserSerializer as _BaseUserSerializer,
@@ -102,9 +101,17 @@ class UserSerializer(BaseUserSerializer[User], _UserSerializer):
         write_only=True,
         required=False,
     )
+    date_of_birth = serializers.DateField(required=False)
+    add_to_newsletter = serializers.BooleanField(write_only=True)
 
     class Meta(_UserSerializer.Meta):
-        fields = [*_UserSerializer.Meta.fields, "password", "current_password"]
+        fields = [
+            *_UserSerializer.Meta.fields,
+            "password",
+            "current_password",
+            "date_of_birth",
+            "add_to_newsletter",
+        ]
         extra_kwargs = {
             **_UserSerializer.Meta.extra_kwargs,
             "first_name": {"read_only": False},
@@ -170,7 +177,17 @@ class UserSerializer(BaseUserSerializer[User], _UserSerializer):
 
         return attrs
 
-    def update(self, instance: User, validated_data: DataDict):
+    def create(self, validated_data):
+        user_fields = t.cast(DataDict, validated_data)
+        add_to_newsletter = user_fields.pop("add_to_newsletter")
+
+        independent_user = IndependentUser.objects.create_user(**user_fields)
+        if add_to_newsletter:
+            independent_user.add_contact_to_dot_digital()
+
+        return independent_user
+
+    def update(self, instance, validated_data):
         if "new_student" in validated_data:
             new_student = t.cast(DataDict, validated_data.pop("new_student"))
             if "pending_class_request" in new_student:
